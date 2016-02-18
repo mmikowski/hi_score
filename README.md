@@ -35,7 +35,7 @@ Our baseline compatibility is IE9+.
 ### License
 MIT
 
-### Version 0.1.x
+### Version 0.0.x
 - Initial preparation
 
 ## Similar Projects
