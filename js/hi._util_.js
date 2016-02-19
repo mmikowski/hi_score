@@ -34,6 +34,7 @@ hi._util_ = (function () {
 
     __0       = nMap._0_,
     __1       = nMap._1_,
+    __n1      = nMap._n1_,
 
     mathFloor = Math.floor,
     topCmap = {
@@ -41,18 +42,9 @@ hi._util_ = (function () {
       _tmplt_rx_  : /%!%([^%]+)%!%/g,
       _10k_   : 10000
     },
-    logUtilObj,
 
-    deleteAllObjKeys, fillTmplt,
-    getClockStr,      getDateStr,
-    getListAttrIdx,   getListDiff,
-    getLogUtilObj,
-    getNumSign,       getVarType,
-    makeArgList,      makeCommaNumStr,
-    makeError,        makeGuidStr,
-    makeListPlus,     makeMapUtilObj,
-    makeSeenMap,      makeTimeStamp,
-    makeUcFirstStr,   setConfigMap
+    getVarType,  logUtilObj,
+    makeGuidStr, makeListPlus
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
 
@@ -84,8 +76,8 @@ hi._util_ = (function () {
       levelKey = '_warn_',
       levelIdx   = levelXIdxMap[ levelKey ],
 
-      consoleRef,
-      setLogLevel, getLogLevel, logIt;
+      consoleRef
+      ;
 
     // favor node console if available
     //noinspection UnusedCatchParameterJS
@@ -99,20 +91,20 @@ hi._util_ = (function () {
       }
     }
 
-    setLogLevel = function ( level_key ) {
+    function setLogLevel ( level_key ) {
       if ( ! levelXIdxMap[ level_key ] ) { return __false; }
 
       levelKey = level_key;
       levelIdx = levelXIdxMap[ level_key ];
       return __true;
-    };
+    }
 
-    getLogLevel = function () {
+    function getLogLevel () {
       return levelKey;
-    };
+    }
 
     // This follows syslog level conventions
-    logIt = function ( ) {
+    function logIt ( ) {
       var
         arg_list = [],
         arg_count, level_key, level_cmd;
@@ -163,7 +155,7 @@ hi._util_ = (function () {
         }
       }
       return __true;
-    };
+    }
 
     return {
       _setLogLevel_ : setLogLevel,
@@ -175,9 +167,54 @@ hi._util_ = (function () {
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
-  // BEGIN public method /compileDustMap/
+  // BEGIN public method /_getVarType_/
+  // Returns '_Function_', '_Object_', '_Array_',
+  // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
+  //
+  getVarType = (function () {
+    var
+      typeof_map = {
+        'boolean'       : '_Boolean_',
+        'number'        : '_Number_',
+        'string'        : '_String_',
+        'function'      : '_Function_',
+        'object'        : '_Object_',
+        'undefined'     : '_Undefined_',
+
+        'Array'          : '_Array_',
+        'Boolean'        : '_Boolean_',
+        'Function'       : '_Function_',
+        'Null'           : '_Null_',
+        'Number'         : '_Number_',
+        'Object'         : '_Object_',
+        'String'         : '_String_',
+        'Undefined'      : '_Undefined_'
+      };
+
+    function get_type_fn ( data ) {
+      var type_key, type_str;
+
+      if ( data === __null  ) { return '_Null_'; }
+      if ( data === __undef ) { return '_Undefined_'; }
+
+      type_key = typeof data;
+      type_str = typeof_map[ type_key ];
+
+      if ( type_str && type_str !== '_Object_' ) { return type_str; }
+      type_key = {}[ vMap._toString_ ][ vMap._call_ ](
+        data )[ vMap._slice_ ]( nMap._8_, __n1 );
+
+      //noinspection NestedConditionalExpressionJS
+      return typeof_map[ type_key ] ||  type_key;
+    }
+
+    return get_type_fn;
+  }());
+  // END public method /_getVarType_/
+
+  // BEGIN Public method /compileDustMap/
   //// For compiling dust templates
-  //compileDustMap = function ( template_map ){
+  // function compileDustMap ( template_map ){
   //  var tmplt_name, dust_compilation;
   //  // compile all the templates
   //  for ( tmplt_name in template_map ) {
@@ -187,11 +224,11 @@ hi._util_ = (function () {
   //      dust.loadSource( dust_compilation );
   //    }
   //  }
-  //};
-  // END public method /compileDustMap/
-  //
-  // BEGIN public method /_deleteAllObjKeys_/
-  deleteAllObjKeys = function ( ref_obj ) {
+  //}
+  // END Public method /compileDustMap/
+
+  // BEGIN Public method /_deleteAllObjKeys_/
+  function deleteAllObjKeys ( ref_obj ) {
     var
       key_list  = vMap._getKeys_( ref_obj ),
       key_count = key_list[ vMap._length_ ],
@@ -201,34 +238,34 @@ hi._util_ = (function () {
       key = key_list[ i ];
       delete ref_obj[ key ];
     }
-  };
+  }
   // END public method /_deleteAllObjKeys_/
 
-  // BEGIN public utility /_fillTmplt_/
-  fillTmplt = function ( arg_map ) {
+  // BEGIN public method /_fillTmplt_/
+  function fillTmplt ( arg_map ) {
     var
       input_str  = arg_map._input_str_,
       lookup_map = arg_map._lookup_map_,
-      tmplt_rx   = arg_map._tmplt_rx_ || topCmap._tmplt_rx_,
-      lookup_fn;
+      tmplt_rx   = arg_map._tmplt_rx_ || topCmap._tmplt_rx_
+      ;
 
     /*jslint unparam: true*/
-    lookup_fn = function ( match, name ) {
+    function lookup_fn ( match, name ) {
       var rv = name && lookup_map;
       name[ vMap._split_ ]('.').forEach(
         function( ename /*idx*/ ) { rv = rv && rv[ename]; }
       );
       return ( rv === __undef ) ? __blank : rv;
-    };
+    }
     /*jslint unparam: false*/
 
     return input_str.replace( tmplt_rx, lookup_fn );
-  };
-  // END public utility /_fillTmplt_/
+  }
+  // END public method /_fillTmplt_/
 
-  // BEGIN public utility /_getClockStr_/
+  // BEGIN public method /_getClockStr_/
   // Given seconds, returns a HH:MM:SS clock
-  getClockStr = function ( sec ) {
+  function getClockStr ( sec ) {
     var
       min_sec        = topCmap.min_sec,
       secs_int       = sec % min_sec,
@@ -240,11 +277,11 @@ hi._util_ = (function () {
 
     clock_str = sprintf('%02d:%02d:%02d',hr_int, min_disp_int, secs_int);
     return clock_str;
-  };
-  // END public utility /_getClockStr_/
+  }
+  // END public method /_getClockStr_/
 
-  // BEGIN public utility /_getDateStr_/
-  getDateStr = function ( date_data, do_time ) {
+  // BEGIN public method /_getDateStr_/
+  function getDateStr ( date_data, do_time ) {
     var
       data_type = getVarType( date_data ),
       date_obj, year_int, mon_int,
@@ -281,14 +318,45 @@ hi._util_ = (function () {
       year_int, mon_int, day_int,
       hr_int, min_int, sec_int
     );
-  };
-  // END public utility /_getDateStr_/
+  }
+  // END public method /_getDateStr_/
 
-  // BEGIN public utility /_getListAttrIdx_/
-  getListAttrIdx = function ( list, key_name, key_val ) {
+  // BEGIN Public method /_getDeepMapVal_/
+  // Purpose   : Get a deep map attribute value
+  // Example   : _getDeepMapVal_( { foo : { bar : 1 }}, [ 'foo','bar' ] );
+  //             Returns '1'
+  // Arguments :
+  //   * base_map  - A map to add a value
+  //   * path_list - A list of keys in order of depth
+  // Returns   : 
+  //   * Success - Requested value
+  //   * Failure - undefined
+  //
+  function getDeepMapVal ( base_map, path_list ) {
+    var
+      walk_map  = base_map,
+      is_good   = __true,
+      key;
+
+    while ( __true ) {
+      key = path_list.shift();
+      if ( key === __undef ){ break; }
+
+      if ( ! walk_map[ nMap._hasOwnProp_ ]( key ) ){
+        is_good = __false; break;
+      }
+      walk_map = walk_map[ key ];
+    }
+    if ( is_good ) { return walk_map; }
+    return __undef;
+  }
+  // END utility /getDeepMapVal/
+  //
+  // BEGIN public method /_getListAttrIdx_/
+  function getListAttrIdx ( list, key_name, key_val ) {
     var
       attr_count = list[ vMap._length_ ],
-      found_idx  = nMap._n1_,
+      found_idx  = __n1,
       i, list_obj
       ;
 
@@ -300,83 +368,37 @@ hi._util_ = (function () {
       }
     }
     return found_idx;
-  };
-  // END public utility /_getListAttrIdx_/
+  }
+  // END public method /_getListAttrIdx_/
 
-  // BEGIN public utility /_getListDiff_/
-  getListDiff = function ( first_list, second_list ){
+  // BEGIN public method /_getListDiff_/
+  function getListDiff ( first_list, second_list ){
     return first_list.filter(
       function ( idx ) {
-        return second_list[ vMap._indexOf_ ]( idx ) === nMap._n1_;
+        return second_list[ vMap._indexOf_ ]( idx ) === __n1;
       }
     );
-  };
-  // END public utility /_getListDiff_/
+  }
+  // END public method /_getListDiff_/
 
-  // BEGIN public utility /getLogUtilObj/
-  getLogUtilObj = function () {
+  // BEGIN public method /getLogUtilObj/
+  function getLogUtilObj () {
     return logUtilObj;
-  };
-  // END public utility /getlogUtilObj/
+  }
+  // END public method /getlogUtilObj/
 
-  // BEGIN public utility /_getNumSign_/
-  getNumSign = function ( n ){
+  // BEGIN public method /_getNumSign_/
+  function getNumSign ( n ){
     if ( isNaN(n) ){ return NaN; }
-    if ( n < __0 ){ return nMap._n1_; }
+    if ( n < __0 ){ return __n1; }
     return __1;
-  };
-  // END public utility /_getNumSign_/
+  }
+  // END public method /_getNumSign_/
 
-  // BEGIN public utility /_getVarType_/
-  // Returns '_Function_', '_Object_', '_Array_',
-  // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
-  //
-  getVarType = (function () {
-    var
-      get_type_fn,
-      typeof_map = {
-        'boolean'       : '_Boolean_',
-        'number'        : '_Number_',
-        'string'        : '_String_',
-        'function'      : '_Function_',
-        'object'        : '_Object_',
-        'undefined'     : '_Undefined_',
-
-        'Array'          : '_Array_',
-        'Boolean'        : '_Boolean_',
-        'Function'       : '_Function_',
-        'Null'           : '_Null_',
-        'Number'         : '_Number_',
-        'Object'         : '_Object_',
-        'String'         : '_String_',
-        'Undefined'      : '_Undefined_'
-      };
-
-    get_type_fn = function ( data ) {
-      var type_key, type_str;
-
-      if ( data === __null  ) { return '_Null_'; }
-      if ( data === __undef ) { return '_Undefined_'; }
-
-      type_key = typeof data;
-      type_str = typeof_map[ type_key ];
-
-      if ( type_str && type_str !== '_Object_' ) { return type_str; }
-      type_key = {}[ vMap._toString_ ][ vMap._call_ ](
-        data )[ vMap._slice_ ]( nMap._8_, nMap._n1_ );
-
-      //noinspection NestedConditionalExpressionJS
-      return typeof_map[ type_key ] ||  type_key;
-    };
-
-    return get_type_fn;
-  }());
-  // END public utility /_getVarType_/
-
-  // BEGIN public utility /_makeArgList_/
+  // BEGIN public method /_makeArgList_/
   // Converts an argument object into a real array...
   //
-  makeArgList = function ( arg_obj ) {
+  function makeArgList ( arg_obj ) {
     // The following technique is around 3x faster than
     //   return Array.prototype.slice.call( arg_obj );
     // See https://github.com/petkaantonov/bluebird/wiki/\
@@ -386,11 +408,11 @@ hi._util_ = (function () {
       arg_list[i] = arguments[i];
     }
     return arg_list;
-  };
-  // END public utility /_makeArgList_/
+  }
+  // END public method /_makeArgList_/
 
-  // BEGIN public utility /_makeCommaNumStr_/
-  makeCommaNumStr = function ( num ){
+  // BEGIN public method /_makeCommaNumStr_/
+  function makeCommaNumStr ( num ){
     var s_num;
     if ( num > topCmap._10k_ ){
       //noinspection NestedFunctionCallJS
@@ -399,8 +421,8 @@ hi._util_ = (function () {
     //noinspection NestedFunctionCallJS
     s_num = __Str(parseInt( num, nMap._10_ ));
     return s_num.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-  };
-  // END public utility /_makeCommaNumStr_/
+  }
+  // END public method /_makeCommaNumStr_/
 
   // BEGIN public method /_makeError_/
   // Purpose: a convenience wrapper to create an error object
@@ -411,35 +433,33 @@ hi._util_ = (function () {
   // Returns  : newly constructed error object
   // Throws   : none
   //
-  makeError = function ( name_text, msg_text, data ) {
+  function makeError ( name_text, msg_text, data ) {
     var error = new Error();
     error.name = 'sl:' + name_text;
     if ( msg_text ) { error.description = msg_text; }
     if ( data ){ error.data = data; }
 
     return error;
-  };
+  }
   // END public method /_makeError_/
 
   // BEGIN public method /_makeGuidStr_/
   makeGuidStr = (function (){
-    var makePart, mainFn;
-
     /*jslint bitwise: true*/
-    makePart = function() {
+    function makePart () {
       //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
       return (((__1+Math.random())*0x10000)|0).toString(16).substring(__1);
-    };
+    }
     /*jslint bitwise: false*/
 
-    mainFn = function () {
+    function mainFn () {
       return makePart() + makePart()
         + '-' + makePart()
         + '-' + makePart()
         + '-' + makePart()
         + '-' + makePart() + makePart() + makePart()
         ;
-    };
+    }
 
     return mainFn;
   }());
@@ -456,17 +476,15 @@ hi._util_ = (function () {
   // The reason I need this is to compare objects to
   //   primary utility.
   makeListPlus = (function () {
-    var checkMatchVal, removeListVal, pushUniqVal, mainFn;
-
-    checkMatchVal = function ( data ){
+    function checkMatchVal ( data ){
       var match_count = __0, idx;
       for ( idx = this[ vMap._length_]; idx; __0 ){
         //noinspection IncrementDecrementResultUsedJS
         if ( this[--idx] === data ){ match_count++; }
       }
       return match_count;
-    };
-    removeListVal = function ( data ){
+    }
+    function removeListVal ( data ){
       var removed_count = __0, idx;
       for ( idx = this[ vMap._length_ ]; idx; __0 ){
         //noinspection IncrementDecrementResultUsedJS
@@ -477,13 +495,13 @@ hi._util_ = (function () {
         }
       }
       return removed_count;
-    };
-    pushUniqVal = function ( data ){
+    }
+    function pushUniqVal ( data ){
       if ( checkMatchVal.call(this, data ) ){ return false; }
       this.push( data );
       return __true;
-    };
-    mainFn = function ( input_list ) {
+    }
+    function mainFn ( input_list ) {
       var return_list;
       if ( input_list && Array.isArray( input_list ) ){
         if ( input_list.remove_val ){
@@ -500,7 +518,7 @@ hi._util_ = (function () {
       return_list.push_uniq  = pushUniqVal;
 
       return return_list;
-    };
+    }
     return mainFn;
   }());
   // END public method /_makeListPlus_/
@@ -508,34 +526,34 @@ hi._util_ = (function () {
   // BEGIN public method /_makeSeenMap_/
   // Purpose: Convert an array into a map keyed by the array values.
   // Assign value to all keys.
-  makeSeenMap = function ( list, value ){
+  function makeSeenMap ( list, value ){
     var i, key, seen_map = {};
     for ( i = __0; i < list[ vMap._length_ ]; i++ ){
       key = list[ i ];
       seen_map[ key ] = value;
     }
     return seen_map;
-  };
+  }
   // END public method /_makeSeenMap_/
 
   // BEGIN public method /_makeTimeStamp_/
-  makeTimeStamp = function () { return +new Date(); };
+  function makeTimeStamp () { return +new Date(); }
   // END public method /_makeTimeStamp_/
 
   // BEGIN public method /_makeUcFirstStr_/
-  makeUcFirstStr = function ( s_input_in ) {
+  function makeUcFirstStr ( s_input_in ) {
     var
       s_input = __Str(s_input_in),
       f   = s_input.charAt(__0).toUpperCase()
       ;
 
     return f + s_input.substr( __1 );
-  };
+  }
   // END public method /_makeUcFirstStr_/
 
-  // BEGIN public utility object /makeMapUtilObj/
+  // BEGIN public method object /makeMapUtilObj/
   // Purpose: Creates a thread-safe map utility object
-  //   useful to streamling list.map() functions and
+  //   useful to streamlining list.map() functions and
   //   avoiding nested functions.
   //
   // Example:
@@ -546,7 +564,7 @@ hi._util_ = (function () {
   //   map_util_obj._setArgList_ = [ name_list ];
   //
   // 3. Create a function that for element of the array.
-  // mapUtil_renameFn = function ( field_data, idx, list, setArgList ) {
+  // function mapUtil_renameFn ( field_data, idx, list, setArgList ) {
   //   var
   //     name_list  = setArgList[ __0 ],
   //     field_key = name_list[ idx ];
@@ -555,7 +573,7 @@ hi._util_ = (function () {
   //   return [ field_key, field_data ];
   //
   //   // return nothing to not add to the map
-  // };
+  // }
   //
   // 3. Set the function in the utility
   //   map_util_obj._setMapFn_( mapUtil_renameFn );
@@ -574,18 +592,15 @@ hi._util_ = (function () {
   // as the stored argList, resultMap, and mapFn.
   //
   //
-  makeMapUtilObj = function () {
-    var
-      resultMap, argList, mapFn,
-      getArgList, setArgList, setMapFn, setResultMap,
-      invokeFn;
+  function makeMapUtilObj () {
+    var resultMap, argList, mapFn;
 
-    getArgList   = function (            ) { return argList;         };
-    setArgList   = function ( arg_list   ) { argList = arg_list;     };
-    setMapFn     = function ( map_fn     ) { mapFn = map_fn;         };
-    setResultMap = function ( result_map ) { resultMap = result_map; };
+    function getArgList   (            ) { return argList;         }
+    function setArgList   ( arg_list   ) { argList = arg_list;     }
+    function setMapFn     ( map_fn     ) { mapFn = map_fn;         }
+    function setResultMap ( result_map ) { resultMap = result_map; }
 
-    invokeFn = function ( field_data, idx, list ) {
+    function invokeFn ( field_data, idx, list ) {
       var ret_list, ret_key, ret_data;
 
       ret_list = mapFn( field_data, idx, list, argList );
@@ -594,7 +609,7 @@ hi._util_ = (function () {
       ret_data = ret_list[ __1 ];
 
       resultMap[ ret_key ] = ret_data;
-    };
+    }
 
     return {
       _getArgList_   : getArgList,
@@ -603,8 +618,8 @@ hi._util_ = (function () {
       _setMapFn_     : setMapFn,
       _invokeFn_     : invokeFn
     };
-  };
-  // END public utility object /makeMapUtilObj/
+  }
+  // END public method object /makeMapUtilObj/
 
   // BEGIN Public method /_setConfigMap_/
   // Purpose: Common code to set configs in feature modules
@@ -615,7 +630,7 @@ hi._util_ = (function () {
   // Returns: undef
   // Throws : Exception if input key not allowed
   //
-  setConfigMap = function ( arg_map ){
+  function setConfigMap ( arg_map ) {
     var
       input_map    = arg_map._input_map_,
       settable_map = arg_map._settable_map_,
@@ -642,8 +657,44 @@ hi._util_ = (function () {
         }
       }
     }
-  };
+  }
   // END Public method /_setConfigMap_/
+
+  // BEGIN Public method /_setDeepMapVal_/
+  // Purpose   : Set a deep map attribute value
+  // Example   : _setDeepMapVal_( {}, [ 'foo','bar' ], 'hello' );
+  // Arguments :
+  //   * base_map  - A map to add a value
+  //   * path_list - A list of keys in order of depth
+  //   * val_data  - Value to set for the path
+  // Returns   : 
+  //   * Success - Updated object
+  //   * Failure - undefined
+  //
+  function setDeepMapVal ( base_map, path_list, value ) {
+    var
+      walk_map  = base_map,
+      is_good   = __false,
+      key;
+
+    while ( __true ) {
+      key = path_list.shift();
+      if ( key === undefined ){ break; }
+
+      if ( ! walk_map[ nMap._hasOwnProp_ ]( key ) ){
+        walk_map[ key ] = {};
+      }
+      if ( ! path_list[ __0 ] ){
+        walk_map[ key ]  = value;
+        is_good = __true;
+        break;
+      }
+      walk_map = walk_map[ key ];
+    }
+    if ( is_good ){ return base_map; }
+    return __undef;
+  }
+  // END Public method /setDeepMapVal/
   // ======================= END PUBLIC METHODS =======================
 
   return {
@@ -651,6 +702,7 @@ hi._util_ = (function () {
     _fillTmplt_        : fillTmplt,
     _getClockStr_      : getClockStr,
     _getDateStr_       : getDateStr,
+    _getDeepMapVal_    : getDeepMapVal,
     _getListAttrIdx_   : getListAttrIdx,
     _getListDiff_      : getListDiff,
     _getLogUtilObj_    : getLogUtilObj,
@@ -665,7 +717,9 @@ hi._util_ = (function () {
     _makeSeenMap_      : makeSeenMap,
     _makeTimeStamp_    : makeTimeStamp,
     _makeUcFirstStr_   : makeUcFirstStr,
-    _setConfigMap_     : setConfigMap
+    _setConfigMap_     : setConfigMap,
+    _setDeepMapVal_    : setDeepMapVal
+
   };
 }());
 

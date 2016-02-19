@@ -52,9 +52,9 @@ hi._utilb_ = (function ( $ ) {
     stateMap = { win_content : null },
     mathFloor = Math.floor,
 
-    decodeHtml,     encodeHtml,    fillForm,
-    fixInputByType, getFormMap,    logTrace,
-    makeOptionHtml,
+    decodeHtml,     encodeHtml,
+    fillForm,       fixInputByType,
+    getFormMap,     makeOptionHtml,
 
     makePopup,      makeQueryMap,  makeQueryStr,
     makeRadioHtml,  makeUrlPopup,  onBufferReady,
@@ -70,7 +70,7 @@ hi._utilb_ = (function ( $ ) {
   // Decodes HTML entities in a browser-friendly way
   // See http://stackoverflow.com/questions/1912501/\
   //   unescape-html-entities-in-javascript
-  decodeHtml = function ( str ) {
+  function decodeHtml ( str ) {
     return $('<div></div>').html(str||'').text();
   };
   // END public utility |_decodeHtml_|
@@ -78,7 +78,7 @@ hi._utilb_ = (function ( $ ) {
   // BEGIN public utility |_encodeHtml_|
   // This is single pass encoder for html entities and handles
   // an arbitrary number of characters to encode
-  encodeHtml = function ( arg_str, do_exclude_amp ) {
+  function encodeHtml ( arg_str, do_exclude_amp ) {
     var
       source_str = String(arg_str),
       regex, lookup_map
@@ -99,7 +99,7 @@ hi._utilb_ = (function ( $ ) {
   // END public utility |_encodeHtml_|
 
   // BEGIN public utility |_fillForm_|
-  fillForm = function ( $form, value_map ) {
+  function fillForm ( $form, value_map ) {
     $.each( value_map, function ( k, v ) {
       $form.find('[name=' + k + ']').each(function() {
         var
@@ -122,7 +122,7 @@ hi._utilb_ = (function ( $ ) {
   // END public utility |_fillForm_|
 
   // BEGIN public utility |_fixInputByType_|
-  fixInputByType  = function ($elem) {
+  function fixInputByType ($elem) {
     var input_val = $elem.val().trim();
     if ( $elem.attr('data-type') === 'number' ) {
       input_val = parseFloat(input_val);
@@ -141,7 +141,7 @@ hi._utilb_ = (function ( $ ) {
 
 
   // BEGIN public utility |_getFormMap_|
-  getFormMap = function( $elem ) {
+  function getFormMap ( $elem ) {
     var form_map = {};
 
     $elem.find( 'input:not(:disabled):not(.ao-_x_ignore_):not(td  > input)' )
@@ -212,14 +212,8 @@ hi._utilb_ = (function ( $ ) {
   };
   // END public utility |_getFormMap_|
 
-  // BEGIN public utility |_logTrace_|
-  logTrace = function () {
-    console.trace( arguments );
-  };
-  // END public utility |_logTrace_|
-
   // BEGIN public utility |_makeOptionHtml_|
-  makeOptionHtml = function ( arg_match_str, value_list, arg_title_map ) {
+  function makeOptionHtml ( arg_match_str, value_list, arg_title_map ) {
     var
       html_str = '',
       title_map   = arg_title_map || {},
@@ -262,7 +256,7 @@ hi._utilb_ = (function ( $ ) {
   // RETURNS:
   //   win, the DOM object of the pop-up window
   //
-  makePopup = function ( arg_map ) {
+  function makePopup ( arg_map ) {
     var
       event        = arg_map.event,
       height_px    = arg_map.height_px,
@@ -311,7 +305,7 @@ hi._utilb_ = (function ( $ ) {
 
     win_content = window.open('','',win_props_text);
 
-    populate_html = function( content_html ) {
+    function populate_html ( content_html ) {
       win_content.document.write(
         '<html>'
         + '<head>'
@@ -371,7 +365,7 @@ hi._utilb_ = (function ( $ ) {
   //   A map of query arguments
   // Throws    : none
   //
-  makeQueryMap = function ( arg_query_str ) {
+  function makeQueryMap ( arg_query_str ) {
     var
       query_str, param_list, i, list_count,
       bit_list, key, val,
@@ -422,7 +416,7 @@ hi._utilb_ = (function ( $ ) {
   //
   // Purpose: Encodes key value pairs into a concatenated and encoded uri string
   //
-  makeQueryStr = function ( arg_param_map ) {
+  function makeQueryStr ( arg_param_map ) {
     var
       param_list = [],
       param_str, param_key, param_val;
@@ -441,7 +435,7 @@ hi._utilb_ = (function ( $ ) {
   // BEGIN public utility |_makeRadioHtml_|
   // Purpose: make a an array of checkboxes from a list
   //
-  makeRadioHtml = function (
+  function makeRadioHtml (
     checked_value_str, // used for name="..." property for radios
     arg_value_str,     // selected value
     match_array,       // array of potential values
@@ -486,7 +480,7 @@ hi._utilb_ = (function ( $ ) {
   // RETURNS:
   //   win, the DOM object of the pop-up window
   //
-  makeUrlPopup = function ( arg_map ) {
+  function makeUrlPopup ( arg_map ) {
     var
       event        = arg_map.event,
       height_px    = arg_map.height_px,
@@ -540,7 +534,7 @@ hi._utilb_ = (function ( $ ) {
       bodyEl, onBuf;
 
 
-    onBuf = function ( arg_fn ) {
+    function onBuf ( arg_fn ) {
       var img_el, s_obj;
 
 
@@ -570,7 +564,7 @@ hi._utilb_ = (function ( $ ) {
   // END public utility |_onBufferReady_|
 
   // BEGIN public utility |_openWindow_|
-  openWindow = function ( url_str ) {
+  function openWindow ( url_str ) {
     var win = window.open( url_str, '_blank' );
     win.focus();
     return false;
@@ -588,12 +582,12 @@ hi._utilb_ = (function ( $ ) {
   //   arg_count : (optional) Maximum number of times to run the function.
   //
   //
-  pollFunction = function( arg_fn, arg_ms, arg_count ) {
+  function pollFunction ( arg_fn, arg_ms, arg_count ) {
     var count, set_time_fn;
 
     count = arg_count || null;
 
-    set_time_fn = function() {
+    function set_time_fn () {
       setTimeout(function() {
         var continue_poll = arg_fn();
         if ( continue_poll === false ) { return; }
@@ -616,7 +610,6 @@ hi._utilb_ = (function ( $ ) {
     _encodeHtml_     : encodeHtml,
     _fillForm_       : fillForm,
     _getFormMap_     : getFormMap,
-    _logTrace_       : logTrace,
     _makeOptionHtml_ : makeOptionHtml,
     _makePopup_      : makePopup,
     _makeQueryMap_   : makeQueryMap,
