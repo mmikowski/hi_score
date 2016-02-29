@@ -8,10 +8,10 @@ in the new *hotness*.  Some developers have spent far more time learning
 framework DSLs than pure JavaScript. Are we ready to get off that
 treadmill?
 
-What we have to ask is [do we really want an SPA framework?][0]  If not,
-then **hi**\_**score** is here to help.  Our intention is to provide 
-an ever improving set of best-in-class libraries that we control, instead of
-having a framework that controls us.
+[Do we really want an SPA framework?][0] If not, then **hi**\_**score**
+is here to help.  Our intention is to provide an ever improving set of 
+best-in-class libraries that we control, instead of having a framework
+that controls us.
 
 ## Code Style
 The library we have authored are written in the code style presented in 
@@ -24,6 +24,10 @@ suffix like `_this_` which makes them easy targets for compression.
 Provide an architecture guide, starter files, and best-in-class libraries
 recommended for SPA development.  This environment will progress as
 technology and support evolve.
+
+## Status
+This work is currently on hold pending the 1.x release of
+[PowerCSS](http://powercss.org).
 
 ## Compatibility
 Our baseline compatibility is IE9+.
@@ -39,7 +43,7 @@ MIT
 - Initial preparation
 
 ## Similar Projects
-[absurd.js][3], [responsive.js][4]
+[absurd.js][4], [responsive.js][5]
 
 ## Contribute!
 If you want to help out, like all npm modules this is hosted on 
@@ -50,6 +54,7 @@ You can reach me at mike[dot]mikowski[at]gmail[dotcom].
 [0]:http://mmikowski.github.io/no-frameworks
 [1]:http://www.amazon.com/dp/1617290750
 [2]:http://manning.com/mikowski
-[3]:http://absurdjs.com/
-[4]:http://www.responsivejs.com/
+[3]:http://powercss.org/
+[4]:http://absurdjs.com/
+[5]:http://www.responsivejs.com/
 
