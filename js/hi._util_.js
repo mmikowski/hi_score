@@ -396,15 +396,15 @@ hi._util_ = (function () {
   // END public method /_getNumSign_/
 
   // BEGIN public method /_makeArgList_/
-  // Converts an argument object into a real array...
+  // Converts provided argument object into a real array
   //
   function makeArgList ( arg_obj ) {
     // The following technique is around 3x faster than
     //   return Array.prototype.slice.call( arg_obj );
     // See https://github.com/petkaantonov/bluebird/wiki/\
     //   Optimization-killers#3-managing-arguments
-    var arg_list = [], i;
-    for ( i = 0; i < arguments.length; i++ ) {
+    var arg_list = [], arg_count = arg_obj.length, i;
+    for ( i = 0; i < arg_count; i++ ) {
       arg_list[i] = arguments[i];
     }
     return arg_list;
