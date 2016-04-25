@@ -1,5 +1,6 @@
 /**
- *   hi.util_b.js - utilities which require a browser.
+ *   hi.utilb.js
+ *   Utilities which require a browser and jQuery
  *
  *   Michael S. Mikowski - mike.mikowski@gmail.com
  *   These are routines I have created and updated
@@ -24,6 +25,7 @@ hi._utilb_ = (function ( $ ) {
     nMap     = hi._nMap_,
     vMap     = hi._vMap_,
 
+    __Str    = vMap._String_,
     __blank  = vMap._blank_,
     __0      = nMap._0_,
     __1      = nMap._1_,
@@ -49,16 +51,7 @@ hi._utilb_ = (function ( $ ) {
       half_num : 0.5
     },
 
-    stateMap = { win_content : null },
-    mathFloor = Math.floor,
-
-    decodeHtml,     encodeHtml,
-    fillForm,       fixInputByType,
-    getFormMap,     makeOptionHtml,
-
-    makePopup,      makeQueryMap,  makeQueryStr,
-    makeRadioHtml,  makeUrlPopup,  onBufferReady,
-    openWindow,     pollFunction
+    onBufferReady
     ;
 
   configMap.h_encode_noamp = $.extend({},configMap.html_encode_map);
@@ -66,21 +59,21 @@ hi._utilb_ = (function ( $ ) {
   // ================== END MODULE SCOPE VARIABLES ====================
 
   // ===================== BEGIN UTILITY METHODS ======================
-  // BEGIN public utility |_decodeHtml_|
+  // BEGIN public method /decodeHtml/
   // Decodes HTML entities in a browser-friendly way
   // See http://stackoverflow.com/questions/1912501/\
   //   unescape-html-entities-in-javascript
   function decodeHtml ( str ) {
-    return $('<div></div>').html(str||'').text();
-  };
-  // END public utility |_decodeHtml_|
+    return $('<div></div>').html(str||__blank).text();
+  }
+  // END public method /decodeHtml/
 
-  // BEGIN public utility |_encodeHtml_|
+  // BEGIN public method /encodeHtml/
   // This is single pass encoder for html entities and handles
   // an arbitrary number of characters to encode
   function encodeHtml ( arg_str, do_exclude_amp ) {
     var
-      source_str = String(arg_str),
+      source_str = __Str(arg_str),
       regex, lookup_map
       ;
 
@@ -93,12 +86,12 @@ hi._utilb_ = (function ( $ ) {
       regex      = configMap.regex_encode_html;
     }
     return source_str.replace(regex,
-      function ( match /*, name */ ) { return lookup_map[match] ||  ''; }
+      function ( match /*, name */ ) { return lookup_map[match] || __blank; }
     );
-  };
-  // END public utility |_encodeHtml_|
+  }
+  // END public method /encodeHtml/
 
-  // BEGIN public utility |_fillForm_|
+  // BEGIN public method /fillForm/
   function fillForm ( $form, value_map ) {
     $.each( value_map, function ( k, v ) {
       $form.find('[name=' + k + ']').each(function() {
@@ -118,10 +111,10 @@ hi._utilb_ = (function ( $ ) {
         }
       });
     });
-  };
-  // END public utility |_fillForm_|
+  }
+  // END public method /fillForm/
 
-  // BEGIN public utility |_fixInputByType_|
+  // BEGIN public method /fixInputByType/
   function fixInputByType ($elem) {
     var input_val = $elem.val().trim();
     if ( $elem.attr('data-type') === 'number' ) {
@@ -133,18 +126,18 @@ hi._utilb_ = (function ( $ ) {
       if ( isNaN( input_val) ) { input_val = null; }
     }
     else if ( $elem.attr('data-type') === 'string' ) {
-      if ( input_val === '' ) { input_val = null; }
+      if ( input_val === __blank ) { input_val = null; }
     }
     return input_val;
-  };
-  // END public utility |_fixInputByType_|
+  }
+  // END public method /fixInputByType/
 
 
-  // BEGIN public utility |_getFormMap_|
+  // BEGIN public method /getFormMap/
   function getFormMap ( $elem ) {
     var form_map = {};
 
-    $elem.find( 'input:not(:disabled):not(.ao-_x_ignore_):not(td  > input)' )
+    $elem.find( 'input:not(:disabled):not(.hi-_x_ignore_):not(td  > input)' )
       .each( function() {
         var $input = $( this ), input_val;
         if ( ! this.name ) { return; }
@@ -209,20 +202,20 @@ hi._utilb_ = (function ( $ ) {
     });
 
     return form_map;
-  };
-  // END public utility |_getFormMap_|
+  }
+  // END public method /getFormMap/
 
-  // BEGIN public utility |_makeOptionHtml_|
+  // BEGIN public method /makeOptionHtml/
   function makeOptionHtml ( arg_match_str, value_list, arg_title_map ) {
     var
-      html_str = '',
+      html_str    = __blank,
       title_map   = arg_title_map || {},
-      target_str  = String(arg_match_str),
+      target_str  = __Str(arg_match_str),
       idx, match_str, title_text
       ;
 
     for ( idx = __0; idx < value_list[ vMap._length_ ]; idx++ ) {
-      match_str   = String(value_list[ idx ]);
+      match_str   = __Str(value_list[ idx ]);
       title_text     = title_map[ match_str ]
         || hi._util_._makeUcFirst_( match_str );
       html_str   += '<option value="' + match_str + '"';
@@ -232,128 +225,10 @@ hi._utilb_ = (function ( $ ) {
       html_str += '>' + title_text + '</option>';
     }
     return html_str;
-  };
-  // END public utility |_makeOptionHtml_|
+  }
+  // END public method /makeOptionHtml/
 
-  // BEGIN public utility |_makePopup_|
-  // INPUT  :
-  // arg_map with the following attributes:
-  //   REQUIRED
-  //   event      : event object, e.g. as returned from a click event
-  //   height_px  : height, in pixels, for pop-up window
-  //   width_px   : width, in pixels, for pop-up window
-  //   s_content  : (required) html string of content
-  //
-  //   OPTIONAL
-  //   title_text     : (default: '') pop-up title
-  //   do_scrollbar   : (default: false ) boolean indicating scrollbar
-  //   css_lib_list   : (default: []  ary of css libs to include
-  //   js_lib_list    : (default: []) ary of javascript libs to include
-  //
-  // PROCESS:
-  //   Presents content in pop-up window
-  //
-  // RETURNS:
-  //   win, the DOM object of the pop-up window
-  //
-  function makePopup ( arg_map ) {
-    var
-      event        = arg_map.event,
-      height_px    = arg_map.height_px,
-      width_px     = arg_map.width_px,
-      scroll_text  = arg_map.do_scrollbar === true ? 'yes' : 'no',
-      title_text   = arg_map.title_text    || '',
-      content_html = arg_map.content_html  || '',
-      css_lib_list = arg_map.css_lib_list  || [],
-      js_lib_list  = arg_map.js_lib_list   || [],
-      half_num     = configMap.half_num,
-
-      screen_x_int
-        = mathFloor(event.screenX - ( width_px * half_num ) + half_num ),
-      screen_y_int
-        = mathFloor(event.screenY - ( height_px * half_num ) + half_num ),
-      win_props_text
-        = 'height=' + height_px + ',width=' + width_px
-        + ',top=' + String(screen_y_int) + ',left=' + String(screen_x_int)
-        + ',wrap,scrollbars=' + scroll_text + ',resizable=yes',
-
-      css_text = '',
-      js_text  = '',
-
-      win_content, populate_html
-      ;
-
-    if ( stateMap.win_content ) {
-      stateMap.win_content.close();
-      stateMap.win_content = null;
-    }
-
-    // populate css libs
-    /*jslint unparam: true*/
-    $.each(css_lib_list, function( idx, text) {
-      css_text
-        += '<link rel="stylesheet" href="'
-        + text + '" type="text/css"/>\n'
-      ;
-    });
-
-    // populate js libs
-    $.each(js_lib_list, function( idx, text) {
-      js_text += '<script src="' + text+ '"></script>\n';
-    });
-    /*jslint unparam: false*/
-
-    win_content = window.open('','',win_props_text);
-
-    function populate_html ( content_html ) {
-      win_content.document.write(
-        '<html>'
-        + '<head>'
-        + '<title>' + title_text + '</title>'
-        + '<meta http-equiv="X-UA-Compatible" content="IE=8"/>'
-        + css_text
-        + js_text
-        + '<style>'
-        + 'body { padding: 12px; }'
-        + '</style>'
-        + '</head>'
-        + '<body>'
-        + content_html
-        + '<div style="text-align: right">'
-        + '<input type="button" value=" Close " onclick="self.close();"/>'
-        + '</div>'
-        + '</body>'
-        + '</html>'
-      );
-    };
-
-    if ( content_html ) {
-      populate_html( content_html );
-    } else {
-      arg_map.populate_callback_function( populate_html );
-    }
-
-    if ( ! win_content ) {
-      alert(
-        'You browser is blocking pop-ups. '
-        + 'Please disable blocking to enable this function.'
-      );
-      return null;
-    }
-
-    // close write
-    win_content.document.close();
-
-    // focus this window
-    win_content.window.focus();
-
-    stateMap.win_content = win_content;
-
-    return win_content;
-  };
-  // END _makePopup_
-
-  // BEGIN public utility |_makeQueryMap_|
+  // BEGIN public method /makeQueryMap/
   // Example   : query_map _makeQueryMap_( '?is_fake_data=true,config=dev' )
   //   Returns query_map = { is_fake_data : true, config : 'dev' };
   // Summary   :
@@ -409,10 +284,10 @@ hi._utilb_ = (function ( $ ) {
       }
 
     return param_map;
-  };
-  // END public utility |_makeQueryMap_|
+  }
+  // END public method /makeQueryMap/
 
-  // BEGIN public utility |_makeQueryStr_|
+  // BEGIN public method /makeQueryStr/
   //
   // Purpose: Encodes key value pairs into a concatenated and encoded uri string
   //
@@ -429,10 +304,10 @@ hi._utilb_ = (function ( $ ) {
       }
     }
     return param_list.join('&');
-  };
-  // END public utility |_makeQueryStr_|
+  }
+  // END public method /makeQueryStr/
 
-  // BEGIN public utility |_makeRadioHtml_|
+  // BEGIN public method /makeRadioHtml/
   // Purpose: make a an array of checkboxes from a list
   //
   function makeRadioHtml (
@@ -442,7 +317,7 @@ hi._utilb_ = (function ( $ ) {
     arg_title_map      // hash map of labels to values
   ) {
     var
-      html_str     = '',
+      html_str     = __blank,
       title_map    = arg_title_map || {},
       idx, match_str, title_text
       ;
@@ -462,67 +337,10 @@ hi._utilb_ = (function ( $ ) {
        html_str += '/>' + title_text + '</label>';
     }
     return html_str;
-  };
-  // END public utility |_makeRadioHtml_|
+  }
+  // END public method /makeRadioHtml/
 
-  // BEGIN public utility |_makeUrlPopup_|
-  // INPUT  :
-  // arg_map with the following attributes:
-  //   event : (required) event object, e.g. as returned from a click event
-  //   height_px  : (required) height, in pixels, for pop-up window
-  //   width_px  : (required) width, in pixels, for pop-up window
-  //   do_scrollbar : (default: false ) boolean indicating scrollbar
-  //   target_url : (required) url of target content
-  //
-  // PROCESS:
-  //   Presents URL in pop-up window
-  //
-  // RETURNS:
-  //   win, the DOM object of the pop-up window
-  //
-  function makeUrlPopup ( arg_map ) {
-    var
-      event        = arg_map.event,
-      height_px    = arg_map.height_px,
-      width_px     = arg_map.width_px,
-      scroll_text  = arg_map.do_scrollbar ? 'yes' : 'no',
-      target_url   = arg_map.target_url,
-      half_num     = configMap.half_num,
-
-      screen_x_int
-        = mathFloor(event.screenX - ( width_px * half_num ) + half_num ),
-      screen_y_int
-        = mathFloor(event.screenY - ( height_px * half_num ) + half_num ),
-      win_props_text
-         = 'height=' + height_px + ',width=' + width_px
-         + ',top=' + String(screen_y_int) + ',left=' + String(screen_x_int)
-         + ',wrap,scrollbars=' + scroll_text + ',resizable=yes',
-      win
-      ;
-
-    if ( window.top.butil_win_url ) {
-      window.top.butil_win_url.close();
-      setTimeout( function () {
-        win = window.open(target_url,'butil_win_url',win_props_text);
-      }, configMap.popup_delay_ms );
-    }
-    else {
-      win = window.open(target_url,'butil_win_url',win_props_text);
-      if ( ! win ) { win = window.open(target_url,'_blank'); }
-    }
-    if ( ! win ) {
-      alert(
-        'You browser is blocking pop-ups. '
-        + 'Please disable blocking to enable this function.'
-      );
-      return null;
-    }
-    win.focus();
-    return win;
-  };
-  // END public utility |_makeUrlPopup_|
-
-  // BEGIN public utility |_onBufferReady_|
+  // BEGIN public method /onBufferReady/
   onBufferReady = (function () {
     var
     // 10x10px transparent png
@@ -531,12 +349,10 @@ hi._utilb_ = (function ( $ ) {
         + 'CNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3'
         + 'RJTUUH3woIAB8ceeNmxQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBD'
         + 'hcAAAAOSURBVBjTY2AYBYMTAAABmgABC6KdHwAAAABJRU5ErkJggg==',
-      bodyEl, onBuf;
-
+      bodyEl;
 
     function onBuf ( arg_fn ) {
       var img_el, s_obj;
-
 
       if ( ! bodyEl ) {
         bodyEl = document.getElementsByTagName( 'body' )[__0];
@@ -557,52 +373,11 @@ hi._utilb_ = (function ( $ ) {
       };
       bodyEl.appendChild( img_el );
       img_el.src = blankImgStr;
-    };
+    }
 
     return onBuf;
   }());
-  // END public utility |_onBufferReady_|
-
-  // BEGIN public utility |_openWindow_|
-  function openWindow ( url_str ) {
-    var win = window.open( url_str, '_blank' );
-    win.focus();
-    return false;
-  };
-  // END public utility |_openWindow_|
-
-
-  // BEGIN public utility |_pollFunction_|
-  // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
-  //   either <arg_count> number of times or until the function
-  //   returns false, whichever comes first.
-  // Arguments
-  //   arg_fn    : function to poll, return false to stop polling
-  //   arg_ms    : time between function invocation
-  //   arg_count : (optional) Maximum number of times to run the function.
-  //
-  //
-  function pollFunction ( arg_fn, arg_ms, arg_count ) {
-    var count, set_time_fn;
-
-    count = arg_count || null;
-
-    function set_time_fn () {
-      setTimeout(function() {
-        var continue_poll = arg_fn();
-        if ( continue_poll === false ) { return; }
-        if ( count === null ) {
-          set_time_fn();
-          return;
-        }
-        if ( count > __0 ) {
-          count -= __1;
-          set_time_fn();
-        }
-      }, arg_ms );
-    };
-    set_time_fn();
-  };
+  // END public method /onBufferReady/
   // ====================== END UTILITY METHODS =======================
 
   return {
@@ -611,13 +386,9 @@ hi._utilb_ = (function ( $ ) {
     _fillForm_       : fillForm,
     _getFormMap_     : getFormMap,
     _makeOptionHtml_ : makeOptionHtml,
-    _makePopup_      : makePopup,
     _makeQueryMap_   : makeQueryMap,
     _makeQueryStr_   : makeQueryStr,
     _makeRadioHtml_  : makeRadioHtml,
-    _makeUrlPopup_   : makeUrlPopup,
     _onBufferReady_  : onBufferReady,
-    _openWindow_     : openWindow,
-    _pollFunction_   : pollFunction
   };
 }( jQuery ));

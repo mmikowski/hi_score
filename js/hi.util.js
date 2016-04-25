@@ -1,5 +1,6 @@
 /**
- *   hi.util.js - utilities which do not require a browser
+ *   hi.util.js
+ *   Utilities which do not require jQuery or a browser
  *
  *   Michael S. Mikowski - mike.mikowski@gmail.com
  *   These are routines I have created and updated
@@ -14,7 +15,7 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global sprintf, hi*/
+/*global sprintf, hi */
 
 hi._util_ = (function () {
   'use strict';
@@ -23,6 +24,9 @@ hi._util_ = (function () {
   var
     vMap      = hi._vMap_,
     nMap      = hi._nMap_,
+
+    __j2str   = vMap._JSON_[ vMap._stringify_],
+    __jparse  = vMap._JSON_[ vMap._parse_ ],
 
     __Num     = vMap._Number_,
     __Str     = vMap._String_,
@@ -104,7 +108,7 @@ hi._util_ = (function () {
     }
 
     // This follows syslog level conventions
-    function logIt ( ) {
+    function logIt () {
       var
         arg_list = [],
         arg_count, level_key, level_cmd;
@@ -167,6 +171,12 @@ hi._util_ = (function () {
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
+  // BEGIN public method /cloneData/
+  function cloneData ( data ) {
+    return __jparse( __j2str( data ) );
+  }
+  // END public method /cloneData/
+
   // BEGIN public method /_getVarType_/
   // Returns '_Function_', '_Object_', '_Array_',
   // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
@@ -328,7 +338,7 @@ hi._util_ = (function () {
   // Arguments :
   //   * base_map  - A map to add a value
   //   * path_list - A list of keys in order of depth
-  // Returns   : 
+  // Returns   :
   //   * Success - Requested value
   //   * Failure - undefined
   //
@@ -619,7 +629,56 @@ hi._util_ = (function () {
       _invokeFn_     : invokeFn
     };
   }
-  // END public method object /makeMapUtilObj/
+  // END public method /makeMapUtilObj/
+
+  // BEGIN  public method /mergeMap/
+  function mergeMap( base_map, extend_map ) {
+    var
+      tmp_map   = cloneData( extend_map ),
+      key_list  = vMap._getKeys_( tmp_map ),
+      key_count = key_list[ vMap._length_ ],
+      i, tmp_key;
+    for ( i = __0; i < key_count; i++ ) {
+      tmp_key = key_list[ i ];
+      base_map[ tmp_key ] = tmp_map[ tmp_key ];
+    }
+    return base_map;
+  }
+  // END  public method /mergeMap/
+
+  // BEGIN public method /pollFunction/
+  // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
+  //   either <arg_count> number of times or until the function
+  //   returns false, whichever comes first.
+  // Arguments
+  //   arg_fn    : function to poll, return false to stop polling
+  //   arg_ms    : time between function invocation
+  //   arg_count : (optional) Maximum number of times to run the function.
+  //
+  //
+  function pollFunction ( arg_fn, arg_ms, arg_count ) {
+    var count;
+
+    count = arg_count || null;
+
+    function pollIt () {
+      setTimeout(function() {
+        var continue_poll = arg_fn();
+        if ( continue_poll === false ) { return; }
+        if ( count === null ) {
+          pollIt();
+          return;
+        }
+        if ( count > __0 ) {
+          count -= __1;
+          pollIt();
+        }
+      }, arg_ms );
+    }
+
+    pollIt();
+  }
+  // END public method /pollFunction/
 
   // BEGIN Public method /_setConfigMap_/
   // Purpose: Common code to set configs in feature modules
@@ -667,7 +726,7 @@ hi._util_ = (function () {
   //   * base_map  - A map to add a value
   //   * path_list - A list of keys in order of depth
   //   * val_data  - Value to set for the path
-  // Returns   : 
+  // Returns   :
   //   * Success - Updated object
   //   * Failure - undefined
   //
@@ -698,6 +757,7 @@ hi._util_ = (function () {
   // ======================= END PUBLIC METHODS =======================
 
   return {
+    _cloneData_        : cloneData,
     _deleteAllObjKeys_ : deleteAllObjKeys,
     _fillTmplt_        : fillTmplt,
     _getClockStr_      : getClockStr,
@@ -717,9 +777,10 @@ hi._util_ = (function () {
     _makeSeenMap_      : makeSeenMap,
     _makeTimeStamp_    : makeTimeStamp,
     _makeUcFirstStr_   : makeUcFirstStr,
+    _mergeMap_         : mergeMap,
+    _pollFunction_     : pollFunction,
     _setConfigMap_     : setConfigMap,
     _setDeepMapVal_    : setDeepMapVal
-
   };
 }());
 
