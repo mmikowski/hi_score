@@ -40,15 +40,18 @@ hi._util_ = (function () {
     __1       = nMap._1_,
     __n1      = nMap._n1_,
 
-    mathFloor = Math.floor,
+    __floor = Math.floor,
+
     topCmap = {
+      _10k_       : 10000,
+      _min_sec_   : 60,
       _offset_yr_ : 1900,
-      _tmplt_rx_  : /%!%([^%]+)%!%/g,
-      _10k_   : 10000
+      _tmplt_rx_  : /%!%([^%]+)%!%/g
     },
 
     getVarType,  logUtilObj,
-    makeGuidStr, makeListPlus
+    makeGuidStr, makeListPlus,
+    fillTmplt
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
 
@@ -177,7 +180,7 @@ hi._util_ = (function () {
   }
   // END public method /cloneData/
 
-  // BEGIN public method /_getVarType_/
+  // BEGIN public method /getVarType/
   // Returns '_Function_', '_Object_', '_Array_',
   // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
   //
@@ -220,7 +223,7 @@ hi._util_ = (function () {
 
     return get_type_fn;
   }());
-  // END public method /_getVarType_/
+  // END Public method /getVarType/
 
   // BEGIN Public method /compileDustMap/
   //// For compiling dust templates
@@ -237,7 +240,7 @@ hi._util_ = (function () {
   //}
   // END Public method /compileDustMap/
 
-  // BEGIN Public method /_deleteAllObjKeys_/
+  // BEGIN Public method /deleteAllObjKeys/
   function deleteAllObjKeys ( ref_obj ) {
     var
       key_list  = vMap._getKeys_( ref_obj ),
@@ -249,48 +252,58 @@ hi._util_ = (function () {
       delete ref_obj[ key ];
     }
   }
-  // END public method /_deleteAllObjKeys_/
+  // END Public method /deleteAllObjKeys/
 
-  // BEGIN public method /_fillTmplt_/
-  function fillTmplt ( arg_map ) {
-    var
-      input_str  = arg_map._input_str_,
-      lookup_map = arg_map._lookup_map_,
-      tmplt_rx   = arg_map._tmplt_rx_ || topCmap._tmplt_rx_
-      ;
+  // BEGIN Public method /fillTmplt/
+  fillTmplt = (function () {
 
     /*jslint unparam: true*/
-    function lookup_fn ( match, name ) {
-      var rv = name && lookup_map;
-      name[ vMap._split_ ]('.').forEach(
-        function( ename /*idx*/ ) { rv = rv && rv[ename]; }
+    function lookupFn ( match_str, lookup_name ) {
+      var 
+        lookup_map  = this,
+        return_data = lookup_name && lookup_map
+        ;
+      lookup_name[ vMap._split_ ]('.')[ vMap._forEach_ ](
+        function ( key_name ) {
+          return_data = return_data && return_data[ key_name ]; 
+        }
       );
-      return ( rv === __undef ) ? __blank : rv;
+      return ( return_data === __undef ) ? __blank : return_data;
     }
     /*jslint unparam: false*/
 
-    return input_str.replace( tmplt_rx, lookup_fn );
-  }
-  // END public method /_fillTmplt_/
+    function mainFn ( arg_map ) {
+      var
+        input_str  = arg_map._input_str_,
+        lookup_map = arg_map._lookup_map_,
+        tmplt_rx   = arg_map._tmplt_rx_ || topCmap._tmplt_rx_,
+        bound_fn   = lookupFn.bind( lookup_map )
+        ;
+      return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
+    }
 
-  // BEGIN public method /_getClockStr_/
+    return mainFn;
+  }());
+  // END Public method /fillTmplt/
+
+  // BEGIN Public method /getClockStr/
   // Given seconds, returns a HH:MM:SS clock
   function getClockStr ( sec ) {
     var
-      min_sec        = topCmap.min_sec,
+      min_sec        = topCmap._min_sec_,
       secs_int       = sec % min_sec,
-      min_int        = mathFloor( sec / min_sec ),
+      min_int        = __floor( sec / min_sec ),
       min_disp_int   = min_int % min_sec,
-      hr_int         = mathFloor( min_int / min_sec ),
+      hr_int         = __floor( min_int / min_sec ),
       clock_str
       ;
 
     clock_str = sprintf('%02d:%02d:%02d',hr_int, min_disp_int, secs_int);
     return clock_str;
   }
-  // END public method /_getClockStr_/
+  // END Public method /getClockStr/
 
-  // BEGIN public method /_getDateStr_/
+  // BEGIN Public method /getDateStr/
   function getDateStr ( date_data, do_time ) {
     var
       data_type = getVarType( date_data ),
@@ -303,11 +316,8 @@ hi._util_ = (function () {
       default : return __blank;
     }
 
-    //noinspection NestedFunctionCallJS
     year_int   = __Num( date_obj.getYear() ) + topCmap._offset_yr_;
-    //noinspection NestedFunctionCallJS
     mon_int    = __Num( date_obj.getMonth() ) + __1;
-    //noinspection NestedFunctionCallJS
     day_int    = __Num( date_obj.getDate() );
 
     // no time requested
@@ -316,11 +326,8 @@ hi._util_ = (function () {
     }
 
     // time requested
-    //noinspection NestedFunctionCallJS
     hr_int   = __Num( date_obj.getHours()   );
-    //noinspection NestedFunctionCallJS
     min_int  = __Num( date_obj.getMinutes() );
-    //noinspection NestedFunctionCallJS
     sec_int  = __Num( date_obj.getSeconds() );
 
     return sprintf(
@@ -329,9 +336,9 @@ hi._util_ = (function () {
       hr_int, min_int, sec_int
     );
   }
-  // END public method /_getDateStr_/
+  // END Public method /getDateStr/
 
-  // BEGIN Public method /_getDeepMapVal_/
+  // BEGIN Public method /getDeepMapVal/
   // Purpose   : Get a deep map attribute value
   // Example   : _getDeepMapVal_( { foo : { bar : 1 }}, [ 'foo','bar' ] );
   //             Returns '1'
@@ -349,7 +356,7 @@ hi._util_ = (function () {
       key;
 
     while ( __true ) {
-      key = path_list.shift();
+      key = path_list[ vMap._shift_ ]();
       if ( key === __undef ){ break; }
 
       if ( ! walk_map[ nMap._hasOwnProp_ ]( key ) ){
@@ -360,9 +367,9 @@ hi._util_ = (function () {
     if ( is_good ) { return walk_map; }
     return __undef;
   }
-  // END utility /getDeepMapVal/
-  //
-  // BEGIN public method /_getListAttrIdx_/
+  // END Public method /getDeepMapVal/
+
+  // BEGIN Public method /getListAttrIdx/
   function getListAttrIdx ( list, key_name, key_val ) {
     var
       attr_count = list[ vMap._length_ ],
@@ -379,49 +386,47 @@ hi._util_ = (function () {
     }
     return found_idx;
   }
-  // END public method /_getListAttrIdx_/
+  // END Public method /getListAttrIdx/
 
-  // BEGIN public method /_getListDiff_/
+  // BEGIN Public method /getListDiff/
   function getListDiff ( first_list, second_list ){
-    return first_list.filter(
+    return first_list[ vMap._filter_ ](
       function ( idx ) {
         return second_list[ vMap._indexOf_ ]( idx ) === __n1;
       }
     );
   }
-  // END public method /_getListDiff_/
+  // END Public method /getListDiff/
 
-  // BEGIN public method /getLogUtilObj/
-  function getLogUtilObj () {
-    return logUtilObj;
-  }
-  // END public method /getlogUtilObj/
+  // BEGIN Public method /getLogUtilObj/
+  function getLogUtilObj () { return logUtilObj; }
+  // END Public method /getlogUtilObj/
 
-  // BEGIN public method /_getNumSign_/
+  // BEGIN Public method /getNumSign/
   function getNumSign ( n ){
     if ( isNaN(n) ){ return NaN; }
     if ( n < __0 ){ return __n1; }
     return __1;
   }
-  // END public method /_getNumSign_/
+  // END Public method /getNumSign/
 
-  // BEGIN public method /_makeArgList_/
-  // Converts an argument object into a real array...
+  // BEGIN Public method /makeArgList/
+  // Converts provided argument object into a real array
   //
   function makeArgList ( arg_obj ) {
     // The following technique is around 3x faster than
     //   return Array.prototype.slice.call( arg_obj );
     // See https://github.com/petkaantonov/bluebird/wiki/\
     //   Optimization-killers#3-managing-arguments
-    var arg_list = [], i;
-    for ( i = 0; i < arguments.length; i++ ) {
+    var arg_list = [], arg_count = arg_obj.length, i;
+    for ( i = 0; i < arg_count; i++ ) {
       arg_list[i] = arguments[i];
     }
     return arg_list;
   }
-  // END public method /_makeArgList_/
+  // END Public method /makeArgList/
 
-  // BEGIN public method /_makeCommaNumStr_/
+  // BEGIN Public method /makeCommaNumStr/
   function makeCommaNumStr ( num ){
     var s_num;
     if ( num > topCmap._10k_ ){
@@ -432,9 +437,9 @@ hi._util_ = (function () {
     s_num = __Str(parseInt( num, nMap._10_ ));
     return s_num.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
   }
-  // END public method /_makeCommaNumStr_/
+  // END Public method /makeCommaNumStr/
 
-  // BEGIN public method /_makeError_/
+  // BEGIN Public method /makeError/
   // Purpose: a convenience wrapper to create an error object
   // Arguments:
   //   * name_text - the error name
@@ -451,9 +456,9 @@ hi._util_ = (function () {
 
     return error;
   }
-  // END public method /_makeError_/
+  // END Public method /makeError/
 
-  // BEGIN public method /_makeGuidStr_/
+  // BEGIN Public method /makeGuidStr/
   makeGuidStr = (function (){
     /*jslint bitwise: true*/
     function makePart () {
@@ -473,9 +478,9 @@ hi._util_ = (function () {
 
     return mainFn;
   }());
-  // END public method /_makeGuidStr_/
+  // END Public method /makeGuidStr/
 
-  // BEGIN public method /_makeListPlus_/
+  // BEGIN Public method /makeListPlus/
   // Returns an array with much desired methods:
   //   * remove_val(value) : remove element that matches
   //     the provided value. Returns number of elements
@@ -531,9 +536,9 @@ hi._util_ = (function () {
     }
     return mainFn;
   }());
-  // END public method /_makeListPlus_/
+  // END Public method /makeListPlus/
 
-  // BEGIN public method /_makeSeenMap_/
+  // BEGIN Public method /makeSeenMap/
   // Purpose: Convert an array into a map keyed by the array values.
   // Assign value to all keys.
   function makeSeenMap ( list, value ){
@@ -544,13 +549,14 @@ hi._util_ = (function () {
     }
     return seen_map;
   }
-  // END public method /_makeSeenMap_/
+  // END Public method /makeSeenMap/
 
-  // BEGIN public method /_makeTimeStamp_/
+  // BEGIN Public method /makeTimeStamp/
+  // TODO: consider using Date.now()
   function makeTimeStamp () { return +new Date(); }
-  // END public method /_makeTimeStamp_/
+  // END Public method /makeTimeStamp/
 
-  // BEGIN public method /_makeUcFirstStr_/
+  // BEGIN Public method /makeUcFirstStr/
   function makeUcFirstStr ( s_input_in ) {
     var
       s_input = __Str(s_input_in),
@@ -559,20 +565,17 @@ hi._util_ = (function () {
 
     return f + s_input.substr( __1 );
   }
-  // END public method /_makeUcFirstStr_/
+  // END Public method /makeUcFirstStr/
 
-  // BEGIN public method object /makeMapUtilObj/
+  // BEGIN Public method /makeMapUtilObj/
   // Purpose: Creates a thread-safe map utility object
   //   useful to streamlining list.map() functions and
   //   avoiding nested functions.
-  //
   // Example:
   // 1. Create a map_util object:
   // var map_util_obj = makeMapUtilObj();
-  //
   // 2. (optional) Set any data your map function will use.
   //   map_util_obj._setArgList_ = [ name_list ];
-  //
   // 3. Create a function that for element of the array.
   // function mapUtil_renameFn ( field_data, idx, list, setArgList ) {
   //   var
@@ -587,14 +590,11 @@ hi._util_ = (function () {
   //
   // 3. Set the function in the utility
   //   map_util_obj._setMapFn_( mapUtil_renameFn );
-  //
   // 4. Initialize the result map.  You need this pointer.
   //   result_map = {};
   //   map_util_obj._setResultMap_( result_map );
-  //
   // 5. Invoke the map function:
   //   my_list.map( map_util_obj._invokeFn_ );
-  //
   // 6. result_map will now contain the results!
   //
   // This is an excellent example of how a closure creates
@@ -680,7 +680,7 @@ hi._util_ = (function () {
   }
   // END public method /pollFunction/
 
-  // BEGIN Public method /_setConfigMap_/
+  // BEGIN Public method /setConfigMap/
   // Purpose: Common code to set configs in feature modules
   // Arguments:
   //   * _input_map_   - map of key-values to set in config
@@ -717,9 +717,9 @@ hi._util_ = (function () {
       }
     }
   }
-  // END Public method /_setConfigMap_/
+  // END Public method /setConfigMap/
 
-  // BEGIN Public method /_setDeepMapVal_/
+  // BEGIN Public method /setDeepMapVal/
   // Purpose   : Set a deep map attribute value
   // Example   : _setDeepMapVal_( {}, [ 'foo','bar' ], 'hello' );
   // Arguments :

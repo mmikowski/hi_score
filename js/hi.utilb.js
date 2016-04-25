@@ -25,16 +25,17 @@ hi._utilb_ = (function ( $ ) {
     nMap     = hi._nMap_,
     vMap     = hi._vMap_,
 
-    __Str    = vMap._String_,
-    __blank  = vMap._blank_,
-    __0      = nMap._0_,
-    __1      = nMap._1_,
+    __Str     = vMap._String_,
+    __blank   = vMap._blank_,
+    __docRef  = vMap._docRef_,
+    __false   = vMap._false_,
+    __null    = vMap._null_,
 
-    configMap = {
-      regex_tmplt        : /%!%([^%]+)%!%/g,
-      regex_site         : new RegExp('\/\/([^/]*)\/'),
-      regex_clean1       : /^[#!]*/,
-      regex_clean2       : /\?[^?]*$/,
+    __0       = nMap._0_,
+    __1       = nMap._1_,
+    __10      = nMap._10_,
+
+    topCmap = {
       regex_encode_html  : /[&"'><]/g,
       regex_encode_noamp : /["'><]/g,
       html_encode_map    : {
@@ -44,21 +45,18 @@ hi._utilb_ = (function ( $ ) {
         '>' : '&#62;',
         '<' : '&#60;'
       },
-      day_ms  : 86400000,
-      popup_delay_ms : 200,
-      min_sec : 60,
-      offset_yr : 1900,
-      half_num : 0.5
     },
-
     onBufferReady
     ;
 
-  configMap.h_encode_noamp = $.extend({},configMap.html_encode_map);
-  delete configMap.h_encode_noamp['&'];
+  topCmap.encode_noamp_map = $.extend({},topCmap.html_encode_map);
+  delete topCmap.encode_noamp_map['&'];
   // ================== END MODULE SCOPE VARIABLES ====================
 
   // ===================== BEGIN UTILITY METHODS ======================
+  // ====================== END UTILITY METHODS =======================
+
+  // ===================== BEGIN PUBLIC METHODS =======================
   // BEGIN public method /decodeHtml/
   // Decodes HTML entities in a browser-friendly way
   // See http://stackoverflow.com/questions/1912501/\
@@ -78,12 +76,12 @@ hi._utilb_ = (function ( $ ) {
       ;
 
     if ( do_exclude_amp ) {
-      lookup_map = configMap.h_encode_noamp;
-      regex      = configMap.regex_encode_noamp;
+      lookup_map = topCmap.encode_noamp_map;
+      regex      = topCmap.regex_encode_noamp;
     }
     else {
-      lookup_map = configMap.html_encode_map;
-      regex      = configMap.regex_encode_html;
+      lookup_map = topCmap.html_encode_map;
+      regex      = topCmap.regex_encode_html;
     }
     return source_str.replace(regex,
       function ( match /*, name */ ) { return lookup_map[match] || __blank; }
@@ -119,11 +117,11 @@ hi._utilb_ = (function ( $ ) {
     var input_val = $elem.val().trim();
     if ( $elem.attr('data-type') === 'number' ) {
       input_val = parseFloat(input_val);
-      if ( isNaN( input_val) ) { input_val = null; }
+      if ( isNaN( input_val) ) { input_val = __null; }
     }
     else if ( $elem.attr('data-type') === 'integer' ) {
-      input_val = parseInt (input_val, 10);
-      if ( isNaN( input_val) ) { input_val = null; }
+      input_val = parseInt (input_val, __10);
+      if ( isNaN( input_val) ) { input_val = __null; }
     }
     else if ( $elem.attr('data-type') === 'string' ) {
       if ( input_val === __blank ) { input_val = null; }
@@ -131,7 +129,6 @@ hi._utilb_ = (function ( $ ) {
     return input_val;
   }
   // END public method /fixInputByType/
-
 
   // BEGIN public method /getFormMap/
   function getFormMap ( $elem ) {
@@ -215,7 +212,7 @@ hi._utilb_ = (function ( $ ) {
       ;
 
     for ( idx = __0; idx < value_list[ vMap._length_ ]; idx++ ) {
-      match_str   = __Str(value_list[ idx ]);
+      match_str      = __Str(value_list[ idx ]);
       title_text     = title_map[ match_str ]
         || hi._util_._makeUcFirst_( match_str );
       html_str   += '<option value="' + match_str + '"';
@@ -226,88 +223,9 @@ hi._utilb_ = (function ( $ ) {
     }
     return html_str;
   }
-  // END public method /makeOptionHtml/
+  // END Public method /_makeOptionHtml_/
 
-  // BEGIN public method /makeQueryMap/
-  // Example   : query_map _makeQueryMap_( '?is_fake_data=true,config=dev' )
-  //   Returns query_map = { is_fake_data : true, config : 'dev' };
-  // Summary   :
-  //   Given a query argument string, parses it into key-value pairs
-  //   and returns a map.
-  // Arguments :
-  //   arg_query_str - an URI encoded query string
-  // Output    :
-  //   A map of query arguments
-  // Throws    : none
-  //
-  function makeQueryMap ( arg_query_str ) {
-    var
-      query_str, param_list, i, list_count,
-      bit_list, key, val,
-      param_map = {};
-
-    if ( ! arg_query_str ) { return {}; }
-
-    query_str = arg_query_str[ vMap._indexOf_ ]( '?' ) === __0
-      ? arg_query_str.slice( __1 )
-      : arg_query_str.slice( __0 );
-
-    param_list = query_str.split( /\&amp;|\&/ );
-
-    list_count = param_list[ vMap._length_ ];
-
-    BIT:
-      for ( i = __0; i < list_count; i++ ) {
-        bit_list = param_list[ i ].split( '=' );
-        key = bit_list[ __0 ];
-        val = bit_list[ __1 ];
-
-        if ( ! key ) { continue BIT; }
-
-        key = decodeURIComponent( key );
-        if ( ! val ) {
-          param_map[ key ] = true;
-          continue BIT;
-        }
-
-        if ( val === 'true' ) {
-          param_map[ key ] = true;
-          continue BIT;
-        }
-
-        if ( val === 'false' ) {
-          param_map[ key ] = false;
-        }
-
-        val = decodeURIComponent( val );
-        param_map[ key ] = val;
-      }
-
-    return param_map;
-  }
-  // END public method /makeQueryMap/
-
-  // BEGIN public method /makeQueryStr/
-  //
-  // Purpose: Encodes key value pairs into a concatenated and encoded uri string
-  //
-  function makeQueryStr ( arg_param_map ) {
-    var
-      param_list = [],
-      param_str, param_key, param_val;
-
-    for ( param_str in arg_param_map ) {
-      if ( arg_param_map.hasOwnProperty( param_str ) ) {
-        param_key = encodeURIComponent( param_str );
-        param_val = encodeURIComponent( arg_param_map[ param_str ] );
-        param_list.push( param_key + '=' + param_val );
-      }
-    }
-    return param_list.join('&');
-  }
-  // END public method /makeQueryStr/
-
-  // BEGIN public method /makeRadioHtml/
+  // BEGIN Public method /_makeRadioHtml_/
   // Purpose: make a an array of checkboxes from a list
   //
   function makeRadioHtml (
@@ -341,44 +259,49 @@ hi._utilb_ = (function ( $ ) {
   // END public method /makeRadioHtml/
 
   // BEGIN public method /onBufferReady/
+  // Purpose : Executes a provided function only after the browser DOM
+  //           has been updated.
+  //
   onBufferReady = (function () {
     var
     // 10x10px transparent png
       blankImgStr  = __blank
         + 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoA AAAKCAYAAA'
         + 'CNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3'
-        + 'RJTUUH3woIAB8ceeNmxQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBD'
-        + 'hcAAAAOSURBVBjTY2AYBYMTAAABmgABC6KdHwAAAABJRU5ErkJggg==',
-      bodyEl;
+        + 'RJTUUH3woIAB8ceeNmxQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUF'
+        + 'eBDhcAAAAOSURBVBjTY2AYBYMTAAABmgABC6KdHwAAAABJRU5ErkJggg==',
+      bodyEl
+      ;
 
     function onBuf ( arg_fn ) {
       var img_el, s_obj;
 
       if ( ! bodyEl ) {
-        bodyEl = document.getElementsByTagName( 'body' )[__0];
-        if ( !bodyEl ) { return false; }
+        bodyEl = __docRef[ vMap.__getElsByTagName_ ]( vMap._body_ )[__0];
+        if ( ! bodyEl ) { return __false; }
       }
 
-      img_el         = new Image();
-      s_obj          = img_el.style;
-      s_obj.width    = '1px';
-      s_obj.height   = '1px';
-      s_obj.position = 'absolute';
-      s_obj.left     = '0';
-      s_obj.top      = '0';
+      img_el = new Image();
+      s_obj  = img_el.style;
 
-      img_el.onload = function () {
-        bodyEl.removeChild( img_el );
+      s_obj[ vMap._position_ ] = 'absolute';
+      s_obj[ vMap._left_     ] = '0';
+      s_obj[ vMap._top_      ] = '0';
+      s_obj[ vMap._width_    ] = '1px';
+      s_obj[ vMap._height_   ] = '1px';
+
+      img_el[ vMap._onload ] = function () {
+        bodyEl[ vMap._removeChild_]( img_el );
         arg_fn();
       };
-      bodyEl.appendChild( img_el );
-      img_el.src = blankImgStr;
+      bodyEl[ vMap._appendChild_ ]( img_el );
+      img_el[ vMap._src_ ] = blankImgStr;
     }
 
     return onBuf;
   }());
   // END public method /onBufferReady/
-  // ====================== END UTILITY METHODS =======================
+  // ======================= END PUBLIC METHODS =======================
 
   return {
     _decodeHtml_     : decodeHtml,
@@ -386,9 +309,7 @@ hi._utilb_ = (function ( $ ) {
     _fillForm_       : fillForm,
     _getFormMap_     : getFormMap,
     _makeOptionHtml_ : makeOptionHtml,
-    _makeQueryMap_   : makeQueryMap,
-    _makeQueryStr_   : makeQueryStr,
     _makeRadioHtml_  : makeRadioHtml,
-    _onBufferReady_  : onBufferReady,
+    _onBufferReady_  : onBufferReady
   };
 }( jQuery ));
