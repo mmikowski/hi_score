@@ -1,5 +1,5 @@
 /**
- *   hi.util.js
+ *   xhi.util.js
  *   Utilities which do not require jQuery or a browser
  *
  *   Michael S. Mikowski - mike.mikowski@gmail.com
@@ -15,15 +15,15 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global sprintf, hi */
+/*global sprintf, xhi */
 
-hi._util_ = (function () {
+xhi._util_ = (function () {
   'use strict';
   // ================= BEGIN MODULE SCOPE VARIABLES ===================
   //noinspection MagicNumberJS
   var
-    vMap      = hi._vMap_,
-    nMap      = hi._nMap_,
+    vMap      = xhi._vMap_,
+    nMap      = xhi._nMap_,
 
     __j2str   = vMap._JSON_[ vMap._stringify_],
     __jparse  = vMap._JSON_[ vMap._parse_ ],
@@ -46,7 +46,7 @@ hi._util_ = (function () {
       _10k_       : 10000,
       _min_sec_   : 60,
       _offset_yr_ : 1900,
-      _tmplt_rx_  : /%!%([^%]+)%!%/g
+      _tmplt_rx_  : /\{([^\{\}]+[^\\])\}/g
     },
 
     getVarType,  logUtilObj,
@@ -254,10 +254,8 @@ hi._util_ = (function () {
   }
   // END Public method /deleteAllObjKeys/
 
-  // BEGIN Public method /fillTmplt/
+  // BEGIN public method /fillTmplt/
   fillTmplt = (function () {
-
-    /*jslint unparam: true*/
     function lookupFn ( match_str, lookup_name ) {
       var 
         lookup_map  = this,
@@ -270,7 +268,6 @@ hi._util_ = (function () {
       );
       return ( return_data === __undef ) ? __blank : return_data;
     }
-    /*jslint unparam: false*/
 
     function mainFn ( arg_map ) {
       var
@@ -418,7 +415,7 @@ hi._util_ = (function () {
     //   return Array.prototype.slice.call( arg_obj );
     // See https://github.com/petkaantonov/bluebird/wiki/\
     //   Optimization-killers#3-managing-arguments
-    var arg_list = [], arg_count = arg_obj.length, i;
+    var arg_list = [], arg_count = arg_obj[ vMap._length_ ], i;
     for ( i = 0; i < arg_count; i++ ) {
       arg_list[i] = arguments[i];
     }

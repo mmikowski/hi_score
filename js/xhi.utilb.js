@@ -1,5 +1,5 @@
 /**
- *   hi.utilb.js
+ *   xhi.utilb.js
  *   Utilities which require a browser and jQuery
  *
  *   Michael S. Mikowski - mike.mikowski@gmail.com
@@ -8,26 +8,24 @@
  *   MIT License
  *
 */
-
 /*jslint         browser : true, continue : true,
    devel : true,  indent : 2,      maxerr : 50,
   newcap : true,   nomen : true, plusplus : true,
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global jQuery, sprintf, hi */
+/*global jQuery, sprintf, xhi */
 
-hi._utilb_ = (function ( $ ) {
+xhi._utilb_ = (function ( $ ) {
   'use strict';
   // ================= BEGIN MODULE SCOPE VARIABLES ===================
-  //noinspection MagicNumberJS
   var
-    nMap     = hi._nMap_,
-    vMap     = hi._vMap_,
+    nMap     = xhi._nMap_,
+    vMap     = xhi._vMap_,
 
     __Str     = vMap._String_,
     __blank   = vMap._blank_,
-    __docRef  = vMap._docRef_,
+    __docRef  = document,
     __false   = vMap._false_,
     __null    = vMap._null_,
 
@@ -44,7 +42,7 @@ hi._utilb_ = (function ( $ ) {
         "'" : '&#39;',
         '>' : '&#62;',
         '<' : '&#60;'
-      },
+      }
     },
     onBufferReady
     ;
@@ -134,7 +132,7 @@ hi._utilb_ = (function ( $ ) {
   function getFormMap ( $elem ) {
     var form_map = {};
 
-    $elem.find( 'input:not(:disabled):not(.hi-_x_ignore_):not(td  > input)' )
+    $elem.find( 'input:not(:disabled):not(.xhi-_x_ignore_):not(td  > input)' )
       .each( function() {
         var $input = $( this ), input_val;
         if ( ! this.name ) { return; }
@@ -214,7 +212,7 @@ hi._utilb_ = (function ( $ ) {
     for ( idx = __0; idx < value_list[ vMap._length_ ]; idx++ ) {
       match_str      = __Str(value_list[ idx ]);
       title_text     = title_map[ match_str ]
-        || hi._util_._makeUcFirst_( match_str );
+        || xhi._util_._makeUcFirstStr_( match_str );
       html_str   += '<option value="' + match_str + '"';
       if ( match_str === target_str ) {
         html_str += ' selected="selected"';
@@ -242,7 +240,7 @@ hi._utilb_ = (function ( $ ) {
     for ( idx = __0; idx < match_array[ vMap._length_ ]; idx++ ) {
       match_str   = match_array[ idx ];
       title_text     = title_map[ match_str ]
-        || hi._util_._makeUcFirst_( match_str );
+        || xhi._util_._makeUcFirstStr_( match_str );
       html_str
         +='<label>'
           + '<input type="radio" name="'
@@ -277,7 +275,7 @@ hi._utilb_ = (function ( $ ) {
       var img_el, s_obj;
 
       if ( ! bodyEl ) {
-        bodyEl = __docRef[ vMap.__getElsByTagName_ ]( vMap._body_ )[__0];
+        bodyEl = __docRef[ vMap._getElsByTagName_ ]( vMap._body_ )[__0];
         if ( ! bodyEl ) { return __false; }
       }
 
@@ -290,7 +288,7 @@ hi._utilb_ = (function ( $ ) {
       s_obj[ vMap._width_    ] = '1px';
       s_obj[ vMap._height_   ] = '1px';
 
-      img_el[ vMap._onload ] = function () {
+      img_el[ vMap._onload_ ] = function () {
         bodyEl[ vMap._removeChild_]( img_el );
         arg_fn();
       };
@@ -301,7 +299,6 @@ hi._utilb_ = (function ( $ ) {
     return onBuf;
   }());
   // END public method /onBufferReady/
-  // ======================= END PUBLIC METHODS =======================
 
   return {
     _decodeHtml_     : decodeHtml,
@@ -312,4 +309,5 @@ hi._utilb_ = (function ( $ ) {
     _makeRadioHtml_  : makeRadioHtml,
     _onBufferReady_  : onBufferReady
   };
+  // ======================= END PUBLIC METHODS =======================
 }( jQuery ));

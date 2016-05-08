@@ -1,36 +1,29 @@
 /*
- * hi.js - common root module
+ * xhi.js - common root module
 */
-
 /*jslint         browser : true, continue : true,
    devel : true,  indent : 2,      maxerr : 50,
   newcap : true,   nomen : true, plusplus : true,
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global hi:true */
+/*global xhi:true */
 
-var hi = ( function () {
+var xhi = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   //noinspection MagicNumberJS
   var
     __Object  = Object,
-    // work around for jslint
-    __emptyFn = function () {
-      //noinspection UnnecessaryReturnStatementJS
-      return;
-    },
     vMap = {
       // We will need these eventually ...
       // __typeof = function ( a ) { return typeof a; },
       // __Array  = Array,
       // __Date   = Date,
-      // __String = String,
       _100p_        : '100%',
       _String_      : String,
       _Number_      : Number,
-      _docRef_      : document,
+      _JSON_        : JSON,
 
       _activeElement_   : 'activeElement',
       _add_             : 'add',
@@ -47,8 +40,10 @@ var hi = ( function () {
       _block_           : 'block',
       _call_            : 'call',
       _carouscroll_     : 'carouscroll',
+      _children_        : 'children',
       _clone_           : 'clone',
       _closest_         : 'closest',
+      _concat_          : 'concat',
       _css_             : 'css',
       _cssText_         : 'cssText',
       _createElement_   : 'createElement',
@@ -94,16 +89,19 @@ var hi = ( function () {
       _makeDsObj_       : 'makeDragScrollObj',
       _null_            : null,
       _on_              : 'on',
+      _onload_          : 'onload',
       _outerHeight_     : 'outerHeight',
       _outerWidth_      : 'outerWidth',
       _offset_          : 'offset',
       _parent_          : 'parent',
+      _parse_           : 'parse',
       _pop_             : 'pop',
       _prepend_         : 'prepend',
       _prop_            : 'prop',
       _push_            : 'push',
       _remove_          : 'remove',
       _removeClass_     : 'removeClass',
+      _removeChild_     : 'removeChild',
       _right_           : 'right',
       _scroll_          : 'scroll',
       _scrollHeight_    : 'scrollHeight',
@@ -115,6 +113,7 @@ var hi = ( function () {
       _slice_           : 'slice',
       _splice_          : 'splice',
       _split_           : 'split',
+      _stringify_       : 'stringify',
       _style_           : 'style',
       _target_          : 'target',
       _text_            : 'text',
@@ -130,7 +129,7 @@ var hi = ( function () {
       _trigger_         : 'trigger',
       _true_            : true,
       _unbind_          : 'unbind',
-      _undef_           : __emptyFn(),
+      _undef_           : window.undefined,
       _unshift_         : 'unshift',
       _udragstart_      : 'udragstart',
       _udragmove_       : 'udragmove',
@@ -186,8 +185,11 @@ var hi = ( function () {
     }
     ;
   // ================== END MODULE SCOPE VARIABLES =====================
+
+  // ====================== BEGIN PUBLIC METHODS =======================
   return {
     _nMap_ : nMap,
     _vMap_ : vMap
   };
+  // ======================= END PUBLIC METHODS ========================
 }());

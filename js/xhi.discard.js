@@ -1,5 +1,5 @@
 /**
- *   hi.discard.js - discarded utilities
+ *   xhi.discard.js - discarded utilities
  *
  *   These may come in handy again.
  *
@@ -9,22 +9,21 @@
  *   MIT License
  *
 */
-
 /*jslint         browser : true, continue : true,
    devel : true,  indent : 2,      maxerr : 50,
   newcap : true,   nomen : true, plusplus : true,
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global jQuery, hi */
+/*global jQuery, xhi */
 
-hi._discard_ = (function ( $ ) {
+xhi._discard_ = (function ( $ ) {
   'use strict';
   // ================= BEGIN MODULE SCOPE VARIABLES ===================
   //noinspection MagicNumberJS
   var
-    nMap     = hi._nMap_,
-    vMap     = hi._vMap_,
+    nMap     = xhi._nMap_,
+    vMap     = xhi._vMap_,
 
     __blank  = vMap._blank_,
     __0      = nMap._0_,

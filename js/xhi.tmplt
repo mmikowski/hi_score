@@ -1,0 +1,38 @@
+/*
+ * hi.shell.js
+ * Shell module for web site
+ *
+ * Michael S. Mikowski - mike.mikowski@gmail.com
+*/
+/*jslint       browser : true, continue : true,
+  devel : true, indent : 2,      maxerr : 50,
+ newcap : true,  nomen : true, plusplus : true,
+ regexp : true, sloppy : true,     vars : false,
+  white : true,   todo : true,  unparam : true
+*/
+/*global jQuery, msm */
+
+hi._shell_ = (function ($) {
+// ================= BEGIN MODULE SCOPE VARIABLES ====================
+  'use strict';
+  var
+    vMap = msm._vMap_,
+    nMap = msm._nMap_,
+    
+    __0     = nMap._0_,
+    __1     = nMap._1_,
+    __blank = vMap._blank_,
+
+    topCmap = {}
+    ;
+// ================== END MODULE SCOPE VARIABLES =====================
+// ======================= BEGIN DOM METHODS =========================
+// ======================== END DOM METHODS ==========================
+// ====================== BEGIN EVENT HANDLERS =======================
+// ======================= END EVENT HANDLERS ========================
+// ====================== BEGIN PUBLIC METHODS =======================
+  function initModule () { }
+
+  return { _initModule_ : initModule };
+// ======================= END PUBLIC METHODS ========================
+}(jQuery));
