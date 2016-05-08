@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# To deploy this script:
+# cd ../.git/hooks
+# ln -s ../../bin/git-hook_pre-commit pre-commit
+#
+# See http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
+# exit when encountering undeclared variables
+set -u;
+
+# exit when encountering a non-zero exit status
+# (disabled here as we do are own checking)
+# set -e;
+
+# Adjust for links
+LINK_PATH=$(readlink -f -- "${0}");
+BIN_PATH=$( cd ${LINK_PATH%/*} && echo $PWD ); # absolute path to this bin
+ROOT_DIR=$(cd "$(git rev-parse --show-toplevel)" && pwd );
+
+# TODO later: JSLINT_EXEC="${ROOT_DIR}/node_modules/jslint/bin/jslint.js";
+JSLINT_TMP_FILE="/tmp/git-pre-commit.tmp";
+JSLINT_EXEC=$(which jslint);
+if [ ! -x "${JSLINT_EXEC}" ]; then
+  echo "JSLint not found."
+  echo "Please execute the following command: "
+  # TODO later: echo "  cd ${ROOT_DIR}; npm install ";
+  echo "  npm install -g jslint";
+  exit 1;
+fi
+
+echo;
+echo "JSLint test of updated or new *.js files ...";
+echo "  We ignore vendor libraries in .../vendor/...";
+git status \
+  | grep '.js$' \
+  | grep -v '/vendor/' \
+  | grep -v 'pcss._ex004_.js' \
+  | grep '^\s\+\(modified\|new file\)' \
+  | cut -d ":" -f 2- \
+  | while read LINE; do
+      echo -en "  Check ${LINE}: ... "
+      CHECK_STR=$(${JSLINT_EXEC} ${LINE});
+      CHECK_CODE=$?;
+      echo "${CHECK_CODE}"
+      if [ "${CHECK_CODE}" -gt 0 ]; then
+        echo "${LINE} JSLint check FAILED";
+        echo "${CHECK_STR}";
+      else
+        echo "pass";
+      fi;
+    done \
+  | tee "${JSLINT_TMP_FILE}";
+
+echo "JSLint test complete";
+if grep -s 'FAIL' "${JSLINT_TMP_FILE}"; then
+  echo "FAIL: JSLint checks did not pass.";
+  echo "  Please use jslint to test the problem files and ";
+  echo "  commit again once they pass the check.";
+  rm "${JSLINT_TMP_FILE}";
+  exit 1;
+fi
+
+rm "${JSLINT_TMP_FILE}";
+echo;
+
+
+## TODO
+# MAKEDOC_EXEC="${ROOT_DIR}/bin/make_doc";
+# if [ ! -x "${MAKEDOC_EXEC}" ]; then
+#   echo "bin/make_doc not found.  This file should exist.";
+#   echo "Please check your installation.";
+#   exit 1;
+# fi
+# echo "Updating HTML documents from MarkDown";
+# "${MAKEDOC_EXEC}";
+
+## TODO
+# NODE_EXEC=$(which node);
+# NODEUNIT_EXEC="${ROOT_DIR}/node_modules/nodeunit/bin/nodeunit";
+# NODEUNIT_FILE="${ROOT_DIR}/client/test/t.js";
+# if [ ! -x "${NODE_EXEC}" ]; then
+#   echo "Node not found.  Please install nodejs and ensure it is "
+#   echo " found in your PATH environment variable."
+#   exit 1;
+# fi
+# 
+# if [ ! -x "${NODEUNIT_EXEC}" ]; then
+#   echo "Nodeunit not found.  Please run "
+#   echo "cd ${ROOT_DIR}; npm install"
+#   echo
+# fi
+# 
+# if [ ! -x "${NODEUNIT_FILE}" ]; then
+#   echo "Nodeunit file ${NODEUNIT_FILE}" not found."
+#   echo "Please ensure it exists."
+#   echo
+#   exit 1;
+# fi
+
+
+## TODO
+# echo "Running regression tests";
+# "${NODEUNIT_EXEC}" "${NODEUNIT_FILE}"
+# exit $?;
+
