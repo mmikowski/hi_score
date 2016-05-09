@@ -174,13 +174,13 @@ xhi._util_ = (function () {
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
-  // BEGIN public method /cloneData/
+  // BEGIN Public method /cloneData/
   function cloneData ( data ) {
     return __jparse( __j2str( data ) );
   }
-  // END public method /cloneData/
+  // END Public method /cloneData/
 
-  // BEGIN public method /getVarType/
+  // BEGIN Public method /getVarType/
   // Returns '_Function_', '_Object_', '_Array_',
   // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
   //
@@ -254,7 +254,7 @@ xhi._util_ = (function () {
   }
   // END Public method /deleteAllObjKeys/
 
-  // BEGIN public method /fillTmplt/
+  // BEGIN Public method /fillTmplt/
   fillTmplt = (function () {
     function lookupFn ( match_str, lookup_name ) {
       var 
@@ -626,9 +626,9 @@ xhi._util_ = (function () {
       _invokeFn_     : invokeFn
     };
   }
-  // END public method /makeMapUtilObj/
+  // END Public method /makeMapUtilObj/
 
-  // BEGIN  public method /mergeMap/
+  // BEGIN Public method /mergeMap/
   function mergeMap( base_map, extend_map ) {
     var
       tmp_map   = cloneData( extend_map ),
@@ -641,9 +641,9 @@ xhi._util_ = (function () {
     }
     return base_map;
   }
-  // END  public method /mergeMap/
+  // END Public method /mergeMap/
 
-  // BEGIN public method /pollFunction/
+  // BEGIN Public method /pollFunction/
   // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
   //   either <arg_count> number of times or until the function
   //   returns false, whichever comes first.
@@ -675,7 +675,7 @@ xhi._util_ = (function () {
 
     pollIt();
   }
-  // END public method /pollFunction/
+  // END Public method /pollFunction/
 
   // BEGIN Public method /setConfigMap/
   // Purpose: Common code to set configs in feature modules

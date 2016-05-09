@@ -55,16 +55,16 @@ xhi._utilb_ = (function ( $ ) {
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
-  // BEGIN public method /decodeHtml/
+  // BEGIN Public method /decodeHtml/
   // Decodes HTML entities in a browser-friendly way
   // See http://stackoverflow.com/questions/1912501/\
   //   unescape-html-entities-in-javascript
   function decodeHtml ( str ) {
     return $('<div></div>').html(str||__blank).text();
   }
-  // END public method /decodeHtml/
+  // END Public method /decodeHtml/
 
-  // BEGIN public method /encodeHtml/
+  // BEGIN Public method /encodeHtml/
   // This is single pass encoder for html entities and handles
   // an arbitrary number of characters to encode
   function encodeHtml ( arg_str, do_exclude_amp ) {
@@ -85,9 +85,9 @@ xhi._utilb_ = (function ( $ ) {
       function ( match /*, name */ ) { return lookup_map[match] || __blank; }
     );
   }
-  // END public method /encodeHtml/
+  // END Public method /encodeHtml/
 
-  // BEGIN public method /fillForm/
+  // BEGIN Public method /fillForm/
   function fillForm ( $form, value_map ) {
     $.each( value_map, function ( k, v ) {
       $form.find('[name=' + k + ']').each(function() {
@@ -108,9 +108,9 @@ xhi._utilb_ = (function ( $ ) {
       });
     });
   }
-  // END public method /fillForm/
+  // END Public method /fillForm/
 
-  // BEGIN public method /fixInputByType/
+  // BEGIN Public method /fixInputByType/
   function fixInputByType ($elem) {
     var input_val = $elem.val().trim();
     if ( $elem.attr('data-type') === 'number' ) {
@@ -126,9 +126,9 @@ xhi._utilb_ = (function ( $ ) {
     }
     return input_val;
   }
-  // END public method /fixInputByType/
+  // END Public method /fixInputByType/
 
-  // BEGIN public method /getFormMap/
+  // BEGIN Public method /getFormMap/
   function getFormMap ( $elem ) {
     var form_map = {};
 
@@ -156,7 +156,7 @@ xhi._utilb_ = (function ( $ ) {
       }
     );
 
-    // process array properties
+    // Process array properties
     // For each table, get all the trs in tbody.  For each tr, if there's only
     // 1 column, push the value into the array.  Else, build an object that
     // represents each row and push the object into the array.
@@ -198,9 +198,9 @@ xhi._utilb_ = (function ( $ ) {
 
     return form_map;
   }
-  // END public method /getFormMap/
+  // END Public method /getFormMap/
 
-  // BEGIN public method /makeOptionHtml/
+  // BEGIN Public method /makeOptionHtml/
   function makeOptionHtml ( arg_match_str, value_list, arg_title_map ) {
     var
       html_str    = __blank,
@@ -254,9 +254,9 @@ xhi._utilb_ = (function ( $ ) {
     }
     return html_str;
   }
-  // END public method /makeRadioHtml/
+  // END Public method /makeRadioHtml/
 
-  // BEGIN public method /onBufferReady/
+  // BEGIN Public method /onBufferReady/
   // Purpose : Executes a provided function only after the browser DOM
   //           has been updated.
   //
@@ -298,7 +298,7 @@ xhi._utilb_ = (function ( $ ) {
 
     return onBuf;
   }());
-  // END public method /onBufferReady/
+  // END Public method /onBufferReady/
 
   return {
     _decodeHtml_     : decodeHtml,

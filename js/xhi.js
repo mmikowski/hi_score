@@ -15,6 +15,8 @@ var xhi = (function () {
   //noinspection MagicNumberJS
   var
     __Object  = Object,
+    __docRef  = document,
+
     vMap = {
       // We will need these eventually ...
       // __typeof = function ( a ) { return typeof a; },
@@ -51,6 +53,7 @@ var xhi = (function () {
       _data_            : 'data',
       _disabled_        : 'disabled',
       _display_         : 'display',
+      _document_        : __docRef,
       _done_            : 'done',
       _each_            : 'each',
       _empty_           : 'empty',
@@ -102,6 +105,7 @@ var xhi = (function () {
       _remove_          : 'remove',
       _removeClass_     : 'removeClass',
       _removeChild_     : 'removeChild',
+      _replace_         : 'replace',
       _right_           : 'right',
       _scroll_          : 'scroll',
       _scrollHeight_    : 'scrollHeight',
@@ -129,7 +133,7 @@ var xhi = (function () {
       _trigger_         : 'trigger',
       _true_            : true,
       _unbind_          : 'unbind',
-      _undef_           : window.undefined,
+      _undef_           : undefined,
       _unshift_         : 'unshift',
       _udragstart_      : 'udragstart',
       _udragmove_       : 'udragmove',
