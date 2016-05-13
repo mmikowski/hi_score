@@ -15,7 +15,6 @@ var xhi = (function () {
   //noinspection MagicNumberJS
   var
     __Object  = Object,
-    __docRef  = document,
 
     vMap = {
       // We will need these eventually ...
@@ -25,6 +24,7 @@ var xhi = (function () {
       _100p_        : '100%',
       _String_      : String,
       _Number_      : Number,
+      _Object_      : __Object,
       _JSON_        : JSON,
 
       _activeElement_   : 'activeElement',
@@ -53,7 +53,6 @@ var xhi = (function () {
       _data_            : 'data',
       _disabled_        : 'disabled',
       _display_         : 'display',
-      _document_        : __docRef,
       _done_            : 'done',
       _each_            : 'each',
       _empty_           : 'empty',
@@ -94,6 +93,7 @@ var xhi = (function () {
       _on_              : 'on',
       _onload_          : 'onload',
       _outerHeight_     : 'outerHeight',
+      _outerHTML_       : 'outerHTML',
       _outerWidth_      : 'outerWidth',
       _offset_          : 'offset',
       _parent_          : 'parent',
@@ -103,6 +103,7 @@ var xhi = (function () {
       _prop_            : 'prop',
       _push_            : 'push',
       _remove_          : 'remove',
+      _removeAttr_      : 'removeAttr',
       _removeClass_     : 'removeClass',
       _removeChild_     : 'removeChild',
       _replace_         : 'replace',
@@ -197,3 +198,14 @@ var xhi = (function () {
   };
   // ======================= END PUBLIC METHODS ========================
 }());
+
+// Node support
+try { xhi._vMap_._document = document; }
+catch( e1 ) { 
+  try { 
+    xhi._vMap_._document_ = global;
+    global.xhi = xhi;
+    console.warn( 'node...' );
+  }
+  catch( e2 ) { throw '_not_a_browser_or_node_'; }
+}

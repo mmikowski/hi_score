@@ -15,7 +15,7 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global sprintf, xhi */
+/*global xhi */
 
 xhi._util_ = (function () {
   'use strict';
@@ -171,6 +171,21 @@ xhi._util_ = (function () {
     };
   }());
   // END define logUtilObj singleton
+
+  // BEGIN Public method /makePadNumStr/
+  function makePadNumStr( num, count ) {
+    var
+      str = __Str( num ),
+      zero_count = count - str.length
+      ;
+
+    while ( zero_count > 0 ) { 
+      str = '0' + str;
+      zero_count--;
+    }
+    return str;
+  } 
+  // END Public method /makePadNumStr/
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
@@ -287,16 +302,22 @@ xhi._util_ = (function () {
   // Given seconds, returns a HH:MM:SS clock
   function getClockStr ( sec ) {
     var
-      min_sec        = topCmap._min_sec_,
-      secs_int       = sec % min_sec,
-      min_int        = __floor( sec / min_sec ),
-      min_disp_int   = min_int % min_sec,
-      hr_int         = __floor( min_int / min_sec ),
-      clock_str
+      min_sec      = topCmap._min_sec_,
+      sec_int      = sec % min_sec,
+      min_raw_int = __floor( sec / min_sec ),
+      min_int      = min_raw_int % min_sec,
+      hrs_int      = __floor( min_raw_int / min_sec ),
+      mns          = makePadNumStr,
+
+      time_list
       ;
 
-    clock_str = sprintf('%02d:%02d:%02d',hr_int, min_disp_int, secs_int);
-    return clock_str;
+    time_list = [ 
+      mns( hrs_int, 2 ),
+      mns( min_int, 2 ),
+      mns( sec_int, 2 )
+    ];
+    return time_list[ vMap._join_ ](':');
   }
   // END Public method /getClockStr/
 
@@ -304,34 +325,51 @@ xhi._util_ = (function () {
   function getDateStr ( date_data, do_time ) {
     var
       data_type = getVarType( date_data ),
-      date_obj, year_int, mon_int,
-      day_int, hr_int, min_int, sec_int;
+      mns       = makePadNumStr,
 
-    switch ( data_type ) {
-      case '_Number_' : date_obj = new Date( date_data ); break;
-      case '_Object_' : date_obj = date_data; break;
-      default : return __blank;
+      date_obj, yrs_int, mon_int, day_int,
+      hrs_int, min_int, sec_int,
+
+      date_list, date_str,
+      time_list, time_str
+      ;
+
+    if ( data_type === '_Object_' ) {
+      date_obj = date_data;
     }
+    else if ( data_type === '_Number_' ) {
+      date_obj = new Date(); // new Date( ms ) does not work in node 4.4.3
+      date_obj.setTime( date_data );
+    }
+    else { return __blank; }
 
-    year_int   = __Num( date_obj.getYear() ) + topCmap._offset_yr_;
-    mon_int    = __Num( date_obj.getMonth() ) + __1;
-    day_int    = __Num( date_obj.getDate() );
+    yrs_int = __Num( date_obj.getYear()  ) + topCmap._offset_yr_;
+    mon_int = __Num( date_obj.getMonth() ) + __1;
+    day_int = __Num( date_obj.getDate()  );
+
+    date_list = [
+      mns( yrs_int, 4 ),
+      mns( mon_int, 2 ),
+      mns( day_int, 2 )
+    ];
+    date_str = date_list[ vMap._join_ ]('-');
 
     // no time requested
-    if ( ! do_time ) {
-      return sprintf( '%4d-%02d-%02d', year_int, mon_int, day_int);
-    }
+    if ( ! do_time ) { return date_str; }
 
     // time requested
-    hr_int   = __Num( date_obj.getHours()   );
+    hrs_int  = __Num( date_obj.getHours()   );
     min_int  = __Num( date_obj.getMinutes() );
     sec_int  = __Num( date_obj.getSeconds() );
 
-    return sprintf(
-      '%4d-%02d-%02d %02d:%02d:%02d',
-      year_int, mon_int, day_int,
-      hr_int, min_int, sec_int
-    );
+    time_list = [
+      mns( hrs_int, 2 ),
+      mns( min_int, 2 ),
+      mns( sec_int, 2 )
+    ];
+    time_str = time_list[ vMap._join_ ](':');
+
+    return date_str + ' ' + time_str;
   }
   // END Public method /getDateStr/
 
@@ -432,7 +470,7 @@ xhi._util_ = (function () {
     }
     //noinspection NestedFunctionCallJS
     s_num = __Str(parseInt( num, nMap._10_ ));
-    return s_num.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    return s_num[ vMap._replace_ ](/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
   }
   // END Public method /makeCommaNumStr/
 
@@ -771,6 +809,7 @@ xhi._util_ = (function () {
     _makeGuidStr_      : makeGuidStr,
     _makeListPlus_     : makeListPlus,
     _makeMapUtilObj_   : makeMapUtilObj,
+    _makePadNumStr_    : makePadNumStr,
     _makeSeenMap_      : makeSeenMap,
     _makeTimeStamp_    : makeTimeStamp,
     _makeUcFirstStr_   : makeUcFirstStr,
