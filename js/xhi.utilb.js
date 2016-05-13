@@ -14,7 +14,7 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global jQuery, sprintf, xhi */
+/*global jQuery, xhi */
 
 xhi._utilb_ = (function ( $ ) {
   'use strict';
