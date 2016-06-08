@@ -40,7 +40,8 @@ xhi._util_ = (function () {
     __1       = nMap._1_,
     __n1      = nMap._n1_,
 
-    __floor = Math.floor,
+    __floor   = vMap._fnGetFloor_,
+    __random  = vMap._fnGetRandom_,
 
     topCmap = {
       _10k_       : 10000,
@@ -179,12 +180,12 @@ xhi._util_ = (function () {
       zero_count = count - str.length
       ;
 
-    while ( zero_count > 0 ) { 
+    while ( zero_count > __0 ) {
       str = '0' + str;
       zero_count--;
     }
     return str;
-  } 
+  }
   // END Public method /makePadNumStr/
   // ====================== END UTILITY METHODS =======================
 
@@ -258,7 +259,7 @@ xhi._util_ = (function () {
   // BEGIN Public method /deleteAllObjKeys/
   function deleteAllObjKeys ( ref_obj ) {
     var
-      key_list  = vMap._getKeys_( ref_obj ),
+      key_list  = vMap._fnGetKeyList_( ref_obj ),
       key_count = key_list[ vMap._length_ ],
       i, key;
 
@@ -271,14 +272,15 @@ xhi._util_ = (function () {
 
   // BEGIN Public method /fillTmplt/
   fillTmplt = (function () {
+    //noinspection JSUnusedLocalSymbols
     function lookupFn ( match_str, lookup_name ) {
-      var 
+      var
         lookup_map  = this,
         return_data = lookup_name && lookup_map
         ;
       lookup_name[ vMap._split_ ]('.')[ vMap._forEach_ ](
         function ( key_name ) {
-          return_data = return_data && return_data[ key_name ]; 
+          return_data = return_data && return_data[ key_name ];
         }
       );
       return ( return_data === __undef ) ? __blank : return_data;
@@ -312,7 +314,7 @@ xhi._util_ = (function () {
       time_list
       ;
 
-    time_list = [ 
+    time_list = [
       mns( hrs_int, 2 ),
       mns( min_int, 2 ),
       mns( sec_int, 2 )
@@ -454,8 +456,8 @@ xhi._util_ = (function () {
     // See https://github.com/petkaantonov/bluebird/wiki/\
     //   Optimization-killers#3-managing-arguments
     var arg_list = [], arg_count = arg_obj[ vMap._length_ ], i;
-    for ( i = 0; i < arg_count; i++ ) {
-      arg_list[i] = arguments[i];
+    for ( i = __0; i < arg_count; i++ ) {
+      arg_list[i] = arg_obj[i];
     }
     return arg_list;
   }
@@ -498,7 +500,8 @@ xhi._util_ = (function () {
     /*jslint bitwise: true*/
     function makePart () {
       //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
-      return (((__1+Math.random())*0x10000)|0).toString(16).substring(__1);
+      return ((( __1+__random() ) * 0x10000 )|__0
+        )[ vMap._toString_ ](16).substring(__1);
     }
     /*jslint bitwise: false*/
 
@@ -555,7 +558,10 @@ xhi._util_ = (function () {
       var return_list;
       if ( input_list && Array.isArray( input_list ) ){
         if ( input_list.remove_val ){
-          console.warn('The array appears to already have listPlus capabilities');
+          logUtilObj._logIt_(
+            '_warn_',
+            'The array appears to already have listPlus capabilities'
+          );
           return input_list;
         }
         return_list = input_list;
@@ -670,7 +676,7 @@ xhi._util_ = (function () {
   function mergeMap( base_map, extend_map ) {
     var
       tmp_map   = cloneData( extend_map ),
-      key_list  = vMap._getKeys_( tmp_map ),
+      key_list  = vMap._fnGetKeyList_( tmp_map ),
       key_count = key_list[ vMap._length_ ],
       i, tmp_key;
     for ( i = __0; i < key_count; i++ ) {
@@ -730,7 +736,7 @@ xhi._util_ = (function () {
       settable_map = arg_map._settable_map_,
       config_map   = arg_map._config_map_,
 
-      key_list     = vMap._getKeys_( input_map ),
+      key_list     = vMap._fnGetKeyList_( input_map ),
       key_count    = key_list[ vMap._length_ ],
 
       i, key, error

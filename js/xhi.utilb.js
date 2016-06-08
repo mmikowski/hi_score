@@ -22,6 +22,8 @@ xhi._utilb_ = (function ( $ ) {
   var
     nMap     = xhi._nMap_,
     vMap     = xhi._vMap_,
+    cssKmap  = xhi._cssKmap_,
+    cssVmap  = xhi._cssVmap_,
 
     __Str     = vMap._String_,
     __blank   = vMap._blank_,
@@ -282,11 +284,11 @@ xhi._utilb_ = (function ( $ ) {
       img_el = new Image();
       s_obj  = img_el.style;
 
-      s_obj[ vMap._position_ ] = 'absolute';
-      s_obj[ vMap._left_     ] = '0';
-      s_obj[ vMap._top_      ] = '0';
-      s_obj[ vMap._width_    ] = '1px';
-      s_obj[ vMap._height_   ] = '1px';
+      s_obj[ cssKmap._position_ ] = cssVmap._absolute_;
+      s_obj[ cssKmap._left_     ] = cssVmap._0_;
+      s_obj[ cssKmap._top_      ] = cssVmap._0_;
+      s_obj[ cssKmap._width_    ] = '1px';
+      s_obj[ cssKmap._height_   ] = '1px';
 
       img_el[ vMap._onload_ ] = function () {
         bodyEl[ vMap._removeChild_]( img_el );

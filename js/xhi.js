@@ -7,7 +7,7 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global xhi:true */
+/*global xhi:true, pcss */
 
 var xhi = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
@@ -15,7 +15,7 @@ var xhi = (function () {
   //noinspection MagicNumberJS
   var
     __Object  = Object,
-
+    __Math    = Math,
     vMap = {
       // We will need these eventually ...
       // __typeof = function ( a ) { return typeof a; },
@@ -24,40 +24,44 @@ var xhi = (function () {
       _100p_        : '100%',
       _String_      : String,
       _Number_      : Number,
+      _Math_        : __Math,
       _Object_      : __Object,
       _JSON_        : JSON,
 
+      _fnGetKeyList_    : __Object.keys,
+      _fnGetFloor_      : __Math.floor,
+      _fnGetRandom_     : __Math.random,
+      _fnGetRound_      : __Math.round,
+
       _activeElement_   : 'activeElement',
-      _add_             : 'add',
       _addClass_        : 'addClass',
+      _add_             : 'add',
       _ajax_            : 'ajax',
-      _append_          : 'append',
       _appendChild_     : 'appendChild',
       _appendTo_        : 'appendTo',
+      _append_          : 'append',
       _apply_           : 'apply',
       _bind_            : 'bind',
+      _blank_           : '',
       _blur_            : 'blur',
       _body_            : 'body',
-      _blank_           : '',
-      _block_           : 'block',
       _call_            : 'call',
       _carouscroll_     : 'carouscroll',
       _children_        : 'children',
       _clone_           : 'clone',
       _closest_         : 'closest',
       _concat_          : 'concat',
-      _css_             : 'css',
-      _cssText_         : 'cssText',
       _createElement_   : 'createElement',
       _createTextNode_  : 'createTextNode',
+      _cssText_         : 'cssText',
+      _css_             : 'css',
       _data_            : 'data',
       _disabled_        : 'disabled',
-      _display_         : 'display',
       _done_            : 'done',
       _each_            : 'each',
       _empty_           : 'empty',
-      _extend_          : 'extend',
       _eq_              : 'eq',
+      _extend_          : 'extend',
       _fadeIn_          : 'fadeIn',
       _fadeOut_         : 'fadeOut',
       _fail_            : 'fail',
@@ -70,87 +74,82 @@ var xhi = (function () {
       _fromCharCode_    : 'fromCharCode',
       _getElsByTagName_ : 'getElementsByTagName',
       _get_             : 'get',
-      _getKeys_         : __Object.keys,
-      _id_              : 'id',
-      _index_           : 'index',
-      _indexOf_         : 'indexOf',
-      _innerHTML_       : 'innerHTML',
-      _innerText_       : 'innerText',
-      _hasOwnProp_      : 'hasOwnProperty',
       _hasClass_        : 'hasClass',
+      _hasOwnProp_      : 'hasOwnProperty',
       _head_            : 'head',
       _hide_            : 'hide',
       _html_            : 'html',
-      _height_          : 'height',
+      _id_              : 'id',
+      _indexOf_         : 'indexOf',
+      _index_           : 'index',
+      _innerHTML_       : 'innerHTML',
+      _innerText_       : 'innerText',
       _join_            : 'join',
-      _keyup_           : 'keyup',
       _keydown_         : 'keydown',
-      _left_            : 'left',
+      _keyup_           : 'keyup',
       _length_          : 'length',
-      _map_             : 'map',
       _makeDsObj_       : 'makeDragScrollObj',
+      _map_             : 'map',
       _null_            : null,
+      _off_             : 'off',
+      _offset_          : 'offset',
       _on_              : 'on',
       _onload_          : 'onload',
-      _outerHeight_     : 'outerHeight',
       _outerHTML_       : 'outerHTML',
+      _outerHeight_     : 'outerHeight',
       _outerWidth_      : 'outerWidth',
-      _offset_          : 'offset',
       _parent_          : 'parent',
       _parse_           : 'parse',
       _pop_             : 'pop',
       _prepend_         : 'prepend',
+      _preventDefault_  : 'preventDefault',
       _prop_            : 'prop',
+      _publish_         : 'publish',
       _push_            : 'push',
-      _remove_          : 'remove',
       _removeAttr_      : 'removeAttr',
-      _removeClass_     : 'removeClass',
       _removeChild_     : 'removeChild',
+      _removeClass_     : 'removeClass',
+      _remove_          : 'remove',
       _replace_         : 'replace',
-      _right_           : 'right',
-      _scroll_          : 'scroll',
+      _resize_          : 'resize',
       _scrollHeight_    : 'scrollHeight',
       _scrollLeft_      : 'scrollLeft',
       _scrollTop_       : 'scrollTop',
       _setAttribute_    : 'setAttribute',
       _shift_           : 'shift',
-      _show_            : 'show',
       _slice_           : 'slice',
       _splice_          : 'splice',
       _split_           : 'split',
+      _stopPropagation_ : 'stopPropagation',
       _stringify_       : 'stringify',
       _style_           : 'style',
+      _subscribe_       : 'subscribe',
       _target_          : 'target',
-      _text_            : 'text',
       _textContent_     : 'textContent',
+      _text_            : 'text',
       _text_css_        : 'text/css',
       _then_            : 'then',
-      _transitionend_   : 'transitionend',
-      _toggle_          : 'toggle',
-      _toggleClass_     : 'toggleClass',
-      _top_             : 'top',
       _toString_        : 'toString',
       _toUpperCase_     : 'toUpperCase',
+      _toggleClass_     : 'toggleClass',
+      _toggle_          : 'toggle',
+      _transitionend_   : 'transitionend',
       _trigger_         : 'trigger',
       _true_            : true,
+      _udragend_        : 'udragend',
+      _udragmove_       : 'udragmove',
+      _udragstart_      : 'udragstart',
+      _uheldend_        : 'uheldend',
+      _uheldmove_       : 'uheldmove',
+      _uheldstart_      : 'uheldstart',
       _unbind_          : 'unbind',
       _undef_           : undefined,
       _unshift_         : 'unshift',
-      _udragstart_      : 'udragstart',
-      _udragmove_       : 'udragmove',
-      _udragend_        : 'udragend',
-      _uheldstart_      : 'uheldstart',
-      _uheldmove_       : 'uheldmove',
-      _uheldend_        : 'uheldend',
       _utap_            : 'utap',
       _val_             : 'val',
-      _when_            : 'when',
-      _width_           : 'width',
-      _z_index_         : 'z-index',
-
-      // css psuedo selectors
-      _qfocus_      : ':focus'
+      _when_            : 'when'
     },
+
     nMap = {
       _n1000_  : -1000,
       _n4_     : -4,
@@ -187,25 +186,29 @@ var xhi = (function () {
       _3000_   : 3000,
       _4000_   : 4000,
       _5000_   : 5000
-    }
+    },
+    cssVmap, cssKmap
     ;
+
+  if ( pcss ) {
+    cssKmap = pcss._getCssKeyMap_();
+    cssVmap = pcss._getCssValMap_();
+  }
   // ================== END MODULE SCOPE VARIABLES =====================
 
   // ====================== BEGIN PUBLIC METHODS =======================
   return {
-    _nMap_ : nMap,
-    _vMap_ : vMap
+    _cssKmap_ : cssKmap,
+    _cssVmap_ : cssVmap,
+    _nMap_    : nMap,
+    _vMap_    : vMap
   };
   // ======================= END PUBLIC METHODS ========================
 }());
 
 // Node support
-try { xhi._vMap_._document = document; }
-catch( e1 ) { 
-  try { 
-    xhi._vMap_._document_ = global;
-    global.xhi = xhi;
-    console.warn( 'node...' );
-  }
+try { xhi._vMap_._window_ = window; xhi._vMap_._document_ = window.document; }
+catch( e1 ) {
+  try { xhi._vMap_._window_ = global; global.xhi = xhi; }
   catch( e2 ) { throw '_not_a_browser_or_node_'; }
 }
