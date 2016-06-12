@@ -1,12 +1,12 @@
 /**
- *   xhi.discard.js - discarded utilities
+ *    xhi.discard.js - discarded utilities
  *
- *   These may come in handy again.
+ *    These may come in handy again.
  *
- *   Michael S. Mikowski - mike.mikowski@gmail.com
- *   These are routines I have created and updated
- *   since 1998, with inspiration from around the web.
- *   MIT License
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    These are routines I have created and updated
+ *    since 1998, with inspiration from around the web.
+ *    MIT License
  *
 */
 /*jslint         browser : true, continue : true,

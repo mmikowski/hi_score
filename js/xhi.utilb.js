@@ -1,11 +1,11 @@
 /**
- *   xhi.utilb.js
- *   Utilities which require a browser and jQuery
+ *    xhi.utilb.js
+ *    Utilities which require a browser and jQuery
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
  *
- *   Michael S. Mikowski - mike.mikowski@gmail.com
- *   These are routines I have created and updated
- *   since 1998, with inspiration from around the web.
- *   MIT License
+ *    These are routines I have created and updated
+ *    since 1998, with inspiration from around the web.
+ *    MIT License
  *
 */
 /*jslint         browser : true, continue : true,
@@ -266,7 +266,7 @@ xhi._utilb_ = (function ( $ ) {
     var
     // 10x10px transparent png
       blankImgStr  = __blank
-        + 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoA AAAKCAYAAA'
+        + 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAA'
         + 'CNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3'
         + 'RJTUUH3woIAB8ceeNmxQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUF'
         + 'eBDhcAAAAOSURBVBjTY2AYBYMTAAABmgABC6KdHwAAAABJRU5ErkJggg==',

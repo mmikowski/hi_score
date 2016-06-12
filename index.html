@@ -15,7 +15,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- favicon -->
-  <link href="img/favicon.png" rel="shortcut icon">
+  <!-- TODO link href="img/favicon.png" rel="shortcut icon" -->
 
   <!-- stylesheets -->
   <link rel="stylesheet" href="css/xhi-fa-4-5-mod.css">
@@ -34,15 +34,15 @@
   <script src="js/xhi.utilb.js"></script>
   <script src="js/xhi.css_base.js"></script> 
   <script src="js/xhi.css_lb.js"></script> 
-  <script src="js/xhi.css_shell.js"></script>  
+  <!-- TODO script src="js/xhi.css_shell.js"></script -->  
   <script src="js/xhi.css.js"></script>
   <script src="js/xhi.lb.js"></script> 
   <script src="js/xhi.shell.js"></script>
-  <script>
-    $(function () {
-      xhi._shell_._initModule_();
-    }());
-  </script>
 </head>
 <body></body>
+<script>
+  $(function () {
+    xhi._shell_._initModule_( $('body') );
+  }());
+</script>
 </html>

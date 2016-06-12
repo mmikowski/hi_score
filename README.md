@@ -4,14 +4,16 @@ This is the set of libraries I use for SPA development.
 ## Overview
 There it is again. The new *hot* SPA framework that makes our current
 one obsolete.  Now we have to unlearn everything from the old and reinvest
-in the new *hotness*.  Some developers have spent far more time learning
-framework DSLs than pure JavaScript. Are we ready to get off that
-treadmill?
+in the new *hotness*. Some of us have spent far more time learning
+intricate framework DSLs than the JavaScript we need. Are we ready to get
+off that treadmill?
 
-[Do we really want an SPA framework?][7] If not, then **hi**\_**score**
-is here to help.  Our intention is to provide an ever improving set of
+[Do we really want an SPA framework?][7] If not, then `hi_score`
+is here to help. Our intention is to provide an ever improving set of
 best-in-class libraries that we control, instead of having a framework
-that controls us.
+that controls us.  We thought of calling it `low-score` or `under-dash`
+but thought we'd aim higher.
+
 
 ## Code Style
 We use the code style presented in the book book
@@ -22,24 +24,29 @@ prefix and suffix like `_this_` which makes them easy targets for compression.
 
 ## The Goal
 Provide an architecture guide, starter files, and best-in-class libraries
-recommended for SPA development.  This environment will progress as
+recommended for SPA development. This environment will progress as
 technology and support evolve.
 
 Key attributes:
 
+- Testable
 - Compressible
 - Flexible
 - Modern
+- Universal Fractal MVC
 - Tiny compared to most frameworks
-- Stability
-- Testability
-- High quality ensured by commit hook (regression tests and JSLint)
-- Fast, one-touch build system
+- Stable
+- Commit-hook enforce quality code (JSLint and regression test)
+- A fast, one-touch build system
 
 ## Status
-I am currently updating the libraries. It is not complete.
+I am currently updating the libraries. They are not complete.
 
 ## Third-pary libraries
+All third-party libraries are in `vendor` directories and retain
+their original names with a version number added.  We employ the
+following JS libraries:
+
 - [jQuery][0] DOM manipulation
 - [PowerCSS][1] JS-powered CSS
 - [jQuery Plugin: urianchor][2] SPA routing
@@ -48,9 +55,12 @@ I am currently updating the libraries. It is not complete.
 - [jQuery Plugin: event.dragscroll][5] Inertia scroll
 - [jQuery Plugin: debounce][6] Debounce (throttling)
 
+We also include webfonts.  We have a modified version of Font-Awesome 4.5
+and OpenSans. Check out the `font` directory for details.
 
 ## Compatibility
-Our baseline compatibility is IE9+.
+Our baseline compatibility is IE9+.  If you are targeting IE 8, you have our
+sympathy.
 
 ## Release Notes
 ### Copyright (c)

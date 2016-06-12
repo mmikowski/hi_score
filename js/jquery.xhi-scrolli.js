@@ -1,8 +1,8 @@
-/*
- * jquery.xhi-scrolli.js
- * Provides scrolli content indicators
+/**
+ *    jquery.xhi-scrolli.js
+ *    Provides scrolli content indicators
  *
- * Michael S. Mikowski - mike.mikowski@gmail.com
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true,  indent : 2,      maxerr : 50,

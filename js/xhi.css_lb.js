@@ -1,8 +1,8 @@
-/*
- * xhi.css_lb.js
- * Litebox (_lb_) class for JS-driven CSS
+/**
+ *    xhi.css_lb.js
+ *    Litebox (_lb_) class for JS-driven CSS
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint        browser : true, continue : true,
   devel : true,  indent : 2,      maxerr : 50,
@@ -17,12 +17,11 @@ xhi._css_lb_ = (function () {
   var
     topCmap =  {
       _selector_list_ : [
-        {_selector_str_ : '.xhi-_lb_',
+        {_selector_str_ : '.xhi-_lb_abs_, xhi-_lb_fixed_',
           _rule_map_ : {
             _z_index_       : [ '36' ],
             _display_       : '_block_',
             _opacity_       : '_0_',
-            _position_      : '_absolute_',
             _border_        : [[ '_d25rem_', '_solid_','_hex_area_hover_' ]],
             _border_radius_ : '_d5rem_',
             _box_shadow_    : '_shadow_02_',
@@ -31,26 +30,41 @@ xhi._css_lb_ = (function () {
             _transition_    : [ 'opacity .5s ease' ]
           }
         },
-        { _selector_str_ : '.xhi-_lb_.xhi-_x_active_',
+        {_selector_str_ : '.xhi-_lb_abs_',
+          _rule_map_ : { _position_ : '_absolute_' }
+        },
+        {_selector_str_ : '.xhi-_lb_fixed_',
+          _rule_map_ : { _position_ : '_fixed_' }
+        },
+        { _selector_str_ : '.xhi-_lb_abs_.xhi-_x_active_,'
+          + 'xhi-_lb_fixed_.xhi-_x_active_',
           _rule_map_ : { _opacity_    : '_1_' }
         },
-        { _selector_str_ : '.xhi-_lb_mask_',
+        { _selector_str_ : '.xhi-_lb_mask_abs_,.xhi-_lb_mask_fixed_',
           _rule_map_ : {
             _z_index_    : [ '35' ],
             _display_    : '_block_',
             _opacity_    : '_0_',
-            _position_   : '_fixed_',
             _top_        : '_0_',
             _left_       : '_0_',
             _bottom_     : '_0_',
             _right_      : '_0_',
             _overflow_   : '_hidden_',
             _background_ : [ '#888' ],
-            _cursor_     : '_pointer_',
             _transition_ : [ 'opacity .5s ease' ]
           }
         },
-        { _selector_str_ : '.xhi-_lb_mask_.xhi-_x_active_',
+        { _selector_str_ : '.xhi-_lb_mask_abs_',
+          _rule_map_     : { _position_ : '_absolute_' }
+        },
+        { _selector_str_ : '.xhi-_lb_mask_fixed_',
+          _rule_map_     : {
+            _cursor_   : '_pointer_',
+            _position_ : '_fixed_'
+          }
+        },
+        { _selector_str_ : '.xhi-_lb_mask_abs_.xhi-_x_active_,'
+            + '.xhi-_lb_mask_fixed_.xhi-_x_active_',
           _rule_map_ : { _opacity_    : [ '.625' ] }
         },
         { _selector_str_ : '.xhi-_lb_content_',
@@ -67,6 +81,36 @@ xhi._css_lb_ = (function () {
             _font_family_: '_font_family_awesome_',
             _cursor_     : '_pointer_'
           }
+        },
+        { _selector_str_ : '@keyframes spinIt {'
+        + '100%{transform:rotate(360deg);}}'
+        },
+        { _selector_str_ : '.xhi-_lb_spin_abs_,xhi-_lb_spin_fixed_',
+          _rule_map_     : {
+            _display_     : '_none_',
+            _top_         : '_50p_',
+            _left_        : '_50p_',
+            _margin_top_  : ['-2rem'],
+            _margin_left_ : ['-2rem'],
+            _height_      : '_4rem_',
+            _line_height_ : '_4rem_',
+            _font_size_   : '_4rem_',
+            _width_       : '_4rem_',
+            _text_align_  : '_center_',
+            _font_family_ : '_font_family_awesome_',
+            _animation_   : ['spinIt 1s linear infinite'],
+            _z_index_     : ['50']
+          }
+        },
+        { _selector_str_ : '.xhi-_lb_spin_abs_.xhi-_x_active_,'
+            + '.xhi-_lb_spin_fixed_.xhi-_x_active_',
+          _rule_map_     : { _display_ : '_block_' }
+        },
+        { _selector_str_ : '.xhi-_lb_spin_abs_',
+          _rule_map_     : { _position_ : '_absolute_' }
+        },
+        { _selector_str_ : '.xhi-_lb_spin_fixed_',
+          _rule_map_     : { _position_ : '_fixed_' }
         }
       ]
     }

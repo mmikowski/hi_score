@@ -1,5 +1,6 @@
-/*
- * xhi.js - common root module
+/**
+ *    xhi.js - common root module
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
    devel : true,  indent : 2,      maxerr : 50,
@@ -117,6 +118,7 @@ var xhi = (function () {
       _scrollTop_       : 'scrollTop',
       _setAttribute_    : 'setAttribute',
       _shift_           : 'shift',
+      _show_            : 'show',
       _slice_           : 'slice',
       _splice_          : 'splice',
       _split_           : 'split',

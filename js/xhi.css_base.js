@@ -1,9 +1,8 @@
-/*
- * xhi.css_base.js
- * Base class resources JS-driven CSS
- *
- * Michael S. Mikowski - mike.mikowski@gmail.com
- */
+/**
+ *    xhi.css_base.js
+ *    Base class resources JS-driven CSS
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
+*/
 /*jslint       browser : true, continue : true,
   devel : true, indent : 2,      maxerr : 50,
  newcap : true,  nomen : true, plusplus : true,
@@ -17,9 +16,6 @@ xhi._css_base_ = (function () {
   var
     topCmap = {
       _global_mixin_map_ : {
-        _3d75rem_ : '3.75rem',
-        _5rem_    : '5rem',
-        _5d5rem_  : '5.5rem',
         _6rem_    : '6rem',
 
         _spc_em_00_ : '.375em',  // 06px intra-group
@@ -59,75 +55,8 @@ xhi._css_base_ = (function () {
         _trans_long_          : 'all .5s ease'
       },
       _theme_map_list_ : [
-        { _palette_name_       : 'dark-slate',
-          _logo_url_           : 'url(app/img/xhi-logo-white.png)',
-          _signin_url_         : 'url(app/img/xhi-signin-white.png)',
-          _rgba_shadow_01_     : 'rgba(0,32,64,.450)',
-          _rgba_shadow_02_     : 'rgba(0,32,64,.405)',
-          _rgba_shadow_03_     : 'rgba(0,32,64,.365)',
-          _rgba_shadow_04_     : 'rgba(0,32,64,.328)',
-          _rgba_shadow_05_     : 'rgba(0,32,64,.295)',
-          _rgba_shadow_06_     : 'rgba(0,32,64,.266)',
-          _rgba_shadow_07_     : 'rgba(0,32,64,.239)',
-          _rgba_shadow_08_     : 'rgba(0,32,64,.215)',
-          _rgba_shadow_09_     : 'rgba(0,32,64,.194)',
-
-          // Area color
-          _hex_accent_         : '#97acc7',
-          _hex_accent_dk_      : '#6a7a8f',
-          _hex_accent_lt_      : '#c3d1e3',
-
-          _hex_area_           : '#fafafa', // default background,
-          _hex_area_hover_     : '#ffffff', // full-bright
-          _hex_area_accent_    : '#eaeef4', // box background
-          _hex_area_core_      : '#dadde4', // chart core
-          _hex_area_crit_      : '#a8304c', // crit  &#xf29c; &#xf29d;
-          _hex_txt_crit_       : '#a8304c',
-          _hex_area_major_     : '#ee446c', // major &#xf29a; &#xf29b;
-          _hex_txt_major_      : '#ee446c',
-          _hex_area_minor_     : '#f0a5b4', // minor &#xf298; &#xf299;
-          _hex_txt_minor_      : '#f0a5b4',
-          _hex_area_info_      : '#41b7be', // info  &#xf296; &#xf297;
-          _hex_txt_info_       : '#41b7be',
-          _hex_area_closed_    : '#9ca8b8', // all closed icons
-          _hex_txt_closed_     : '#9ca8b8',
-
-          _hex_frame_          : '#3c4653', // header + footer
-          _hex_frame_lt_       : '#50627a', // header + footer hover
-          _hex_frame_dk_       : '#2b333c', // lh menu
-          _hex_frame_xdk_      : '#000000', // lh menu - _x_select_
-
-          _hex_area_mid_       : '#9098a2',
-          _hex_area_mid_dk_    : '#787f87',
-          _hex_area_mid_lt_    : '#acb6c2',
-          _hex_area_mid_xlt_   : '#d0dceb',
-
-          // Text color
-          _hex_txt_            : '#3c4653', // document font
-          _hex_txt_dk_         : '#2b333c',
-          _hex_txt_lt_         : '#4d5a6b',
-
-          _hex_txt_inv_        : '#9098a2',
-          _hex_txt_inv_dk_     : '#787f87',
-          _hex_txt_inv_lt_     : '#acb6c2',
-
-          _hex_placeholder_    : '#787f87',
-
-          // Link color
-          _hex_link_           : '#00939a', // link on both lt and dk bkg
-          _hex_link_dk_        : '#00686d', // hover on lt bkg
-          _hex_link_fade_      : '#a2c4c9', // faded link color
-          _hex_link_lt_        : '#54eef7', // hover on dk bkg
-
-          // Button color
-          _hex_btn_area_       : '#00939a', // button bkg
-          _hex_btn_area_hover_ : '#0b848a', // button hover bkg
-          _hex_btn_txt_        : '#f7f7f7', // button text
-          _hex_btn_txt_hover_  : '#ffffff'
-        },
-        { _palette_name_       : 'black-blue',
+        { _palette_name_       : 'backInBlack',
           _logo_url_           : 'url(app/img/xhi-logo-black.png)',
-          _signin_url_         : 'url(app/img/xhi-signin-white.png)',
           _rgba_shadow_01_     : 'rgba(192,222,255,.450)',
           _rgba_shadow_02_     : 'rgba(192,222,255,.405)',
           _rgba_shadow_03_     : 'rgba(192,222,255,.365)',
@@ -143,35 +72,24 @@ xhi._css_base_ = (function () {
           _hex_accent_         : '#4e7585',
           _hex_accent_lt_      : '#385966',
 
-          _hex_area_           : '#16181a', // default background
-          _hex_area_hover_     : '#000000', // full-bright
-          _hex_area_accent_    : '#22282a', // box background
-          _hex_area_core_      : '#32383a', // chart core
+          _hex_area_           : '#16181a',
+          _hex_area_hover_     : '#000000',
+          _hex_area_accent_    : '#22282a',
+          _hex_area_core_      : '#32383a',
 
-          _hex_area_crit_      : '#8a0e2b', // crit  &#xf29c; &#xf29d;
-          _hex_txt_crit_       : '#db1644',
-          _hex_area_major_     : '#b83251', // major &#xf29a; &#xf29b;
-          _hex_txt_major_      : '#ff4570',
-          _hex_area_minor_     : '#d45b77', // minor &#xf298; &#xf299;
-          _hex_txt_minor_      : '#ff6d8f',
-          _hex_area_info_      : '#41b7be', // info  &#xf296; &#xf297;
-          _hex_txt_info_       : '#6d9bad',
-          _hex_area_closed_    : '#334952', // all closed icons
-          _hex_txt_closed_     : '#6691a3',
-
-          _hex_frame_          : '#acb9c3', // header + footer
-          _hex_frame_lt_       : '#94a5b2', // header + footer hover
-          _hex_frame_dk_       : '#cdccd4', // lh menu
-          _hex_frame_xdk_      : '#d8e8f5', // lh menu - _x_select_
+          _hex_frame_          : '#acb9c3',
+          _hex_frame_lt_       : '#94a5b2',
+          _hex_frame_dk_       : '#cdccd4',
+          _hex_frame_xdk_      : '#d8e8f5',
 
           _hex_area_mid_       : '#5d676f',
           _hex_area_mid_lt_    : '#3d4a54',
           _hex_area_mid_dk_    : '#657685',
           _hex_area_mid_xlt_   : '#393f44',
 
-          // Text color -
+          // Text color
           _hex_txt_dk_         : '#c3ccd4',
-          _hex_txt_            : '#acb9c3', // document font
+          _hex_txt_            : '#acb9c3',
           _hex_txt_lt_         : '#94a5b2',
 
           _hex_txt_inv_dk_     : '#788087',
@@ -181,10 +99,10 @@ xhi._css_base_ = (function () {
           _hex_placeholder_    : '#878078',
 
           // Link color
-          _hex_link_           : '#598cc0', // link on both lt and dk bkg
-          _hex_link_dk_        : '#7fb5ed', // hover on lt bkg
-          _hex_link_fade_      : '#4b576b', // faded link on color
-          _hex_link_lt_        : '#3e5e96', // hover on dk bkg
+          _hex_link_           : '#598cc0',
+          _hex_link_dk_        : '#7fb5ed',
+          _hex_link_fade_      : '#4b576b',
+          _hex_link_lt_        : '#3e5e96',
 
           // Button color
           _hex_btn_area_       : '#598cc0', // button bkg
@@ -192,139 +110,6 @@ xhi._css_base_ = (function () {
           _hex_btn_txt_        : '#16181a', // button text
           _hex_btn_txt_hover_  : '#000000'
         },
-        { _palette_name_       : 'warm-red',
-          _logo_url_           : 'url(app/img/xhi-logo-black.png)',
-          _signin_url_         : 'url(app/img/xhi-signin-white.png)',
-          _rgba_shadow_01_     : 'rgba(255,222,192,.450)',
-          _rgba_shadow_02_     : 'rgba(255,222,192,.405)',
-          _rgba_shadow_03_     : 'rgba(255,222,192,.365)',
-          _rgba_shadow_04_     : 'rgba(255,222,192,.328)',
-          _rgba_shadow_05_     : 'rgba(255,222,192,.295)',
-          _rgba_shadow_06_     : 'rgba(255,222,192,.266)',
-          _rgba_shadow_07_     : 'rgba(255,222,192,.239)',
-          _rgba_shadow_08_     : 'rgba(255,222,192,.215)',
-          _rgba_shadow_09_     : 'rgba(255,222,192,.194)',
-
-          // Area color  ====
-          _hex_accent_         : '#695349',
-          _hex_accent_dk_      : '#ad9b6d',
-          _hex_accent_lt_      : '#3c3e16',
-
-          _hex_area_           : '#1a1816', // default background
-          _hex_area_hover_     : '#000000', // full-bright
-          _hex_area_accent_    : '#2a2822', // box background
-          _hex_area_core_      : '#3a3832', // chart core
-
-          _hex_area_crit_      : '#8a0e2b', // crit  &#xf29c; &#xf29d;
-          _hex_txt_crit_       : '#db1644',
-          _hex_area_major_     : '#b83251', // major &#xf29a; &#xf29b;
-          _hex_txt_major_      : '#ff4570',
-          _hex_area_minor_     : '#d45b77', // minor &#xf298; &#xf299;
-          _hex_txt_minor_      : '#ff6d8f',
-          _hex_area_info_      : '#41b7be', // info  &#xf296; &#xf297;
-          _hex_txt_info_       : '#6d9bad',
-          _hex_area_closed_    : '#334952', // all closed icons
-          _hex_txt_closed_     : '#6691a3',
-
-          _hex_frame_          : '#c3b9ac', // header + footer
-          _hex_frame_lt_       : '#b2a594', // header + footer hover
-          _hex_frame_dk_       : '#d4ccc3', // lh menu
-          _hex_frame_xdk_      : '#c3b9ac', // lh menu - _x_select_
-
-          _hex_area_mid_       : '#6f675d',
-          _hex_area_mid_lt_    : '#54393d',
-          _hex_area_mid_dk_    : '#878078',
-          _hex_area_mid_xlt_   : '#2f2314',
-
-          // Text color
-          _hex_txt_            : '#c3b9ac', // document font
-          _hex_txt_dk_         : '#d4ccc3',
-          _hex_txt_lt_         : '#b2a594',
-
-          _hex_txt_inv_        : '#6f675d',
-          _hex_txt_inv_dk_     : '#878078',
-          _hex_txt_inv_lt_     : '#53493d',
-
-          _hex_placeholder_    : '#878078',
-
-          // Link color
-          _hex_link_           : '#dc615a', // link on both lt and dk bkg
-          _hex_link_dk_        : '#eaa09b', // hover on lt bkg
-          _hex_link_fade_      : '#a86460', // faded link on color
-          _hex_link_lt_        : '#ab1108', // hover on dk bkg
-
-          // Button color
-          _hex_btn_area_       : '#be4841', // button bkg
-          _hex_btn_area_hover_ : '#ff3730', // button hover bkg
-          _hex_btn_txt_        : '#080808', // button text
-          _hex_btn_txt_hover_  : '#000'
-        },
-        { _palette_name_       : 'franks-pizza',
-          _logo_url_           : 'url(app/img/xhi-logo-pizza.png?v=2)',
-          _signin_url_         : 'url(app/img/xhi-signin-white.png)',
-          _rgba_shadow_01_     : 'rgba(64,32,0,.450)',
-          _rgba_shadow_02_     : 'rgba(64,32,0,.405)',
-          _rgba_shadow_03_     : 'rgba(64,32,0,.365)',
-          _rgba_shadow_04_     : 'rgba(64,32,0,.328)',
-          _rgba_shadow_05_     : 'rgba(64,32,0,.295)',
-          _rgba_shadow_06_     : 'rgba(64,32,0,.266)',
-          _rgba_shadow_07_     : 'rgba(64,32,0,.239)',
-          _rgba_shadow_08_     : 'rgba(64,32,0,.215)',
-          _rgba_shadow_09_     : 'rgba(64,32,0,.194)',
-
-          // Area color
-          _hex_accent_         : '#aa8844',
-          _hex_accent_dk_      : '#886622',
-          _hex_accent_lt_      : '#bb9955',
-
-          _hex_area_           : '#ecffe1', // default background
-          _hex_area_hover_     : '#ffffff', // full-bright
-          _hex_area_accent_    : '#daefce', // box background
-          _hex_area_core_      : '#d1e6c4', // chart core
-          _hex_area_crit_      : '#a8304c', // crit  &#xf29c; &#xf29d;
-          _hex_txt_crit_       : '#a8304c',
-          _hex_area_major_     : '#ee446c', // major &#xf29a; &#xf29b;
-          _hex_txt_major_      : '#ee446c',
-          _hex_area_minor_     : '#f0a5b4', // minor &#xf298; &#xf299;
-          _hex_txt_minor_      : '#f0a5b4',
-          _hex_area_info_      : '#41b7be', // info  &#xf296; &#xf297;
-          _hex_txt_info_       : '#41b7be',
-          _hex_area_closed_    : '#9ca8b8', // all closed icons
-          _hex_txt_closed_     : '#9ca8b8',
-
-          _hex_frame_          : '#54664a', // header + footer
-          _hex_frame_lt_       : '#627a58', // lh menu
-          _hex_frame_dk_       : '#3f4d38', // header + footer hover
-          _hex_frame_xdk_      : '#54664a', // lh menu - _x_select_
-
-          _hex_area_mid_       : '#86a477',
-          _hex_area_mid_dk_    : '#758a6a',
-          _hex_area_mid_lt_    : '#9cbf8b',
-          _hex_area_mid_xlt_   : '#d9e3d5',
-
-          // Text color
-          _hex_txt_            : '#54664a', // document font
-          _hex_txt_dk_         : '#3f4d38',
-          _hex_txt_lt_         : '#627a58',
-
-          _hex_txt_inv_        : '#86a477',
-          _hex_txt_inv_dk_     : '#758a6a',
-          _hex_txt_inv_lt_     : '#9cbf8b',
-
-          _hex_placeholder_    : '#758a6a',
-
-          // Link color
-          _hex_link_           : '#599959',
-          _hex_link_fade_      : '#72b072',
-          _hex_link_dk_        : '#458045',
-          _hex_link_lt_        : '#9cd69c',
-
-          // Button color
-          _hex_btn_area_       : '#599959',
-          _hex_btn_area_hover_ : '#497849',
-          _hex_btn_txt_        : '#f7f7f7',
-          _hex_btn_txt_hover_  : '#ffffff'
-        }
       ],
       _selector_list_ : [
         { _selector_str_ : '::-webkit-input-placeholder',
@@ -373,7 +158,14 @@ xhi._css_base_ = (function () {
             _position_   : '_relative_',
             _display_    : '_block_',
             _overflow_x_ : '_hidden_',
-            _overflow_y_ : '_auto_'
+            _overflow_y_ : '_auto_',
+            _padding_    : '_2rem_'
+          }
+        },
+        { _selector_str_ : 'h1',
+          _rule_map_     : {
+            _font_weight_ : '_800_',
+            _font_size_   : '_2rem_'
           }
         },
         { _selector_str_ : 'button',
@@ -469,30 +261,6 @@ xhi._css_base_ = (function () {
             _height_     : [['_0_', '_important_']],
             _clear_      : [['_both_', '_important_']]
           }
-        },
-        { _selector_str_ : '@keyframes spinIt {'
-          + '100%{transform:rotate(360deg);}}'
-        },
-        { _selector_str_ : '.xhi-_x_spin_',
-          _rule_map_     : {
-            _display_     : '_none_',
-            _position_    : '_fixed_',
-            _top_         : '_50p_',
-            _left_        : '_50p_',
-            _margin_top_  : ['-2rem'],
-            _margin_left_ : ['-2rem'],
-            _height_      : '_4rem_',
-            _line_height_ : '_4rem_',
-            _font_size_   : '_4rem_',
-            _width_       : '_4rem_',
-            _text_align_  : '_center_',
-            _font_family_ : '_font_family_awesome_',
-            _animation_   : ['spinIt 1s linear infinite'],
-            _z_index_     : ['50']
-          }
-        },
-        { _selector_str_ : '.xhi-_x_spin_.xhi-_x_active_',
-          _rule_map_     : {_display_ : '_block_'}
         },
         { _selector_str_ : '.xhi-_x_tab_',
           _rule_map_     : {
