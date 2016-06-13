@@ -55,27 +55,27 @@ xhi._util_ = (function () {
       _min_ms_    : 60000,
       _hrs_ms_    : 3600000,
       _day_ms_    : 86400000,
-      
+
       _offset_yr_ : 1900,
       _tmplt_rx_  : /\{([^\{\}]+[^\\])\}/g,
 
       _unit_ms_list_ : [
-        { _name_ : '10s',  _unit_ms_ :    10000 },
-        { _name_ : '15s',  _unit_ms_ :    15000 },
-        { _name_ : '30s',  _unit_ms_ :    30000 },
-        { _name_ : '1m',   _unit_ms_ :    60000 },
-        { _name_ : '2.5m', _unit_ms_ :   150000 },
-        { _name_ : '5m',   _unit_ms_ :   300000 },
-        { _name_ : '10m',  _unit_ms_ :   600000 },
-        { _name_ : '15m',  _unit_ms_ :   900000 },
-        { _name_ : '30m',  _unit_ms_ :  1800000 },
-        { _name_ : '1hr',  _unit_ms_ :  3600000 },
-        { _name_ : '2hr',  _unit_ms_ :  7200000 },
-        { _name_ : '4hr',  _unit_ms_ : 14400000 },
-        { _name_ : '6hr',  _unit_ms_ : 21600000 },
-        { _name_ : '8hr',  _unit_ms_ : 28800000 },
-        { _name_ : '12hr', _unit_ms_ : 43200000 },
-        { _name_ : '1day', _unit_ms_ : 86400000 }
+        { _str_ : '10s',  _ms_ :    10000 },
+        { _str_ : '15s',  _ms_ :    15000 },
+        { _str_ : '30s',  _ms_ :    30000 },
+        { _str_ : '1m',   _ms_ :    60000 },
+        { _str_ : '2.5m', _ms_ :   150000 },
+        { _str_ : '5m',   _ms_ :   300000 },
+        { _str_ : '10m',  _ms_ :   600000 },
+        { _str_ : '15m',  _ms_ :   900000 },
+        { _str_ : '30m',  _ms_ :  1800000 },
+        { _str_ : '1hr',  _ms_ :  3600000 },
+        { _str_ : '2hr',  _ms_ :  7200000 },
+        { _str_ : '4hr',  _ms_ : 14400000 },
+        { _str_ : '6hr',  _ms_ : 21600000 },
+        { _str_ : '8hr',  _ms_ : 28800000 },
+        { _str_ : '12hr', _ms_ : 43200000 },
+        { _str_ : '1day', _ms_ : 86400000 }
       ]
     },
 
@@ -374,8 +374,8 @@ xhi._util_ = (function () {
   //       date_obj     = new Date(),
   //       tz_offset_ms = date_obj.getTimezoneOffset() * 60000,
   //       local_ms     = raw_utc_ms - tz_offset_ms;
-  // 
-  // 
+  //
+  //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
     var
       show_idx  = __Num( arg_show_idx ) || 0,
@@ -638,9 +638,28 @@ xhi._util_ = (function () {
   }
   // END Public method /makeMapUtilObj/
 
+  // BEGIN Public method /makePctStr/
+  // Purpose   : Convert a decimal ratio into a readable % string
+  // Example   : 
+  //   my_pct = makePctStr( 0.529863, 1 );
+  // Arguments : (positional)
+  //   0 : (required) A ratio, usually less than 1.
+  //   1 : (optional) Number of decimal points to return.
+  //       Default value is 0.
+  //
+  function makePctStr ( arg_ratio, arg_dec_count ) {
+    var
+      ratio     = arg_ratio     || 0,
+      dec_count = arg_dec_count || 0
+      ;
+    return ( ratio * 100 )[ vMap._toFixed_ ]( dec_count ) + '%';
+  }
+  // END Public method /makePctStr/
+
   // BEGIN Public method /makeSeenMap/
   // Purpose: Convert an array into a map keyed by the array values.
   // Assign value to all keys.
+  //
   function makeSeenMap ( list, value ){
     var i, key, seen_map = {};
     for ( i = __0; i < list[ vMap._length_ ]; i++ ){
@@ -651,11 +670,11 @@ xhi._util_ = (function () {
   }
   // END Public method /makeSeenMap/
 
-  // BEGIN Public method /makeTimeList/
+  // BEGIN Public method /makeSeriesMap/
   // Purpose   : Create a list of time labels quantitized to match
   //   standard time intervales
-  // Example   : 
-  //    time_list = makeTimeList({
+  // Example   :
+  //    series_map = makeSeriesMap({
   //      _end_ms_    : 1465459980000,
   //      _start_ms_  : 1465452840000,
   //      _tgt_count_ : 12
@@ -665,28 +684,59 @@ xhi._util_ = (function () {
   //   _start_ms_   : int end UTC time in milliseconds
   //   _tgt_count_  : int desired number of divisions (+/- 50%)
   //
-  // Returns   :
+  // Returns:
+  //   A map useful for plotting a quantitized time series like so:
+  //      +-----+------+-----+
+  //      |     |      |     |
+  //    00:06 00:10  00:15 00:19
+  //
+  //    { _offset_ratio_ : 0.3428,
+  //      _unit_name_    : '10min',
+  //      _unit_ms_      : 600 000,
+  //      _unit_ratio_   : 0.4615,
+  //      _unit_count_   : 2
+  //    }
+  //
+  //    start_ms = 6 * 60k     =  360 000
+  //    end_ms   = 19 * 60k    = 1140 000
+  //    span_ms  = 1140 - 360k =  780 000
+  //    unit_ms  = 10 * 60k    =  600 000
+  //
+  //    mod_unit_ms = start_ms % unit_ms = 360k
+  //    offset for first unit: 600k - 360k - 240k (4 minutes)
+  //    offset_ms = unit_ms - mod_unit_ms
+  //
+  //    Calculate ratio
+  //
+  //    offset_ratio = offset_ms / span_ms
+  //      = 240k / 780k  = .3428 ( ~34.28% )
+  //
+  //    unit_ratio   = unit_ms / span_ms
+  //      = 360k / 780k  = .4615 ( ~46.15% )
+  //
   // Throws    :
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. See example on makeClockStr, above.
   //
-  function makeTimeList( arg_map ) {
+  function makeSeriesMap( arg_map ) {
     // Normalize times to remove date.
     var
       end_ms    = arg_map._end_ms_    %  topCmap._day_ms_,
       start_ms  = arg_map._start_ms_  %  topCmap._day_ms_,
       tgt_count = arg_map._tgt_count_,
 
-      span_int,
+      span_ms,
       unit_list, unit_count,
       btm_idx,   top_idx,
       btm_count, top_count,
 
-      i,           check_idx,
-      check_map,   check_count,
-      solve_map,   solve_list,
-      solve_ms,    show_idx
+      i,            check_idx,
+      check_map,    check_count,
+      mod_unit_ms,  offset_ms,
+      offset_ratio, solve_map,
+      solve_list,   solve_ms,
+      solve_str,    show_idx
       ;
 
     // Ensure end time is after the start time after normalizing
@@ -694,17 +744,16 @@ xhi._util_ = (function () {
 
     // Get the time span and a list of available units
     //
-    span_int   = end_ms - start_ms;
+    span_ms    = end_ms - start_ms;
     unit_list  = topCmap._unit_ms_list_;
     unit_count = unit_list[ vMap._length_ ];
-
 
     // Init for solve loop
     //
     btm_idx    = __0;
     top_idx    = unit_count - __1;
-    btm_count  = tgt_count * 0.5;
-    top_count  = tgt_count * 1.5;
+    btm_count  = tgt_count * 0.75;
+    top_count  = tgt_count * 1.25;
 
     // Solve for unit size through interpolation
     //
@@ -712,44 +761,49 @@ xhi._util_ = (function () {
       check_idx   = btm_idx
         + __floor( ( ( top_idx - btm_idx ) / __2 ) + nMap._d5_ );
       check_map   = unit_list[ check_idx ];
-      check_count = __floor( ( span_int / check_map._unit_ms_ ) + nMap._d5_);
+      check_count = __floor( ( span_ms / check_map._ms_ ) + nMap._d5_);
 
       if ( check_count < btm_count ) { top_idx = check_idx; }
       else if ( check_count > top_count ) { btm_idx = check_idx; }
       else {
-        solve_map = cloneData( check_map );
+        solve_map = {
+          _unit_count_ : check_count,
+          _unit_ms_    : check_map._ms_,
+          _unit_name_  : check_map._str_,
+        };
         break;
       }
     }
-   
+
     // Bail on no solution
-    //
-    solve_list = [];
-    if ( ! solve_map ) { return solve_list; }
+    if ( ! solve_map ) { return; }
 
-    // Init for populate loop
+    // Store values to solve_map
     //
-    solve_map._span_ratio_   = solve_map._unit_ms_ / span_int;
-    solve_map._offset_ratio_ = ( solve_map._unit_ms_
-      - ( span_int % solve_map._unit_ms_ ) ) / span_int;
-    solve_map._solve_count_  = check_count;
+    mod_unit_ms  = start_ms % solve_map._unit_ms_;
+    offset_ms    = solve_map._unit_ms_ - mod_unit_ms;
+    offset_ratio = ( offset_ms / span_ms );
 
+    solve_map._offset_ratio_ = offset_ratio;
+    solve_map._unit_ratio_   = solve_map._unit_ms_ / span_ms;
+
+    // Create time string list
+    //
     show_idx = solve_map._unit_ms_ > topCmap._hrs_ms_
       ? __2 : solve_map._unit_ms_ > topCmap._min_ms_ ?  __1 : __0;
 
-    i = solve_map._offset_ratio_;
-
-    while ( i < __1 ) {
-      solve_ms  = __floor( i * span_int ) + start_ms;
-      solve_list[ vMap._push_ ]({
-        _ratio_     : i,
-        _clock_str_ : makeClockStr( solve_ms, show_idx )
-      });
-      i += solve_map._span_ratio_;
+    solve_list = [];
+    while ( offset_ratio < __1 ) {
+      solve_ms  = __floor( offset_ratio * span_ms ) + start_ms;
+      solve_str = makeClockStr( solve_ms, show_idx );
+      solve_list[ vMap._push_ ]( solve_str );
+      offset_ratio += solve_map._unit_ratio_;
     }
-    return solve_list;
+    solve_map._time_list_ = solve_list;
+
+    return solve_map;
   }
-  // End Public function /makeTimeList/
+  // End Public function /makeSeriesMap/
 
   // BEGIN Public method /makeTimeStamp/
   // TODO: consider using Date.now()
@@ -953,8 +1007,9 @@ xhi._util_ = (function () {
     _makeListPlus_    : makeListPlus,
     _makeMapUtilObj_  : makeMapUtilObj,
     _makePadNumStr_   : makePadNumStr,
+    _makePctStr_      : makePctStr,
     _makeSeenMap_     : makeSeenMap,
-    _makeTimeList_    : makeTimeList,
+    _makeSeriesMap_   : makeSeriesMap,
     _makeTimeStamp_   : makeTimeStamp,
     _makeTmpltStr_    : makeTmpltStr,
     _makeUcFirstStr_  : makeUcFirstStr,
@@ -965,4 +1020,3 @@ xhi._util_ = (function () {
     _setDeepMapVal_   : setDeepMapVal
   };
 }());
-

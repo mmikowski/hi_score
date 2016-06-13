@@ -6,7 +6,6 @@
  *    These are routines I have created and updated
  *    since 1998, with inspiration from around the web.
  *    MIT License
- *
 */
 /*jslint         browser : true, continue : true,
    devel : true,  indent : 2,      maxerr : 50,

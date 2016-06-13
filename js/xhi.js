@@ -131,6 +131,7 @@ var xhi = (function () {
       _text_            : 'text',
       _text_css_        : 'text/css',
       _then_            : 'then',
+      _toFixed_         : 'toFixed',
       _toString_        : 'toString',
       _toUpperCase_     : 'toUpperCase',
       _toggleClass_     : 'toggleClass',
