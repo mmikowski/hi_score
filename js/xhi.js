@@ -29,7 +29,9 @@ var xhi = (function () {
       _Object_      : __Object,
       _JSON_        : JSON,
 
+      _fnSetTimeout_    : setTimeout,
       _fnGetKeyList_    : __Object.keys,
+      _fnGetAbs_        : __Math.abs,
       _fnGetFloor_      : __Math.floor,
       _fnGetRandom_     : __Math.random,
       _fnGetRound_      : __Math.round,
@@ -38,6 +40,7 @@ var xhi = (function () {
       _addClass_        : 'addClass',
       _add_             : 'add',
       _ajax_            : 'ajax',
+      _always_          : 'always',
       _appendChild_     : 'appendChild',
       _appendTo_        : 'appendTo',
       _append_          : 'append',
@@ -76,6 +79,7 @@ var xhi = (function () {
       _getElsByTagName_ : 'getElementsByTagName',
       _get_             : 'get',
       _hasClass_        : 'hasClass',
+      _hashchange_      : 'hashchange',
       _hasOwnProp_      : 'hasOwnProperty',
       _head_            : 'head',
       _hide_            : 'hide',
@@ -91,6 +95,8 @@ var xhi = (function () {
       _length_          : 'length',
       _makeDsObj_       : 'makeDragScrollObj',
       _map_             : 'map',
+      _match_           : 'match',
+      _not_             : 'not',
       _null_            : null,
       _off_             : 'off',
       _offset_          : 'offset',
@@ -107,12 +113,14 @@ var xhi = (function () {
       _prop_            : 'prop',
       _publish_         : 'publish',
       _push_            : 'push',
+      _reject_          : 'reject',
       _removeAttr_      : 'removeAttr',
       _removeChild_     : 'removeChild',
       _removeClass_     : 'removeClass',
       _remove_          : 'remove',
       _replace_         : 'replace',
       _resize_          : 'resize',
+      _resolve_         : 'resolve',
       _scrollHeight_    : 'scrollHeight',
       _scrollLeft_      : 'scrollLeft',
       _scrollTop_       : 'scrollTop',
@@ -120,12 +128,15 @@ var xhi = (function () {
       _shift_           : 'shift',
       _show_            : 'show',
       _slice_           : 'slice',
+      _sort_            : 'sort',
       _splice_          : 'splice',
       _split_           : 'split',
       _stopPropagation_ : 'stopPropagation',
       _stringify_       : 'stringify',
       _style_           : 'style',
+      _submit_          : 'submit',
       _subscribe_       : 'subscribe',
+      _substr_          : 'substr',
       _target_          : 'target',
       _textContent_     : 'textContent',
       _text_            : 'text',
@@ -139,13 +150,14 @@ var xhi = (function () {
       _transitionend_   : 'transitionend',
       _trigger_         : 'trigger',
       _true_            : true,
+      _type_            : 'type',
       _udragend_        : 'udragend',
       _udragmove_       : 'udragmove',
       _udragstart_      : 'udragstart',
+      _uheld_           : 'uheld',
       _uheldend_        : 'uheldend',
       _uheldmove_       : 'uheldmove',
       _uheldstart_      : 'uheldstart',
-      _unbind_          : 'unbind',
       _undef_           : undefined,
       _unshift_         : 'unshift',
       _utap_            : 'utap',
@@ -189,29 +201,37 @@ var xhi = (function () {
       _3000_   : 3000,
       _4000_   : 4000,
       _5000_   : 5000
-    },
-    cssVmap, cssKmap
+    }
     ;
-
-  if ( pcss ) {
-    cssKmap = pcss._getCssKeyMap_();
-    cssVmap = pcss._getCssValMap_();
-  }
   // ================== END MODULE SCOPE VARIABLES =====================
 
   // ====================== BEGIN PUBLIC METHODS =======================
   return {
-    _cssKmap_ : cssKmap,
-    _cssVmap_ : cssVmap,
     _nMap_    : nMap,
     _vMap_    : vMap
   };
   // ======================= END PUBLIC METHODS ========================
 }());
 
+// Browser support
+try {
+  xhi._vMap_._window_ = window;
+  xhi._isBrowser_     = true;
+}
 // Node support
-try { xhi._vMap_._window_ = window; xhi._vMap_._document_ = window.document; }
 catch( e1 ) {
-  try { xhi._vMap_._window_ = global; global.xhi = xhi; }
+  try {
+    xhi._vMap_._window_ = global;
+    xhi._isBrowser_     = false;
+  }
   catch( e2 ) { throw '_not_a_browser_or_node_'; }
+}
+
+if ( xhi._isBrowser_ && window.pcss ) {
+  xhi._vMap_._document_ = window.document;
+  xhi._cssKmap_ = pcss._getCssKeyMap_();
+  xhi._cssVmap_ = pcss._getCssValMap_();
+}
+else {
+  global.xhi = xhi;
 }

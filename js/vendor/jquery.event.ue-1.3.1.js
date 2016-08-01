@@ -1,14 +1,16 @@
 /*
  * jQuery plugin for unified mouse and touch events
  *
- * Copyright (c) 2013 Michael S. Mikowski
+ * Copyright (c) 2013-2016 Michael S. Mikowski
  * (mike[dot]mikowski[at]gmail[dotcom])
  *
  * Dual licensed under the MIT or GPL Version 2
  * http://jquery.org/license
  *
  * Versions
- *  1.2.0   - ignore_class => ignore_select, now defaults to ''
+ *  1.3.x   - Removed all console references
+ *          - Change bind to on, unbind to off
+ *  1.2.x   - ignore_class => ignore_select, now defaults to ''
  *  1.1.9   - Fixed ue-test.html demo to scale properly
  *  1.1.8   - Removed prevent default from non-ue events
  *  1.1.7   - Corrected desktop zoom motion description
@@ -108,7 +110,7 @@
   makeListPlus = function ( input_list ) {
     if ( input_list && $.isArray(input_list) ) {
       if ( input_list.remove_val ) {
-        console.warn( 'The array appears to already have listPlus capabilities' );
+        // The array appears to already have listPlus capabilities
         return input_list;
       }
     }
@@ -129,6 +131,7 @@
   boundList = makeListPlus();
 
   // Begin define special event handlers
+  /*jslint unparam:true */
   Ue = {
     setup : function( data, name_list, bind_fn ) {
       var
@@ -137,9 +140,6 @@
         seen_map    = {},
         option_map, idx, namespace_key, ue_namespace_code, namespace_list
         ;
-
-      // jslint hack to allow unused arguments
-      if ( data && bind_fn ) { console.log( 'unused arguments' ); }
 
       // if previous related event bound do not rebind, but do add to
       // type of event bound to this element, if not already noted
@@ -165,19 +165,19 @@
 
         ue_namespace_code = '.__ue' + namespace_key;
 
-        $to_bind.bind( 'mousedown'  + ue_namespace_code, onMouse  );
-        $to_bind.bind( 'touchstart' + ue_namespace_code, onTouch );
+        $to_bind.on( 'mousedown'  + ue_namespace_code, onMouse  );
+        $to_bind.on( 'touchstart' + ue_namespace_code, onTouch );
       }
 
       boundList.push_uniq( this_el ); // record as bound element
 
       if ( ! isMoveBound ) {
-        // console.log('first element bound - adding global binds');
-        $(document).bind( 'mousemove.__ue',   onMouse );
-        $(document).bind( 'touchmove.__ue',   onTouch );
-        $(document).bind( 'mouseup.__ue'  ,   onMouse );
-        $(document).bind( 'touchend.__ue' ,   onTouch );
-        $(document).bind( 'touchcancel.__ue', onTouch );
+        // first element bound - adding global binds
+        $(document).on( 'mousemove.__ue'   , onMouse );
+        $(document).on( 'touchmove.__ue'   , onTouch );
+        $(document).on( 'mouseup.__ue'     , onMouse );
+        $(document).on( 'touchend.__ue'    , onTouch );
+        $(document).on( 'touchcancel.__ue' , onTouch );
         isMoveBound = true;
       }
     },
@@ -281,9 +281,9 @@
         if ( ! namespace_key ) { continue NSPACE_01; }
 
         ue_namespace_code = '.__ue' + namespace_key;
-        $bound.unbind( 'mousedown'  + ue_namespace_code );
-        $bound.unbind( 'touchstart' + ue_namespace_code );
-        $bound.unbind( 'mousewheel' + ue_namespace_code );
+        $bound.off( 'mousedown'  + ue_namespace_code );
+        $bound.off( 'touchstart' + ue_namespace_code );
+        $bound.off( 'mousewheel' + ue_namespace_code );
       }
 
       $.removeData( elem_bound, optionKey );
@@ -291,16 +291,17 @@
       // Unbind document events only after last element element is removed
       boundList.remove_val(this);
       if ( boundList.length === 0 ) {
-        // console.log('last bound element removed - removing global binds');
-        $(document).unbind( 'mousemove.__ue');
-        $(document).unbind( 'touchmove.__ue');
-        $(document).unbind( 'mouseup.__ue');
-        $(document).unbind( 'touchend.__ue');
-        $(document).unbind( 'touchcancel.__ue');
+        // last bound element removed - removing global binds
+        $(document).off( 'mousemove.__ue');
+        $(document).off( 'touchmove.__ue');
+        $(document).off( 'mouseup.__ue');
+        $(document).off( 'touchend.__ue');
+        $(document).off( 'touchcancel.__ue');
         isMoveBound = false;
       }
     }
   };
+  /*jslint unparam:false */
   // End define special event handlers
   //--------------- BEGIN JQUERY SPECIAL EVENTS ----------------
 

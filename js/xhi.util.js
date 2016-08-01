@@ -32,7 +32,9 @@ xhi._util_ = (function () {
     __Str     = vMap._String_,
     __blank   = vMap._blank_,
     __false   = vMap._false_,
+    __length  = vMap._length_,
     __null    = vMap._null_,
+    __push    = vMap._push_,
     __true    = vMap._true_,
     __undef   = vMap._undef_,
 
@@ -43,6 +45,12 @@ xhi._util_ = (function () {
 
     __floor   = vMap._fnGetFloor_,
     __random  = vMap._fnGetRandom_,
+    __setTo  = vMap._fnSetTimeout_,
+
+    topSmap = {
+      _date_obj_     : __undef,
+      _tz_offset_ms_ : __undef
+    },
 
     topCmap = {
       _10k_       : 10000,
@@ -60,22 +68,24 @@ xhi._util_ = (function () {
       _tmplt_rx_  : /\{([^\{\}]+[^\\])\}/g,
 
       _unit_ms_list_ : [
-        { _str_ : '10s',  _ms_ :    10000 },
-        { _str_ : '15s',  _ms_ :    15000 },
-        { _str_ : '30s',  _ms_ :    30000 },
-        { _str_ : '1m',   _ms_ :    60000 },
-        { _str_ : '2.5m', _ms_ :   150000 },
-        { _str_ : '5m',   _ms_ :   300000 },
-        { _str_ : '10m',  _ms_ :   600000 },
-        { _str_ : '15m',  _ms_ :   900000 },
-        { _str_ : '30m',  _ms_ :  1800000 },
-        { _str_ : '1hr',  _ms_ :  3600000 },
-        { _str_ : '2hr',  _ms_ :  7200000 },
-        { _str_ : '4hr',  _ms_ : 14400000 },
-        { _str_ : '6hr',  _ms_ : 21600000 },
-        { _str_ : '8hr',  _ms_ : 28800000 },
-        { _str_ : '12hr', _ms_ : 43200000 },
-        { _str_ : '1day', _ms_ : 86400000 }
+        { _str_ : '2.5s', _ms_ :     2500, _show_idx_ : __0 },
+        { _str_ : '5s',   _ms_ :     5000, _show_idx_ : __0 },
+        { _str_ : '10s',  _ms_ :    10000, _show_idx_ : __0 },
+        { _str_ : '15s',  _ms_ :    15000, _show_idx_ : __0 },
+        { _str_ : '30s',  _ms_ :    30000, _show_idx_ : __0 },
+        { _str_ : '1m',   _ms_ :    60000, _show_idx_ : __1 },
+        { _str_ : '2.5m', _ms_ :   150000, _show_idx_ : __0 },
+        { _str_ : '5m',   _ms_ :   300000, _show_idx_ : __1 },
+        { _str_ : '10m',  _ms_ :   600000, _show_idx_ : __1 },
+        { _str_ : '15m',  _ms_ :   900000, _show_idx_ : __1 },
+        { _str_ : '30m',  _ms_ :  1800000, _show_idx_ : __1 },
+        { _str_ : '1hr',  _ms_ :  3600000, _show_idx_ : __1 },
+        { _str_ : '2hr',  _ms_ :  7200000, _show_idx_ : __1 },
+        { _str_ : '4hr',  _ms_ : 14400000, _show_idx_ : __1 },
+        { _str_ : '6hr',  _ms_ : 21600000, _show_idx_ : __1 },
+        { _str_ : '8hr',  _ms_ : 28800000, _show_idx_ : __1 },
+        { _str_ : '12hr', _ms_ : 43200000, _show_idx_ : __2 },
+        { _str_ : '1day', _ms_ : 86400000, _show_idx_ : __2 }
       ]
     },
 
@@ -144,17 +154,27 @@ xhi._util_ = (function () {
     function logIt () {
       var
         arg_list = [],
-        arg_count, level_key, level_cmd;
+        arg_count, level_key,
+        level_idx, level_cmd,
+        error_key
+        ;
 
       // convert argument list to an array (yeah!)
       arg_list  = arg_list[ vMap._slice_ ][ vMap._call_ ]( arguments, __0 );
-      arg_count = arg_list[ vMap._length_ ];
+      arg_count = arg_list[ __length ];
 
       if ( arg_count < __2 ) { return __false; }
 
       level_key = arg_list[ __0 ];
+      level_idx = levelXIdxMap[ level_key ];
+      if ( level_idx === __undef ) {
+        level_key = '_error_';
+        error_key   = arg_list[ vMap._shift_ ]();
+        arg_list[ vMap._unshift_ ]( error_key + ': _log_level_not_found_' );
+        arg_list[ vMap._unshift_ ]( level_key );
+      }
 
-      if ( ( levelXIdxMap[ level_key ] || __0 ) > levelIdx ) {
+      if ( level_idx > levelIdx ) {
         return __false;
       }
 
@@ -225,6 +245,15 @@ xhi._util_ = (function () {
   }
   // END Public method /cloneData/
 
+  // BEGIN Public method /getDateObj/
+  // Purpose   : Returns a date object singleton
+  function getDateObj () {
+    if ( ! topSmap._date_obj_) {
+      topSmap._date_obj_ = new Date();
+    }
+    return topSmap._date_obj_;
+  }
+
   // BEGIN Public method /getDeepMapVal/
   // Purpose   : Get a deep map attribute value
   // Example   : _getDeepMapVal_( { foo : { bar : 1 }}, [ 'foo','bar' ] );
@@ -246,7 +275,7 @@ xhi._util_ = (function () {
       key = path_list[ vMap._shift_ ]();
       if ( key === __undef ){ break; }
 
-      if ( ! walk_map[ nMap._hasOwnProp_ ]( key ) ){
+      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ){
         is_good = __false; break;
       }
       walk_map = walk_map[ key ];
@@ -259,7 +288,7 @@ xhi._util_ = (function () {
   // BEGIN Public method /getListAttrIdx/
   function getListAttrIdx ( list, key_name, key_val ) {
     var
-      attr_count = list[ vMap._length_ ],
+      attr_count = list[ __length ],
       found_idx  = __n1,
       i, list_obj
       ;
@@ -297,6 +326,30 @@ xhi._util_ = (function () {
   }
   // END Public method /getNumSign/
 
+  // BEGIN Public method /getTzOffsetMs/
+  function getTzOffsetMs ( do_force ) {
+    var date_obj = getDateObj();
+    if ( ! topSmap._tz_offset_ms_ || do_force ) {
+      topSmap._tz_offset_ms_ = date_obj.getTimezoneOffset() * 60000;
+    }
+    return topSmap._tz_offset_ms_;
+  }
+  // END Public method /getTzOffsetMs/
+
+  // BEGIN Public method /getTzCode/
+  function getTzCode () {
+    var
+      date_obj = getDateObj(),
+      date_str = date_obj[ vMap._toString_ ](),
+      match_list = date_str[ vMap._match_ ]( /\(([A-Za-z\s].*)\)/ )
+      ;
+    if ( match_list && match_list[ __1 ] ) {
+      return match_list[ __1 ];
+    }
+    return __blank;
+  }
+  // END Public method /getTzCode/
+
   // BEGIN Public method /getVarType/
   // Returns '_Function_', '_Object_', '_Array_',
   // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
@@ -304,21 +357,21 @@ xhi._util_ = (function () {
   getVarType = (function () {
     var
       typeof_map = {
-        'boolean'       : '_Boolean_',
-        'number'        : '_Number_',
-        'string'        : '_String_',
-        'function'      : '_Function_',
-        'object'        : '_Object_',
-        'undefined'     : '_Undefined_',
+        'boolean'   : '_Boolean_',
+        'number'    : '_Number_',
+        'string'    : '_String_',
+        'function'  : '_Function_',
+        'object'    : '_Object_',
+        'undefined' : '_Undefined_',
 
-        'Array'          : '_Array_',
-        'Boolean'        : '_Boolean_',
-        'Function'       : '_Function_',
-        'Null'           : '_Null_',
-        'Number'         : '_Number_',
-        'Object'         : '_Object_',
-        'String'         : '_String_',
-        'Undefined'      : '_Undefined_'
+        'Array'     : '_Array_',
+        'Boolean'   : '_Boolean_',
+        'Function'  : '_Function_',
+        'Null'      : '_Null_',
+        'Number'    : '_Number_',
+        'Object'    : '_Object_',
+        'String'    : '_String_',
+        'Undefined' : '_Undefined_'
       };
 
     function get_type_fn ( data ) {
@@ -335,9 +388,8 @@ xhi._util_ = (function () {
         data )[ vMap._slice_ ]( nMap._8_, __n1 );
 
       //noinspection NestedConditionalExpressionJS
-      return typeof_map[ type_key ] ||  type_key;
+      return typeof_map[ type_key ] || type_key;
     }
-
     return get_type_fn;
   }());
   // END Public method /getVarType/
@@ -350,7 +402,7 @@ xhi._util_ = (function () {
     //   return Array.prototype.slice.call( arg_obj );
     // See https://github.com/petkaantonov/bluebird/wiki/\
     //   Optimization-killers#3-managing-arguments
-    var arg_list = [], arg_count = arg_obj[ vMap._length_ ], i;
+    var arg_list = [], arg_count = arg_obj[ __length ], i;
     for ( i = __0; i < arg_count; i++ ) {
       arg_list[i] = arg_obj[i];
     }
@@ -371,10 +423,9 @@ xhi._util_ = (function () {
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
-  //       date_obj     = new Date(),
+  //       date_obj     = xhi._util_._getDateObj_(),
   //       tz_offset_ms = date_obj.getTimezoneOffset() * 60000,
   //       local_ms     = raw_utc_ms - tz_offset_ms;
-  //
   //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
     var
@@ -399,10 +450,10 @@ xhi._util_ = (function () {
 
     time_list = [ mns( hrs_int, __2 ) ];
     if ( show_idx < __2 ) {
-      time_list[ vMap._push_ ]( mns( min_int, __2 ) );
+      time_list[ __push ]( mns( min_int, __2 ) );
     }
     if ( show_idx < __1 ) {
-      time_list[ vMap._push_ ]( mns( sec_int, __2 ) );
+      time_list[ __push ]( mns( sec_int, __2 ) );
     }
     return time_list[ vMap._join_ ](':');
   }
@@ -526,7 +577,7 @@ xhi._util_ = (function () {
   makeListPlus = (function () {
     function checkMatchVal ( data ){
       var match_count = __0, idx;
-      for ( idx = this[ vMap._length_]; idx; __0 ){
+      for ( idx = this[ __length]; idx; __0 ){
         //noinspection IncrementDecrementResultUsedJS
         if ( this[--idx] === data ){ match_count++; }
       }
@@ -534,7 +585,7 @@ xhi._util_ = (function () {
     }
     function removeListVal ( data ){
       var removed_count = __0, idx;
-      for ( idx = this[ vMap._length_ ]; idx; __0 ){
+      for ( idx = this[ __length ]; idx; __0 ){
         //noinspection IncrementDecrementResultUsedJS
         if ( this[--idx] === data ){
           this.splice(idx, __1 );
@@ -640,7 +691,7 @@ xhi._util_ = (function () {
 
   // BEGIN Public method /makePctStr/
   // Purpose   : Convert a decimal ratio into a readable % string
-  // Example   : 
+  // Example   :
   //   my_pct = makePctStr( 0.529863, 1 );
   // Arguments : (positional)
   //   0 : (required) A ratio, usually less than 1.
@@ -662,7 +713,7 @@ xhi._util_ = (function () {
   //
   function makeSeenMap ( list, value ){
     var i, key, seen_map = {};
-    for ( i = __0; i < list[ vMap._length_ ]; i++ ){
+    for ( i = __0; i < list[ __length ]; i++ ){
       key = list[ i ];
       seen_map[ key ] = value;
     }
@@ -670,19 +721,52 @@ xhi._util_ = (function () {
   }
   // END Public method /makeSeenMap/
 
+  // BEGIN Public method /makeStrFromMap/
+  // Purpose: Concatenate a number of key-values
+  // into a single string
+  function makeStrFromMap ( map, key_list, arg_delim_str ) {
+    var
+      key_count  = key_list[ __length ],
+      solve_list = [],
+      delim_str  = arg_delim_str || ' ',
+
+      idx, key, val_data;
+
+    for ( idx = __0; idx < key_count; idx++ ) {
+      key      = key_list[ idx ];
+      val_data = map[ key ];
+      if ( val_data || val_data === __0 ) {
+        solve_list[ __push ]( __Str( val_data ) );
+      }
+    }
+    return solve_list[ vMap._join_ ]( delim_str );
+  }
+  // END Public method /makeStrFromMap/
+
+  // BEGIN Public method /makeRegexObj/
+  // Purpose   : Create a regular expression object
+  // Example   : makeRegexObj( '\s*hello\s*', 'i' );
+  function makeRxObj ( pattern_str, option_str ) {
+    if ( option_str ) {
+      return new RegExp( pattern_str, option_str );
+    }
+    return new RegExp( pattern_str );
+  }
+  // END Public method /makeRegexObj/
+
   // BEGIN Public method /makeSeriesMap/
   // Purpose   : Create a list of time labels quantitized to match
   //   standard time intervales
   // Example   :
   //    series_map = makeSeriesMap({
-  //      _end_ms_    : 1465459980000,
-  //      _start_ms_  : 1465452840000,
+  //      _max_ms_    : 1465459980000,
+  //      _min_ms_    : 1465452840000,
   //      _tgt_count_ : 12
   //    });
   // Arguments : (required)
-  //   _end_ms_     : int start UTC time in milliseconds
-  //   _start_ms_   : int end UTC time in milliseconds
-  //   _tgt_count_  : int desired number of divisions (+/- 50%)
+  //   _max_ms_    : int start UTC time in milliseconds
+  //   _min_ms_    : int end UTC time in milliseconds
+  //   _tgt_count_ : int desired number of divisions (+/- 50%)
   //
   // Returns:
   //   A map useful for plotting a quantitized time series like so:
@@ -697,12 +781,12 @@ xhi._util_ = (function () {
   //      _unit_count_   : 2
   //    }
   //
-  //    start_ms = 6 * 60k     =  360 000
-  //    end_ms   = 19 * 60k    = 1140 000
+  //    min_ms   = 6 * 60k     =  360 000
+  //    max_ms   = 19 * 60k    = 1140 000
   //    span_ms  = 1140 - 360k =  780 000
   //    unit_ms  = 10 * 60k    =  600 000
   //
-  //    mod_unit_ms = start_ms % unit_ms = 360k
+  //    mod_unit_ms = min_ms % unit_ms = 360k
   //    offset for first unit: 600k - 360k - 240k (4 minutes)
   //    offset_ms = unit_ms - mod_unit_ms
   //
@@ -722,8 +806,8 @@ xhi._util_ = (function () {
   function makeSeriesMap( arg_map ) {
     // Normalize times to remove date.
     var
-      end_ms    = arg_map._end_ms_    %  topCmap._day_ms_,
-      start_ms  = arg_map._start_ms_  %  topCmap._day_ms_,
+      max_ms    = arg_map._max_ms_    %  topCmap._day_ms_,
+      min_ms    = arg_map._min_ms_    %  topCmap._day_ms_,
       tgt_count = arg_map._tgt_count_,
 
       span_ms,
@@ -731,22 +815,22 @@ xhi._util_ = (function () {
       btm_idx,   top_idx,
       btm_count, top_count,
 
-      i,            check_idx,
+      jdx, idx,     check_idx,
       check_map,    check_count,
       mod_unit_ms,  offset_ms,
       offset_ratio, solve_map,
       solve_list,   solve_ms,
-      solve_str,    show_idx
+      solve_str
       ;
 
     // Ensure end time is after the start time after normalizing
-    if ( end_ms < start_ms ) { end_ms += topCmap._day_ms_; }
+    if ( max_ms < min_ms ) { max_ms += topCmap._day_ms_; }
 
     // Get the time span and a list of available units
     //
-    span_ms    = end_ms - start_ms;
+    span_ms    = max_ms - min_ms;
     unit_list  = topCmap._unit_ms_list_;
-    unit_count = unit_list[ vMap._length_ ];
+    unit_count = unit_list[ __length ];
 
     // Init for solve loop
     //
@@ -755,59 +839,74 @@ xhi._util_ = (function () {
     btm_count  = tgt_count * 0.75;
     top_count  = tgt_count * 1.25;
 
-    // Solve for unit size through interpolation
+    // Back off limits to resolve
     //
-    for ( i = __0; i < unit_count; i++ ) {
-      check_idx   = btm_idx
-        + __floor( ( ( top_idx - btm_idx ) / __2 ) + nMap._d5_ );
-      check_map   = unit_list[ check_idx ];
-      check_count = __floor( ( span_ms / check_map._ms_ ) + nMap._d5_);
+    BACKOFF: for ( jdx = __0; jdx < nMap._10_; jdx ++ ) {
+      // Solve for unit size through interpolation
+      idx = __0;
+      INTERPOLATE: while ( idx < unit_count ) {
+        // Calculate ranges
+        check_idx   = btm_idx
+          + __floor( ( ( top_idx - btm_idx ) / __2 ) + nMap._d5_ );
+        check_map   = unit_list[ check_idx ];
+        check_count = __floor( ( span_ms / check_map._ms_ ) + nMap._d5_);
 
-      if ( check_count < btm_count ) { top_idx = check_idx; }
-      else if ( check_count > top_count ) { btm_idx = check_idx; }
-      else {
+        // Continue loop if out of range
+        if ( check_count < btm_count ) {
+          top_idx = check_idx;
+          idx++;
+          continue INTERPOLATE;
+        }
+        if ( check_count > top_count ) {
+          btm_idx = check_idx;
+          idx++;
+          continue INTERPOLATE;
+        }
         solve_map = {
+          _show_idx_   : check_map._show_idx_,
           _unit_count_ : check_count,
           _unit_ms_    : check_map._ms_,
-          _unit_name_  : check_map._str_,
+          _unit_name_  : check_map._str_
         };
-        break;
+        idx = unit_count;
       }
-    }
 
-    // Bail on no solution
+      if ( solve_map ) { break BACKOFF;}
+
+      // No solution found; Increase range and try again
+      btm_count = btm_count * 0.9;
+      top_count = btm_count * 1.1;
+    }
     if ( ! solve_map ) { return; }
 
     // Store values to solve_map
     //
-    mod_unit_ms  = start_ms % solve_map._unit_ms_;
+    mod_unit_ms  = min_ms % solve_map._unit_ms_;
     offset_ms    = solve_map._unit_ms_ - mod_unit_ms;
     offset_ratio = ( offset_ms / span_ms );
 
     solve_map._offset_ratio_ = offset_ratio;
     solve_map._unit_ratio_   = solve_map._unit_ms_ / span_ms;
 
-    // Create time string list
-    //
-    show_idx = solve_map._unit_ms_ > topCmap._hrs_ms_
-      ? __2 : solve_map._unit_ms_ > topCmap._min_ms_ ?  __1 : __0;
 
     solve_list = [];
     while ( offset_ratio < __1 ) {
-      solve_ms  = __floor( offset_ratio * span_ms ) + start_ms;
-      solve_str = makeClockStr( solve_ms, show_idx );
-      solve_list[ vMap._push_ ]( solve_str );
+      solve_ms  = __floor( offset_ratio * span_ms ) + min_ms;
+      solve_str = makeClockStr( solve_ms, solve_map._show_idx_ );
+      solve_list[ __push ]( solve_str );
       offset_ratio += solve_map._unit_ratio_;
     }
     solve_map._time_list_ = solve_list;
 
     return solve_map;
   }
-  // End Public function /makeSeriesMap/
+  // END Public function /makeSeriesMap/
 
   // BEGIN Public method /makeTimeStamp/
   // TODO: consider using Date.now()
-  function makeTimeStamp () { return +new Date(); }
+  function makeTimeStamp () {
+    return +new Date();
+  }
   // END Public method /makeTimeStamp/
 
   // BEGIN Public method /makeTmpltStr/
@@ -856,7 +955,7 @@ xhi._util_ = (function () {
     var
       tmp_map   = cloneData( extend_map ),
       key_list  = vMap._fnGetKeyList_( tmp_map ),
-      key_count = key_list[ vMap._length_ ],
+      key_count = key_list[ __length ],
       i, tmp_key;
     for ( i = __0; i < key_count; i++ ) {
       tmp_key = key_list[ i ];
@@ -882,7 +981,7 @@ xhi._util_ = (function () {
     count = arg_count || null;
 
     function pollIt () {
-      setTimeout(function() {
+      __setTo(function() {
         var continue_poll = arg_fn();
         if ( continue_poll === false ) { return; }
         if ( count === null ) {
@@ -904,7 +1003,7 @@ xhi._util_ = (function () {
   function rmAllObjKeys ( ref_obj ) {
     var
       key_list  = vMap._fnGetKeyList_( ref_obj ),
-      key_count = key_list[ vMap._length_ ],
+      key_count = key_list[ __length ],
       i, key;
 
     for ( i = __0; i < key_count; i++ ) {
@@ -917,37 +1016,35 @@ xhi._util_ = (function () {
   // BEGIN Public method /setCmap/
   // Purpose: Common code to set config map in feature modules
   // Arguments:
-  //   * _input_map_   - map of key-values to set in config
-  //   * settable_map - map of allowable keys to set
-  //   * config_map   - map to apply settings to
+  //   * _input_map_     - map of key-values to set in config
+  //   * _settable_list_ - map of allowable keys to set
+  //   * _target_map_    - map to apply settings to
   // Returns: undef
   // Throws : Exception if input key not allowed
   //
   function setCmap ( arg_map ) {
     var
-      input_map    = arg_map._input_map_,
-      settable_map = arg_map._settable_map_,
-      config_map   = arg_map._config_map_,
+      input_map     = arg_map._input_map_,
+      settable_list = arg_map._settable_list_,
+      target_map    = arg_map._target_map_,
 
       key_list     = vMap._fnGetKeyList_( input_map ),
-      key_count    = key_list[ vMap._length_ ],
+      key_count    = key_list[ __length ],
 
-      i, key, error
+      idx, key, error
       ;
 
-    for ( i = __0; i < key_count; i++ ) {
-      key = key_list[ i ];
-      if ( input_map[ vMap._hasOwnProp_ ]( key ) ){
-        if ( settable_map[ vMap._hasOwnProp_ ]( key ) ){
-          config_map[ key ] = input_map[ key ];
-        }
-        else {
-          error = makeErrorObj( 'Bad Input',
-            'Setting config key |' + key + '| is not supported'
-          );
-          logUtilObj._logIt_( '_error_', error);
-          throw error;
-        }
+    for ( idx = __0; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      if ( settable_list[ vMap._indexOf_ ]( key ) > __n1 ) {
+        target_map[ key ] = input_map[ key ];
+      }
+      else {
+        error = makeErrorObj( 'Bad Input',
+          'Setting config key |' + key + '| is not supported'
+        );
+        logUtilObj._logIt_( '_error_', error);
+        throw error;
       }
     }
   }
@@ -974,7 +1071,7 @@ xhi._util_ = (function () {
       key = path_list.shift();
       if ( key === undefined ){ break; }
 
-      if ( ! walk_map[ nMap._hasOwnProp_ ]( key ) ){
+      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ){
         walk_map[ key ] = {};
       }
       if ( ! path_list[ __0 ] ){
@@ -992,11 +1089,14 @@ xhi._util_ = (function () {
 
   return {
     _cloneData_       : cloneData,
+    _getDateObj_      : getDateObj,
     _getDeepMapVal_   : getDeepMapVal,
     _getListAttrIdx_  : getListAttrIdx,
     _getListDiff_     : getListDiff,
     _getLogUtilObj_   : getLogUtilObj,
     _getNumSign_      : getNumSign,
+    _getTzOffsetMs_   : getTzOffsetMs,
+    _getTzCode_       : getTzCode,
     _getVarType_      : getVarType,
     _makeArgList_     : makeArgList,
     _makeClockStr_    : makeClockStr,
@@ -1008,8 +1108,10 @@ xhi._util_ = (function () {
     _makeMapUtilObj_  : makeMapUtilObj,
     _makePadNumStr_   : makePadNumStr,
     _makePctStr_      : makePctStr,
+    _makeRxObj_       : makeRxObj,
     _makeSeenMap_     : makeSeenMap,
     _makeSeriesMap_   : makeSeriesMap,
+    _makeStrFromMap_  : makeStrFromMap,
     _makeTimeStamp_   : makeTimeStamp,
     _makeTmpltStr_    : makeTmpltStr,
     _makeUcFirstStr_  : makeUcFirstStr,

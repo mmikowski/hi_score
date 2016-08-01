@@ -87,7 +87,6 @@ var pcss = (function () {
 
     // CSS rule keys
     cssKeyMap = {
-
       __moz_appearance_            : '-moz-appearance',
       __ms_appearance_             : '-ms-appearance',
       __webkit_appearance_         : '-webkit-appearance',
@@ -106,7 +105,6 @@ var pcss = (function () {
       _background_position_    : 'background-position',
       _background_repeat_      : 'background-repeat',
       _background_size_        : 'background-size',
-      _baseline_               : 'baseline',
       _body_                   : 'body',
       _border_                 : 'border',
       _border_bottom_          : 'border-bottom',
@@ -254,9 +252,11 @@ var pcss = (function () {
       _absolute_      : 'absolute',
       _antialiased_   : 'antialiased',
       _auto_          : 'auto',
+      _baseline_      : 'baseline',
       _block_         : 'block',
       _border_box_    : 'border-box',
       _both_          : 'both',
+      _bottom_        : 'bottom',
       _center_        : 'center',
       _circle_        : 'circle',
       _clip_          : 'clip',

@@ -35,9 +35,10 @@ xhi._utilb_ = (function ( $ ) {
     __10      = nMap._10_,
 
     topCmap = {
-      regex_encode_html  : /[&"'><]/g,
-      regex_encode_noamp : /["'><]/g,
-      html_encode_map    : {
+      _encode_html_rx_  : /[&"'><]/g,
+      _encode_noamp_rx_ : /["'><]/g,
+      _cookie_rx_tmplt_ : '\\s*{_attr_key_}\\s*=\\s*([^;]+)[;]*',
+      _html_encode_map_ : {
         '&' : '&#38;',
         '"' : '&#34;',
         "'" : '&#39;',
@@ -48,8 +49,8 @@ xhi._utilb_ = (function ( $ ) {
     onBufferReady
     ;
 
-  topCmap.encode_noamp_map = $.extend({},topCmap.html_encode_map);
-  delete topCmap.encode_noamp_map['&'];
+  topCmap._encode_noamp_map_ = $.extend({},topCmap._html_encode_map_);
+  delete topCmap._encode_noamp_map_['&'];
   // ================== END MODULE SCOPE VARIABLES ====================
 
   // ===================== BEGIN UTILITY METHODS ======================
@@ -71,18 +72,18 @@ xhi._utilb_ = (function ( $ ) {
   function encodeHtml ( arg_str, do_exclude_amp ) {
     var
       source_str = __Str(arg_str),
-      regex, lookup_map
+      noamp_rx, lookup_map
       ;
 
     if ( do_exclude_amp ) {
-      lookup_map = topCmap.encode_noamp_map;
-      regex      = topCmap.regex_encode_noamp;
+      lookup_map = topCmap._encode_noamp_map_;
+      noamp_rx   = topCmap._encode_noamp_rx_;
     }
     else {
-      lookup_map = topCmap.html_encode_map;
-      regex      = topCmap.regex_encode_html;
+      lookup_map = topCmap._html_encode_map_;
+      noamp_rx   = topCmap._encode_html_rx_;
     }
-    return source_str.replace(regex,
+    return source_str.replace(noamp_rx,
       function ( match /*, name */ ) { return lookup_map[match] || __blank; }
     );
   }
