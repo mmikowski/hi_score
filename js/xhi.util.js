@@ -45,49 +45,9 @@ xhi._util_ = (function () {
 
     __floor   = vMap._fnGetFloor_,
     __random  = vMap._fnGetRandom_,
-    __setTo  = vMap._fnSetTimeout_,
+    __setTo   = vMap._fnSetTimeout_,
 
-    topSmap = {
-      _date_obj_     : __undef,
-      _tz_offset_ms_ : __undef
-    },
-
-    topCmap = {
-      _10k_       : 10000,
-
-      _sec_ms_    : 1000,
-      _min_sec_   : 60,
-      _hrs_min_   : 60,
-      _day_hrs_   : 24,
-
-      _min_ms_    : 60000,
-      _hrs_ms_    : 3600000,
-      _day_ms_    : 86400000,
-
-      _offset_yr_ : 1900,
-      _tmplt_rx_  : /\{([^\{\}]+[^\\])\}/g,
-
-      _unit_ms_list_ : [
-        { _str_ : '2.5s', _ms_ :     2500, _show_idx_ : __0 },
-        { _str_ : '5s',   _ms_ :     5000, _show_idx_ : __0 },
-        { _str_ : '10s',  _ms_ :    10000, _show_idx_ : __0 },
-        { _str_ : '15s',  _ms_ :    15000, _show_idx_ : __0 },
-        { _str_ : '30s',  _ms_ :    30000, _show_idx_ : __0 },
-        { _str_ : '1m',   _ms_ :    60000, _show_idx_ : __1 },
-        { _str_ : '2.5m', _ms_ :   150000, _show_idx_ : __0 },
-        { _str_ : '5m',   _ms_ :   300000, _show_idx_ : __1 },
-        { _str_ : '10m',  _ms_ :   600000, _show_idx_ : __1 },
-        { _str_ : '15m',  _ms_ :   900000, _show_idx_ : __1 },
-        { _str_ : '30m',  _ms_ :  1800000, _show_idx_ : __1 },
-        { _str_ : '1hr',  _ms_ :  3600000, _show_idx_ : __1 },
-        { _str_ : '2hr',  _ms_ :  7200000, _show_idx_ : __1 },
-        { _str_ : '4hr',  _ms_ : 14400000, _show_idx_ : __1 },
-        { _str_ : '6hr',  _ms_ : 21600000, _show_idx_ : __1 },
-        { _str_ : '8hr',  _ms_ : 28800000, _show_idx_ : __1 },
-        { _str_ : '12hr', _ms_ : 43200000, _show_idx_ : __2 },
-        { _str_ : '1day', _ms_ : 86400000, _show_idx_ : __2 }
-      ]
-    },
+    topSmap, topCmap, // State and config maps are set in initModule
 
     getVarType,  logUtilObj,
     makeGuidStr, makeListPlus,
@@ -194,10 +154,9 @@ xhi._util_ = (function () {
       try {
         consoleRef[ level_cmd ][ vMap._apply_ ]( consoleRef, arg_list );
       }
-      // The only problem that cause a failure is that the log
-      // command cant handle more than a single argument or will not
-      // allow the apply method (think: IE).
-      // We try our best to share something ...
+      // The only problem that may cause a failure is if the log
+      // command can not handle more than a single argument or will not
+      // allow the apply method (think: IE). We try our best...
       //
       catch ( error0 ) {
         //noinspection UnusedCatchParameterJS
@@ -226,7 +185,7 @@ xhi._util_ = (function () {
   function makePadNumStr( num, count ) {
     var
       str = __Str( num ),
-      zero_count = count - str.length
+      zero_count = count - str[ vMap._length_ ]
       ;
 
     while ( zero_count > __0 ) {
@@ -240,19 +199,43 @@ xhi._util_ = (function () {
 
   // ===================== BEGIN PUBLIC METHODS =======================
   // BEGIN Public method /cloneData/
+  // Purpose: Deep clones non-recursive data structures fastest
+  //
   function cloneData ( data ) {
     return __jparse( __j2str( data ) );
   }
   // END Public method /cloneData/
 
+  // BEGIN utility /getBasename/
+  // Purpose   : Returns the last bit of a path
+  // Example   : getBasename('/Common/_demo99/192.168.11_97_demo1')
+  //             returns '192.168.11.97_demo1'
+  // Arguments : (positional)
+  //   1 - (required) Path string
+  //   2 - (optional) Delimeter string (default is /)
+  //
+  function getBasename( arg_path_str, arg_delim_str ) {
+    var
+      path_str   = __Str( arg_path_str ),
+      delim_str  = arg_delim_str || '/',
+      path_list  = path_str[ vMap._split_ ]( delim_str )
+      ;
+
+    return path_list[ vMap._pop_ ]();
+  }
+  // END utility /getBasename/
+
+
   // BEGIN Public method /getDateObj/
   // Purpose   : Returns a date object singleton
+  //
   function getDateObj () {
     if ( ! topSmap._date_obj_) {
       topSmap._date_obj_ = new Date();
     }
     return topSmap._date_obj_;
   }
+  // END Public method /getDateObj/
 
   // BEGIN Public method /getDeepMapVal/
   // Purpose   : Get a deep map attribute value
@@ -304,6 +287,13 @@ xhi._util_ = (function () {
   }
   // END Public method /getListAttrIdx/
 
+  // BEGIN Public methd /getListAttrMap/
+  function getListAttrMap ( list, key_name, key_val ) {
+    var list_idx = getListAttrIdx( list, key_name, key_val );
+    return list_idx > __n1 ? list[ list_idx ] : __undef;
+  }
+  // END Public method /getListAttrMap/
+
   // BEGIN Public method /getListDiff/
   function getListDiff ( first_list, second_list ){
     return first_list[ vMap._filter_ ](
@@ -341,7 +331,7 @@ xhi._util_ = (function () {
     var
       date_obj = getDateObj(),
       date_str = date_obj[ vMap._toString_ ](),
-      match_list = date_str[ vMap._match_ ]( /\(([A-Za-z\s].*)\)/ )
+      match_list = date_str[ vMap._match_ ]( topCmap._tzcode_rx_ )
       ;
     if ( match_list && match_list[ __1 ] ) {
       return match_list[ __1 ];
@@ -462,13 +452,13 @@ xhi._util_ = (function () {
   // BEGIN Public method /makeCommaNumStr/
   function makeCommaNumStr ( num ){
     var s_num;
-    if ( num > topCmap._10k_ ){
+    if ( num > topCmap._1000k_ ){
       //noinspection NestedFunctionCallJS
       return __Str(parseInt( (num / nMap._1000_ ), nMap._10_ )) + 'K';
     }
     //noinspection NestedFunctionCallJS
     s_num = __Str(parseInt( num, nMap._10_ ));
-    return s_num[ vMap._replace_ ](/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    return s_num[ vMap._replace_ ]( topCmap._comma_rx_, "$1,");
   }
   // END Public method /makeCommaNumStr/
 
@@ -839,7 +829,7 @@ xhi._util_ = (function () {
     btm_count  = tgt_count * 0.75;
     top_count  = tgt_count * 1.25;
 
-    // Back off limits to resolve
+    // Back off limits to resolve as close to target as possible
     //
     BACKOFF: for ( jdx = __0; jdx < nMap._10_; jdx ++ ) {
       // Solve for unit size through interpolation
@@ -1087,11 +1077,61 @@ xhi._util_ = (function () {
   // END Public method /setDeepMapVal/
   // ======================= END PUBLIC METHODS =======================
 
+  // BEGIN initialize module
+  function initModule ()  {
+    topSmap = {
+      _date_obj_     : __undef,
+      _tz_offset_ms_ : __undef
+    };
+
+    topCmap = {
+      _1000k_     : 1000000,
+
+      _sec_ms_    : 1000,
+      _min_sec_   : 60,
+      _hrs_min_   : 60,
+      _day_hrs_   : 24,
+
+      _min_ms_    : 60000,
+      _hrs_ms_    : 3600000,
+      _day_ms_    : 86400000,
+
+      _offset_yr_ : 1900,
+      _comma_rx_  : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
+      _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
+      _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
+      _unit_ms_list_ : [
+        { _str_ : '2.5s', _ms_ :     2500, _show_idx_ : __0 },
+        { _str_ : '5s',   _ms_ :     5000, _show_idx_ : __0 },
+        { _str_ : '10s',  _ms_ :    10000, _show_idx_ : __0 },
+        { _str_ : '15s',  _ms_ :    15000, _show_idx_ : __0 },
+        { _str_ : '30s',  _ms_ :    30000, _show_idx_ : __0 },
+        { _str_ : '1m',   _ms_ :    60000, _show_idx_ : __1 },
+        { _str_ : '2.5m', _ms_ :   150000, _show_idx_ : __0 },
+        { _str_ : '5m',   _ms_ :   300000, _show_idx_ : __1 },
+        { _str_ : '10m',  _ms_ :   600000, _show_idx_ : __1 },
+        { _str_ : '15m',  _ms_ :   900000, _show_idx_ : __1 },
+        { _str_ : '30m',  _ms_ :  1800000, _show_idx_ : __1 },
+        { _str_ : '1hr',  _ms_ :  3600000, _show_idx_ : __1 },
+        { _str_ : '2hr',  _ms_ :  7200000, _show_idx_ : __1 },
+        { _str_ : '4hr',  _ms_ : 14400000, _show_idx_ : __1 },
+        { _str_ : '6hr',  _ms_ : 21600000, _show_idx_ : __1 },
+        { _str_ : '8hr',  _ms_ : 28800000, _show_idx_ : __1 },
+        { _str_ : '12hr', _ms_ : 43200000, _show_idx_ : __2 },
+        { _str_ : '1day', _ms_ : 86400000, _show_idx_ : __2 }
+      ]
+    };
+  }
+  initModule();
+  // END initialize module
+
   return {
     _cloneData_       : cloneData,
+    _getBasename_     : getBasename,
     _getDateObj_      : getDateObj,
     _getDeepMapVal_   : getDeepMapVal,
     _getListAttrIdx_  : getListAttrIdx,
+    _getListAttrMap_  : getListAttrMap,
     _getListDiff_     : getListDiff,
     _getLogUtilObj_   : getLogUtilObj,
     _getNumSign_      : getNumSign,
