@@ -29,11 +29,17 @@ xhi._lb_ = (function ($){
     __true  = vMap._true_,
     __undef = vMap._undef_,
 
+    __setTo   = vMap._fnSetTimeout_,
+    __clearTo = vMap._fnClearTimeout_,
+
     topSmap = {
+      _cleanup_fn_   : __undef,  // Clean up function (bound)
+      _cleanup_toid_ : __undef,  // Clean up timeout id
       _close_toid_   : __undef,  // Close timeout id
       _is_masked_    : __false,  // Mask-on flag
       _is_ready_     : __false,  // Has DOM been initialized?
-      _lb_class_str_ : __blank,  // Caller specified +class(es) of lb
+      _lb_class_str_ : __blank,  // Caller specified class(es) of lb
+      _mod_class_str_: __blank,  // Caller specified modifier class(es) of lb
       _onclose_fn_   : __null    // Callback function on close
     },
 
@@ -42,12 +48,12 @@ xhi._lb_ = (function ($){
     topCmap = {
       _trans_ms_  : 350, // transition time
       _main_html_ : __blank
-        + '<div id="xhi-_lb_mask_" class="xhi-_lb_mask_fixed_"></div>'
+        + '<div id="xhi-_lb_mask_" class="xhi-_lb_mask_abs_"></div>'
         + '<div id="xhi-_lb_spin_" class="xhi-_lb_spin_fixed_">'
           + '&#xf021;'
         + '</div>'
         + '<div id="xhi-_lb_"></div>',
-      _spin_html_ : '<div class="xhi-_lb_spin_abs_" style="min-height:4rem">'
+      _spin_html_ : '<div class="xhi-_lb_spin_abs_">'
         + '&#xf021;</div>',
       _local_tmplt_ : __blank
         + '<div class="xhi-_lb_mask_abs_ xhi-_x_active_"></div>'
@@ -72,7 +78,7 @@ xhi._lb_ = (function ($){
         + '</div>',
 
       _tmplt_map_ : {
-        _all_ : '<div class="xhi-_lb_content_">{_content_html_}</div>',
+        _all_ : '{_content_html_}',
         _btm_ : __blank
         + '<div class="xhi-_lb_content_">{_content_html_}</div>'
         + '<div class="xhi-_lb_title_">{_title_html_}</div>'
@@ -81,8 +87,10 @@ xhi._lb_ = (function ($){
         + '<div class="xhi-_lb_title_">{_title_html_}</div>'
         + '<div class="xhi-_lb_close_">{_close_html_}</div>'
         + '<div class="xhi-_lb_content_">{_content_html_}</div>'
-      },
-    }
+      }
+    },
+
+    coordDraggable
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
 
@@ -107,6 +115,8 @@ xhi._lb_ = (function ($){
     if ( topSmap._is_ready_ ){ return; }
     $('body')[ vMap._append_ ]( topCmap._main_html_ );
     set$Map();
+    $Map._$litebox_[ vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
+    $Map._$mask_[    vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
     topSmap._is_ready_ = __true;
   }
   // END DOM method /initModule/
@@ -117,45 +127,55 @@ xhi._lb_ = (function ($){
   }
   // END DOM method /addLocalSpin/
 
-  // BEGIN method /hideIt/
-  // Notice this clears the litebox content
-  function hideIt (){
-    var
-      $content     = $Map._$content_,
-      $litebox     = $Map._$litebox_,
-      $mask        = $Map._$mask_,
-      lb_class_str = topSmap._lb_class_str_
-      ;
-    initModule();
-    topSmap._lb_class_str_ = __blank;
+  // BEGIN DOM method /cleanUp/
+  function cleanUp () {
+    var param_map = this;
 
-    $litebox[ vMap._removeClass_ ]( 'xhi-_x_active_' );
-    $mask[    vMap._removeClass_ ]( 'xhi-_x_active_' );
-    topSmap._is_masked_ = __false;
+    topSmap._cleanup_toid_  = __undef;
+    if ( ! param_map ) { return; }
 
-    // Hide mask, unbind window resize
-    $.event[  vMap._trigger_ ]( 'xhi-_lb_mask_off_' );
-    $(window)[ vMap._unbind_ ]( 'resize.lb' );
+    if ( $Map._$content_ ) {
+      $Map._$content_[ vMap._empty_ ]()[ vMap._removeAttr_ ]( vMap._style_ );
+    }
+    $Map._$litebox_[ vMap._removeAttr_ ]( vMap._style_ )[
+      vMap._css_ ]( cssKmap._display_, cssVmap._none_ )[
+      vMap._removeClass_ ]( param_map._lb_class_str_ )[
+      vMap._removeClass_ ]( param_map._mod_class_str_ );
+    $Map._$mask_[ vMap._removeAttr_ ]( vMap._style_ )[
+      vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
 
-    if ( topSmap._close_toid_ ) { clearTimeout( topSmap.timeout ); }
-
-    setTimeout(
-      function () {
-        $content[ vMap._empty_ ]()[
-          vMap._removeAttr_ ]( vMap._style_ );
-        $litebox[ vMap._removeAttr_ ]( vMap._style_ )[
-          vMap._css_ ]( cssKmap._display_, cssVmap._none_ )[
-          vMap._removeClass_ ]( lb_class_str );
-        $mask[ vMap._removeAttr_ ]( vMap._style_ )[
-          vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
-      },
-      topCmap._trans_ms_
-    );
-    return $litebox;
+    topSmap._mod_class_str_ = __blank;
+    topSmap._lb_class_str_  = __blank;
   }
-  // END method /hideIt/
+  // END DOM method /cleanUp/
 
-  // BEGIN method /closeIt/
+  // BEGIN DOM method /hideIt/
+  // This clears the litebox content
+  function hideIt () {
+    var param_map = {}, bound_fn;
+    initModule();
+
+    param_map._lb_class_str_  = topSmap._lb_class_str_;
+    param_map._mod_class_str_ = topSmap._mod_class_str_;
+
+    topSmap._lb_class_str_ = __blank;
+    topSmap._is_masked_    = __false;
+    $Map._$litebox_[ vMap._removeClass_ ]( 'xhi-_x_active_' );
+    $Map._$mask_[    vMap._removeClass_ ]( 'xhi-_x_active_' );
+
+    if ( topSmap._close_toid_ ) {
+      __clearTo( topSmap._close_toid_ );
+      topSmap._close_toid_ = __undef;
+    }
+
+    bound_fn = cleanUp[ vMap._bind_ ]( param_map );
+    topSmap._cleanup_fn_   = bound_fn;
+    topSmap._cleanup_toid_ = __setTo( bound_fn, topCmap._trans_ms_ );
+    return $Map._$litebox_;
+  }
+  // END DOM method /hideIt/
+
+  // BEGIN DOM method /closeIt/
   // The difference between closeIt and hideIt is that close
   // fires the _onclose_fn_ callback, whereas hide does not
   function closeIt () {
@@ -170,7 +190,7 @@ xhi._lb_ = (function ($){
       hideIt();
     }
   }
-  // END method /closeIt/
+  // END DOM method /closeIt/
 
   // BEGIN method /setCloseFn/
   function setCloseFn ( fn_cb ){
@@ -206,7 +226,7 @@ xhi._lb_ = (function ($){
     $spin[ vMap._removeClass_ ]( 'xhi-_x_active_' );
     topSmap._is_masked_ = __false;
 
-    setTimeout(
+    __setTo(
       function () {
         $mask[ vMap._removeAttr_ ]( vMap._style_ )[
           vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
@@ -216,9 +236,61 @@ xhi._lb_ = (function ($){
   }
   // END method /hideBusy/
 
+  // BEGIN DOM method /afterShow/
+  // Purpose: Finishes presentation of lightbox after it is shown
+  //
+  function afterShow() {
+    var
+      param_map = this,
+      do_sizing = param_map._do_sizing_,
+      $litebox  = param_map._$litebox_,
+      $mask     = param_map._$mask_,
+
+      margin_left_px, margin_top_px, css_map
+      ;
+
+    if ( do_sizing ) {
+      margin_top_px  = ( __0 - $litebox[ vMap._outerHeight_ ]() / __2 );
+      margin_left_px = ( __0 - $litebox[ vMap._outerWidth_  ]() / __2 );
+      css_map = {
+        'margin-top'  : margin_top_px,
+        'margin-left' : margin_left_px,
+        top           : cssVmap._50p_,
+        left          : cssVmap._50p_
+      };
+      $litebox[ vMap._css_ ]( css_map );
+    }
+    $mask[    vMap._css_ ]( cssKmap._display_, cssVmap._block_ );
+    $litebox[ vMap._addClass_ ]( 'xhi-_x_active_');
+    $mask[    vMap._addClass_ ]( 'xhi-_x_active_' );
+  }
+  // END DOM method /afterShow/
+
   // BEGIN method /showIt/
   // Purpose  : Show a litebox of content.
-  // Defaults:
+  // Examples :
+  //  xhi._lb_._showIt_({
+  //    _layout_key_   : '_top_',
+  //    _title_html_   : 'My title',
+  //    _content_html_ : 'Content here',
+  //  });
+  //
+  //  xhi._lb_._showIt_({
+  //    _layout_key_   : '_top_',
+  //    _title_html_   : 'My title',
+  //    _content_html_ : 'Content here',
+  //    _close_html_   : 'x',
+  //    _position_map_ : {
+  //      left : '50%',
+  //      top  : '50%',
+  //      marginLeft: '-10rem',
+  //      marginTop : '-10rem',
+  //      width : '20rem',
+  //      height: '20rem'
+  //    }
+  //  });
+  //
+  // Defaults :
   //   * Layout: (_layout_key_ : '_top_' )
   //     +-- litebox -----+---------+
   //     | _title_        | _close_ |
@@ -229,6 +301,7 @@ xhi._lb_ = (function ($){
   //   * Size: 50% width and natural height, max-height 50%
   //     (mobile: w x h is 90%/90%)
   //   * Overflow-y: auto; overflow-x hidden
+  //
   // Options:
   //   * Layout:  ( _layout_key_ : '_all_' )
   //     +-- litebox -----+---------+
@@ -240,43 +313,51 @@ xhi._lb_ = (function ($){
   //     +--------------------------+
   //     | _title_        | _close_ |
   //     +----------------+---------+
-  //   * _title_html_   - title string
-  //   * _close_html_   - close symbol or text
-  //   * _lb_class_str_ - replace stock litebox class with this
+  //   * _autoclose_ms_ : cancels the window after a i seconds
+  //   * _content_html_ - Primary content.  If not initially provided, will
+  //       show a 50% height loading graphic.
+  //   * _close_html_     - close symbol or text
+  //   * _do_hide_close_  : hide close button
+  //   * _do_block_click_ : This blocks the the user from clicking on the
+  //       mask to close the litebox.
+  //   * _do_draggable_   - enable dragging of litebox by the title bar
+  //   * _do_title_close_ - tap on title to close (overrides close symbol)
+  //   * _lb_class_str_   - replace stock litebox class with this
+  //     ( separate multiple classes by a space, e.g. 'c1 c2 c3 ... ' )
+  //   * _mod_class_str_  - augment stock litebox clas with this
   //     ( separate multiple classes by a space, e.g. 'c1 c2 c3 ... ' )
   //   * _position_map_ - set this to override default positioning
   //     (mobile w x h stays 90%/90%)
   //   * Set is_overflow_y and is_overflow_x to override overflow defaults
-  //   * _content_html_ - Primary content.  If not initially provided, will
-  //       show a 50% height loading graphic.
-  //   * _onclose_fn_ : function to call on close if provided.
+  //   * _onclose_fn_     : function to call on close if provided.
   //     When provided, the function is fired on close, and if it returns
   //     a truthy value, the litebox is closed.  A FALSEY VALUES WILL
   //     retain the litebox.
-  //   * _do_hide_close_ : hide close button
-  //   * _no_mask_click_ : This blocks the default behavior of allowing the
-  //     user to click outside the litebox to close it.
-  //   * _onclose_fn_   : callback when litebox is closed
-  //   * _autoclose_ms_ : cancels the window after a i seconds
+  //   * _title_html_     - title string
   //
   // Returns  : $litebox
   //
-  // See commit prior to 2016-05-11 to set clone an element as
-  // top of modal.
-
   function showIt ( arg_map ) {
     initModule();
     var
-      $litebox     = $Map._$litebox_,
-      $mask        = $Map._$mask_,
-      layout_key   = arg_map._layout_key_ || '_top_',
-      lb_class_str = arg_map._lb_class_str_,
+      $litebox      = $Map._$litebox_,
+      $mask         = $Map._$mask_,
 
-      css_map, do_sizing,
-      inner_html, $title,
-      $close, $content
+      layout_key    = arg_map._layout_key_    || '_top_',
+      mod_class_str = arg_map._mod_class_str_ || __blank,
+      lb_class_str  = arg_map._lb_class_str_  || __blank,
+      do_sizing     = __true,
+
+      css_map,    inner_html,
+      $title,     $close,
+      $content,   param_map,
+      bound_fn
       ;
 
+    // Clean-up any linger fades, etc
+    if ( topSmap._cleanup_toid_ && topSmap._cleanup_fn_ ) {
+      topSmap._cleanup_fn_();
+    }
     // Fill litebox content with desired layout
     inner_html = xhi._util_._makeTmpltStr_({
       _input_str_ : topCmap._tmplt_map_[ layout_key ],
@@ -302,12 +383,26 @@ xhi._lb_ = (function ($){
     // Store close button function
     topSmap._onclose_fn_ = arg_map._onclose_fn_ || null;
 
+
     // Hide or show close button
-    $close[ vMap._toggle_ ]( ! arg_map._do_hide_close_ );
+    if ( arg_map._do_hide_close_ || arg_map._do_title_close_ ) {
+      $close[ vMap._css_ ]( cssKmap._display_, cssVmap._none_  );
+    }
+    else {
+      $close[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
+        vMap._on_  ]( vMap._utap_, closeIt );
+    }
+
+    // Tap-on-title to close support
+    if ( arg_map._do_title_close_ && $title ) {
+      $title[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
+        vMap._on_  ]( vMap._utap_, closeIt );
+    }
 
     // Configure mask tap
-    if ( arg_map._no_mask_click_ ){
+    if ( arg_map._do_block_click_ ){
       $mask[ vMap._addClass_ ]('xhi-_lb_x_noclick_');
+      $mask[ vMap._off_ ]( vMap._utap_, closeIt );
     }
     else {
       $mask.removeClass('xhi-_lb_x_noclick_')[
@@ -316,9 +411,10 @@ xhi._lb_ = (function ($){
 
     // Autoclose if requested
     if ( arg_map._autoclose_ms_ ){
-      topSmap._close_toid_ = setTimeout( closeIt, arg_map._autoclose_ms_ );
+      topSmap._close_toid_ = __setTo( closeIt, arg_map._autoclose_ms_ );
     }
 
+    // Handle position map
     if ( arg_map._position_map_ ) {
       css_map   = arg_map._position_map_;
       do_sizing = __false;
@@ -326,43 +422,66 @@ xhi._lb_ = (function ($){
     }
     else {
       css_map = { top : '-100%', left : '-100%' };
-      if ( ! lb_class_str ) { lb_class_str = 'xhi-_lb_fixed_'; }
-      do_sizing = __true;
+      if ( ! lb_class_str ) { lb_class_str = 'xhi-_lb_abs_'; }
     }
     css_map.display = cssVmap._block_;
 
     // Set specified class (or xhi-_lb_ default)
     $litebox[ vMap._addClass_ ]( lb_class_str );
-    topSmap._lb_class_str_ = lb_class_str;
+    $litebox[ vMap._addClass_ ]( mod_class_str );
+    topSmap._lb_class_str_  = lb_class_str;
+    topSmap._mod_class_str_ = mod_class_str;
 
-    $litebox[ vMap._css_ ]( css_map )[ vMap._show_ ](function () {
-      var margin_left_px, margin_top_px;
+    // Show and (if requested) size lightbox
+    param_map = {
+      _$litebox_  : $litebox,
+      _$mask_     : $mask,
+      _do_sizing_ : do_sizing
+    };
+    bound_fn = afterShow[ vMap._bind_ ]( param_map );
+    $litebox[ vMap._css_ ]( css_map )[ vMap._show_ ]( bound_fn );
 
-      if ( do_sizing ) {
-        margin_top_px  = ( __0 - $litebox[ vMap._outerHeight_ ]() / __2 );
-        margin_left_px = ( __0 - $litebox[ vMap._outerWidth_  ]() / __2 );
-        css_map = {
-          'margin-top'  : margin_top_px,
-          'margin-left' : margin_left_px,
-          top           : cssVmap._50p_,
-          left          : cssVmap._50p_
-        };
-        $litebox[ vMap._css_ ]( css_map );
-      }
-      $mask[    vMap._css_ ]( cssKmap._display_, cssVmap._block_ );
-      $litebox[ vMap._addClass_ ]( 'xhi-_x_active_');
-      $mask[    vMap._addClass_ ]( 'xhi-_x_active_' );
-    });
+    // Coordinate draggable if requested
+    coordDraggable( $title, arg_map._do_draggable_ );
 
     return $litebox;
   }
   // END method /showIt/
+
   // ======================== END DOM METHODS =========================
 
   // =================== BEGIN EVENT HANDLERS =========================
-  function onResize ( /*event*/ ){
+  function onDragstart( event_obj ) {
+    var
+      $target = $( event_obj.elem_target ),
+      offset_map = $Map._$litebox_.offset();
+
+    $target[ vMap._css_ ]( cssKmap._cursor_, cssVmap._move_ );
+    topSmap._$drag_target_ = $target;
+
+    offset_map[ cssKmap._right_  ] = __blank;
+    offset_map[ cssKmap._bottom_ ] = __blank;
+    $Map._$litebox_[ vMap._css_ ]( offset_map );
+  }
+
+  function onDragmove ( event_obj ) {
+    var offset_map = $Map._$litebox_.offset();
+    offset_map.top  += event_obj.px_delta_y;
+    offset_map.left += event_obj.px_delta_x;
+    $Map._$litebox_[ vMap._css_ ]( offset_map );
+  }
+
+  function onDragend ( /* event_obj */ ) {
+    var $target = topSmap._$drag_target_;
+    if ( $target ) {
+      $target[ vMap._css_ ]( cssKmap._cursor_, __blank );
+    }
+    topSmap._$drag_target_ = __undef;
+  }
+
+  function onResize ( /*event_obj */ ){
    if ( topSmap._resize_toid_ ){ return __true; }
-     topSmap._resize_toid_ = setTimeout(function (){
+     topSmap._resize_toid_ = __setTo(function (){
      var
        body_w_px  = $Map.$body[ cssKmap._width_ ](),
        body_h_px  = $Map.$body[ cssKmap._height_ ](),
@@ -389,6 +508,26 @@ xhi._lb_ = (function ($){
    return __true;
   }
   // ==================== END EVENT HANDLERS ==========================
+
+  // ======================= BEGIN COORDINATORS ========================
+  // These methods are here because they tie DOM methods to handlers.
+  // We must assign these functions to variables that are declared earlier
+  // so that static analysis does not fail.
+  //
+  function coordDraggable0 ( $title, do_draggable ) {
+    if ( do_draggable ) {
+      $title[ vMap._on_ ]( vMap._udragstart_, onDragstart );
+      $title[ vMap._on_ ]( vMap._udragmove_,  onDragmove  );
+      $title[ vMap._on_ ]( vMap._udragend_,   onDragend   );
+    }
+    else {
+      $title[ vMap._off_ ]( vMap._udragstart_, onDragstart );
+      $title[ vMap._off_ ]( vMap._udragmove_,  onDragmove  );
+      $title[ vMap._off_ ]( vMap._udragend_,   onDragend   );
+    }
+  }
+  coordDraggable = coordDraggable0;
+  // ======================== END COORDINATORS =========================
 
   // =================== BEGIN PUBLIC METHODS =========================
   function showSuccess ( msg_text ) {

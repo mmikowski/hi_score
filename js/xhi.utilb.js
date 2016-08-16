@@ -244,7 +244,7 @@ xhi._utilb_ = (function ( $ ) {
       title_text     = title_map[ match_str ]
         || xhi._util_._makeUcFirstStr_( match_str );
       html_str
-        +='<label>'
+        += '<label>'
           + '<input type="radio" name="'
             + checked_value_str
           + '" value="' + match_str + '"'
@@ -302,6 +302,22 @@ xhi._utilb_ = (function ( $ ) {
   }());
   // END Public method /onBufferReady/
 
+  // BEGIN Public method /resizeTextarea/
+  // Example: $foo.on( 'keyup', function (){ resizeTextarea( this, 25 ); }
+  function resizeTextarea ( text_el, arg_max_ht_px ) {
+    var
+      max_ht_px   = arg_max_ht_px || 400,
+      solve_ht_px = text_el.scrollHeight
+      ;
+
+    if ( solve_ht_px > max_ht_px ) {
+      solve_ht_px = max_ht_px;
+    }
+    text_el.style.height = __Str( solve_ht_px ) + 'px';
+  }
+  // END Public method /resizeTextarea/
+
+
   return {
     _decodeHtml_     : decodeHtml,
     _encodeHtml_     : encodeHtml,
@@ -309,7 +325,8 @@ xhi._utilb_ = (function ( $ ) {
     _getFormMap_     : getFormMap,
     _makeOptionHtml_ : makeOptionHtml,
     _makeRadioHtml_  : makeRadioHtml,
-    _onBufferReady_  : onBufferReady
+    _onBufferReady_  : onBufferReady,
+    _resizeTextarea_ : resizeTextarea
   };
   // ======================= END PUBLIC METHODS =======================
 }( jQuery ));

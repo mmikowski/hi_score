@@ -514,8 +514,54 @@ xhi._util_ = (function () {
   }
   // END Public method /makeDateStr/
 
+  // BEGIN Public method /scrubHtmlTags/
+  function scrubHtmlTags ( arg_str ) {
+    var str = String( arg_str ) || __blank;
+    return str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
+  }
+  // END Public method /scrubHtmlTags/
+
+  // BEGIN Public method /makeEllipsisStr/
+  // Purpose: Shorten a string to a maximum length and append ellipsis
+  //   if it is exceeded.
+  //
+  function makeElipsisStr( arg_map ) {
+    var
+      scrub_str       = scrubHtmlTags( arg_map._input_str_ ),
+      char_limit_int  = arg_map._char_limit_int_ || __0,
+      scrub_count     = scrub_str[ vMap._length_ ],
+      ellipsis_str    = __blank,
+
+      word_list,   word_count,
+      solve_count, solve_list,
+      idx,         solve_word
+      ;
+
+    if ( char_limit_int === __0 || scrub_count < char_limit_int ) {
+      return scrub_str;
+    }
+
+    word_list   = scrub_str[ vMap._split_ ]( ' ' );
+    word_count  = word_list[ vMap._length_ ];
+    solve_count = __0;
+    solve_list  = [];
+
+    WORD: for ( idx = __0; idx < word_count; idx++ ) {
+      solve_word  = word_list[ idx ];
+      solve_count += solve_word[ vMap._length_ ] + __1;
+      if ( solve_count >= char_limit_int ) {
+        ellipsis_str = '...';
+        break WORD;
+      }
+      solve_list[ vMap._push_ ]( solve_word );
+    }
+    return __blank + solve_list[ vMap._join_ ]( ' ' ) + ellipsis_str;
+  }
+  // END Public method /makeEllipsisStr/
+
+
   // BEGIN Public method /makeErrorObj/
-  // Purpose: a convenience wrapper to create an error object
+  // Purpose: A convenient method to create an error object
   // Arguments:
   //   * name_text - the error name
   //   * msg_text  - long error message
@@ -538,7 +584,7 @@ xhi._util_ = (function () {
     function makePart () {
       //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
       return ((( __1+__random() ) * 0x10000 )|__0
-      )[ vMap._toString_ ](16).substring(__1);
+      )[ vMap._toString_ ](16)[ vMap._substr_ ]( __1 );
     }
     /*jslint bitwise: false*/
 
@@ -893,7 +939,8 @@ xhi._util_ = (function () {
   // END Public function /makeSeriesMap/
 
   // BEGIN Public method /makeTimeStamp/
-  // TODO: consider using Date.now()
+  // Consider using Date.now()
+  //
   function makeTimeStamp () {
     return +new Date();
   }
@@ -930,13 +977,12 @@ xhi._util_ = (function () {
   // END Public method /makeTmpltStr/
 
   // BEGIN Public method /makeUcFirstStr/
-  function makeUcFirstStr ( s_input_in ) {
+  function makeUcFirstStr ( arg_str ) {
     var
-      s_input = __Str(s_input_in),
-      f   = s_input.charAt(__0).toUpperCase()
+      str    = __Str( arg_str ) || __blank,
+      uc_str = str.charAt( __0 ).toUpperCase()
       ;
-
-    return f + s_input.substr( __1 );
+    return uc_str + str[ vMap._substr_ ]( __1 );
   }
   // END Public method /makeUcFirstStr/
 
@@ -1098,6 +1144,7 @@ xhi._util_ = (function () {
 
       _offset_yr_ : 1900,
       _comma_rx_  : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
+      _tag_rx_    : makeRxObj( '</?[^>]+>', 'g' ),
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
       _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
       _unit_ms_list_ : [
@@ -1142,6 +1189,7 @@ xhi._util_ = (function () {
     _makeClockStr_    : makeClockStr,
     _makeCommaNumStr_ : makeCommaNumStr,
     _makeDateStr_     : makeDateStr,
+    _makeEllipsisStr_ : makeElipsisStr,
     _makeErrorObj_    : makeErrorObj,
     _makeGuidStr_     : makeGuidStr,
     _makeListPlus_    : makeListPlus,
@@ -1158,6 +1206,7 @@ xhi._util_ = (function () {
     _mergeMaps_       : mergeMaps,
     _pollFunction_    : pollFunction,
     _rmAllObjKeys_    : rmAllObjKeys,
+    _scrubHtmlTags_   : scrubHtmlTags,
     _setCmap_         : setCmap,
     _setDeepMapVal_   : setDeepMapVal
   };

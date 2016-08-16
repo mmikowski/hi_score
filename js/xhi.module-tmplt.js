@@ -30,6 +30,8 @@ xhi._tmplt_ = (function ($) {
     $Map
     ;
   // ================== END MODULE SCOPE VARIABLES =====================
+  // ===================== BEGIN UTILITY METHODS =======================
+  // ====================== END UTILITY METHODS ========================
   // ======================= BEGIN DOM METHODS =========================
   // Cache jQuery collections here
   function set$Map ( $top_box ) {

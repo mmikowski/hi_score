@@ -64,7 +64,6 @@ xhi._css_ = (function () {
      _selector_list_ : xhi._css_lb_._selectorList_
     });
 
-    // TODO : define _shell_ css
     //pcss._setVsheet_({
     //  _vsheet_id_     : '_shell_',
     //  _mode_str_      : '_add_',
@@ -94,7 +93,7 @@ xhi._css_ = (function () {
     pcss._setCascade_({
       _cascade_id_     : '_c01_',
       _mode_str_       : '_add_',
-      _vsheet_id_list_ : [ '_base_', '_lb_' ], // TODO: add _shell_
+      _vsheet_id_list_ : [ '_base_', '_lb_' ],
       _mixin_map_      : theme_map,
       _regen_type_     : '_use_'
     });

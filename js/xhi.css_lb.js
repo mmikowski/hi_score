@@ -10,7 +10,7 @@
   regexp : true, sloppy : true,     vars : false,
   white : true,    todo : true,  unparam : true
 */
-/*global jQuery, xhi, pcss */
+/*global xhi, pcss */
 xhi._css_lb_ = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
@@ -26,6 +26,7 @@ xhi._css_lb_ = (function () {
             _border_radius_ : '_d5rem_',
             _box_shadow_    : '_shadow_02_',
             _background_    : '_hex_area_',
+            _color_         : '_hex_txt_',
             _overflow_      : '_hidden_',
             _transition_    : [ 'opacity .5s ease' ]
           }
@@ -42,7 +43,6 @@ xhi._css_lb_ = (function () {
         },
         { _selector_str_ : '.xhi-_lb_mask_abs_,.xhi-_lb_mask_fixed_',
           _rule_map_ : {
-            _z_index_    : [ '35' ],
             _display_    : '_block_',
             _opacity_    : '_0_',
             _top_        : '_0_',
@@ -50,22 +50,36 @@ xhi._css_lb_ = (function () {
             _bottom_     : '_0_',
             _right_      : '_0_',
             _overflow_   : '_hidden_',
-            _background_ : [ '#888' ],
+            _background_ : '_hex_frame_',
             _transition_ : [ 'opacity .5s ease' ]
           }
         },
         { _selector_str_ : '.xhi-_lb_mask_abs_',
-          _rule_map_     : { _position_ : '_absolute_' }
+          _rule_map_     : {
+            _z_index_  : [ '24' ],
+            _position_ : '_absolute_'
+          }
         },
         { _selector_str_ : '.xhi-_lb_mask_fixed_',
           _rule_map_     : {
-            _cursor_   : '_pointer_',
-            _position_ : '_fixed_'
+            _z_index_    : [ '35' ],
+            _position_ : '_fixed_',
+            _cursor_   : '_pointer_'
+          }
+        },
+        { _selector_str_ : '.xhi-_lb_mask_abs_.xhi-_x_noclick,'
+          + '.xhi-_lb_mask_fixed_.xhi-_x_noclick_',
+          _rule_map_     : { _cursor_ : ['wait'] }
+        },
+        { _selector_str_ : '.xhi-_lb_abs_ p, .xhi-_lb_fixed_ p',
+          _rule_map_ : {
+            '_margin_'  : '_0_',
+            '_padding_' : '_d5rem_'
           }
         },
         { _selector_str_ : '.xhi-_lb_mask_abs_.xhi-_x_active_,'
             + '.xhi-_lb_mask_fixed_.xhi-_x_active_',
-          _rule_map_ : { _opacity_    : [ '.625' ] }
+          _rule_map_ : { _opacity_    : [ '.75' ] }
         },
         { _selector_str_ : '.xhi-_lb_content_',
           _rule_map_ : { _position_ : '_relative_' }
@@ -85,6 +99,9 @@ xhi._css_lb_ = (function () {
         { _selector_str_ : '@keyframes spinIt {'
         + '100%{transform:rotate(360deg);}}'
         },
+        { _selector_str_ : '@keyframes spinReverse {'
+        + '100%{transform:rotate(-360deg);}}'
+        },
         { _selector_str_ : '.xhi-_lb_spin_abs_,xhi-_lb_spin_fixed_',
           _rule_map_     : {
             _display_     : '_none_',
@@ -98,8 +115,14 @@ xhi._css_lb_ = (function () {
             _width_       : '_4rem_',
             _text_align_  : '_center_',
             _font_family_ : '_font_family_awesome_',
-            _animation_   : ['spinIt 1s linear infinite'],
-            _z_index_     : ['50']
+            _color_       : '_hex_area_accent_',
+            _animation_   : ['spinIt 1s linear infinite']
+          }
+        },
+        { _selector_str_ : '.xhi-_lb_spin_abs_.xhi-_x_reverse_,'
+          + 'xhi-_lb_spin_fixed_.xhi-_x_reverse_',
+          _rule_map_     : {
+            _animation_ : [ 'spinReverse 1s linear infinite' ]
           }
         },
         { _selector_str_ : '.xhi-_lb_spin_abs_.xhi-_x_active_,'
@@ -107,10 +130,17 @@ xhi._css_lb_ = (function () {
           _rule_map_     : { _display_ : '_block_' }
         },
         { _selector_str_ : '.xhi-_lb_spin_abs_',
-          _rule_map_     : { _position_ : '_absolute_' }
+          _rule_map_     : {
+            _z_index_  : ['25'],
+            _position_ : '_absolute_',
+            _min_height_ : '_4rem_'
+        }
         },
         { _selector_str_ : '.xhi-_lb_spin_fixed_',
-          _rule_map_     : { _position_ : '_fixed_' }
+          _rule_map_     : {
+            _z_index_  : ['50'],
+            _position_ : '_fixed_'
+          }
         }
       ]
     }

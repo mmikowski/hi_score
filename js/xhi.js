@@ -29,12 +29,13 @@ var xhi = (function () {
       _Object_      : __Object,
       _JSON_        : JSON,
 
-      _fnSetTimeout_    : setTimeout,
+      _fnClearTimeout_  : clearTimeout,
       _fnGetKeyList_    : __Object.keys,
       _fnGetAbs_        : __Math.abs,
       _fnGetFloor_      : __Math.floor,
       _fnGetRandom_     : __Math.random,
       _fnGetRound_      : __Math.round,
+      _fnSetTimeout_    : setTimeout,
 
       _activeElement_   : 'activeElement',
       _addClass_        : 'addClass',
@@ -50,6 +51,7 @@ var xhi = (function () {
       _blur_            : 'blur',
       _body_            : 'body',
       _call_            : 'call',
+      _cancel_          : 'cancel',
       _carouscroll_     : 'carouscroll',
       _children_        : 'children',
       _clone_           : 'clone',
@@ -90,6 +92,7 @@ var xhi = (function () {
       _innerHTML_       : 'innerHTML',
       _innerText_       : 'innerText',
       _join_            : 'join',
+      _key_             : 'key',
       _keydown_         : 'keydown',
       _keyup_           : 'keyup',
       _length_          : 'length',
@@ -131,6 +134,7 @@ var xhi = (function () {
       _sort_            : 'sort',
       _splice_          : 'splice',
       _split_           : 'split',
+      _status_          : 'status',
       _stopPropagation_ : 'stopPropagation',
       _stringify_       : 'stringify',
       _style_           : 'style',
@@ -162,7 +166,9 @@ var xhi = (function () {
       _unshift_         : 'unshift',
       _utap_            : 'utap',
       _val_             : 'val',
-      _when_            : 'when'
+      _value_           : 'value',
+      _when_            : 'when',
+      _whenAll_         : 'whenAll'
     },
 
     nMap = {
