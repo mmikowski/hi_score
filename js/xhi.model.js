@@ -12,7 +12,7 @@
 */
 /*global jQuery, xhi */
 
-xhi._tmplt_ = (function ($) {
+xhi._model_ = (function ($) {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   var
