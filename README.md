@@ -62,6 +62,17 @@ and OpenSans. Check out the `font` directory for details.
 Our baseline compatibility is IE9+.  If you are targeting IE 8, you have our
 sympathy.
 
+# Testing
+Partial regression tests have been added for the xhi libraries, focusing
+presently on the utilities.  You can run the tests at any time like so:
+
+```bash
+  $ cd hi_score;
+  $ npm install
+  $ npm test
+```
+
+
 ## Release Notes
 ### Copyright (c)
 2016 Michael S. Mikowski (mike[dot]mikowski[at]gmail[dotcom])
@@ -71,6 +82,13 @@ MIT
 
 ### Version 0.0.x
 - Initial preparation
+
+### Version 0.1.x
+- Library updates
+
+### Version 0.2.x (in progress)
+- Regression and integration testing
+- Working sample application
 
 ## Similar Projects
 [absurd.js][11], [responsive.js][12]
