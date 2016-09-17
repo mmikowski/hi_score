@@ -7,7 +7,7 @@
   ],
   "main": "hi_score",
   "scripts": {
-    "test": "echo \"Not yet applicable\" && exit 0;"
+    "test": "node_modules/.bin/nodeunit test/nu_xhi.util.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,11 @@
   },
   "homepage": "https://github.com/mmikowski/hi_score",
   "dependencies": {},
+  "devDependencies": {
+    "jslint": "^0.9.6",
+    "nodeunit": "^0.9.1",
+    "nodeunit-b": "^4.0.0",
+    "node-inspector": "^0.12.5"
+  },
   "maintainers": [ "Michael S. Mikowski <mike.mikowski@gmail.com>" ]
 }
