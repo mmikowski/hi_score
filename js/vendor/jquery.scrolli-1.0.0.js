@@ -1,5 +1,5 @@
 /**
- *    jquery.xhi-scrolli.js
+ *    jquery.scrolli.js
  *    Provides scrolli content indicators
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
@@ -20,18 +20,23 @@ jQuery.scrolli = (function ( $ ) {
     __0     = 0,
     __n1    = -1,
     elList  = [],
+    topSmap = {
+      _last_recalc_ms_ : __n1,
+      _recalc_toid_    : __n1
+    },
     topCmap = {
-      _margin_int_ : 16,
-      _namespace_  : '.xhi-_scrolli_',
-      _top_class_  : 'xhi-_x_top_on_',
-      _btm_class_  : 'xhi-_x_btm_on_'
+      _margin_int_    : 32,
+      _max_recalc_ms_ : 132,
+      _namespace_     : '.p6-_scrolli_',
+      _top_class_     : 'p6-_x_top_on_',
+      _btm_class_     : 'p6-_x_btm_on_'
     };
   // ================== END MODULE SCOPE VARIABLES =====================
 
   // ===================== BEGIN UTILITY METHODS =======================
 
   function isjQuery ( obj ) {
-    return obj && ( obj instanceof jQuery 
+    return obj && ( obj instanceof jQuery
       || obj.constructor.prototype.jquery )
       ;
   }
@@ -46,22 +51,26 @@ jQuery.scrolli = (function ( $ ) {
       ;
 
     for ( idx = __0; idx < el_count; idx++ ) {
-      $single = is_jquery ? list_data.index( idx ) : $( list_data[ idx ] );
+      $single = is_jquery ? list_data.eq( idx ) : $( list_data[ idx ] );
       bound_fn( $single );
     }
+  }
+
+  function getNowMs () {
+    if ( Date.now ) { return Date.now(); }
+    return +new Date();
   }
   // ====================== END UTILITY METHODS ========================
 
   // ====================== BEGIN EVENT HANDLERS =======================
-  function onScrollDiv ( /*event_obj*/ ) {
+  function calcSingle () {
     var
-      $div          = $(this),
-      scroll_top    = this.scrollTop,
-      scroll_height = this.scrollHeight,
-      div_ht_num    = $div.height(),
-      show_ht_num   =
-        scroll_height - scroll_top - topCmap._margin_int_
-      ;
+      div_el        = this,
+      $div          = $( div_el ),
+      scroll_top    = div_el.scrollTop,
+      scroll_height = div_el.scrollHeight,
+      div_ht_num    = $div.outerHeight(),
+      show_ht_num   = scroll_height - scroll_top - topCmap._margin_int_;
 
     if ( scroll_top > topCmap._margin_int_ ) {
       $div.addClass( topCmap._top_class_ );
@@ -76,22 +85,43 @@ jQuery.scrolli = (function ( $ ) {
       $div.removeClass( topCmap._btm_class_ );
     }
   }
+
+  function onScrollDiv ( /*event_obj*/ ) {
+    var
+      div_el      = this,
+      recalc_toid = topSmap._recalc_toid_,
+
+      last_recalc_ms, now_ms, diff_ms
+      ;
+
+    if ( recalc_toid !== __n1 ) {
+      clearTimeout( recalc_toid );
+      topSmap._recalc_toid_ = __n1;
+    }
+
+    last_recalc_ms = topSmap._last_recalc_ms_;
+    now_ms         = getNowMs();
+    diff_ms        = now_ms - last_recalc_ms;
+
+    if ( diff_ms > topCmap._max_recalc_ms_ ) {
+      calcSingle.bind( div_el )();
+      return topSmap._last_recalc_ms = getNowMs();
+    }
+
+    topSmap._recalc_toid_ = setTimeout(
+      calcSingle.bind( div_el ),
+      topCmap._max_recalc_ms_ - diff_ms
+    );
+  }
   // ======================= END EVENT HANDLERS ========================
 
   // ======================== BEGIN DOM METHODS ========================
   function addSingle( $single ) {
-    var el = $single.get(0);
+    var el = $single.get( __0 );
     if ( elList.indexOf( el ) > __n1 ) { return; }
-    $single.on(
-      'scroll' + topCmap._namespace_,
-      $.debounce( 100, onScrollDiv )
-    );
+    $single.on( 'scroll' + topCmap._namespace_, onScrollDiv );
     elList.push( el );
-    $single.trigger( 'scroll' + topCmap._namespace_ );
-  }
-
-  function recalcSingle( $single ) {
-    $single.trigger( 'scroll' + topCmap._namespace_ );
+    calcSingle.bind( el )();
   }
 
   function rmSingle( $single ) {
@@ -113,7 +143,7 @@ jQuery.scrolli = (function ( $ ) {
     if ( elList && elList.length ) {
       for ( i = 0; i < elList.length; i++ ) {
         el = elList[ i ];
-        recalcSingle( $(el) );
+        calcSingle.bind( el )();
       }
     }
   }
