@@ -1,14 +1,9 @@
 /**
- *   xhi.util.js
- *   Utilities which do not require jQuery or a browser
- *   Michael S. Mikowski - mike.mikowski@gmail.com
+ *    xhi.util.js
+ *    Utilities which do not require jQuery or a browser
  *
- *   These are routines I have created and updated
- *   since 1998, with inspiration from around the web.
- *   MIT License.
- *
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
-
 /*jslint         browser : true, continue : true,
    devel : true,  indent : 2,      maxerr : 50,
   newcap : true,   nomen : true, plusplus : true,
@@ -49,11 +44,25 @@ xhi._util_ = (function () {
 
     topSmap, topCmap, // State and config maps are set in initModule
 
-    getVarType,  logUtilObj,
-    makeGuidStr, makeListPlus,
+    getVarType,  getBasename, getDirname,
+    logUtilObj,  makeGuidStr, makeListPlus,
     makeTmpltStr
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
+
+  // ===================== BEGIN PRIVATE METHODS ======================
+  // BEGIN private method /getTzDateObj/
+  // Purpose   : Returns a date object singleton for use by Tz methods
+  //
+  function getTzDateObj () {
+    if ( ! topSmap._date_obj_) {
+      topSmap._date_obj_ = new Date();
+    }
+    return topSmap._date_obj_;
+  }
+  // END private method /getTzDateObj/
+  // ====================== END PRIVATE METHODS =======================
+
 
   // ===================== BEGIN UTILITY METHODS ======================
   // BEGIN define logUtilObj singleton
@@ -195,6 +204,17 @@ xhi._util_ = (function () {
     return str;
   }
   // END Public method /makePadNumStr/
+
+  // BEGIN Public method /makeRegexObj/
+  // Purpose   : Create a regular expression object
+  // Example   : makeRegexObj( '\s*hello\s*', 'i' );
+  function makeRxObj ( pattern_str, option_str ) {
+    if ( option_str ) {
+      return new RegExp( pattern_str, option_str );
+    }
+    return new RegExp( pattern_str );
+  }
+  // END Public method /makeRegexObj/
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
@@ -202,11 +222,12 @@ xhi._util_ = (function () {
   // Purpose: Deep clones non-recursive data structures fastest
   //
   function cloneData ( data ) {
+    if ( data === __undef ) { return data; }
     return __jparse( __j2str( data ) );
   }
   // END Public method /cloneData/
 
-  // BEGIN utility /getBasename/
+  // BEGIN utilities /getBasename/ and /getDirname/
   // Purpose   : Returns the last bit of a path
   // Example   : getBasename('/Common/_demo99/192.168.11_97_demo1')
   //             returns '192.168.11.97_demo1'
@@ -214,28 +235,29 @@ xhi._util_ = (function () {
   //   1 - (required) Path string
   //   2 - (optional) Delimeter string (default is /)
   //
-  function getBasename( arg_path_str, arg_delim_str ) {
-    var
-      path_str   = __Str( arg_path_str ),
-      delim_str  = arg_delim_str || '/',
-      path_list  = path_str[ vMap._split_ ]( delim_str )
+  function getBaseDirname( arg_path_str, arg_delim_str ) {
+    var context_str = this,
+      path_str, delim_str, rx_obj, match_list
       ;
 
-    return path_list[ vMap._pop_ ]();
-  }
-  // END utility /getBasename/
+    if ( arg_path_str === __undef || arg_path_str === __null
+      || arg_path_str === __blank
+    ) { return __blank; }
 
+    path_str   = __Str( arg_path_str );
+    delim_str  = arg_delim_str || '/';
+    rx_obj     = context_str === '_base_'
+      ? makeRxObj( '([^'  + delim_str + ']*)$' )
+      : makeRxObj( '^(.*' + delim_str + ')[^' + delim_str + ']*$' )
+      ;
 
-  // BEGIN Public method /getDateObj/
-  // Purpose   : Returns a date object singleton
-  //
-  function getDateObj () {
-    if ( ! topSmap._date_obj_) {
-      topSmap._date_obj_ = new Date();
-    }
-    return topSmap._date_obj_;
+    match_list = path_str[ vMap._match_ ]( rx_obj );
+    return ( match_list && match_list[ __1 ] ) || __blank;
   }
-  // END Public method /getDateObj/
+  getBasename = getBaseDirname[ vMap._bind_ ]( '_base_' );
+  getDirname  = getBaseDirname[ vMap._bind_ ]( '_dir_'  );
+  // END utilities /getBasename/ and /getDirname/
+
 
   // BEGIN Public method /getDeepMapVal/
   // Purpose   : Get a deep map attribute value
@@ -247,23 +269,33 @@ xhi._util_ = (function () {
   // Returns   :
   //   * Success - Requested value
   //   * Failure - undefined
+  // Cautions  : The recursion limit is set to 100. If this
+  //   is met, a warning is logged.
   //
   function getDeepMapVal ( base_map, path_list ) {
     var
       walk_map  = base_map,
       is_good   = __true,
-      key;
+      idx, key
+      ;
 
-    while ( __true ) {
+    if ( ! ( walk_map && getVarType( walk_map ) === '_Object_' ) ) {
+      return __undef;
+    }
+
+    for ( idx = __0; idx < 100; idx++ ) {
       key = path_list[ vMap._shift_ ]();
-      if ( key === __undef ){ break; }
+      if ( key === __undef ) { break; }
 
-      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ){
+      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ) {
         is_good = __false; break;
       }
       walk_map = walk_map[ key ];
     }
     if ( is_good ) { return walk_map; }
+    if ( idx === 100 ) {
+      logUtilObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
+    }
     return __undef;
   }
   // END Public method /getDeepMapVal/
@@ -273,12 +305,14 @@ xhi._util_ = (function () {
     var
       attr_count = list[ __length ],
       found_idx  = __n1,
-      i, list_obj
+      i, row_map
       ;
 
     for ( i = __0; i < attr_count; i++ ) {
-      list_obj = list[ i ];
-      if ( list_obj[ key_name ] === key_val ) {
+      row_map = list[ i ];
+      if ( typeof row_map !== 'object' ) { continue; }
+      if ( ! row_map[ vMap._hasOwnProp_ ]( key_name ) ) { continue; }
+      if ( row_map[ key_name ] === key_val ) {
         found_idx = i;
         break;
       }
@@ -295,12 +329,29 @@ xhi._util_ = (function () {
   // END Public method /getListAttrMap/
 
   // BEGIN Public method /getListDiff/
-  function getListDiff ( first_list, second_list ){
-    return first_list[ vMap._filter_ ](
-      function ( idx ) {
-        return second_list[ vMap._indexOf_ ]( idx ) === __n1;
+  // Purpose: Finds all elements common between two lists.
+  //   Does _not_ do a deep comparison; two similar lists or maps
+  //   will be reported as different unless they point the the same
+  //   data structure.
+  //
+  // Returns: A list of elements in the order of unique
+  //   elements found in the first list followed by unique
+  //   elements found in the second.
+  //
+  function getListDiff ( first_list, second_list ) {
+    var list_1, list_2;
+
+    list_1 = first_list[ vMap._filter_ ](
+      function ( data ) {
+        return second_list[ vMap._indexOf_ ]( data ) === __n1;
       }
     );
+    list_2 = second_list[ vMap._filter_ ](
+      function ( data ) {
+        return first_list[ vMap._indexOf_ ]( data ) === __n1;
+      }
+    );
+    return list_1[ vMap._concat_ ]( list_2 );
   }
   // END Public method /getListDiff/
 
@@ -309,18 +360,19 @@ xhi._util_ = (function () {
   // END Public method /getlogUtilObj/
 
   // BEGIN Public method /getNumSign/
-  function getNumSign ( n ){
-    if ( isNaN(n) ){ return NaN; }
-    if ( n < __0 ){ return __n1; }
+  function getNumSign ( n ) {
+    if ( isNaN( n ) ) { return NaN; }
+    if ( n < __0 ) { return __n1; }
     return __1;
   }
   // END Public method /getNumSign/
 
   // BEGIN Public method /getTzOffsetMs/
   function getTzOffsetMs ( do_force ) {
-    var date_obj = getDateObj();
+    var date_obj = getTzDateObj();
     if ( ! topSmap._tz_offset_ms_ || do_force ) {
-      topSmap._tz_offset_ms_ = date_obj.getTimezoneOffset() * 60000;
+      topSmap._tz_offset_ms_
+        = date_obj.getTimezoneOffset() * topCmap._min_ms_;
     }
     return topSmap._tz_offset_ms_;
   }
@@ -329,7 +381,7 @@ xhi._util_ = (function () {
   // BEGIN Public method /getTzCode/
   function getTzCode () {
     var
-      date_obj = getDateObj(),
+      date_obj = getTzDateObj(),
       date_str = date_obj[ vMap._toString_ ](),
       match_list = date_str[ vMap._match_ ]( topCmap._tzcode_rx_ )
       ;
@@ -406,20 +458,19 @@ xhi._util_ = (function () {
   // Arguments : (positional)
   //   0 - int (required) time_ms  UTC time in milliseconds
   //   1 - int (optional) show_idx Precision.
-  //     0 === show HH:MM:SS
+  //     0 === show HH:MM:SS << default
   //     1 === show HH:MM
   //     2 === show HH
   // Returns   : String
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
-  //       date_obj     = xhi._util_._getDateObj_(),
-  //       tz_offset_ms = date_obj.getTimezoneOffset() * 60000,
+  //       tz_offset_ms = xhi._util_._getTzOffsetMs_(),
   //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
     var
-      show_idx  = __Num( arg_show_idx ) || 0,
+      show_idx  = __Num( arg_show_idx ) || __0,
       sec_ms    = topCmap._sec_ms_,
       min_sec   = topCmap._min_sec_,
       hrs_min   = topCmap._hrs_min_,
@@ -450,15 +501,60 @@ xhi._util_ = (function () {
   // END Public method /makeClockStr/
 
   // BEGIN Public method /makeCommaNumStr/
-  function makeCommaNumStr ( num ){
-    var s_num;
-    if ( num > topCmap._1000k_ ){
-      //noinspection NestedFunctionCallJS
-      return __Str(parseInt( (num / nMap._1000_ ), nMap._10_ )) + 'K';
+  // Purpose: Converts a number into a string optimized for readability
+  // Example   : makeCommaNumStr({ _input_num_ : 1999 })
+  //             Returns '2.0k'
+  // Arguments :
+  //   * _input_num_       - (req) The number to format, e.g. 123598
+  //   * _round_limit_exp_ - (opt) The size (10^exp) of number after which
+  //                         a rounded unit value will be returned.
+  //                         DEFAULT = 3 (1000's)
+  //   * _round_unit_exp_  - (opt) The size (10^exp) of number to group as
+  //                         a unit. DEFAULT = 3 (1000's)
+  //   * _round_unit_str_  - (opt) The unit name. DEFAULT = k
+  //   * _round_dec_count_ - (opt) Number of decimal places to keep
+  //                         in the mantisa when rounding to units.
+  //                         DEFAULT = 1.
+  // Returns   :
+  //   * Success - Returns formated string
+  //   * Failure - Blank string
+  //
+  // Example: str =
+  function makeCommaNumStr ( arg_map ) {
+    var
+      input_num       = arg_map._input_num_        || __0,
+      round_limit_exp = arg_map._round_limit_exp_  || 3,    // round limit
+      round_unit_exp  = arg_map._round_unit_exp_   || 3,    // round unit
+      round_unit_str  = arg_map._round_unit_str_   || 'k',  // unit suffix
+      round_dec_count = arg_map._round_dec_count_  || 1,    // decimal #
+
+      round_limit_num = vMap._Math_.pow( 10, round_limit_exp  ),
+      round_unit_num  = vMap._Math_.pow( 10, round_unit_exp   ),
+
+      solve_suffix = __blank,
+
+      solve_num, solve_str, solve_list, list_count, idx
+      ;
+
+    if ( vMap._fnGetAbs_( input_num ) >= round_limit_num ) {
+      solve_num    = input_num / round_unit_num;
+      solve_suffix = round_unit_str;
+      solve_str    = round_dec_count
+        ? solve_num[ vMap._toFixed_]( round_dec_count )
+        : __Str( solve_num );
     }
-    //noinspection NestedFunctionCallJS
-    s_num = __Str(parseInt( num, nMap._10_ ));
-    return s_num[ vMap._replace_ ]( topCmap._comma_rx_, "$1,");
+    else {
+      solve_str = __Str( input_num );
+    }
+
+    solve_list = solve_str[ vMap._split_ ]( '.' );
+    list_count = solve_list[ __length ];
+    for ( idx = __0; idx < list_count; idx++ ) {
+      solve_list[ idx ] = solve_list[ idx ][
+        vMap._replace_ ]( topCmap._comma_rx_, "$1," );
+    }
+
+    return solve_list[ vMap._join_]('.') + solve_suffix;
   }
   // END Public method /makeCommaNumStr/
 
@@ -573,13 +669,13 @@ xhi._util_ = (function () {
     var error_obj = new Error();
     error_obj.name = 'sl:' + name_text;
     if ( msg_text ) { error_obj.description = msg_text; }
-    if ( data ){ error_obj.data = data; }
+    if ( data ) { error_obj.data = data; }
     return error_obj;
   }
   // END Public method /makeErrorObj/
 
   // BEGIN Public method /makeGuidStr/
-  makeGuidStr = (function (){
+  makeGuidStr = (function () {
     /*jslint bitwise: true*/
     function makePart () {
       //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
@@ -611,19 +707,19 @@ xhi._util_ = (function () {
   // The reason I need this is to compare objects to
   //   primary utility.
   makeListPlus = (function () {
-    function checkMatchVal ( data ){
+    function checkMatchVal ( data ) {
       var match_count = __0, idx;
-      for ( idx = this[ __length]; idx; __0 ){
+      for ( idx = this[ __length]; idx; __0 ) {
         //noinspection IncrementDecrementResultUsedJS
-        if ( this[--idx] === data ){ match_count++; }
+        if ( this[--idx] === data ) { match_count++; }
       }
       return match_count;
     }
-    function removeListVal ( data ){
+    function removeListVal ( data ) {
       var removed_count = __0, idx;
-      for ( idx = this[ __length ]; idx; __0 ){
+      for ( idx = this[ __length ]; idx; __0 ) {
         //noinspection IncrementDecrementResultUsedJS
-        if ( this[--idx] === data ){
+        if ( this[--idx] === data ) {
           this.splice(idx, __1 );
           removed_count++;
           idx++;
@@ -631,15 +727,15 @@ xhi._util_ = (function () {
       }
       return removed_count;
     }
-    function pushUniqVal ( data ){
-      if ( checkMatchVal.call(this, data ) ){ return false; }
+    function pushUniqVal ( data ) {
+      if ( checkMatchVal.call(this, data ) ) { return __false; }
       this.push( data );
       return __true;
     }
     function mainFn ( input_list ) {
       var return_list;
-      if ( input_list && Array.isArray( input_list ) ){
-        if ( input_list.remove_val ){
+      if ( input_list && Array.isArray( input_list ) ) {
+        if ( input_list.remove_val ) {
           logUtilObj._logIt_(
             '_warn_',
             'The array appears to already have listPlus capabilities'
@@ -709,9 +805,10 @@ xhi._util_ = (function () {
 
       ret_list = mapFn( field_data, idx, list, argList );
       if ( ! ret_list ) { return; }
+
+      //noinspection JSUnusedAssignment
       ret_key  = ret_list[ __0 ];
       ret_data = ret_list[ __1 ];
-
       resultMap[ ret_key ] = ret_data;
     }
 
@@ -747,9 +844,9 @@ xhi._util_ = (function () {
   // Purpose: Convert an array into a map keyed by the array values.
   // Assign value to all keys.
   //
-  function makeSeenMap ( list, value ){
+  function makeSeenMap ( list, value ) {
     var i, key, seen_map = {};
-    for ( i = __0; i < list[ __length ]; i++ ){
+    for ( i = __0; i < list[ __length ]; i++ ) {
       key = list[ i ];
       seen_map[ key ] = value;
     }
@@ -779,25 +876,15 @@ xhi._util_ = (function () {
   }
   // END Public method /makeStrFromMap/
 
-  // BEGIN Public method /makeRegexObj/
-  // Purpose   : Create a regular expression object
-  // Example   : makeRegexObj( '\s*hello\s*', 'i' );
-  function makeRxObj ( pattern_str, option_str ) {
-    if ( option_str ) {
-      return new RegExp( pattern_str, option_str );
-    }
-    return new RegExp( pattern_str );
-  }
-  // END Public method /makeRegexObj/
-
   // BEGIN Public method /makeSeriesMap/
   // Purpose   : Create a list of time labels quantitized to match
   //   standard time intervales
   // Example   :
   //    series_map = makeSeriesMap({
-  //      _max_ms_    : 1465459980000,
-  //      _min_ms_    : 1465452840000,
-  //      _tgt_count_ : 12
+  //      _tz_offset_ms_ : 25200000,
+  //      _max_ms_       : 1465459980000,
+  //      _min_ms_       : 1465452840000,
+  //      _tgt_count_    : 12
   //    });
   // Arguments : (required)
   //   _max_ms_    : int start UTC time in milliseconds
@@ -805,18 +892,21 @@ xhi._util_ = (function () {
   //   _tgt_count_ : int desired number of divisions (+/- 50%)
   //
   // Returns:
-  //   A map useful for plotting a quantitized time series like so:
+  //   A map useful for plotting a quantized time series like so:
   //      +-----+------+-----+
   //      |     |      |     |
   //    00:06 00:10  00:15 00:19
   //
-  //    { _offset_ratio_ : 0.3428,
+  //    { _time_list_    : [...],
+  //      _date_list_    : [...],
+  //      _offset_ratio_ : 0.3428,
   //      _unit_name_    : '10min',
   //      _unit_ms_      : 600 000,
   //      _unit_ratio_   : 0.4615,
   //      _unit_count_   : 2
   //    }
   //
+  //    day_offset is amount of seconds into the day
   //    min_ms   = 6 * 60k     =  360 000
   //    max_ms   = 19 * 60k    = 1140 000
   //    span_ms  = 1140 - 360k =  780 000
@@ -840,43 +930,40 @@ xhi._util_ = (function () {
   //   show local time. See example on makeClockStr, above.
   //
   function makeSeriesMap( arg_map ) {
-    // Normalize times to remove date.
     var
-      max_ms    = arg_map._max_ms_    %  topCmap._day_ms_,
-      min_ms    = arg_map._min_ms_    %  topCmap._day_ms_,
-      tgt_count = arg_map._tgt_count_,
+      tz_offset_ms = arg_map._tz_offset_ms_ || __0,
+      max_ms       = arg_map._max_ms_ - tz_offset_ms,
+      min_ms       = arg_map._min_ms_ - tz_offset_ms,
+      tgt_count    = arg_map._tgt_count_,
 
-      span_ms,
-      unit_list, unit_count,
-      btm_idx,   top_idx,
-      btm_count, top_count,
+      date_obj     = new Date(),
+      offset_str   = makeClockStr( tz_offset_ms ),
+      offset_list  = offset_str[ vMap._split_ ](':'),
 
-      jdx, idx,     check_idx,
-      check_map,    check_count,
-      mod_unit_ms,  offset_ms,
-      offset_ratio, solve_map,
-      solve_list,   solve_ms,
-      solve_str
+      span_ms,         unit_list,    unit_count,
+      btm_idx,         top_idx,      btm_count,
+      top_count,
+
+      jdx, idx,        check_idx,    check_map,
+      check_count,     mod_unit_ms,  offset_ms,
+      width_ratio,     offset_ratio, accum_ratio,
+      date_ms,         date_offset,
+
+      solve_map,       solve_ms,     solve_str,
+      solve_time_list, solve_date_list
       ;
 
-    // Ensure end time is after the start time after normalizing
-    if ( max_ms < min_ms ) { max_ms += topCmap._day_ms_; }
-
     // Get the time span and a list of available units
-    //
     span_ms    = max_ms - min_ms;
     unit_list  = topCmap._unit_ms_list_;
     unit_count = unit_list[ __length ];
 
     // Init for solve loop
-    //
     btm_idx    = __0;
     top_idx    = unit_count - __1;
     btm_count  = tgt_count * 0.75;
     top_count  = tgt_count * 1.25;
-
     // Back off limits to resolve as close to target as possible
-    //
     BACKOFF: for ( jdx = __0; jdx < nMap._10_; jdx ++ ) {
       // Solve for unit size through interpolation
       idx = __0;
@@ -916,7 +1003,6 @@ xhi._util_ = (function () {
     if ( ! solve_map ) { return; }
 
     // Store values to solve_map
-    //
     mod_unit_ms  = min_ms % solve_map._unit_ms_;
     offset_ms    = solve_map._unit_ms_ - mod_unit_ms;
     offset_ratio = ( offset_ms / span_ms );
@@ -924,15 +1010,39 @@ xhi._util_ = (function () {
     solve_map._offset_ratio_ = offset_ratio;
     solve_map._unit_ratio_   = solve_map._unit_ms_ / span_ms;
 
+    // Create date list
+    date_obj.setTime( min_ms );
+    date_obj.setHours(
+      -offset_list[ __0 ], -offset_list[ __1], -offset_list[__2]
+    );
+    date_ms     = date_obj.getTime();
+    date_offset = min_ms - date_ms;
 
-    solve_list = [];
+    solve_date_list = [];
+    accum_ratio     = __0;
+    while ( date_ms < max_ms ) {
+      width_ratio = ( topCmap._day_ms_ - date_offset ) / span_ms;
+      accum_ratio += width_ratio;
+      if ( accum_ratio >= __1 ) {
+        width_ratio = width_ratio + ( __1 - accum_ratio );
+      }
+      solve_date_list[ vMap._push_ ]({
+        _date_str_     : makeDateStr( date_ms ),
+        _width_ratio_  : width_ratio
+      });
+      date_offset = __0;
+      date_ms += topCmap._day_ms_;
+    }
+    solve_map._date_list_ = solve_date_list;
+
+    solve_time_list = [];
     while ( offset_ratio < __1 ) {
       solve_ms  = __floor( offset_ratio * span_ms ) + min_ms;
       solve_str = makeClockStr( solve_ms, solve_map._show_idx_ );
-      solve_list[ __push ]( solve_str );
+      solve_time_list[ __push ]( solve_str );
       offset_ratio += solve_map._unit_ratio_;
     }
-    solve_map._time_list_ = solve_list;
+    solve_map._time_list_ = solve_time_list;
 
     return solve_map;
   }
@@ -1105,19 +1215,19 @@ xhi._util_ = (function () {
 
     while ( __true ) {
       key = path_list.shift();
-      if ( key === undefined ){ break; }
+      if ( key === undefined ) { break; }
 
-      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ){
+      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ) {
         walk_map[ key ] = {};
       }
-      if ( ! path_list[ __0 ] ){
+      if ( ! path_list[ __0 ] ) {
         walk_map[ key ]  = value;
         is_good = __true;
         break;
       }
       walk_map = walk_map[ key ];
     }
-    if ( is_good ){ return base_map; }
+    if ( is_good ) { return base_map; }
     return __undef;
   }
   // END Public method /setDeepMapVal/
@@ -1131,8 +1241,6 @@ xhi._util_ = (function () {
     };
 
     topCmap = {
-      _1000k_     : 1000000,
-
       _sec_ms_    : 1000,
       _min_sec_   : 60,
       _hrs_min_   : 60,
@@ -1175,7 +1283,7 @@ xhi._util_ = (function () {
   return {
     _cloneData_       : cloneData,
     _getBasename_     : getBasename,
-    _getDateObj_      : getDateObj,
+    _getDirname_      : getDirname,
     _getDeepMapVal_   : getDeepMapVal,
     _getListAttrIdx_  : getListAttrIdx,
     _getListAttrMap_  : getListAttrMap,

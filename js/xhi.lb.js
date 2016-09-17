@@ -1,5 +1,7 @@
 /**
- *    xhi.lb.js - Litebox manager
+ *    xhi.lb.js
+ *    Litebox manager
+ *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
@@ -8,17 +10,17 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global jQuery, xhi */
+/*global pcss, jQuery, xhi */
 
-xhi._lb_ = (function ($){
-  'use strict';
+xhi._lb_ = (function ( $ ) {
   // ================= BEGIN MODULE SCOPE VARIABLES ===================
+  'use strict';
   //noinspection MagicNumberJS
   var
     vMap    = xhi._vMap_,
     nMap    = xhi._nMap_,
-    cssKmap = xhi._cssKmap_,
-    cssVmap = xhi._cssVmap_,
+    cssKmap = pcss._cfg_._cssKeyMap_,
+    cssVmap = pcss._cfg_._cssValMap_,
 
     __0     = nMap._0_,
     __2     = nMap._2_,
@@ -38,6 +40,7 @@ xhi._lb_ = (function ($){
       _close_toid_   : __undef,  // Close timeout id
       _is_masked_    : __false,  // Mask-on flag
       _is_ready_     : __false,  // Has DOM been initialized?
+      _is_busy_      : __false,  // Is litebox in use?
       _lb_class_str_ : __blank,  // Caller specified class(es) of lb
       _mod_class_str_: __blank,  // Caller specified modifier class(es) of lb
       _onclose_fn_   : __null    // Callback function on close
@@ -99,7 +102,7 @@ xhi._lb_ = (function ($){
 
   // ======================= BEGIN DOM METHODS ========================
   // BEGIN DOM method /set$Map/
-  function set$Map (){
+  function set$Map () {
     $Map = {
       _$body_    : $( 'body'          ),
       _$litebox_ : $( '#xhi-_lb_'      ),
@@ -112,7 +115,7 @@ xhi._lb_ = (function ($){
   // BEGIN DOM method /initModule/
   // Checks to see if we have been initialized; if not, we do so
   function initModule () {
-    if ( topSmap._is_ready_ ){ return; }
+    if ( topSmap._is_ready_ ) { return; }
     $('body')[ vMap._append_ ]( topCmap._main_html_ );
     set$Map();
     $Map._$litebox_[ vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
@@ -130,7 +133,6 @@ xhi._lb_ = (function ($){
   // BEGIN DOM method /cleanUp/
   function cleanUp () {
     var param_map = this;
-
     topSmap._cleanup_toid_  = __undef;
     if ( ! param_map ) { return; }
 
@@ -146,6 +148,7 @@ xhi._lb_ = (function ($){
 
     topSmap._mod_class_str_ = __blank;
     topSmap._lb_class_str_  = __blank;
+    topSmap._is_busy_       = __false;
   }
   // END DOM method /cleanUp/
 
@@ -155,6 +158,11 @@ xhi._lb_ = (function ($){
     var param_map = {}, bound_fn;
     initModule();
 
+    if ( topSmap._close_toid_ ) {
+      __clearTo( topSmap._close_toid_ );
+      topSmap._close_toid_ = __undef;
+    }
+
     param_map._lb_class_str_  = topSmap._lb_class_str_;
     param_map._mod_class_str_ = topSmap._mod_class_str_;
 
@@ -162,11 +170,6 @@ xhi._lb_ = (function ($){
     topSmap._is_masked_    = __false;
     $Map._$litebox_[ vMap._removeClass_ ]( 'xhi-_x_active_' );
     $Map._$mask_[    vMap._removeClass_ ]( 'xhi-_x_active_' );
-
-    if ( topSmap._close_toid_ ) {
-      __clearTo( topSmap._close_toid_ );
-      topSmap._close_toid_ = __undef;
-    }
 
     bound_fn = cleanUp[ vMap._bind_ ]( param_map );
     topSmap._cleanup_fn_   = bound_fn;
@@ -180,9 +183,9 @@ xhi._lb_ = (function ($){
   // fires the _onclose_fn_ callback, whereas hide does not
   function closeIt () {
     initModule();
-    if ( topSmap._onclose_fn_ ){
+    if ( topSmap._onclose_fn_ ) {
       // Do not close litebox on falsey return from _onclose_fn_
-      if ( topSmap._onclose_fn_($Map._$content_ )){
+      if ( topSmap._onclose_fn_( $Map._$content_ ) ) {
         hideIt();
       }
     }
@@ -193,7 +196,7 @@ xhi._lb_ = (function ($){
   // END DOM method /closeIt/
 
   // BEGIN method /setCloseFn/
-  function setCloseFn ( fn_cb ){
+  function setCloseFn ( fn_cb ) {
     topSmap._onclose_fn_ = fn_cb || null;
   }
   // END method /setCloseFn/
@@ -237,12 +240,13 @@ xhi._lb_ = (function ($){
   // END method /hideBusy/
 
   // BEGIN DOM method /afterShow/
-  // Purpose: Finishes presentation of lightbox after it is shown
+  // Purpose: Finishes presentation of litebox after it is shown
   //
   function afterShow() {
     var
       param_map = this,
       do_sizing = param_map._do_sizing_,
+      do_mask   = param_map._do_mask_,
       $litebox  = param_map._$litebox_,
       $mask     = param_map._$mask_,
 
@@ -260,9 +264,11 @@ xhi._lb_ = (function ($){
       };
       $litebox[ vMap._css_ ]( css_map );
     }
-    $mask[    vMap._css_ ]( cssKmap._display_, cssVmap._block_ );
     $litebox[ vMap._addClass_ ]( 'xhi-_x_active_');
-    $mask[    vMap._addClass_ ]( 'xhi-_x_active_' );
+    if ( do_mask ) {
+      $mask[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
+        vMap._addClass_ ]( 'xhi-_x_active_' );
+    }
   }
   // END DOM method /afterShow/
 
@@ -316,15 +322,15 @@ xhi._lb_ = (function ($){
   //   * _autoclose_ms_ : cancels the window after a i seconds
   //   * _content_html_ - Primary content.  If not initially provided, will
   //       show a 50% height loading graphic.
-  //   * _close_html_     - close symbol or text
-  //   * _do_hide_close_  : hide close button
+  //   * _close_html_     - close symbol or text.  Blank omits a close button.
   //   * _do_block_click_ : This blocks the the user from clicking on the
-  //       mask to close the litebox.
+  //       mask to close the litebox
   //   * _do_draggable_   - enable dragging of litebox by the title bar
   //   * _do_title_close_ - tap on title to close (overrides close symbol)
+  //   * _do_mask_        - set to false to disable mask
   //   * _lb_class_str_   - replace stock litebox class with this
   //     ( separate multiple classes by a space, e.g. 'c1 c2 c3 ... ' )
-  //   * _mod_class_str_  - augment stock litebox clas with this
+  //   * _mod_class_str_  - augment stock litebox class with this
   //     ( separate multiple classes by a space, e.g. 'c1 c2 c3 ... ' )
   //   * _position_map_ - set this to override default positioning
   //     (mobile w x h stays 90%/90%)
@@ -346,6 +352,7 @@ xhi._lb_ = (function ($){
       layout_key    = arg_map._layout_key_    || '_top_',
       mod_class_str = arg_map._mod_class_str_ || __blank,
       lb_class_str  = arg_map._lb_class_str_  || __blank,
+      do_mask       = arg_map._do_mask_ === __false ? __false : __true,
       do_sizing     = __true,
 
       css_map,    inner_html,
@@ -354,10 +361,15 @@ xhi._lb_ = (function ($){
       bound_fn
       ;
 
+    // Close previously open lightbox
+    if ( topSmap._is_busy_ ) { hideIt(); }
+
     // Clean-up any linger fades, etc
     if ( topSmap._cleanup_toid_ && topSmap._cleanup_fn_ ) {
+      __clearTo( topSmap._cleanup_toid_ );
       topSmap._cleanup_fn_();
     }
+
     // Fill litebox content with desired layout
     inner_html = xhi._util_._makeTmpltStr_({
       _input_str_ : topCmap._tmplt_map_[ layout_key ],
@@ -383,13 +395,9 @@ xhi._lb_ = (function ($){
     // Store close button function
     topSmap._onclose_fn_ = arg_map._onclose_fn_ || null;
 
-
     // Hide or show close button
-    if ( arg_map._do_hide_close_ || arg_map._do_title_close_ ) {
-      $close[ vMap._css_ ]( cssKmap._display_, cssVmap._none_  );
-    }
-    else {
-      $close[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
+    if ( arg_map._close_html_ ) {
+      $close[ vMap._css_ ]( cssKmap._display_, cssVmap._block_  )[
         vMap._on_  ]( vMap._utap_, closeIt );
     }
 
@@ -400,17 +408,19 @@ xhi._lb_ = (function ($){
     }
 
     // Configure mask tap
-    if ( arg_map._do_block_click_ ){
-      $mask[ vMap._addClass_ ]('xhi-_lb_x_noclick_');
-      $mask[ vMap._off_ ]( vMap._utap_, closeIt );
-    }
-    else {
-      $mask.removeClass('xhi-_lb_x_noclick_')[
-        vMap._on_ ]( vMap._utap_, closeIt );
+    if ( do_mask ) {
+      if ( arg_map._do_block_click_ ) {
+        $mask[ vMap._addClass_ ]( 'xhi-_lb_x_noclick_' );
+        $mask[ vMap._off_ ]( vMap._utap_, closeIt );
+      }
+      else {
+        $mask.removeClass( 'xhi-_lb_x_noclick_' )[
+          vMap._on_ ]( vMap._utap_, closeIt );
+      }
     }
 
     // Autoclose if requested
-    if ( arg_map._autoclose_ms_ ){
+    if ( arg_map._autoclose_ms_ ) {
       topSmap._close_toid_ = __setTo( closeIt, arg_map._autoclose_ms_ );
     }
 
@@ -432,18 +442,23 @@ xhi._lb_ = (function ($){
     topSmap._lb_class_str_  = lb_class_str;
     topSmap._mod_class_str_ = mod_class_str;
 
-    // Show and (if requested) size lightbox
+    // Show and (if requested) size litebox
     param_map = {
       _$litebox_  : $litebox,
       _$mask_     : $mask,
+      _do_mask_   : do_mask,
       _do_sizing_ : do_sizing
     };
     bound_fn = afterShow[ vMap._bind_ ]( param_map );
+    if ( do_mask ) {
+      $mask[ vMap._addClass_ ]( 'xhi-_x_active_' );
+    }
     $litebox[ vMap._css_ ]( css_map )[ vMap._show_ ]( bound_fn );
 
     // Coordinate draggable if requested
     coordDraggable( $title, arg_map._do_draggable_ );
 
+    topSmap._is_busy_ = __true;
     return $litebox;
   }
   // END method /showIt/
@@ -479,15 +494,15 @@ xhi._lb_ = (function ($){
     topSmap._$drag_target_ = __undef;
   }
 
-  function onResize ( /*event_obj */ ){
-   if ( topSmap._resize_toid_ ){ return __true; }
-     topSmap._resize_toid_ = __setTo(function (){
+  function onResize ( /*event_obj */ ) {
+   if ( topSmap._resize_toid_ ) { return __true; }
+     topSmap._resize_toid_ = __setTo(function () {
      var
        body_w_px  = $Map.$body[ cssKmap._width_ ](),
        body_h_px  = $Map.$body[ cssKmap._height_ ](),
        $litebox, w_px, h_px
        ;
-     if ( topSmap._is_masked_ ){
+     if ( topSmap._is_masked_ ) {
        $litebox = $Map._$litebox_;
        w_px     = $litebox[ cssKmap._width_  ]();
        h_px     = $litebox[ cssKmap._height_ ]();

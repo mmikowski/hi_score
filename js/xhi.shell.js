@@ -1,16 +1,18 @@
-/**
- *    xhi.shell.js - Shell module
+/*
+ *    xhi.shell.js
+ *    Shell module for xhi application
+ *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint       browser : true, continue : true,
-  devel : true, indent : 2,      maxerr : 50,
- newcap : true,  nomen : true, plusplus : true,
- regexp : true, sloppy : true,     vars : false,
-  white : true,   todo : true,  unparam : true
+/*jslint         browser : true, continue : true,
+  devel  : true,  indent : 2,      maxerr : 50,
+  newcap : true,   nomen : true, plusplus : true,
+  regexp : true,  sloppy : true,     vars : false,
+  white  : true,    todo : true,  unparam : true
 */
 /*global jQuery, xhi */
 
-xhi._shell_ = (function ($) {
+xhi._shell_ = (function ( $ ) {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   var

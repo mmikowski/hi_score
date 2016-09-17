@@ -1,5 +1,7 @@
 /**
- *    xhi.module-tmplt.js - feature module template
+ *    xhi.module-tmplt.js
+ *    Feature module template
+ *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint       browser : true, continue : true,
@@ -47,7 +49,7 @@ xhi._tmplt_ = (function ($) {
     // and then set jQuery colection cache
     //
     set$Map( $top_box );
-    __logIt( '_info_', 
+    __logIt( '_info_',
       '__0 === ' + __0,
       '__1 === ' + __1,
       '__blank === ' + __blank,

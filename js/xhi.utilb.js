@@ -13,7 +13,7 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global jQuery, xhi */
+/*global jQuery, pcss, xhi */
 
 xhi._utilb_ = (function ( $ ) {
   'use strict';
@@ -21,8 +21,8 @@ xhi._utilb_ = (function ( $ ) {
   var
     nMap     = xhi._nMap_,
     vMap     = xhi._vMap_,
-    cssKmap  = xhi._cssKmap_,
-    cssVmap  = xhi._cssVmap_,
+    cssKmap  = pcss._cfg_._cssKeyMap_,
+    cssVmap  = pcss._cfg_._cssValMap_,
 
     __Str     = vMap._String_,
     __blank   = vMap._blank_,
@@ -303,17 +303,26 @@ xhi._utilb_ = (function ( $ ) {
   // END Public method /onBufferReady/
 
   // BEGIN Public method /resizeTextarea/
-  // Example: $foo.on( 'keyup', function (){ resizeTextarea( this, 25 ); }
-  function resizeTextarea ( text_el, arg_max_ht_px ) {
+  // Example:
+  //   $foo.on( 'keyup', function () { resizeTextarea( this, 25 ); } );
+  //
+  function resizeTextarea ( $textarea, arg_max_ht_px ) {
     var
-      max_ht_px   = arg_max_ht_px || 400,
-      solve_ht_px = text_el.scrollHeight
+      max_ht_px     = arg_max_ht_px || 400,
+      scroll_ht_px  = $textarea[ vMap._prop_ ]( vMap._scrollHeight_ ),
+      outer_ht_px   = $textarea[ vMap._outerHeight_](),
+      solve_ht_px
       ;
 
-    if ( solve_ht_px > max_ht_px ) {
-      solve_ht_px = max_ht_px;
-    }
-    text_el.style.height = __Str( solve_ht_px ) + 'px';
+    if ( ( scroll_ht_px > outer_ht_px )
+      || ( scroll_ht_px < outer_ht_px - 30 )
+    ) { solve_ht_px = scroll_ht_px + 8; }
+    else { return; }
+
+    if ( solve_ht_px > max_ht_px ) { solve_ht_px = max_ht_px; }
+    if ( solve_ht_px < 30 ) { solve_ht_px = 30; }
+
+    $textarea[ vMap._css_ ]( cssKmap._height_, solve_ht_px );
   }
   // END Public method /resizeTextarea/
 

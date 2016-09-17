@@ -13,7 +13,11 @@
 /*global jQuery */
 
 jQuery.scrolli = (function ( $ ) {
+  // ================= BEGIN MODULE SCOPE VARIABLES ====================
+  //noinspection MagicNumberJS,MagicNumberJS
+  'use strict';
   var
+    __0     = 0,
     __n1    = -1,
     elList  = [],
     topCmap = {
@@ -21,12 +25,34 @@ jQuery.scrolli = (function ( $ ) {
       _namespace_  : '.xhi-_scrolli_',
       _top_class_  : 'xhi-_x_top_on_',
       _btm_class_  : 'xhi-_x_btm_on_'
-    },
+    };
+  // ================== END MODULE SCOPE VARIABLES =====================
 
-    add$List,
-    rm$List
-    ;
+  // ===================== BEGIN UTILITY METHODS =======================
 
+  function isjQuery ( obj ) {
+    return obj && ( obj instanceof jQuery 
+      || obj.constructor.prototype.jquery )
+      ;
+  }
+
+  function wrapList ( list_data ) {
+    var
+      bound_fn  = this,
+      is_jquery = isjQuery( list_data ),
+      el_count  = list_data.length,
+
+      idx, $single
+      ;
+
+    for ( idx = __0; idx < el_count; idx++ ) {
+      $single = is_jquery ? list_data.index( idx ) : $( list_data[ idx ] );
+      bound_fn( $single );
+    }
+  }
+  // ====================== END UTILITY METHODS ========================
+
+  // ====================== BEGIN EVENT HANDLERS =======================
   function onScrollDiv ( /*event_obj*/ ) {
     var
       $div          = $(this),
@@ -50,12 +76,9 @@ jQuery.scrolli = (function ( $ ) {
       $div.removeClass( topCmap._btm_class_ );
     }
   }
+  // ======================= END EVENT HANDLERS ========================
 
-  function wrapList ( $list ) {
-    var do_fn = this;
-    $list.each(function () { do_fn( $(this) ); });
-  }
-
+  // ======================== BEGIN DOM METHODS ========================
   function addSingle( $single ) {
     var el = $single.get(0);
     if ( elList.indexOf( el ) > __n1 ) { return; }
@@ -70,16 +93,6 @@ jQuery.scrolli = (function ( $ ) {
   function recalcSingle( $single ) {
     $single.trigger( 'scroll' + topCmap._namespace_ );
   }
-  
-  function recalc$All () {
-    var i, el;
-    if ( elList && elList.length ) {
-      for ( i = 0; i < elList.length; i++ ) {
-        el = elList[ i ];
-        recalcSingle( $(el) );
-      }
-    }
-  }
 
   function rmSingle( $single ) {
     var
@@ -92,16 +105,28 @@ jQuery.scrolli = (function ( $ ) {
     $single.removeClass( topCmap._top_class_ + ' ' + topCmap._btm_class_ );
     elList.splice( idx, 1 );
   }
-  
-  add$List    = wrapList.bind( addSingle );
-  rm$List     = wrapList.bind( rmSingle  );
+  // ========================= END DOM METHODS =========================
 
-  function reSet () { rm$List( elList ); }
+  // ====================== BEGIN PUBLIC METHODS =======================
+  function recalc$All () {
+    var i, el;
+    if ( elList && elList.length ) {
+      for ( i = 0; i < elList.length; i++ ) {
+        el = elList[ i ];
+        recalcSingle( $(el) );
+      }
+    }
+  }
+
+  function reSet () {
+    wrapList.bind( elList ).call( null, elList );
+  }
 
   return {
-    _add$List_    : add$List,
+    _add$List_    : wrapList.bind( addSingle ),
     _recalc$All_  : recalc$All,
-    _rm$List_     : rm$List,
+    _rm$List_     : wrapList.bind( rmSingle  ),
     _reSet_       : reSet
   };
+  // ======================= END PUBLIC METHODS ========================
 }( jQuery ));

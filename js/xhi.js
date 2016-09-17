@@ -1,5 +1,7 @@
 /**
- *    xhi.js - common root module
+ *    xhi.js
+ *    Root module for xhi namespace
+ *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
@@ -94,6 +96,7 @@ var xhi = (function () {
       _join_            : 'join',
       _key_             : 'key',
       _keydown_         : 'keydown',
+      _keypress_        : 'keypress',
       _keyup_           : 'keyup',
       _length_          : 'length',
       _makeDsObj_       : 'makeDragScrollObj',
@@ -112,6 +115,7 @@ var xhi = (function () {
       _parse_           : 'parse',
       _pop_             : 'pop',
       _prepend_         : 'prepend',
+      _prev_            : 'prev',
       _preventDefault_  : 'preventDefault',
       _prop_            : 'prop',
       _publish_         : 'publish',
@@ -153,6 +157,7 @@ var xhi = (function () {
       _toggle_          : 'toggle',
       _transitionend_   : 'transitionend',
       _trigger_         : 'trigger',
+      _trim_            : 'trim',
       _true_            : true,
       _type_            : 'type',
       _udragend_        : 'udragend',
@@ -219,6 +224,7 @@ var xhi = (function () {
   // ======================= END PUBLIC METHODS ========================
 }());
 
+// ================== BEGIN BROWSER AND NODE SUPPORT ===================
 // Browser support
 try {
   xhi._vMap_._window_ = window;
@@ -230,14 +236,9 @@ catch( e1 ) {
     xhi._vMap_._window_ = global;
     xhi._isBrowser_     = false;
   }
-  catch( e2 ) { throw '_not_a_browser_or_node_'; }
+  catch( e2 ) { throw '_no_browser_or_node_support_'; }
 }
 
-if ( xhi._isBrowser_ && window.pcss ) {
-  xhi._vMap_._document_ = window.document;
-  xhi._cssKmap_ = pcss._getCssKeyMap_();
-  xhi._cssVmap_ = pcss._getCssValMap_();
-}
-else {
-  global.xhi = xhi;
-}
+if ( xhi._isBrowser_ ) { xhi._vMap_._document_ = window.document; }
+else { global.xhi = xhi; }
+// =================== END BROWSER AND NODE SUPPORT ====================
