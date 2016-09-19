@@ -4,7 +4,7 @@
  *
  * Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint        browser : true, continue : true,
+/*jslint           node : true, continue : true,
   devel : true,  indent : 2,      maxerr : 50,
  newcap : true,   nomen : true, plusplus : true,
  regexp : true,  sloppy : true,     vars : false,
@@ -23,10 +23,13 @@ var
   vMap = xhi._vMap_,
   nMap = xhi._nMap_,
 
-  __null  = vMap._null_,
-  __undef = vMap._undefined_,
+
   __blank = vMap._blank_,
+  __false = vMap._false_,
+  __null  = vMap._null_,
   __Str   = vMap._String_,
+  __true  = vMap._true_,
+  __undef = vMap._undefined_,
 
   __n1 = nMap._n1_,
   __0  = nMap._0_,
@@ -446,10 +449,90 @@ function makeCommaNumStr ( test_obj ) {
 }
 
 function makeDateStr( test_obj ) {
-  test_obj.expect( __0 );
-  test_obj.done();
+  var
+    date_obj     = new Date(),
+    assert_list  = [
+      { arg_map : { _date_ms_ : 1474323404010 }, str : '2016-09-19' },
+      { arg_map : { _date_ms_ : 1474323404020, _do_time_ : __false },
+        str : '2016-09-19' },
+      { arg_map : { _date_ms_ : 1474323404498, _do_time_ : __true  },
+        str : '2016-09-19 15:16:44' },
+      { arg_map : { _date_ms_ : 1274323404500 }, str : '2010-05-19' },
+      { arg_map : { _date_ms_ : 1274323404999, _do_time_ : __false },
+        str : '2010-05-19' },
+      { arg_map : { _date_ms_ : 1274323405000, _do_time_ : __true  },
+        str : '2010-05-19 19:43:25' },
+      { arg_map : { _date_ms_  : 1374323405099}, str : '2013-07-20' },
+      { arg_map : { _date_obj_ : date_obj },     str : '2013-07-20' },
+      { arg_map : { _date_ms_ : 1374323405099, _do_time_ : __false  },
+        str     : '2013-07-20'
+      },
+      { arg_map : { _date_obj_ : date_obj,     _do_time_ : __false  },
+        str     : '2013-07-20'
+      },
+      { arg_map : { _date_ms_ : 1374323405099, _do_time_ : __true  },
+        str     : '2013-07-20 05:30:05'
+      },
+      { arg_map : { _date_obj_ : date_obj,     _do_time_ : __true  },
+        str     : '2013-07-20 05:30:05'
+      }
+    ],
 
+    assert_count = assert_list.length,
+    make_str_fn   = xhi._util_._makeDateStr_,
+
+    idx, assert_map, date_str, msg_str
+    ;
+
+  date_obj.setTime( 1374323405099 );
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    assert_map  = assert_list[ idx ];
+
+    date_str   = make_str_fn.apply( __undef, [ assert_map.arg_map ] );
+    msg_str    = __Str( idx ) + '. '
+      + __Str( date_str ) + ' === ' + __Str( assert_map.str );
+
+    test_obj.ok( date_str === assert_map.str, msg_str );
+  }
+
+  test_obj.done();
 }
+
+// function makeEllipsisStr( test_obj ) {
+//   var
+//     // str0 = 'georgey', //7
+//     str1 = 'hee haw and the boys', // 20
+//     // str2 = 'kim knickers and the female fatales chicks', // 42
+//     // str3 = 'this is by far the longest string. <b>It contains html '
+//     //   + 'markup</b> which makes it especially sucky, parse-wise',
+//     assert_list  = [
+//       { arg_map : { _input_str_ : __undef }, str : __blank },
+//       { arg_map : { _input_str_ : __null  }, str : __blank },
+//       { arg_map : { _input_str_ : str1    }, str : __blank },
+//       { arg_map : { _input_str_ : str1, _char_limit_int_ : 10  },
+//         str : 'hee haw...' }
+//     ],
+
+    // assert_count = assert_list.length,
+    // make_str_fn   = xhi._util_._makeEllipsisStr_,
+
+    // idx, assert_map, ellipsis_str, msg_str
+    // ;
+
+  // test_obj.expect( assert_count );
+  // for ( idx = __0; idx < assert_count; idx++ ) {
+  //   assert_map  = assert_list[ idx ];
+
+    // ellipsis_str = make_str_fn.apply( __undef, [ assert_map.arg_map ] );
+    // msg_str      = __Str( idx ) + '. '
+    //   + __Str( ellipsis_str ) + ' === ' + __Str( assert_map.str );
+
+  //   test_obj.ok( ellipsis_str === assert_map.str, msg_str );
+  // }
+
+//   test_obj.done();
+// }
 
 function getVarType( test_obj ) {
   var
@@ -460,7 +543,7 @@ function getVarType( test_obj ) {
     und1 = __undef,
     msg_str,
 
-    bool1 = true,
+    bool1 = __true,
     list1 = [ 'a','b','c' ],
     null1 = null,
     num1  = 25,
@@ -509,7 +592,7 @@ module.exports = {
   _makeClockStr_    : makeClockStr,
   _makeCommaNumStr_ : makeCommaNumStr,
   _makeDateStr_     : makeDateStr
- // _makeEllipsisStr_ : makeElipsisStr,
+ // _makeEllipsisStr_ : makeEllipsisStr
  // _makeErrorObj_    : makeErrorObj,
  // _makeGuidStr_     : makeGuidStr,
  // _makeListPlus_    : makeListPlus,

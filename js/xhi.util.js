@@ -600,7 +600,7 @@ xhi._util_ = (function () {
   function makeDateStr ( arg_map ) {
     var
       mns     = makePadNumStr,
-      do_time = arg_map._do_time === __true,
+      do_time = arg_map._do_time_ === __true,
       date_obj, yrs_int, mon_int, day_int,
       hrs_int, min_int, sec_int,
 
@@ -659,8 +659,19 @@ xhi._util_ = (function () {
   // BEGIN Public method /makeEllipsisStr/
   // Purpose: Shorten a string to a maximum length and append ellipsis
   //   if it is exceeded.
+  // Example: makeEllipsisStr({
+  //    _input_str_      : 'hee haw and the boys',
+  //    _char_limit_int_ : 10
+  //  });
+  //  // returns 'hee haw an...'
   //
-  function makeElipsisStr( arg_map ) {
+  // Arguments:
+  // _input_str_      : (req) The string to shorten if required
+  // _char_limit_int_ : (opt, default 0) the maxiumum allowed chars
+  //
+  // Returns: A string
+  //
+  function makeEllipsisStr( arg_map ) {
     var
       scrub_str       = scrubHtmlTags( arg_map._input_str_ ),
       char_limit_int  = arg_map._char_limit_int_ || __0,
@@ -1329,7 +1340,7 @@ xhi._util_ = (function () {
     _makeClockStr_    : makeClockStr,
     _makeCommaNumStr_ : makeCommaNumStr,
     _makeDateStr_     : makeDateStr,
-    _makeEllipsisStr_ : makeElipsisStr,
+    _makeEllipsisStr_ : makeEllipsisStr,
     _makeErrorObj_    : makeErrorObj,
     _makeGuidStr_     : makeGuidStr,
     _makeListPlus_    : makeListPlus,
