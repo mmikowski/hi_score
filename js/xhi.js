@@ -19,17 +19,19 @@ var xhi = (function () {
   var
     __Object  = Object,
     __Math    = Math,
+    __Date    = Date,
+
     vMap = {
       // We will need these eventually ...
       // __typeof = function ( a ) { return typeof a; },
       // __Array  = Array,
-      // __Date   = Date,
       _100p_        : '100%',
-      _String_      : String,
-      _Number_      : Number,
-      _Math_        : __Math,
-      _Object_      : __Object,
+      _Date_        : __Date,
       _JSON_        : JSON,
+      _Math_        : __Math,
+      _Number_      : Number,
+      _Object_      : __Object,
+      _String_      : String,
 
       _fnClearTimeout_  : clearTimeout,
       _fnGetKeyList_    : __Object.keys,
@@ -103,6 +105,7 @@ var xhi = (function () {
       _map_             : 'map',
       _match_           : 'match',
       _not_             : 'not',
+      _now_             : 'now',
       _null_            : null,
       _off_             : 'off',
       _offset_          : 'offset',

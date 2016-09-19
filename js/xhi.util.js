@@ -23,6 +23,7 @@ xhi._util_ = (function () {
     __j2str   = vMap._JSON_[ vMap._stringify_],
     __jparse  = vMap._JSON_[ vMap._parse_ ],
 
+    __Date    = vMap._Date_,
     __Num     = vMap._Number_,
     __Str     = vMap._String_,
     __blank   = vMap._blank_,
@@ -44,25 +45,11 @@ xhi._util_ = (function () {
 
     topSmap, topCmap, // State and config maps are set in initModule
 
-    getVarType,  getBasename, getDirname,
+    getNowMs, getVarType,  getBasename, getDirname,
     logUtilObj,  makeGuidStr, makeListPlus,
     makeTmpltStr
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
-
-  // ===================== BEGIN PRIVATE METHODS ======================
-  // BEGIN private method /getTzDateObj/
-  // Purpose   : Returns a date object singleton for use by Tz methods
-  //
-  function getTzDateObj () {
-    if ( ! topSmap._date_obj_) {
-      topSmap._date_obj_ = new Date();
-    }
-    return topSmap._date_obj_;
-  }
-  // END private method /getTzDateObj/
-  // ====================== END PRIVATE METHODS =======================
-
 
   // ===================== BEGIN UTILITY METHODS ======================
   // BEGIN define logUtilObj singleton
@@ -193,15 +180,15 @@ xhi._util_ = (function () {
   // BEGIN Public method /makePadNumStr/
   function makePadNumStr( num, count ) {
     var
-      str = __Str( num ),
-      zero_count = count - str[ vMap._length_ ]
+      num_str    = __Str( num ),
+      zero_count = count - num_str[ vMap._length_ ]
       ;
 
     while ( zero_count > __0 ) {
-      str = '0' + str;
+      num_str = '0' + num_str;
       zero_count--;
     }
-    return str;
+    return num_str;
   }
   // END Public method /makePadNumStr/
 
@@ -216,6 +203,38 @@ xhi._util_ = (function () {
   }
   // END Public method /makeRegexObj/
   // ====================== END UTILITY METHODS =======================
+
+  // ================ BEGIN PRIVATE, PREREQ METHODS ===================
+  // BEGIN Public method, prereq /getNowMs/
+  // Purpose: Returns the current timestamp in milliseconds
+  //   The Date.now() method is 3x faster than the +new Date()
+  //   in NodeJS, and I have confirmed this provides almost the
+  //   the same performance in that env as a raw Date.now() call.
+  //
+  getNowMs = (function () {
+    var return_fn;
+    if ( __Date[ vMap._hasOwnProp_ ]( vMap._now_ ) ) {
+      return_fn = function () { return __Date[ vMap._now_ ](); };
+    }
+    else {
+      return_fn = function () { return +new __Date(); };
+    }
+    return return_fn;
+  }());
+  // END Public method /getNowMs/
+
+  // BEGIN private method /getTzDateObj/
+  // Purpose   : Returns a date object singleton for use by Tz methods
+  //
+  function getTzDateObj () {
+    if ( ! topSmap._date_obj_) {
+      topSmap._date_obj_ = new __Date();
+    }
+    return topSmap._date_obj_;
+  }
+  // END private method /getTzDateObj/
+  // ================== END PRIVATE, PREREQ METHODS ===================
+
 
   // ===================== BEGIN PUBLIC METHODS =======================
   // BEGIN Public method /cloneData/
@@ -559,11 +578,29 @@ xhi._util_ = (function () {
   // END Public method /makeCommaNumStr/
 
   // BEGIN Public method /makeDateStr/
-  function makeDateStr ( date_data, do_time ) {
+  // Purpose: Creates a string from data_data in the form of a date object
+  //   or a UTC time number (in milliseconds).
+  // Examples:
+  // 1. makeDateStr({ _date_obj_ : new Date() });
+  //    Returns a string like '2016-09-18'
+  // 2. makeDateStr({ _date_obj_ : new Date(), do_time : true });
+  //    Returns a string like '2016-09-18 12:45:52'
+  // 3. makeDateStr({ _date_ms_ : 1474311626050 })
+  //    Returns '2016-09-19'
+  //
+  // Arguments:
+  //   * _date_obj_ : A valid date object.
+  //   * _date_ms_  : A date time in ms.
+  //     If neither date_obj or date_ms is provided, will use the
+  //       current date.
+  //     If BOTH are provided, _date_ms_ will be used in
+  //       preference to date_obj.
+  //   * do_time_ : (opt) A boolean.  Default is false.
+  //
+  function makeDateStr ( arg_map ) {
     var
-      data_type = getVarType( date_data ),
-      mns       = makePadNumStr,
-
+      mns     = makePadNumStr,
+      do_time = arg_map._do_time === __true,
       date_obj, yrs_int, mon_int, day_int,
       hrs_int, min_int, sec_int,
 
@@ -571,14 +608,16 @@ xhi._util_ = (function () {
       time_list, time_str
       ;
 
-    if ( data_type === '_Object_' ) {
-      date_obj = date_data;
+    if ( arg_map._date_ms_ ) {
+      // new Date( ms ) does not work in node 4.4.3
+      date_obj = new Date();
+      date_obj.setTime( arg_map._date_ms_ );
     }
-    else if ( data_type === '_Number_' ) {
-      date_obj = new Date(); // new Date( ms ) does not work in node 4.4.3
-      date_obj.setTime( date_data );
+    else {
+      date_obj = getVarType( arg_map._date_obj_ ) === 'Date'
+        ? arg_map._date_obj_ : __undef;
     }
-    else { return __blank; }
+    if ( ! date_obj ) { return __blank; }
 
     yrs_int = __Num( date_obj.getYear()  ) + topCmap._offset_yr_;
     mon_int = __Num( date_obj.getMonth() ) + __1;
@@ -1048,14 +1087,6 @@ xhi._util_ = (function () {
   }
   // END Public function /makeSeriesMap/
 
-  // BEGIN Public method /makeTimeStamp/
-  // Consider using Date.now()
-  //
-  function makeTimeStamp () {
-    return +new Date();
-  }
-  // END Public method /makeTimeStamp/
-
   // BEGIN Public method /makeTmpltStr/
   makeTmpltStr = (function () {
     //noinspection JSUnusedLocalSymbols
@@ -1289,6 +1320,7 @@ xhi._util_ = (function () {
     _getListAttrMap_  : getListAttrMap,
     _getListDiff_     : getListDiff,
     _getLogUtilObj_   : getLogUtilObj,
+    _getNowMs_        : getNowMs,
     _getNumSign_      : getNumSign,
     _getTzOffsetMs_   : getTzOffsetMs,
     _getTzCode_       : getTzCode,
@@ -1308,7 +1340,6 @@ xhi._util_ = (function () {
     _makeSeenMap_     : makeSeenMap,
     _makeSeriesMap_   : makeSeriesMap,
     _makeStrFromMap_  : makeStrFromMap,
-    _makeTimeStamp_   : makeTimeStamp,
     _makeTmpltStr_    : makeTmpltStr,
     _makeUcFirstStr_  : makeUcFirstStr,
     _mergeMaps_       : mergeMaps,

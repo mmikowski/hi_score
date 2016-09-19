@@ -13,41 +13,73 @@ set -u;
 # set -e;
 
 ## BEGIN Layout variables ==================================================
-NODE_EXEC=$(which node);
+NODE_EXE=$(which node);
 LINK_PATH=$(readlink -f -- "${0}");
 BIN_PATH=$(cd "${LINK_PATH%/*}" && echo "${PWD}");
-GIT_DIR=$(cd "$(git rev-parse --show-toplevel)" && pwd );
-PKG_DIR=$(find "${GIT_DIR}" -type f -name 'package.json' |head -n1);
-MODS_DIR=$(find "${GIT_DIR}" -type d -name 'node_modules' |head -n1);
+GGG_DIR=$(cd "$(git rev-parse --show-toplevel)" && pwd );
+PKG_FILE=$(find "${GGG_DIR}" -type f -wholename '*/package.json'  );
+PKG_DIR=$(dirname "${PKG_FILE}"  );
+MODS_DIR=$(find "${GGG_DIR}" -type d |grep '/node_modules$' |grep -v '/node_modules/');
 WAPP_DIR=$(dirname "${MODS_DIR}");
-JSLINT_EXEC="${MODS_DIR}/.bin/jslint";
-NU_EXEC="${MODS_DIR}/.bin/nodeunit";
+JSLINT_EXE="${MODS_DIR}/.bin/jslint";
+NU_EXE="${MODS_DIR}/.bin/nodeunit";
 NU_FILE="${WAPP_DIR}/test/nu_xhi.util.js";
-MAKEDOC_EXEC="${GIT_DIR}/bin/make_doc";
+MAKEDOC_EXE="${GGG_DIR}/bin/make_doc";
 LIST_FILE="/tmp/git-pre-commit.${$}.list.tmp";
 TMP_FILE="/tmp/git-pre-commit.${$}.tmp";
 CHECK_STR="";
 ## END Layout variables ====================================================
 
+## BEGIN Debug
+# echo "
+# NODE_EXE     : ${NODE_EXE}
+# LINK_PATH    : ${LINK_PATH}
+# BIN_PATH     : ${BIN_PATH}
+# GGG_DIR      : ${GGG_DIR}
+# PKG_FILE     : ${PKG_FILE}
+# PKG_DIR      : ${PKG_DIR}
+# MODS_DIR     : ${MODS_DIR}
+# WAPP_DIR     : ${WAPP_DIR}
+# JSLINT_EXE   : ${JSLINT_EXE}
+# NU_EXE       : ${NU_EXE}
+# NU_FILE      : ${NU_FILE}
+# MAKEDOC_EXE  : ${MAKEDOC_EXE}
+# LIST_FILE    : ${LIST_FILE}
+# TMP_FILE     : ${TMP_FILE}
+# CHECK_STR    : ${CHECK_STR}
+# ";
+## END Debug
+
 ## BEGIN Lint JavaScript files =============================================
-if [ ! -x "${JSLINT_EXEC}" ]; then
+if [ ! -x "${JSLINT_EXE}" ]; then
   echo "JSLint executable not found."
   echo "Please execute the following command: "
-  echo "  cd ${GIT_DIR}; npm install ";
+  echo "  cd ${WAPP_DIR}; npm install ";
   exit 1;
 fi
 
+cd "${GGG_DIR}";
+pwd;
+
 git status \
-  | grep '.*.js' \
   | grep -v '/vendor/' \
+  | grep '.js$' \
   | grep '^\s\+\(modified\|new file\)' \
   | cut -d ":" -f 2- > "${LIST_FILE}"
+
+## BEGIN Debug
+# echo ">>>>${LIST_FILE}<<<<";
+# echo ">>>>LIST_FILE:";
+# cat "${LIST_FILE}";
+# echo "<<<<";
+# exit 1;
+## END Debug
 
 echo;
 echo "Tests of updated or new *.js files ...";
 cat "${LIST_FILE}" | while read FILE_NAME; do
   echo "====> ${FILE_NAME}";
-  CHECK_STR=$(${JSLINT_EXEC} "${FILE_NAME}");
+  CHECK_STR=$(${JSLINT_EXE} "${FILE_NAME}");
   CHECK_CODE=$?;
   if [ "${CHECK_CODE}" -gt 0 ]; then
     echo "  JSLint check FAILED";
@@ -91,13 +123,13 @@ echo;
 
 ## BEGIN Process changed documents ========================================
 ## TODO
-##  if [ ! -x "${MAKEDOC_EXEC}" ]; then
+##  if [ ! -x "${MAKEDOC_EXE}" ]; then
 ##    echo "bin/make_doc not found.  This file should exist.";
 ##    echo "Please check your installation.";
 ##    exit 1;
 ##  fi
 ##  echo "Updating HTML documents from MarkDown";
-##  "${MAKEDOC_EXEC}";
+##  "${MAKEDOC_EXE}";
 ##  RET_VAL=$?;
 ##  if [ "${RET_VAL}" -eq "0" ]; then
 ##    echo "Document file failure".
@@ -108,15 +140,15 @@ echo;
 ## END Process changed documents ==========================================
 
 ## BEGIN Run regression tests ==============================================
-if [ ! -x "${NODE_EXEC}" ]; then
+if [ ! -x "${NODE_EXE}" ]; then
   echo "Node not found.  Please install nodejs and ensure it is "
   echo " found in your PATH environment variable."
   exit 1;
 fi
 
-if [ ! -x "${NU_EXEC}" ]; then
+if [ ! -x "${NU_EXE}" ]; then
   echo "Nodeunit not found.  Please run "
-  echo "cd ${GIT_DIR}; npm install"
+  echo "cd ${WAPP_DIR}; npm install"
   echo
 fi
 
@@ -128,6 +160,6 @@ if [ ! -r "${NU_FILE}" ]; then
 fi
 
 echo "Running regression tests";
-"${NU_EXEC}" "${NU_FILE}"
+"${NU_EXE}" "${NU_FILE}"
 exit $?;
 ## END Run regression tests ================================================

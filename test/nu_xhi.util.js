@@ -241,6 +241,16 @@ function getListDiff ( test_obj ) {
   test_obj.done();
 }
 
+function getNowMs ( test_obj ) {
+  var
+    now_ms = xhi._util_._getNowMs_(),
+    rx     = /^[\d]{13}$/;
+
+  test_obj.expect( __1 );
+  test_obj.ok( rx.test( now_ms.toString() ), 'Timestamp has 13 digits');
+  test_obj.done();
+}
+
 function getNumSign ( test_obj ) {
   var
     assert_list  = [
@@ -435,6 +445,12 @@ function makeCommaNumStr ( test_obj ) {
   test_obj.done();
 }
 
+function makeDateStr( test_obj ) {
+  test_obj.expect( __0 );
+  test_obj.done();
+
+}
+
 function getVarType( test_obj ) {
   var
     // this is a hack to get around jslint warnings
@@ -486,12 +502,13 @@ module.exports = {
   _getDeepMapVal_   : getDeepMapVal,
   _getListAttrIdx_  : getListAttrIdx,  // Include getListAttrMap
   _getListDiff_     : getListDiff,
+  _getNowMs_        : getNowMs,
   _getNumSign_      : getNumSign,
   _getVarType_      : getVarType,
   _makeArgList_     : makeArgList,
   _makeClockStr_    : makeClockStr,
-  _makeCommaNumStr_ : makeCommaNumStr
- // _makeDateStr_     : makeDateStr,
+  _makeCommaNumStr_ : makeCommaNumStr,
+  _makeDateStr_     : makeDateStr
  // _makeEllipsisStr_ : makeElipsisStr,
  // _makeErrorObj_    : makeErrorObj,
  // _makeGuidStr_     : makeGuidStr,
@@ -503,7 +520,6 @@ module.exports = {
  // _makeSeenMap_     : makeSeenMap,
  // _makeSeriesMap_   : makeSeriesMap,
  // _makeStrFromMap_  : makeStrFromMap,
- // _makeTimeStamp_   : makeTimeStamp,
  // _makeTmpltStr_    : makeTmpltStr,
  // _makeUcFirstStr_  : makeUcFirstStr,
  // _mergeMaps_       : mergeMaps,
