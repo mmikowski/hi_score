@@ -10,7 +10,7 @@
  regexp : true,  sloppy : true,     vars : false,
   white : true,    todo : true,  unparam : true
 */
-/*global xhi */
+/*global xhi, module */
 
 // ================= BEGIN MODULE SCOPE VARIABLES ===================
 //noinspection MagicNumberJS
@@ -40,6 +40,65 @@ var
 // ================== END MODULE SCOPE VARIABLES ====================
 
 // ================ BEGIN NODEUNIT TEST FUNCTIONS ===================
+function clearMap( test_obj ) {
+  //noinspection JSUnusedGlobalSymbols
+  var
+    proto = { do_fn : function () { return 1; } },
+    complex_obj = Object.create( proto ),
+    assert_list = [
+      { arg_data : __1,       ret_data : __undef },
+      { arg_data : -694567,   ret_data : __undef },
+      { arg_data : __blank,   ret_data : __undef },
+      { arg_data : __null,    ret_data : __undef },
+      { arg_data : __undef,   ret_data : __undef },
+      { arg_data : 5.062e12,  ret_data : __undef },
+      { arg_data : __0,       ret_data : __undef },
+      { arg_data : /regex/,   ret_data : __undef },
+      { arg_data : 'string',  ret_data : __undef },
+      { arg_data : [ 1,2,3 ], ret_data : __undef },
+      { arg_data : [ 'a', { complex : 'array' } ],
+        ret_data : __undef },
+      { arg_data : { a : 'simple', b : 'map' },
+        ret_data : {}
+      },
+      { arg_data : {
+          a         : 'complex',
+          map       : { this : 'that' },
+          name_list : [ 'tim', 'bob' ]
+        },
+        ret_data : {}
+      },
+      { arg_data : new Date(),  ret_data : __undef },
+      { arg_data : complex_obj, ret_data : proto }
+    ],
+    assert_count = assert_list.length,
+    clear_fn     = xhi._util_._clearMap_,
+
+    msg_str, idx, assert_map,
+    arg_data, ret_data, solve_data
+    ;
+
+  complex_obj.this = '1';
+  complex_obj.that = '2';
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    assert_map = assert_list[ idx ];
+    arg_data   = assert_map.arg_data;
+    ret_data   = assert_map.ret_data;
+    solve_data = clear_fn( arg_data );
+    msg_str = __Str( idx ) + '.  type:'
+      + xhi._util_._getVarType_( arg_data )
+      + ' clearMap(' + JSON.stringify( arg_data ) + ') expect: '
+      + JSON.stringify( ret_data ) + ' actual: '
+      + JSON.stringify( solve_data );
+    test_obj.ok(
+      JSON.stringify( ret_data ) === JSON.stringify( solve_data ), msg_str
+    );
+  }
+  test_obj.done();
+}
+
 function cloneData( test_obj ) {
   var
     assert_list = [
@@ -61,7 +120,8 @@ function cloneData( test_obj ) {
   for ( idx = __0; idx < assert_count; idx++ ) {
     assert_data = assert_list[ idx ];
     cloned_data = clone_fn( assert_data );
-    msg_str = JSON.stringify( assert_data ) + '  <<==>> '
+    msg_str = __Str( idx ) + '. '
+      + JSON.stringify( assert_data ) + ' <<==>> '
       + JSON.stringify( cloned_data );
     test_obj.deepEqual(  assert_data, cloned_data, msg_str );
   }
@@ -499,40 +559,40 @@ function makeDateStr( test_obj ) {
   test_obj.done();
 }
 
-// function makeEllipsisStr( test_obj ) {
-//   var
-//     // str0 = 'georgey', //7
-//     str1 = 'hee haw and the boys', // 20
-//     // str2 = 'kim knickers and the female fatales chicks', // 42
-//     // str3 = 'this is by far the longest string. <b>It contains html '
-//     //   + 'markup</b> which makes it especially sucky, parse-wise',
-//     assert_list  = [
-//       { arg_map : { _input_str_ : __undef }, str : __blank },
-//       { arg_map : { _input_str_ : __null  }, str : __blank },
-//       { arg_map : { _input_str_ : str1    }, str : __blank },
-//       { arg_map : { _input_str_ : str1, _char_limit_int_ : 10  },
-//         str : 'hee haw...' }
-//     ],
+function makeEllipsisStr( test_obj ) {
+  var
+    // str0 = 'georgey', //7
+    str1 = 'hee haw and the boys', // 20
+    // str2 = 'kim knickers and the female fatales chicks', // 42
+    // str3 = 'this is by far the longest string. <b>It contains html '
+    //   + 'markup</b> which makes it especially sucky, parse-wise',
+    assert_list  = [
+      { arg_map : { _input_str_ : __undef }, str : __blank },
+      { arg_map : { _input_str_ : __null  }, str : __blank },
+      { arg_map : { _input_str_ : str1    }, str : __blank },
+      { arg_map : { _input_str_ : str1, _char_limit_int_ : 10  },
+        str : 'hee haw...' }
+    ],
 
-    // assert_count = assert_list.length,
-    // make_str_fn   = xhi._util_._makeEllipsisStr_,
+    assert_count = assert_list.length,
+    make_str_fn   = xhi._util_._makeEllipsisStr_,
 
-    // idx, assert_map, ellipsis_str, msg_str
-    // ;
+    idx, assert_map, ellipsis_str, msg_str
+    ;
 
-  // test_obj.expect( assert_count );
-  // for ( idx = __0; idx < assert_count; idx++ ) {
-  //   assert_map  = assert_list[ idx ];
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    assert_map  = assert_list[ idx ];
 
-    // ellipsis_str = make_str_fn.apply( __undef, [ assert_map.arg_map ] );
-    // msg_str      = __Str( idx ) + '. '
-    //   + __Str( ellipsis_str ) + ' === ' + __Str( assert_map.str );
+    ellipsis_str = make_str_fn( assert_map.arg_map );
+    msg_str      = __Str( idx ) + '. '
+      + __Str( ellipsis_str ) + ' === ' + __Str( assert_map.str );
 
-  //   test_obj.ok( ellipsis_str === assert_map.str, msg_str );
-  // }
+    test_obj.ok( ellipsis_str === assert_map.str, msg_str );
+  }
 
-//   test_obj.done();
-// }
+  test_obj.done();
+}
 
 function getVarType( test_obj ) {
   var
@@ -580,6 +640,7 @@ function getVarType( test_obj ) {
 // ======== END NODEUNIT TEST FUNCTIONS ===========
 
 module.exports = {
+  _clearMap_        : clearMap,
   _cloneData_       : cloneData,
   _getBasename_     : getBasename,     // Includes getDirname
   _getDeepMapVal_   : getDeepMapVal,
@@ -591,8 +652,8 @@ module.exports = {
   _makeArgList_     : makeArgList,
   _makeClockStr_    : makeClockStr,
   _makeCommaNumStr_ : makeCommaNumStr,
-  _makeDateStr_     : makeDateStr
- // _makeEllipsisStr_ : makeEllipsisStr
+  _makeDateStr_     : makeDateStr,
+  _makeEllipsisStr_ : makeEllipsisStr
  // _makeErrorObj_    : makeErrorObj,
  // _makeGuidStr_     : makeGuidStr,
  // _makeListPlus_    : makeListPlus,

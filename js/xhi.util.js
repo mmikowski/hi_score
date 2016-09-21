@@ -23,6 +23,7 @@ xhi._util_ = (function () {
     __j2str   = vMap._JSON_[ vMap._stringify_],
     __jparse  = vMap._JSON_[ vMap._parse_ ],
 
+    __Array   = vMap._Array_,
     __Date    = vMap._Date_,
     __Num     = vMap._Number_,
     __Str     = vMap._String_,
@@ -42,14 +43,28 @@ xhi._util_ = (function () {
     __floor   = vMap._fnGetFloor_,
     __random  = vMap._fnGetRandom_,
     __setTo   = vMap._fnSetTimeout_,
+    __typeof  = vMap._fnTypeof_,
 
     topSmap, topCmap, // State and config maps are set in initModule
 
-    getNowMs, getVarType,  getBasename, getDirname,
-    logUtilObj,  makeGuidStr, makeListPlus,
-    makeTmpltStr
+    getNowMs,     getVarType,  getBasename,
+    getDirname,   logUtilObj,  makeGuidStr,
+    makeListPlus, makeTmpltStr
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
+
+  // ===================== BEGIN PRIVATE METHODS ======================
+  // BEGIN private method /getTzDateObj/
+  // Purpose   : Returns a date object singleton for use by Tz methods
+  //
+  function getTzDateObj () {
+    if ( ! topSmap._date_obj_) {
+      topSmap._date_obj_ = new __Date();
+    }
+    return topSmap._date_obj_;
+  }
+  // END private method /getTzDateObj/
+  // ====================== END PRIVATE METHODS =======================
 
   // ===================== BEGIN UTILITY METHODS ======================
   // BEGIN define logUtilObj singleton
@@ -181,7 +196,7 @@ xhi._util_ = (function () {
   function makePadNumStr( num, count ) {
     var
       num_str    = __Str( num ),
-      zero_count = count - num_str[ vMap._length_ ]
+      zero_count = count - num_str[ __length ]
       ;
 
     while ( zero_count > __0 ) {
@@ -204,8 +219,27 @@ xhi._util_ = (function () {
   // END Public method /makeRegexObj/
   // ====================== END UTILITY METHODS =======================
 
-  // ================ BEGIN PRIVATE, PREREQ METHODS ===================
-  // BEGIN Public method, prereq /getNowMs/
+  // ===================== BEGIN PREREQ METHODS =======================
+  // BEGIN Public, prereq method /clearMap/
+  function clearMap ( arg_map ) {
+    var key_list, key_count, idx, key;
+
+    if ( getVarType( arg_map ) !== '_Object_' ) { return; }
+
+    key_list  = vMap._fnGetKeyList_( arg_map );
+    key_count = key_list[ __length ];
+
+    for ( idx = __0; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      if ( arg_map[ vMap._hasOwnProp_ ]( key ) ) {
+        delete arg_map[ key ];
+      }
+    }
+    return arg_map;
+  }
+  // END Public, prereq method /clearMap/
+
+  // BEGIN Public, prereq method /getNowMs/
   // Purpose: Returns the current timestamp in milliseconds
   //   The Date.now() method is 3x faster than the +new Date()
   //   in NodeJS, and I have confirmed this provides almost the
@@ -221,20 +255,8 @@ xhi._util_ = (function () {
     }
     return return_fn;
   }());
-  // END Public method /getNowMs/
-
-  // BEGIN private method /getTzDateObj/
-  // Purpose   : Returns a date object singleton for use by Tz methods
-  //
-  function getTzDateObj () {
-    if ( ! topSmap._date_obj_) {
-      topSmap._date_obj_ = new __Date();
-    }
-    return topSmap._date_obj_;
-  }
-  // END private method /getTzDateObj/
-  // ================== END PRIVATE, PREREQ METHODS ===================
-
+  // END Public, prereq method /getNowMs/
+  // ====================== END PREREQ METHODS ========================
 
   // ===================== BEGIN PUBLIC METHODS =======================
   // BEGIN Public method /cloneData/
@@ -329,7 +351,7 @@ xhi._util_ = (function () {
 
     for ( i = __0; i < attr_count; i++ ) {
       row_map = list[ i ];
-      if ( typeof row_map !== 'object' ) { continue; }
+      if ( __typeof( row_map ) !== 'object' ) { continue; }
       if ( ! row_map[ vMap._hasOwnProp_ ]( key_name ) ) { continue; }
       if ( row_map[ key_name ] === key_val ) {
         found_idx = i;
@@ -440,11 +462,14 @@ xhi._util_ = (function () {
 
       if ( data === __null  ) { return '_Null_'; }
       if ( data === __undef ) { return '_Undefined_'; }
+      if ( __Array.isArray( data ) ) { return '_Array_'; }
 
-      type_key = typeof data;
+      type_key = __typeof( data );
       type_str = typeof_map[ type_key ];
 
+
       if ( type_str && type_str !== '_Object_' ) { return type_str; }
+
       type_key = {}[ vMap._toString_ ][ vMap._call_ ](
         data )[ vMap._slice_ ]( nMap._8_, __n1 );
 
@@ -651,7 +676,7 @@ xhi._util_ = (function () {
 
   // BEGIN Public method /scrubHtmlTags/
   function scrubHtmlTags ( arg_str ) {
-    var str = String( arg_str ) || __blank;
+    var str = arg_str && String( arg_str ) || __blank;
     return str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
   }
   // END Public method /scrubHtmlTags/
@@ -675,7 +700,7 @@ xhi._util_ = (function () {
     var
       scrub_str       = scrubHtmlTags( arg_map._input_str_ ),
       char_limit_int  = arg_map._char_limit_int_ || __0,
-      scrub_count     = scrub_str[ vMap._length_ ],
+      scrub_count     = scrub_str[ __length ],
       ellipsis_str    = __blank,
 
       word_list,   word_count,
@@ -683,18 +708,17 @@ xhi._util_ = (function () {
       idx,         solve_word
       ;
 
-    if ( char_limit_int === __0 || scrub_count < char_limit_int ) {
-      return scrub_str;
-    }
+    if ( ! char_limit_int ) { return __blank; }
+    if ( scrub_count <= char_limit_int ) { return scrub_str; }
 
     word_list   = scrub_str[ vMap._split_ ]( ' ' );
-    word_count  = word_list[ vMap._length_ ];
+    word_count  = word_list[ __length ];
     solve_count = __0;
     solve_list  = [];
 
     WORD: for ( idx = __0; idx < word_count; idx++ ) {
       solve_word  = word_list[ idx ];
-      solve_count += solve_word[ vMap._length_ ] + __1;
+      solve_count += solve_word[ __length ] + __1;
       if ( solve_count >= char_limit_int ) {
         ellipsis_str = '...';
         break WORD;
@@ -784,7 +808,7 @@ xhi._util_ = (function () {
     }
     function mainFn ( input_list ) {
       var return_list;
-      if ( input_list && Array.isArray( input_list ) ) {
+      if ( input_list && __Array.isArray( input_list ) ) {
         if ( input_list.remove_val ) {
           logUtilObj._logIt_(
             '_warn_',
@@ -1323,6 +1347,7 @@ xhi._util_ = (function () {
   // END initialize module
 
   return {
+    _clearMap_        : clearMap,
     _cloneData_       : cloneData,
     _getBasename_     : getBasename,
     _getDirname_      : getDirname,
