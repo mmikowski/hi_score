@@ -35,7 +35,15 @@ var
   __0  = nMap._0_,
   __1  = nMap._1_,
   __2  = nMap._2_,
-  __3  = nMap._3_
+  __3  = nMap._3_,
+
+  nuFn = function () { console.log( 'nu:' + this , arguments ); },
+  mockTestObj = {
+    done   : nuFn.bind( 'done'   ),
+    expect : nuFn.bind( 'expect' ),
+    ok     : nuFn.bind( 'ok'     ),
+    test   : nuFn.bind( 'test'   )
+  }
   ;
 // ================== END MODULE SCOPE VARIABLES ====================
 
@@ -594,6 +602,69 @@ function makeEllipsisStr( test_obj ) {
   test_obj.done();
 }
 
+function makeErrorObj ( test_obj ) {
+  var
+    key_list     = [ 'name', 'description', 'data' ],
+    default_list = [ 'xhi:error', __blank, __undef ],
+    assert_list = [
+      { arg_list : [], expect_list : default_list },
+      { arg_list : [ __0 ], expect_list : default_list },
+      { arg_list : [ __undef ], expect_list : default_list },
+      { arg_list : [ __0, __0 ], expect_list : default_list },
+      { arg_list : [ __undef, __undef ], expect_list : default_list },
+      { arg_list : [ __null, __undef ], expect_list : default_list },
+      { arg_list : [ __null, __null ], expect_list : default_list },
+      { arg_list : [ __null, __null, __undef ], expect_list : default_list },
+      { arg_list : [ __null, __0, __undef ], expect_list : default_list },
+      { arg_list    : [ __undef, __null, __null ], expect_list : default_list },
+      { arg_list : [ '' ], expect_list : default_list },
+      { arg_list : [ '_bad_data_' ],
+        expect_list : [ 'xhi:_bad_data_', __blank, __undef ]
+      },
+      { arg_list : [ __1 ], expect_list : [ 'xhi:1', __blank, __undef ] },
+      { arg_list : [ '_bad_data_', '_the_list_is_missing_' ],
+        expect_list : [ 'xhi:_bad_data_', '_the_list_is_missing_', __undef ]
+      },
+      { arg_list : [ '_bad_data_', '_the_list_is_missing_', { is : __true } ],
+        expect_list : [ 'xhi:_bad_data_', '_the_list_is_missing_',
+          { is : __true } ]
+      }
+    ],
+
+    key_count    = key_list.length,
+    assert_count = assert_list.length,
+    make_fn      = xhi._util_._makeErrorObj_,
+    test_count   = __0,
+
+    idx, assert_map, arg_list, expect_list, error_obj,
+
+    idj, expect_key, expect_val, test_val, msg_str
+    ;
+
+  test_obj.expect( assert_count * key_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    assert_map  = assert_list[ idx ];
+    arg_list    = assert_map.arg_list;
+    expect_list = assert_map.expect_list;
+    error_obj   = make_fn.apply( __undef, arg_list );
+
+    for ( idj = __0; idj < key_count; idj++ ) {
+      expect_key = key_list[ idj ];
+      expect_val = expect_list[ idj ];
+      test_val   = error_obj[ expect_key ];
+      msg_str    = __Str( test_count ) + '. '
+        + JSON.stringify( assert_map )
+        + expect_key + ': '
+        + JSON.stringify( test_val ) + ' <==> '
+        + JSON.stringify( expect_val );
+      test_obj.deepEqual( test_val, expect_val, msg_str );
+      test_count++;
+    }
+  }
+  test_obj.done();
+}
+
 function getVarType( test_obj ) {
   var
     // this is a hack to get around jslint warnings
@@ -638,6 +709,12 @@ function getVarType( test_obj ) {
   test_obj.done();
 }
 // ======== END NODEUNIT TEST FUNCTIONS ===========
+//
+console.log( 'Use mockTestObj for debugging tests using nodejs instead '
+  + 'of nodeunit, which obscures error messages.  Use like so:'
+  + 'makeErrorObj( mockTestObj ); ',
+  mockTestObj
+);
 
 module.exports = {
   _clearMap_        : clearMap,
@@ -653,8 +730,8 @@ module.exports = {
   _makeClockStr_    : makeClockStr,
   _makeCommaNumStr_ : makeCommaNumStr,
   _makeDateStr_     : makeDateStr,
-  _makeEllipsisStr_ : makeEllipsisStr
- // _makeErrorObj_    : makeErrorObj,
+  _makeEllipsisStr_ : makeEllipsisStr,
+  _makeErrorObj_    : makeErrorObj
  // _makeGuidStr_     : makeGuidStr,
  // _makeListPlus_    : makeListPlus,
  // _makeMapUtilObj_  : makeMapUtilObj,

@@ -239,6 +239,15 @@ xhi._util_ = (function () {
   }
   // END Public, prereq method /clearMap/
 
+  // BEGIN Public, prereq method /cloneData/
+  // Purpose: Deep clones non-recursive data structures fastest
+  //
+  function cloneData ( data ) {
+    if ( data === __undef ) { return data; }
+    return __jparse( __j2str( data ) );
+  }
+  // END Public, prereq method /cloneData/
+
   // BEGIN Public, prereq method /getNowMs/
   // Purpose: Returns the current timestamp in milliseconds
   //   The Date.now() method is 3x faster than the +new Date()
@@ -256,18 +265,26 @@ xhi._util_ = (function () {
     return return_fn;
   }());
   // END Public, prereq method /getNowMs/
+
+  // BEGIN Public, prereq method /mergeMaps/
+  // Purpose : Merge properties of extend_map into base_map
+  //
+  function mergeMaps( base_map, extend_map ) {
+    var
+      tmp_map   = cloneData( extend_map ),
+      key_list  = vMap._fnGetKeyList_( tmp_map ),
+      key_count = key_list[ __length ],
+      i, tmp_key;
+    for ( i = __0; i < key_count; i++ ) {
+      tmp_key = key_list[ i ];
+      base_map[ tmp_key ] = tmp_map[ tmp_key ];
+    }
+    return base_map;
+  }
+  // END Public method /mergeMaps/
   // ====================== END PREREQ METHODS ========================
 
   // ===================== BEGIN PUBLIC METHODS =======================
-  // BEGIN Public method /cloneData/
-  // Purpose: Deep clones non-recursive data structures fastest
-  //
-  function cloneData ( data ) {
-    if ( data === __undef ) { return data; }
-    return __jparse( __j2str( data ) );
-  }
-  // END Public method /cloneData/
-
   // BEGIN utilities /getBasename/ and /getDirname/
   // Purpose   : Returns the last bit of a path
   // Example   : getBasename('/Common/_demo99/192.168.11_97_demo1')
@@ -676,7 +693,7 @@ xhi._util_ = (function () {
 
   // BEGIN Public method /scrubHtmlTags/
   function scrubHtmlTags ( arg_str ) {
-    var str = arg_str && String( arg_str ) || __blank;
+    var str = ( arg_str && String( arg_str ) ) || __blank;
     return str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
   }
   // END Public method /scrubHtmlTags/
@@ -729,7 +746,6 @@ xhi._util_ = (function () {
   }
   // END Public method /makeEllipsisStr/
 
-
   // BEGIN Public method /makeErrorObj/
   // Purpose: A convenient method to create an error object
   // Arguments:
@@ -739,11 +755,16 @@ xhi._util_ = (function () {
   // Returns  : newly constructed error object
   // Throws   : none
   //
-  function makeErrorObj ( name_text, msg_text, data ) {
-    var error_obj = new Error();
-    error_obj.name = 'sl:' + name_text;
-    if ( msg_text ) { error_obj.description = msg_text; }
-    if ( data ) { error_obj.data = data; }
+  function makeErrorObj ( arg_name, arg_msg, arg_data ) {
+    var
+      name = ( arg_name && __Str( arg_name ) ) || 'error',
+      msg  = ( arg_msg  && __Str( arg_msg  ) ) || __blank,
+      data = arg_data || __undef,
+      error_obj = new Error();
+
+    error_obj.name        = 'xhi:' + name;
+    error_obj.description = msg;
+    error_obj.data        = data;
     return error_obj;
   }
   // END Public method /makeErrorObj/
@@ -1161,21 +1182,6 @@ xhi._util_ = (function () {
     return uc_str + str[ vMap._substr_ ]( __1 );
   }
   // END Public method /makeUcFirstStr/
-
-  // BEGIN Public method /mergeMaps/
-  function mergeMaps( base_map, extend_map ) {
-    var
-      tmp_map   = cloneData( extend_map ),
-      key_list  = vMap._fnGetKeyList_( tmp_map ),
-      key_count = key_list[ __length ],
-      i, tmp_key;
-    for ( i = __0; i < key_count; i++ ) {
-      tmp_key = key_list[ i ];
-      base_map[ tmp_key ] = tmp_map[ tmp_key ];
-    }
-    return base_map;
-  }
-  // END Public method /mergeMaps/
 
   // BEGIN Public method /pollFunction/
   // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
