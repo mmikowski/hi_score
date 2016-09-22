@@ -36,6 +36,7 @@ var
   __1  = nMap._1_,
   __2  = nMap._2_,
   __3  = nMap._3_,
+  __4  = nMap._4_,
 
   nuFn = function () { console.log( 'nu:' + this , arguments ); },
   mockTestObj = {
@@ -233,7 +234,7 @@ function getListAttrIdx ( test_obj ) {
       { arg_list : [ test_list, 'bar', 'poopy' ], idx : __n1 },
       { arg_list : [ test_list, 'bang', __null ], idx : __3  },
       { arg_list : [ test_list, 'bang', __undef ], idx : __n1 },
-      { arg_list : [ test_list, 'biz',  __undef ], idx : 4 }
+      { arg_list : [ test_list, 'biz',  __undef ], idx : __4 }
     ],
 
     assert_count = assert_list.length,
@@ -325,34 +326,33 @@ function getNowMs ( test_obj ) {
 function getNumSign ( test_obj ) {
   var
     assert_list  = [
-      { arg_list : [ __0 ], num : __1 },
-      { arg_list : [ __1 ], num : __1 },
-      { arg_list : [ __n1], num : __n1 },
-      { arg_list : [ 25  ], num : __1 },
-      { arg_list : [ 3.28e24 ], num : __1 },
-      { arg_list : [ -4562 ], num : __n1 },
-      { arg_list : [ -0.000001 ], num : __n1 },
-      { arg_list : [ 2e5 - 2e4 ], num : __1 },
-      { arg_list : [ 2e4 - 2e5 ], num : __n1 },
-      { arg_list : [ 'fred'    ], num : 'NaN' }
+      { arg_list : [ __0 ],       int : __1  },
+      { arg_list : [ __1 ],       int : __1  },
+      { arg_list : [ __n1],       int : __n1 },
+      { arg_list : [ 25  ],       int : __1  },
+      { arg_list : [ 3.28e24 ],   int : __1  },
+      { arg_list : [ -4562 ],     int : __n1 },
+      { arg_list : [ -0.000001 ], int : __n1 },
+      { arg_list : [ 2e5 - 2e4 ], int : __1  },
+      { arg_list : [ 2e4 - 2e5 ], int : __n1 },
+      { arg_list : [ 'fred'    ], int : __1  }
     ],
 
     assert_count = assert_list.length,
     get_sign_fn   = xhi._util_._getNumSign_,
 
-    idx, assert_map,  num_sign, msg_str
+    idx, assert_map, solve_int, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     assert_map  = assert_list[ idx ];
 
-    num_sign = get_sign_fn.apply( __undef, assert_map.arg_list );
+    solve_int = get_sign_fn.apply( __undef, assert_map.arg_list );
     msg_str    = __Str( idx ) + '. '
-      + __Str( num_sign ) + ' === ' + __Str( assert_map.num );
-    if ( isNaN( num_sign ) ) { num_sign = 'NaN'; }
+      + __Str( solve_int ) + ' === ' + __Str( assert_map.int );
 
-    test_obj.ok( num_sign === assert_map.num, msg_str );
+    test_obj.ok( solve_int === assert_map.int, msg_str );
   }
   test_obj.done();
 }
@@ -498,7 +498,7 @@ function makeCommaNumStr ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    make_str_fn   = xhi._util_._makeCommaNumStr_,
+    make_str_fn  = xhi._util_._makeCommaNumStr_,
 
     idx, assert_map, comma_str, msg_str
     ;
@@ -569,34 +569,128 @@ function makeDateStr( test_obj ) {
 
 function makeEllipsisStr( test_obj ) {
   var
-    // str0 = 'georgey', //7
-    str1 = 'hee haw and the boys', // 20
-    // str2 = 'kim knickers and the female fatales chicks', // 42
-    // str3 = 'this is by far the longest string. <b>It contains html '
-    //   + 'markup</b> which makes it especially sucky, parse-wise',
+    str0 = 'Georgey', //7
+    str1 = 'Hee haw and the boys', // 20
+    str2 = 'Tim knickers and the fem-fatale chicks', // 38
+    str3 = '<br>This is by far the longest string. <b>It contains html '
+      + 'markup</b> which makes it especially sucky, parse-wise',
     assert_list  = [
       { arg_map : { _input_str_ : __undef }, str : __blank },
       { arg_map : { _input_str_ : __null  }, str : __blank },
       { arg_map : { _input_str_ : str1    }, str : __blank },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : __undef  },
+        str : __blank },
+      { arg_map : { _input_str_ : __undef, _do_word_break_ : __undef },
+        str : __blank },
+      { arg_map : { _input_str_ : __null, _do_word_break_ : __false  },
+        str : __blank },
+      { arg_map : { _input_str_ : str1, _do_word_break_ : __0 },
+        str : __blank },
+      { arg_map : { _input_str_ : str2, _do_word_break_ : __true,
+        _char_limit_int_ : __undef  },
+        str : __blank },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : __undef  },
+        str : __blank },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : __null  },
+        str : __blank },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : __n1  },
+        str : __blank },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : __0  },
+        str : __blank },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : 'string'  },
+        str : __blank },
+      { arg_map : { _input_str_ : str0, _char_limit_int_ : 5  },
+        str : '...' },
+      { arg_map : { _input_str_ : str1, _char_limit_int_ : 5  },
+        str : '...' },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : 5  },
+        str : '...' },
+      { arg_map : { _input_str_ : str3, _char_limit_int_ : 5  },
+        str : '...' },
+      { arg_map : { _input_str_ : str0, _char_limit_int_ : 10  },
+        str : 'Georgey' },
       { arg_map : { _input_str_ : str1, _char_limit_int_ : 10  },
-        str : 'hee haw...' }
+        str : 'Hee ...' },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : 10  },
+        str : 'Tim ...' },
+      { arg_map : { _input_str_ : str3, _char_limit_int_ : 10  },
+        str : 'This ...' },
+      { arg_map : { _input_str_ : str0, _char_limit_int_ : 25  },
+        str : 'Georgey' },
+      { arg_map : { _input_str_ : str1, _char_limit_int_ : 25  },
+        str : 'Hee haw and the boys' },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : 25  },
+        str : 'Tim knickers and the ...' },
+      { arg_map : { _input_str_ : str3, _char_limit_int_ : 25  },
+        str : 'This is by far the ...' },
+      { arg_map : { _input_str_ : str0, _char_limit_int_ : 40  },
+        str : 'Georgey' },
+      { arg_map : { _input_str_ : str1, _char_limit_int_ : 40  },
+        str : 'Hee haw and the boys' },
+      { arg_map : { _input_str_ : str2, _char_limit_int_ : 40  },
+        str : 'Tim knickers and the fem-fatale chicks' },
+      { arg_map : { _input_str_ : str3, _char_limit_int_ : 40  },
+        str : 'This is by far the longest string. ...' },
+      { arg_map : { _input_str_ : str3, _char_limit_int_ : 2e2 },
+        str     : 'This is by far the longest string. It contains html '
+        + 'markup which makes it especially sucky, parse-wise'
+      },
+      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, str : 'Ge...' },
+      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, str : 'He...' },
+      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, str : 'Ti...' },
+      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, str : 'Th...' },
+      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, str : 'Georgey' },
+      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, str : 'Hee haw...' },
+      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, str : 'Tim kni...' },
+      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, str : 'This is...' },
+      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, str : 'Georgey' },
+      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, str : 'Hee haw and the boys' },
+      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, str : 'Tim knickers and the f...' },
+      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, str : 'This is by far the lon...' },
+      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 40  }, str : 'Georgey' },
+      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 40  }, str : 'Hee haw and the boys' },
+      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
+        _char_limit_int_ : 40  },
+        str : 'Tim knickers and the fem-fatale chicks' },
+      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 40  },
+        str : 'This is by far the longest string. It...' },
+      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 2e2 },
+        str  : 'This is by far the longest string. It contains html '
+        + 'markup which makes it especially sucky, parse-wise'
+      }
     ],
 
     assert_count = assert_list.length,
     make_str_fn   = xhi._util_._makeEllipsisStr_,
 
-    idx, assert_map, ellipsis_str, msg_str
+    idx, assert_map, solve_str, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     assert_map  = assert_list[ idx ];
 
-    ellipsis_str = make_str_fn( assert_map.arg_map );
-    msg_str      = __Str( idx ) + '. '
-      + __Str( ellipsis_str ) + ' === ' + __Str( assert_map.str );
+    solve_str = make_str_fn( assert_map.arg_map );
+    msg_str   = __Str( idx ) + '. '
+      + __Str( solve_str ) + ' === ' + __Str( assert_map.str );
 
-    test_obj.ok( ellipsis_str === assert_map.str, msg_str );
+    test_obj.ok( solve_str === assert_map.str, msg_str );
   }
 
   test_obj.done();
@@ -661,6 +755,70 @@ function makeErrorObj ( test_obj ) {
       test_obj.deepEqual( test_val, expect_val, msg_str );
       test_count++;
     }
+  }
+  test_obj.done();
+}
+
+function makeGuidStr( test_obj ) {
+  var
+    seen_map     = {},
+    assert_count = 100,
+    make_str_fn  = xhi._util_._makeGuidStr_,
+    guid_rx      = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/,
+    idx, solve_str;
+
+
+  test_obj.expect( assert_count * __3 );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    solve_str = make_str_fn();
+    test_obj.ok( ! seen_map[ solve_str ], solve_str + ' is unique' );
+    test_obj.ok( solve_str.length === 36, solve_str + ' is correct length' );
+    test_obj.ok( guid_rx.test( solve_str ), solve_str + ' matches regex' );
+  }
+
+  test_obj.done();
+}
+function makePadNumStr( test_obj ) {
+  var
+    assert_list  = [
+      [ [ __undef       ], __blank ],
+      [ [ __undef, __0  ], __blank ],
+      [ [ __null,  __n1 ], __blank ],
+      [ [ 'frank'       ], __blank ],
+      [ [ '   25', __n1 ], __blank ],
+      [ [ '   25', __1  ],    '25' ],
+      [ [ '   25', __2  ],    '25' ],
+      [ [ '   25', __3  ],   '025' ],
+      [ [ '   25', __4  ],  '0025' ],
+      [ [ '00025', __n1 ], __blank ],
+      [ [ '00025', __1  ],    '25' ],
+      [ [ '00025', __2  ],    '25' ],
+      [ [ '00025', __3  ],   '025' ],
+      [ [ '00025', __4  ],  '0025' ],
+      [ [      25, __n1 ], __blank ],
+      [ [      25, __1  ],    '25' ],
+      [ [      25, __2  ],    '25' ],
+      [ [      25, __3  ],   '025' ],
+      [ [      25, __4  ],  '0025' ],
+      [ [ '-025', __n1 ], __blank  ],
+      [ [ '-025', __1  ],   '-25'  ],
+      [ [ '-025', __2  ],   '-25'  ],
+      [ [ '-025', __3  ],   '-25'  ],
+      [ [ '-025', __4  ],  '-025'  ],
+      [ [ '-025',   5  ], '-0025'  ]
+    ],
+    assert_count = assert_list.length,
+    make_str_fn  = xhi._util_._makePadNumStr_,
+    idx, test_list, solve_str, test_str, msg_str;
+
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    test_list = assert_list[ idx ];
+    solve_str = make_str_fn.apply( __undef, test_list[ __0 ] );
+    test_str  = test_list[ __1 ];
+    msg_str   = solve_str + ' === ' + test_str;
+    test_obj.ok( solve_str === test_str, msg_str );
   }
   test_obj.done();
 }
@@ -731,11 +889,9 @@ module.exports = {
   _makeCommaNumStr_ : makeCommaNumStr,
   _makeDateStr_     : makeDateStr,
   _makeEllipsisStr_ : makeEllipsisStr,
-  _makeErrorObj_    : makeErrorObj
- // _makeGuidStr_     : makeGuidStr,
- // _makeListPlus_    : makeListPlus,
- // _makeMapUtilObj_  : makeMapUtilObj,
- // _makePadNumStr_   : makePadNumStr,
+  _makeErrorObj_    : makeErrorObj,
+  _makeGuidStr_     : makeGuidStr,
+  _makePadNumStr_   : makePadNumStr
  // _makePctStr_      : makePctStr,
  // _makeRxObj_       : makeRxObj,
  // _makeSeenMap_     : makeSeenMap,
@@ -755,3 +911,5 @@ module.exports = {
 // _getLogUtilObj_   : getLogUtilObj,
 // _getTzOffsetMs_   : getTzOffsetMs,
 // _getTzCode_       : getTzCode,
+// _makeListPlus_    : makeListPlus,
+// _makeMapUtilObj_  : makeMapUtilObj,

@@ -38,6 +38,7 @@ xhi._util_ = (function () {
     __0       = nMap._0_,
     __1       = nMap._1_,
     __2       = nMap._2_,
+    __3       = nMap._3_,
     __n1      = nMap._n1_,
 
     __floor   = vMap._fnGetFloor_,
@@ -191,36 +192,10 @@ xhi._util_ = (function () {
     };
   }());
   // END define logUtilObj singleton
-
-  // BEGIN Public method /makePadNumStr/
-  function makePadNumStr( num, count ) {
-    var
-      num_str    = __Str( num ),
-      zero_count = count - num_str[ __length ]
-      ;
-
-    while ( zero_count > __0 ) {
-      num_str = '0' + num_str;
-      zero_count--;
-    }
-    return num_str;
-  }
-  // END Public method /makePadNumStr/
-
-  // BEGIN Public method /makeRegexObj/
-  // Purpose   : Create a regular expression object
-  // Example   : makeRegexObj( '\s*hello\s*', 'i' );
-  function makeRxObj ( pattern_str, option_str ) {
-    if ( option_str ) {
-      return new RegExp( pattern_str, option_str );
-    }
-    return new RegExp( pattern_str );
-  }
-  // END Public method /makeRegexObj/
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PREREQ METHODS =======================
-  // BEGIN Public, prereq method /clearMap/
+  // BEGIN Public prereq method /clearMap/
   function clearMap ( arg_map ) {
     var key_list, key_count, idx, key;
 
@@ -237,18 +212,30 @@ xhi._util_ = (function () {
     }
     return arg_map;
   }
-  // END Public, prereq method /clearMap/
+  // END Public prereq method /clearMap/
 
-  // BEGIN Public, prereq method /cloneData/
+  // BEGIN Public prereq method /cloneData/
   // Purpose: Deep clones non-recursive data structures fastest
   //
   function cloneData ( data ) {
     if ( data === __undef ) { return data; }
     return __jparse( __j2str( data ) );
   }
-  // END Public, prereq method /cloneData/
+  // END Public prereq method /cloneData/
 
-  // BEGIN Public, prereq method /getNowMs/
+  // BEGIN Public prereq method /getNumSign/
+  // Purpose : Provided an argument, will attempt to convert it into
+  //   a number.  If it is a negative number, a -1 will be returned.
+  //   In all other cases, a positive 1 is returned.
+  //
+  function getNumSign ( n ) {
+    var num = __Num( n );
+    return ( ! isNaN( num ) && num < __0 )
+      ? __n1 : __1;
+  }
+  // END Public prereq method /getNumSign/
+
+  // BEGIN Public prereq method /getNowMs/
   // Purpose: Returns the current timestamp in milliseconds
   //   The Date.now() method is 3x faster than the +new Date()
   //   in NodeJS, and I have confirmed this provides almost the
@@ -264,9 +251,50 @@ xhi._util_ = (function () {
     }
     return return_fn;
   }());
-  // END Public, prereq method /getNowMs/
+  // END Public prereq method /getNowMs/
 
-  // BEGIN Public, prereq method /mergeMaps/
+  // BEGIN Public prereq method /makePadNumStr/
+  function makePadNumStr( arg_num, arg_count ) {
+    var
+      num   = __Num( arg_num ),
+      count = __Num( arg_count ),
+
+
+      sign_int, num_str, zero_count;
+
+    if ( isNaN( num ) || isNaN( count ) || count <= __0 ) {
+      return __blank;
+    }
+
+    sign_int = getNumSign( num );
+    num_str  = __Str( vMap._fnGetAbs_( num ) );
+    zero_count = count - num_str[ __length ]
+      - ( sign_int === __n1 ? __1 : __0 );
+
+    while ( zero_count > __0 ) {
+      num_str = '0' + num_str;
+      zero_count--;
+    }
+    if ( sign_int === __n1 ) {
+      num_str = '-' + num_str;
+    }
+
+    return num_str;
+  }
+  // END Public method /makePadNumStr/
+
+  // BEGIN Public method /makeRxObj/
+  // Purpose   : Create a regular expression object
+  // Example   : makeRxObj( '\s*hello\s*', 'i' );
+  function makeRxObj ( pattern_str, option_str ) {
+    if ( option_str ) {
+      return new RegExp( pattern_str, option_str );
+    }
+    return new RegExp( pattern_str );
+  }
+  // END Public method /makeRxObj/
+
+  // BEGIN Public prereq method /mergeMaps/
   // Purpose : Merge properties of extend_map into base_map
   //
   function mergeMaps( base_map, extend_map ) {
@@ -281,7 +309,7 @@ xhi._util_ = (function () {
     }
     return base_map;
   }
-  // END Public method /mergeMaps/
+  // END Public prereq method /mergeMaps/
   // ====================== END PREREQ METHODS ========================
 
   // ===================== BEGIN PUBLIC METHODS =======================
@@ -416,14 +444,6 @@ xhi._util_ = (function () {
   // BEGIN Public method /getLogUtilObj/
   function getLogUtilObj () { return logUtilObj; }
   // END Public method /getlogUtilObj/
-
-  // BEGIN Public method /getNumSign/
-  function getNumSign ( n ) {
-    if ( isNaN( n ) ) { return NaN; }
-    if ( n < __0 ) { return __n1; }
-    return __1;
-  }
-  // END Public method /getNumSign/
 
   // BEGIN Public method /getTzOffsetMs/
   function getTzOffsetMs ( do_force ) {
@@ -584,10 +604,10 @@ xhi._util_ = (function () {
   function makeCommaNumStr ( arg_map ) {
     var
       input_num       = arg_map._input_num_        || __0,
-      round_limit_exp = arg_map._round_limit_exp_  || 3,    // round limit
-      round_unit_exp  = arg_map._round_unit_exp_   || 3,    // round unit
+      round_limit_exp = arg_map._round_limit_exp_  || __3,  // round limit
+      round_unit_exp  = arg_map._round_unit_exp_   || __3,  // round unit
       round_unit_str  = arg_map._round_unit_str_   || 'k',  // unit suffix
-      round_dec_count = arg_map._round_dec_count_  || 1,    // decimal #
+      round_dec_count = arg_map._round_dec_count_  || __1,  // decimal #
 
       round_limit_num = vMap._Math_.pow( 10, round_limit_exp  ),
       round_unit_num  = vMap._Math_.pow( 10, round_unit_exp   ),
@@ -703,13 +723,15 @@ xhi._util_ = (function () {
   //   if it is exceeded.
   // Example: makeEllipsisStr({
   //    _input_str_      : 'hee haw and the boys',
-  //    _char_limit_int_ : 10
+  //    _char_limit_int_ : 10,
+  //    _do_word_break_  : true
   //  });
-  //  // returns 'hee haw an...'
+  //  // returns 'hee haw ...'
   //
   // Arguments:
   // _input_str_      : (req) The string to shorten if required
   // _char_limit_int_ : (opt, default 0) the maxiumum allowed chars
+  // _do_word_break_  : (opt, default true) break at word boundries
   //
   // Returns: A string
   //
@@ -717,32 +739,39 @@ xhi._util_ = (function () {
     var
       scrub_str       = scrubHtmlTags( arg_map._input_str_ ),
       char_limit_int  = arg_map._char_limit_int_ || __0,
+      do_word_break   = arg_map._do_word_break_  === __undef
+        ? __true : !! arg_map._do_word_break_,
       scrub_count     = scrub_str[ __length ],
-      ellipsis_str    = __blank,
 
       word_list,   word_count,
       solve_count, solve_list,
       idx,         solve_word
       ;
 
-    if ( ! char_limit_int ) { return __blank; }
+    if ( ! ( char_limit_int && char_limit_int > __3 )
+       ) { return __blank; }
+
     if ( scrub_count <= char_limit_int ) { return scrub_str; }
 
-    word_list   = scrub_str[ vMap._split_ ]( ' ' );
-    word_count  = word_list[ __length ];
-    solve_count = __0;
-    solve_list  = [];
+    if ( do_word_break ) {
+      word_list   = scrub_str[ vMap._split_ ]( ' ' );
+      word_count  = word_list[ __length ];
+      solve_count = __0;
+      solve_list  = [];
 
-    WORD: for ( idx = __0; idx < word_count; idx++ ) {
-      solve_word  = word_list[ idx ];
-      solve_count += solve_word[ __length ] + __1;
-      if ( solve_count >= char_limit_int ) {
-        ellipsis_str = '...';
-        break WORD;
+      WORD: for ( idx = __0; idx < word_count; idx++ ) {
+        solve_word  = word_list[ idx ];
+        solve_count += solve_word[ __length ] + __1;
+        if ( solve_count >= char_limit_int - __3 ) {
+          solve_list[ vMap._push_ ]( '...' );
+          break WORD;
+        }
+        solve_list[ vMap._push_ ]( solve_word );
       }
-      solve_list[ vMap._push_ ]( solve_word );
+      return __blank + solve_list[ vMap._join_ ]( ' ' );
     }
-    return __blank + solve_list[ vMap._join_ ]( ' ' ) + ellipsis_str;
+
+    return scrub_str.substr(__0, char_limit_int - __3 ) + '...';
   }
   // END Public method /makeEllipsisStr/
 
@@ -873,14 +902,14 @@ xhi._util_ = (function () {
   //   // return nothing to not add to the map
   // }
   //
-  // 3. Set the function in the utility
+  // 4. Set the function in the utility
   //   map_util_obj._setMapFn_( mapUtil_renameFn );
-  // 4. Initialize the result map.  You need this pointer.
+  // 5. Initialize the result map.  You need this pointer.
   //   result_map = {};
   //   map_util_obj._setResultMap_( result_map );
-  // 5. Invoke the map function:
+  // 6. Invoke the map function:
   //   my_list.map( map_util_obj._invokeFn_ );
-  // 6. result_map will now contain the results!
+  // 7. result_map will now contain the results!
   //
   // This is an excellent example of how a closure creates
   // unique private variables in each instance returned, such
