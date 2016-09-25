@@ -10,7 +10,7 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global xhi:true, pcss */
+/*global xhi:true */
 
 var xhi = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
@@ -20,6 +20,8 @@ var xhi = (function () {
     __Object  = Object,
     __Math    = Math,
     vMap = {
+      // __Array  = Array,
+      // __Date   = Date,
       _100p_            : '100%',
       _Date_            : Date,
       _Array_           : Array,
@@ -171,6 +173,7 @@ var xhi = (function () {
       _uheldstart_      : 'uheldstart',
       _undef_           : undefined,
       _unshift_         : 'unshift',
+      _unsubscribe_     : 'unsubscribe',
       _utap_            : 'utap',
       _val_             : 'val',
       _value_           : 'value',

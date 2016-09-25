@@ -504,7 +504,6 @@ xhi._util_ = (function () {
       type_key = __typeof( data );
       type_str = typeof_map[ type_key ];
 
-
       if ( type_str && type_str !== '_Object_' ) { return type_str; }
 
       type_key = {}[ vMap._toString_ ][ vMap._call_ ](

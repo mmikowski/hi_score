@@ -41,8 +41,10 @@ xhi._css_shell_ = (function () {
             _top_         : '_1d125rem_',
             _height_      : '_1d5rem_',
             _width_       : [ '11.25rem' ],
-            _background_  : '_logo_url_',
-            _background_size_ : '_cover_'
+            _background_ : [[
+              '_logo_url_', '_no_repeat_', '_center_','_center_'
+            ]],
+            _background_size_  : '_cover_'
           }
         },
         { _selector_str_  : '.xhi-_shell_head_search_',
@@ -221,25 +223,35 @@ xhi._css_shell_ = (function () {
         },
         { _selector_str_ : '.xhi-_shell_foot_',
           _rule_map_     : {
-           /* _display_       : '_none_',*/
             _z_index_       : [ '30' ],
             _position_      : '_fixed_',
-            _box_shadow_    : '_shdw_03_',
-            _background_    : '_hex_frame_',
+            _background_    : '_hex_area_',
             _bottom_        : '_0_',
-            _right_         : '_0_',
-            _border_radius_ : [[ '_d375rem_', '_0_','_0_','_0_' ]],
-            _padding_       : [[ '_d375rem_', '_d75rem_' ]],
-            _color_         : '_hex_txt_inv_',
-            _opacity_       : [ '.8' ]
+            _left_          : '_0_',
+            _border_radius_ : [[ '_0_', '_d375rem_', '_0_','_0_' ]],
+            _padding_       : [[ '_d25rem_', '_d75rem_','_d75rem_','_d75rem_' ]],
+            _color_         : '_hex_link_dk_'
           }
         },
-        // TODO 2016-08-21 mikem warn: complete hack to get around broken
-        // footer.  Fix this right.
-        { _selector_str_ : '.xhi-_shell_foot_>img',
-          _rule_map_     : { _margin_top_ : '_d375rem_' }
+        { _selector_str_ : '.xhi-_shell_foot_txt_',
+          _rule_map_     : {
+            _position_   : '_relative_',
+            _font_size_  : '_d625rem_',
+            _text_align_ : '_center_',
+            _padding_bottom_ : '_d25rem_'
+          }
         },
-
+        { _selector_str_ : '.xhi-_shell_foot_img_',
+          _rule_map_     : {
+            _position_   : '_relative_',
+            _height_     : [ '12px' ],
+            _width_      : [ '95px' ],
+            _background_ : [[
+              '_foot_url_', '_no_repeat_', '_center_','_center_'
+            ]],
+            _background_size_ : '_cover_'
+          }
+        },
         { _selector_str_ : '.xhi-_shell_cont_',
           _rule_map_ : {
             _margin_     : '_auto_',

@@ -1,6 +1,7 @@
 /**
  *    xhi.css_base.js
  *    Base resources for PowerCSS
+ *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint       browser : true, continue : true,
@@ -25,8 +26,7 @@ xhi._css_base_ = (function () {
       _spc_em_06_ : '2.625rem', // 42px Section space
 
       // Shadows colors are listed from near to far. Near shadows that
-      // like shdw_00, for example, will be smaller but more
-      // distinct.
+      // like shdw_00, for example, will be smaller but more distinct.
       _shdw_00_ : [['_rgba_shdw_00_', [ '0 0 0.125rem 0 ']]],
       _shdw_01_ : [['_rgba_shdw_01_', ['0 0 .1875rem 0']]],
       _shdw_02_ : [['_rgba_shdw_02_', ['0 0 .1875rem .0625rem']]],
@@ -119,18 +119,6 @@ xhi._css_base_ = (function () {
       }
     ],
     _selector_list_ : [
-      { _selector_str_ : '::-webkit-input-placeholder',
-        _rule_map_     : {_color_ : '_hex_placeholder_'}
-      },
-      { _selector_str_ : '::-moz-placeholder',
-        _rule_map_     : {
-          _color_   : '_hex_placeholder_',
-          _opacity_ : '_1_'
-        }
-      },
-      { _selector_str_ : '::-ms-input-placeholder',
-        _rule_map_     : {_color_ : '_hex_placeholder_'}
-      },
       { _selector_str_ : '*',
         _rule_map_     : {
           __moz_box_sizing_  : '_border_box_',
@@ -166,7 +154,33 @@ xhi._css_base_ = (function () {
           _min_height_ : '_100p_',
           _display_    : '_block_',
           _overflow_x_ : '_hidden_',
-          _overflow_y_ : '_auto_'
+          _overflow_y_ : '_auto_',
+          _color_      : '_hex_txt_'
+        }
+      },
+      { _selector_str_ : '::-webkit-input-placeholder',
+        _rule_map_     : { _color_   : '_hex_placeholder_' }
+      },
+      { _selector_str_ : '::-ms-input-placeholder',
+        _rule_map_     : {
+          _color_   : '_hex_placeholder_',
+          _opacity_ : '_1_'
+        }
+      },
+      // Firefox requires more specific selectors than chrome
+      { _selector_str_ : 'input[type="text"]::-moz-placeholder,'
+          + 'textarea::-moz-placeholder',
+        _rule_map_     : {
+          _color_   : '_hex_placeholder_',
+          _opacity_ : '_1_'
+        }
+      },
+      // Firefox requires more specific selectors than chrome
+      { _selector_str_ : 'input[type="text"]::placeholder,'
+        + 'textarea::placeholder',
+        _rule_map_     : {
+          _color_ : '_hex_placeholder_',
+          _opacity_ : '_1_'
         }
       },
       { _selector_str_ : 'button',

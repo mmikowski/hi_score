@@ -1,23 +1,24 @@
 /**
  *    xhi.data.js
- *    Data layer module.  Placeholder.
+ *    Data transmission module, placeholder
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint       browser : true, continue : true,
-  devel : true, indent : 2,      maxerr : 50,
- newcap : true,  nomen : true, plusplus : true,
- regexp : true, sloppy : true,     vars : false,
-  white : true,   todo : true,  unparam : true
+/*jslint         browser : true, continue : true,
+   devel : true,  indent : 2,      maxerr : 50,
+  newcap : true,   nomen : true, plusplus : true,
+  regexp : true,  sloppy : true,     vars : false,
+   white : true,    todo : true,  unparam : true
 */
 /*global jQuery, xhi */
 
-xhi._data_ = (function ($) {
-  // ================= BEGIN MODULE SCOPE VARIABLES ====================
+xhi._data_ = (function ( $ ) {
+  // ================= BEGIN MODULE SCOPE VARIABLES ===================
   'use strict';
+  //noinspection MagicNumberJS
   var
-    vMap    = xhi._vMap_,
-    nMap    = xhi._nMap_,
+    vMap     = xhi._vMap_,
+    nMap     = xhi._nMap_,
 
     __0     = nMap._0_,
     __1     = nMap._1_,

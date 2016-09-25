@@ -1,6 +1,6 @@
 /**
  *    xhi.model.js
- *    Root model module.  Placeholder.
+ *    Root model module, placeholder.
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -12,7 +12,7 @@
 */
 /*global jQuery, xhi */
 
-xhi._model_ = (function ($) {
+xhi._model_ = (function ( $ ) {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   var
