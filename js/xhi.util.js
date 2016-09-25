@@ -393,19 +393,20 @@ xhi._util_ = (function () {
   // END Public method /getDeepMapVal/
 
   // BEGIN Public method /getListAttrIdx/
-  function getListAttrIdx ( list, key_name, key_val ) {
+  function getListAttrIdx ( arg_map_list, key_name, key_val ) {
     var
-      attr_count = list[ __length ],
+      map_list  = __Array.isArray( arg_map_list ) ? arg_map_list : [],
+      map_count = map_list[ __length ],
       found_idx  = __n1,
-      i, row_map
+      idx, row_map
       ;
 
-    for ( i = __0; i < attr_count; i++ ) {
-      row_map = list[ i ];
+    for ( idx = __0; idx < map_count; idx++ ) {
+      row_map = map_list[ idx ];
       if ( __typeof( row_map ) !== 'object' ) { continue; }
       if ( ! row_map[ vMap._hasOwnProp_ ]( key_name ) ) { continue; }
       if ( row_map[ key_name ] === key_val ) {
-        found_idx = i;
+        found_idx = idx;
         break;
       }
     }
@@ -1020,15 +1021,16 @@ xhi._util_ = (function () {
   //   standard time intervales
   // Example   :
   //    series_map = makeSeriesMap({
-  //      _tz_offset_ms_ : 25200000,
   //      _max_ms_       : 1465459980000,
   //      _min_ms_       : 1465452840000,
-  //      _tgt_count_    : 12
+  //      _tgt_count_    : 12,
+  //      _tz_offset_ms_ : 25200000
   //    });
   // Arguments : (required)
-  //   _max_ms_    : int start UTC time in milliseconds
-  //   _min_ms_    : int end UTC time in milliseconds
-  //   _tgt_count_ : int desired number of divisions (+/- 50%)
+  //   _max_ms_       : (req) int start UTC time in milliseconds
+  //   _min_ms_       : (req) int end UTC time in milliseconds
+  //   _tgt_count_    : (req) int desired number of divisions (+/- 50%)
+  //   _tz_offset_ms_ : (req) int UTC offset for timezone
   //
   // Returns:
   //   A map useful for plotting a quantized time series like so:

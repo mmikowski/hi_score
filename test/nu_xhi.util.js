@@ -48,6 +48,9 @@ var
   ;
 // ================== END MODULE SCOPE VARIABLES ====================
 
+// ==================== BEGIN UTILITY METHODS =======================
+// ===================== END UTILITY METHODS ========================
+
 // ================ BEGIN NODEUNIT TEST FUNCTIONS ===================
 function clearMap( test_obj ) {
   //noinspection JSUnusedGlobalSymbols
@@ -55,36 +58,28 @@ function clearMap( test_obj ) {
     proto = { do_fn : function () { return 1; } },
     complex_obj = Object.create( proto ),
     assert_list = [
-      { arg_data : __1,       ret_data : __undef },
-      { arg_data : -694567,   ret_data : __undef },
-      { arg_data : __blank,   ret_data : __undef },
-      { arg_data : __null,    ret_data : __undef },
-      { arg_data : __undef,   ret_data : __undef },
-      { arg_data : 5.062e12,  ret_data : __undef },
-      { arg_data : __0,       ret_data : __undef },
-      { arg_data : /regex/,   ret_data : __undef },
-      { arg_data : 'string',  ret_data : __undef },
-      { arg_data : [ 1,2,3 ], ret_data : __undef },
-      { arg_data : [ 'a', { complex : 'array' } ],
-        ret_data : __undef },
-      { arg_data : { a : 'simple', b : 'map' },
-        ret_data : {}
-      },
-      { arg_data : {
-          a         : 'complex',
-          map       : { this : 'that' },
-          name_list : [ 'tim', 'bob' ]
-        },
-        ret_data : {}
-      },
-      { arg_data : new Date(),  ret_data : __undef },
-      { arg_data : complex_obj, ret_data : proto }
+      [ __1,        __undef ],
+      [ -694567,    __undef ],
+      [ __blank,    __undef ],
+      [ __null,     __undef ],
+      [ __undef,    __undef ],
+      [ 5.062e12,   __undef ],
+      [ __0,        __undef ],
+      [ /regex/,    __undef ],
+      [ 'string',   __undef ],
+      [ [ 1,2,3 ],  __undef ],
+      [ complex_obj, proto  ],
+      [ new Date(), __undef ],
+      [ [ 'a', { complex : 'array' } ], __undef ],
+      [ { a : 'simple', b : 'map' }, {} ],
+      [ { a : 'complex', map : { this : 'that' },
+        name_list : [ 'tim', 'bob' ] }, {} ]
     ],
     assert_count = assert_list.length,
-    clear_fn     = xhi._util_._clearMap_,
+    test_fn      = xhi._util_._clearMap_,
 
-    msg_str, idx, assert_map,
-    arg_data, ret_data, solve_data
+    msg_str, idx, expect_list,
+    arg_data, expect_data, solve_data
     ;
 
   complex_obj.this = '1';
@@ -92,17 +87,17 @@ function clearMap( test_obj ) {
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map = assert_list[ idx ];
-    arg_data   = assert_map.arg_data;
-    ret_data   = assert_map.ret_data;
-    solve_data = clear_fn( arg_data );
+    expect_list   = assert_list[ idx ];
+    arg_data    = expect_list[ __0 ];
+    expect_data = expect_list[ __1 ];
+    solve_data  = test_fn( arg_data );
     msg_str = __Str( idx ) + '.  type:'
       + xhi._util_._getVarType_( arg_data )
       + ' clearMap(' + JSON.stringify( arg_data ) + ') expect: '
-      + JSON.stringify( ret_data ) + ' actual: '
+      + JSON.stringify( expect_data ) + ' actual: '
       + JSON.stringify( solve_data );
     test_obj.ok(
-      JSON.stringify( ret_data ) === JSON.stringify( solve_data ), msg_str
+      JSON.stringify( solve_data ) === JSON.stringify( expect_data ), msg_str
     );
   }
   test_obj.done();
@@ -140,44 +135,41 @@ function cloneData( test_obj ) {
 function getBasename ( test_obj ) {
   var
     assert_list = [
-      { arg_list : [], basename : __blank, dirname : __blank },
-      { arg_list : [ __undef ], basename : __blank, dirname : __blank },
-      { arg_list : [ __null  ], basename : __blank, dirname : __blank },
-      { arg_list : [ 'default_delim' ],
-        basename : 'default_delim', dirname : __blank },
-      { arg_list : [ 'no/slash/word' ],
-        basename : 'word', dirname : 'no/slash/' },
-      { arg_list : [ '/slash/word'        ],
-        basename : 'word', dirname : '/slash/' },
-      { arg_list : [ 'no/slash/word', ',' ],
-        basename : 'no/slash/word', dirname : __blank },
-      { arg_list : [ 'no,slash,word', ',' ],
-        basename : 'word', dirname : 'no,slash,' },
-      { arg_list : [ ':colon:word:',  ',' ],
-        basename : ':colon:word:', dirname : __blank },
-      { arg_list : [ ':colon:word:',  ':' ],
-        basename : __blank, dirname : ':colon:word:' },
-      { arg_list : [ ':colon:word',   ':' ],
-        basename : 'word', dirname: ':colon:' }
+      // [ arg_list, basename, dirname ]
+      [ [], __blank, __blank ],
+      [ [ __undef ], __blank, __blank ],
+      [ [ __null  ], __blank, __blank ],
+      [ [ 'default_delim' ], 'default_delim', __blank ],
+      [ [ 'no/slash/word' ], 'word', 'no/slash/' ],
+      [ [ '/slash/word'   ], 'word', '/slash/' ],
+      [ [ 'no/slash/word', ',' ], 'no/slash/word', __blank ],
+      [ [ 'no,slash,word', ',' ], 'word', 'no,slash,' ],
+      [ [ ':colon:word:',  ',' ], ':colon:word:', __blank ],
+      [ [ ':colon:word:',  ':' ], __blank, ':colon:word:' ],
+      [ [ ':colon:word',   ':' ], 'word', ':colon:' ]
     ],
     assert_count = assert_list.length,
     basename_fn  = xhi._util_._getBasename_,
     dirname_fn   = xhi._util_._getDirname_,
 
-    idx, assert_map, msg_str, basename, dirname
+    idx, expect_list, arg_list, expect_basename, expect_dirname,
+    msg_str, solve_basename, solve_dirname
     ;
 
   test_obj.expect( assert_count * __2 );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map = assert_list[ idx ];
+    expect_list = assert_list[ idx ];
+    arg_list  = expect_list[ __0 ];
+    expect_basename = expect_list[ __1 ];
+    expect_dirname  = expect_list[ __2 ];
 
-    basename = basename_fn.apply( __undef, assert_map.arg_list );
-    msg_str = __Str( idx ) + '. ' + basename + ' === ' + assert_map.basename;
-    test_obj.ok( basename === assert_map.basename, msg_str );
+    solve_basename = basename_fn.apply( __undef, arg_list );
+    msg_str = __Str( idx ) + '. ' + solve_basename + ' === ' + expect_basename;
+    test_obj.ok( solve_basename === expect_basename, msg_str );
 
-    dirname = dirname_fn.apply( __undef, assert_map.arg_list );
-    msg_str = __Str( idx ) + '. ' + dirname + ' === ' + assert_map.dirname;
-    test_obj.ok( dirname === assert_map.dirname, msg_str );
+    solve_dirname = dirname_fn.apply( __undef, arg_list );
+    msg_str = __Str( idx ) + '. ' + solve_dirname + ' === ' + expect_dirname;
+    test_obj.ok( solve_dirname === expect_dirname, msg_str );
   }
   test_obj.done();
 }
@@ -187,38 +179,40 @@ function getDeepMapVal ( test_obj ) {
     deep_map_0   = { foo : { bar : __1 } },
     deep_map_1   = { bing : { bang : 'string' }, list : [ __1, __2 ] },
     assert_list  = [
-      { arg_list : [ __null,  [ 'foo', 'bar' ] ], data : __undef },
-      { arg_list : [ __undef, [ 'foo', 'bar' ] ], data : __undef },
-      { arg_list : [ 'foofy', [ 'foo', 'bar' ] ], data : __undef },
-      { arg_list : [ deep_map_0, [ 'foo', 'bar' ] ], data : __1 },
-      { arg_list : [ deep_map_0, [ 'foo' ] ], data : deep_map_0.foo },
-      { arg_list : [ deep_map_0, [] ], data : deep_map_0 },
-      { arg_list : [ deep_map_1, [ 'bing' ] ], data : deep_map_1.bing },
-      { arg_list : [ deep_map_1, [ 'bing', 'bang' ] ], data : 'string' },
-      { arg_list : [ deep_map_1, [ 'list'] ], data : deep_map_1.list  },
-      { arg_list : [ deep_map_1, [] ], data : deep_map_1 }
+      // [ arg_list, expect_data ]
+      [ [ __null,  [ 'foo', 'bar' ] ], __undef ],
+      [ [ __undef, [ 'foo', 'bar' ] ], __undef ],
+      [ [ 'foofy', [ 'foo', 'bar' ] ], __undef ],
+      [ [ deep_map_0, [ 'foo', 'bar' ] ], __1 ],
+      [ [ deep_map_0, [ 'foo' ] ], deep_map_0.foo ],
+      [ [ deep_map_0, [] ], deep_map_0 ],
+      [ [ deep_map_1, [ 'bing' ] ], deep_map_1.bing ],
+      [ [ deep_map_1, [ 'bing', 'bang' ] ], 'string' ],
+      [ [ deep_map_1, [ 'list'] ], deep_map_1.list  ],
+      [ [ deep_map_1, [] ], deep_map_1 ]
     ],
     assert_count = assert_list.length,
     deep_fn      = xhi._util_._getDeepMapVal_,
 
-    idx, assert_map, msg_str, return_data
+    idx, expect_list, arg_list, expect_data, solve_data, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
-    return_data = deep_fn.apply( __undef, assert_map.arg_list );
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_data  = expect_list[ __1 ];
+    solve_data = deep_fn.apply( __undef, arg_list );
     msg_str     = __Str( idx ) + '. '
-      + __Str( return_data ) + ' <===> ' + __Str( assert_map.data );
-
-    test_obj.deepEqual( return_data, assert_map.data, msg_str );
+      + __Str( solve_data ) + ' <===> ' + __Str( expect_data );
+    test_obj.deepEqual( solve_data, expect_data, msg_str );
   }
   test_obj.done();
 }
 
 function getListAttrIdx ( test_obj ) {
   var
-    test_list  = [
+    map_list  = [
       { foo : __1, bar : 'string' },
       { foo : __2, bar : 'foofy' },
       __undef,
@@ -226,42 +220,49 @@ function getListAttrIdx ( test_obj ) {
       { biz : __undef, bang: __null }
     ],
     assert_list  = [
-      { arg_list : [ test_list, 'foo', __1 ], idx : __0 },
-      { arg_list : [ test_list, 'foo', __2 ], idx : __1 },
-      { arg_list : [ test_list, 'foo', __3 ], idx : __n1  },
-      { arg_list : [ test_list, 'bar', 'string' ], idx : __0 },
-      { arg_list : [ test_list, 'bar', 'foofy' ], idx : __1 },
-      { arg_list : [ test_list, 'bar', 'poopy' ], idx : __n1 },
-      { arg_list : [ test_list, 'bang', __null ], idx : __3  },
-      { arg_list : [ test_list, 'bang', __undef ], idx : __n1 },
-      { arg_list : [ test_list, 'biz',  __undef ], idx : __4 }
+      // [ arg_list, expect_data ]
+      [ [ map_list, 'foo', __1 ], __0 ],
+      [ [ map_list, 'foo', __2 ], __1 ],
+      [ [ map_list, 'foo', __3 ], __n1  ],
+      [ [ map_list, 'bar', 'string' ], __0 ],
+      [ [ map_list, 'bar', 'foofy' ], __1 ],
+      [ [ map_list, 'bar', 'poopy' ], __n1 ],
+      [ [ map_list, 'bang', __null ], __3  ],
+      [ [ map_list, 'bang', __undef ], __n1 ],
+      [ [ map_list, 'biz',  __undef ], __4 ]
     ],
 
     assert_count = assert_list.length,
-    get_idx_fn    = xhi._util_._getListAttrIdx_,
-    get_map_fn    = xhi._util_._getListAttrMap_,
+    get_idx_fn   = xhi._util_._getListAttrIdx_,
+    get_map_fn   = xhi._util_._getListAttrMap_,
+    check_count  = __0,
 
-    idx,        assert_map,  msg_str,
-    return_idx, solve_map,   return_map
+    idx,          expect_list,  arg_list,
+    expect_idx,   msg_str,      solve_idx,
+
+    expect_map,   solve_map
     ;
 
   test_obj.expect( assert_count * __2 );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_idx   = expect_list[ __1 ];
 
-    return_idx = get_idx_fn.apply( __undef, assert_map.arg_list );
-    msg_str    = __Str( idx ) + '. '
-      + __Str( return_idx ) + ' === ' + __Str( assert_map.idx );
-    test_obj.ok( return_idx === assert_map.idx, msg_str );
+    solve_idx = get_idx_fn.apply( __undef, arg_list );
+    msg_str    = __Str( check_count ) + '. '
+      + __Str( solve_idx ) + ' === ' + __Str( expect_idx );
+    test_obj.ok( solve_idx === expect_idx, msg_str );
+    check_count++;
 
-    solve_map  = test_list[ return_idx ];
-    return_map = get_map_fn.apply( __undef, assert_map.arg_list );
-    msg_str    = __Str( idx ) + '. '
-      + JSON.stringify( return_map ) + ' === '
-      + JSON.stringify( solve_map )
+    expect_map = map_list[ expect_idx ];
+    solve_map  = get_map_fn.apply( __undef, arg_list );
+    msg_str    = __Str( check_count ) + '. '
+      + JSON.stringify( solve_map ) + ' === '
+      + JSON.stringify( expect_map )
       ;
-    test_obj.ok( return_map === solve_map, msg_str );
-
+    test_obj.ok( solve_map === expect_map, msg_str );
+    check_count++;
   }
   test_obj.done();
 }
@@ -281,34 +282,36 @@ function getListDiff ( test_obj ) {
     list_08 = [ 1,2,3, map_02 ],
     list_09 = [ 1,2,3, map_01 ],
     assert_list  = [
-      { arg_list : [ list_01, list_01 ], list : [] },
-      { arg_list : [ list_01, list_02 ], list : [ 'fred' ] },
-      { arg_list : [ list_02, list_03 ], list : [] },
-      { arg_list : [ list_03, list_04 ], list : [ 'fred', map_01 ] },
-      { arg_list : [ list_04, list_05 ], list : [] },
-      { arg_list : [ list_05, list_06 ], list : [ 1,2,3,4 ] },
-      { arg_list : [ list_06, list_07 ], list : [ map_01, map_02] },
-      { arg_list : [ list_07, list_08 ], list : [ 1,2,3 ] },
-      { arg_list : [ list_08, list_09 ], list : [ map_01, map_02 ] },
-      { arg_list : [ list_09, list_09 ], list : [] }
+      // [ arg_list, expect_data ]
+      [ [ list_01, list_01 ], [] ],
+      [ [ list_01, list_02 ], [ 'fred' ] ],
+      [ [ list_02, list_03 ], [] ],
+      [ [ list_03, list_04 ], [ 'fred', map_01 ] ],
+      [ [ list_04, list_05 ], [] ],
+      [ [ list_05, list_06 ], [ 1,2,3,4 ] ],
+      [ [ list_06, list_07 ], [ map_01, map_02] ],
+      [ [ list_07, list_08 ], [ 1,2,3 ] ],
+      [ [ list_08, list_09 ], [ map_01, map_02 ] ],
+      [ [ list_09, list_09 ], [] ]
     ],
 
     assert_count = assert_list.length,
     get_diff_fn   = xhi._util_._getListDiff_,
 
-    idx, assert_map,  diff_list, msg_str
+    idx, expect_list, arg_list, expect_data, solve_data, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
-
-    diff_list = get_diff_fn.apply( __undef, assert_map.arg_list );
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_data  = expect_list[ __1 ];
+    solve_data = get_diff_fn.apply( __undef, arg_list );
     msg_str    = __Str( idx ) + '. '
-      + JSON.stringify( diff_list ) + ' <===> '
-      + JSON.stringify( assert_map.list );
+      + JSON.stringify( solve_data ) + ' <===> '
+      + JSON.stringify( expect_data );
 
-    test_obj.deepEqual( diff_list, assert_map.list, msg_str );
+    test_obj.deepEqual( solve_data, expect_data, msg_str );
   }
   test_obj.done();
 }
@@ -326,33 +329,37 @@ function getNowMs ( test_obj ) {
 function getNumSign ( test_obj ) {
   var
     assert_list  = [
-      { arg_list : [ __0 ],       int : __1  },
-      { arg_list : [ __1 ],       int : __1  },
-      { arg_list : [ __n1],       int : __n1 },
-      { arg_list : [ 25  ],       int : __1  },
-      { arg_list : [ 3.28e24 ],   int : __1  },
-      { arg_list : [ -4562 ],     int : __n1 },
-      { arg_list : [ -0.000001 ], int : __n1 },
-      { arg_list : [ 2e5 - 2e4 ], int : __1  },
-      { arg_list : [ 2e4 - 2e5 ], int : __n1 },
-      { arg_list : [ 'fred'    ], int : __1  }
+      // [ arg_list, expect_data ]
+      [ [ __0 ],       __1  ],
+      [ [ __1 ],       __1  ],
+      [ [ __n1],       __n1 ],
+      [ [ 25  ],       __1  ],
+      [ [ 3.28e24 ],   __1  ],
+      [ [ -4562 ],     __n1 ],
+      [ [ -0.000001 ], __n1 ],
+      [ [ 2e5 - 2e4 ], __1  ],
+      [ [ 2e4 - 2e5 ], __n1 ],
+      [ [ 'fred'    ], __1  ]
     ],
 
     assert_count = assert_list.length,
     get_sign_fn   = xhi._util_._getNumSign_,
 
-    idx, assert_map, solve_int, msg_str
+    idx,        expect_list,  arg_list,
+    expect_int, solve_int,    msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_int   = expect_list[ __1 ];
 
-    solve_int = get_sign_fn.apply( __undef, assert_map.arg_list );
+    solve_int = get_sign_fn.apply( __undef, arg_list );
     msg_str    = __Str( idx ) + '. '
-      + __Str( solve_int ) + ' === ' + __Str( assert_map.int );
+      + __Str( solve_int ) + ' === ' + __Str( expect_int );
 
-    test_obj.ok( solve_int === assert_map.int, msg_str );
+    test_obj.ok( solve_int === expect_int, msg_str );
   }
   test_obj.done();
 }
@@ -361,68 +368,68 @@ function makeArgList ( test_obj ) {
   var
     assert_list  = [
       // Single arg var types
-      { arg_list : [ __undef  ] },
-      { arg_list : [ __blank  ] },
-      { arg_list : [ __null   ] },
-      { arg_list : [ 'fred'   ] },
-      { arg_list : [ 3.248e24 ] },
-      { arg_list : [ { map : 'string' } ] },
-      { arg_list : [ [ 'a','list','words' ] ] },
+      [ __undef  ],
+      [ __blank  ],
+      [ __null   ],
+      [ 'fred'   ],
+      [ 3.248e24 ],
+      [ { map : 'string' } ],
+      [ [ 'a','list','words' ] ],
 
       // Permutations
-      { arg_list : [ __undef, __blank ] },
-      { arg_list : [ __undef, __null  ] },
-      { arg_list : [ __undef, 'fred'  ] },
-      { arg_list : [ __undef, 3.248e24 ] },
-      { arg_list : [ __undef, { map : 'string' } ] },
-      { arg_list : [ __undef, [ 'a','list','words' ] ] },
+      [ __undef, __blank ],
+      [ __undef, __null  ],
+      [ __undef, 'fred'  ],
+      [ __undef, 3.248e24 ],
+      [ __undef, { map : 'string' } ],
+      [ __undef, [ 'a','list','words' ] ],
 
-      { arg_list : [ __blank, __undef ] },
-      { arg_list : [ __blank, __null  ] },
-      { arg_list : [ __blank, 'fred'  ] },
-      { arg_list : [ __blank, 3.248e24 ] },
-      { arg_list : [ __blank, { map : 'string' } ] },
-      { arg_list : [ __blank, [ 'a','list','words' ] ] },
+      [ __blank, __undef ],
+      [ __blank, __null  ],
+      [ __blank, 'fred'  ],
+      [ __blank, 3.248e24 ],
+      [ __blank, { map : 'string' } ],
+      [ __blank, [ 'a','list','words' ] ],
 
-      { arg_list : [ __null, __undef  ] },
-      { arg_list : [ __null, __blank  ] },
-      { arg_list : [ __null, 'fred'   ] },
-      { arg_list : [ __null, 3.248e24 ] },
-      { arg_list : [ __null, { map : 'string' } ] },
-      { arg_list : [ __null, [ 'a','list','words' ] ] },
+      [ __null, __undef  ],
+      [ __null, __blank  ],
+      [ __null, 'fred'   ],
+      [ __null, 3.248e24 ],
+      [ __null, { map : 'string' } ],
+      [ __null, [ 'a','list','words' ] ],
 
-      { arg_list : [ 'fred', __undef  ] },
-      { arg_list : [ 'fred', __blank  ] },
-      { arg_list : [ 'fred', __null   ] },
-      { arg_list : [ 'fred', 3.248e24  ] },
-      { arg_list : [ 'fred', { map : 'string' } ] },
-      { arg_list : [ 'fred', [ 'a','list','words' ] ] },
+      [ 'fred', __undef  ],
+      [ 'fred', __blank  ],
+      [ 'fred', __null   ],
+      [ 'fred', 3.248e24  ],
+      [ 'fred', { map : 'string' } ],
+      [ 'fred', [ 'a','list','words' ] ],
 
-      { arg_list : [ 3.248e24, __undef  ] },
-      { arg_list : [ 3.248e24, __blank  ] },
-      { arg_list : [ 3.248e24, __null   ] },
-      { arg_list : [ 3.248e24, 'fred'   ] },
-      { arg_list : [ 3.248e24, { map : 'string' } ] },
-      { arg_list : [ 3.248e24, [ 'a','list','words' ] ] },
+      [ 3.248e24, __undef  ],
+      [ 3.248e24, __blank  ],
+      [ 3.248e24, __null   ],
+      [ 3.248e24, 'fred'   ],
+      [ 3.248e24, { map : 'string' } ],
+      [ 3.248e24, [ 'a','list','words' ] ],
 
-      { arg_list : [ { map : 'string' }, __undef  ] },
-      { arg_list : [ { map : 'string' }, __blank  ] },
-      { arg_list : [ { map : 'string' }, __null   ] },
-      { arg_list : [ { map : 'string' }, 'fred'   ] },
-      { arg_list : [ { map : 'string' }, 3.248e24 ] },
-      { arg_list : [ { map : 'string' }, [ 'a','list','words' ] ] },
+      [ { map : 'string' }, __undef  ],
+      [ { map : 'string' }, __blank  ],
+      [ { map : 'string' }, __null   ],
+      [ { map : 'string' }, 'fred'   ],
+      [ { map : 'string' }, 3.248e24 ],
+      [ { map : 'string' }, [ 'a','list','words' ] ],
 
-      { arg_list : [ [ 'a','list','words' ], __undef  ] },
-      { arg_list : [ [ 'a','list','words' ], __blank  ] },
-      { arg_list : [ [ 'a','list','words' ], __null   ] },
-      { arg_list : [ [ 'a','list','words' ], 'fred'   ] },
-      { arg_list : [ [ 'a','list','words' ], 3.248e24 ] },
-      { arg_list : [ [ 'a','list','words' ], { map : 'string' } ] },
+      [ [ 'a','list','words' ], __undef  ],
+      [ [ 'a','list','words' ], __blank  ],
+      [ [ 'a','list','words' ], __null   ],
+      [ [ 'a','list','words' ], 'fred'   ],
+      [ [ 'a','list','words' ], 3.248e24 ],
+      [ [ 'a','list','words' ], { map : 'string' } ],
 
-      { arg_list : [ __1 , 'fred' ] },
-      { arg_list : [ { name: 'fred', list : [1,2,3] }, __undef ] },
-      { arg_list : [ 3.28e24, { a : 'map'}, [ 'list','of','words'] ] },
-      { arg_list : [ { param_1 : 'one', param_2 : { a : 'map'} } ] }
+      [ __1 , 'fred' ],
+      [ { name: 'fred', list : [1,2,3] }, __undef ],
+      [ 3.28e24, { a : 'map'}, [ 'list','of','words'] ],
+      [ { param_1 : 'one', param_2 : { a : 'map'} } ]
     ],
 
     assert_count = assert_list.length,
@@ -430,19 +437,18 @@ function makeArgList ( test_obj ) {
       return xhi._util_._makeArgList_( arguments );
     },
 
-    idx, assert_map, arg_list, msg_str
+    idx, expect_list, solve_list, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
-
-    arg_list = get_args_fn.apply( __undef, assert_map.arg_list );
+    expect_list  = assert_list[ idx ];
+    solve_list   = get_args_fn.apply( __undef, expect_list );
     msg_str    = __Str( idx ) + '. '
-      + JSON.stringify( arg_list ) + ' <===> '
-      + JSON.stringify( assert_map.arg_list );
+      + JSON.stringify( solve_list ) + ' <===> '
+      + JSON.stringify( expect_list );
 
-    test_obj.deepEqual( arg_list, assert_map.arg_list, msg_str );
+    test_obj.deepEqual( solve_list, expect_list, msg_str );
   }
   test_obj.done();
 }
@@ -450,26 +456,31 @@ function makeArgList ( test_obj ) {
 function makeClockStr ( test_obj ) {
   var
     assert_list  = [
-      { arg_list : [ 1473980001000    ], str : '22:53:21' },
-      { arg_list : [ 1473980001000, 1 ], str : '22:53' },
-      { arg_list : [ 1473980001000, 2 ], str : '22' }
+      // [ arg_list, expect_data ]
+      [ [ 1473980001000    ], '22:53:21' ],
+      [ [ 1473980001000, 1 ], '22:53' ],
+      [ [ 1473980001000, 2 ], '22' ],
+      [ [ 1474832093000    ], '19:34:53' ],
+      [ [ 1474832093000, 1 ], '19:34' ],
+      [ [ 1474832093000, 2 ], '19' ]
     ],
 
     assert_count = assert_list.length,
     make_str_fn   = xhi._util_._makeClockStr_,
 
-    idx, assert_map, clock_str, msg_str
+    idx, expect_list, arg_list, expect_str, solve_str, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
-
-    clock_str   = make_str_fn.apply( __undef, assert_map.arg_list );
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_str   = expect_list[ __1 ];
+    solve_str   = make_str_fn.apply( __undef, arg_list );
     msg_str    = __Str( idx ) + '. '
-      + __Str( clock_str ) + ' === ' + __Str( assert_map.str );
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
 
-    test_obj.ok( clock_str === assert_map.str, msg_str );
+    test_obj.ok( solve_str === expect_str, msg_str );
   }
   test_obj.done();
 }
@@ -477,41 +488,44 @@ function makeClockStr ( test_obj ) {
 function makeCommaNumStr ( test_obj ) {
   var
     assert_list  = [
-      { arg_map : { _input_num_ :        10 }, str :        '10' },
-      { arg_map : { _input_num_ :       100 }, str :       '100' },
-      { arg_map : { _input_num_ :      1000 }, str :      '1.0k' },
-      { arg_map : { _input_num_ :      1950 }, str :      '1.9k' },
-      { arg_map : { _input_num_ :      1951 }, str :      '2.0k' },
-      { arg_map : { _input_num_ :      1999 }, str :      '2.0k' },
-      { arg_map : { _input_num_ :   1000000 }, str :  '1,000.0k' },
-      { arg_map : { _input_num_ :       -10 }, str :       '-10' },
-      { arg_map : { _input_num_ :      -100 }, str :      '-100' },
-      { arg_map : { _input_num_ :     -1000 }, str :     '-1.0k' },
-      { arg_map : { _input_num_ :  -1000000 }, str : '-1,000.0k' },
+      // [ arg_map, expect_data ]
+      [ { _input_num_ :        10 },        '10' ],
+      [ { _input_num_ :       100 },       '100' ],
+      [ { _input_num_ :      1000 },      '1.0k' ],
+      [ { _input_num_ :      1950 },      '1.9k' ],
+      [ { _input_num_ :      1951 },      '2.0k' ],
+      [ { _input_num_ :      1999 },      '2.0k' ],
+      [ { _input_num_ :   1000000 },  '1,000.0k' ],
+      [ { _input_num_ :       -10 },       '-10' ],
+      [ { _input_num_ :      -100 },      '-100' ],
+      [ { _input_num_ :     -1000 },     '-1.0k' ],
+      [ { _input_num_ :  -1000000 }, '-1,000.0k' ],
 
-      { arg_map : { _round_limit_exp_: 6, _round_unit_exp_ : 6,
+      [ { _round_limit_exp_: 6, _round_unit_exp_ : 6,
         _round_unit_str_ : 'm', _round_dec_count_ : 3,
-        _input_num_ : 10 }, str : '10' },
-      { arg_map : { _round_limit_exp_: 6, _round_unit_exp_ : 6,
+        _input_num_ : 10 }, '10' ],
+      [ { _round_limit_exp_: 6, _round_unit_exp_ : 6,
         _round_unit_str_ : 'm', _round_dec_count_ : 3,
-        _input_num_ : 1234000 }, str : '1.234m' }
+        _input_num_ : 1234000 }, '1.234m' ]
     ],
 
     assert_count = assert_list.length,
     make_str_fn  = xhi._util_._makeCommaNumStr_,
 
-    idx, assert_map, comma_str, msg_str
+    idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
+    expect_list  = assert_list[ idx ];
+    arg_map      = expect_list[ __0 ];
+    expect_str   = expect_list[ __1 ];
 
-    comma_str   = make_str_fn.apply( __undef, [ assert_map.arg_map ] );
+    solve_str   = make_str_fn.apply( __undef, [ arg_map ] );
     msg_str    = __Str( idx ) + '. '
-      + __Str( comma_str ) + ' === ' + __Str( assert_map.str );
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
 
-    test_obj.ok( comma_str === assert_map.str, msg_str );
+    test_obj.ok( solve_str === expect_str, msg_str );
   }
   test_obj.done();
 }
@@ -520,48 +534,46 @@ function makeDateStr( test_obj ) {
   var
     date_obj     = new Date(),
     assert_list  = [
-      { arg_map : { _date_ms_ : 1474323404010 }, str : '2016-09-19' },
-      { arg_map : { _date_ms_ : 1474323404020, _do_time_ : __false },
-        str : '2016-09-19' },
-      { arg_map : { _date_ms_ : 1474323404498, _do_time_ : __true  },
-        str : '2016-09-19 15:16:44' },
-      { arg_map : { _date_ms_ : 1274323404500 }, str : '2010-05-19' },
-      { arg_map : { _date_ms_ : 1274323404999, _do_time_ : __false },
-        str : '2010-05-19' },
-      { arg_map : { _date_ms_ : 1274323405000, _do_time_ : __true  },
-        str : '2010-05-19 19:43:25' },
-      { arg_map : { _date_ms_  : 1374323405099}, str : '2013-07-20' },
-      { arg_map : { _date_obj_ : date_obj },     str : '2013-07-20' },
-      { arg_map : { _date_ms_ : 1374323405099, _do_time_ : __false  },
-        str     : '2013-07-20'
-      },
-      { arg_map : { _date_obj_ : date_obj,     _do_time_ : __false  },
-        str     : '2013-07-20'
-      },
-      { arg_map : { _date_ms_ : 1374323405099, _do_time_ : __true  },
-        str     : '2013-07-20 05:30:05'
-      },
-      { arg_map : { _date_obj_ : date_obj,     _do_time_ : __true  },
-        str     : '2013-07-20 05:30:05'
-      }
+      // [ arg_map, expect_data ]
+      [ { _date_ms_ : 1474323404010 }, '2016-09-19' ],
+      [ { _date_ms_ : 1474323404020, _do_time_ : __false },
+        '2016-09-19' ],
+      [ { _date_ms_ : 1474323404498, _do_time_ : __true  },
+        '2016-09-19 15:16:44' ],
+      [ { _date_ms_ : 1274323404500 }, '2010-05-19' ],
+      [ { _date_ms_ : 1274323404999, _do_time_ : __false }, '2010-05-19' ],
+      [ { _date_ms_ : 1274323405000, _do_time_ : __true  },
+        '2010-05-19 19:43:25' ],
+      [ { _date_ms_  : 1374323405099}, '2013-07-20' ],
+      [ { _date_obj_ : date_obj },     '2013-07-20' ],
+      [ { _date_ms_ : 1374323405099, _do_time_ : __false  }, '2013-07-20' ],
+      [ { _date_obj_ : date_obj,     _do_time_ : __false  }, '2013-07-20' ],
+      [ { _date_ms_ : 1374323405099, _do_time_ : __true  },
+        '2013-07-20 05:30:05'
+      ],
+      [ { _date_obj_ : date_obj,     _do_time_ : __true  },
+        '2013-07-20 05:30:05'
+      ]
     ],
 
     assert_count = assert_list.length,
     make_str_fn   = xhi._util_._makeDateStr_,
 
-    idx, assert_map, date_str, msg_str
+    idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
 
   date_obj.setTime( 1374323405099 );
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
+    expect_list  = assert_list[ idx ];
+    arg_map      = expect_list[ __0 ];
+    expect_str   = expect_list[ __1 ];
 
-    date_str   = make_str_fn.apply( __undef, [ assert_map.arg_map ] );
-    msg_str    = __Str( idx ) + '. '
-      + __Str( date_str ) + ' === ' + __Str( assert_map.str );
+    solve_str   = make_str_fn( arg_map );
+    msg_str     = __Str( idx ) + '. '
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
 
-    test_obj.ok( date_str === assert_map.str, msg_str );
+    test_obj.ok( solve_str === expect_str, msg_str );
   }
 
   test_obj.done();
@@ -575,124 +587,106 @@ function makeEllipsisStr( test_obj ) {
     str3 = '<br>This is by far the longest string. <b>It contains html '
       + 'markup</b> which makes it especially sucky, parse-wise',
     assert_list  = [
-      { arg_map : { _input_str_ : __undef }, str : __blank },
-      { arg_map : { _input_str_ : __null  }, str : __blank },
-      { arg_map : { _input_str_ : str1    }, str : __blank },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : __undef  },
-        str : __blank },
-      { arg_map : { _input_str_ : __undef, _do_word_break_ : __undef },
-        str : __blank },
-      { arg_map : { _input_str_ : __null, _do_word_break_ : __false  },
-        str : __blank },
-      { arg_map : { _input_str_ : str1, _do_word_break_ : __0 },
-        str : __blank },
-      { arg_map : { _input_str_ : str2, _do_word_break_ : __true,
-        _char_limit_int_ : __undef  },
-        str : __blank },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : __undef  },
-        str : __blank },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : __null  },
-        str : __blank },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : __n1  },
-        str : __blank },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : __0  },
-        str : __blank },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : 'string'  },
-        str : __blank },
-      { arg_map : { _input_str_ : str0, _char_limit_int_ : 5  },
-        str : '...' },
-      { arg_map : { _input_str_ : str1, _char_limit_int_ : 5  },
-        str : '...' },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : 5  },
-        str : '...' },
-      { arg_map : { _input_str_ : str3, _char_limit_int_ : 5  },
-        str : '...' },
-      { arg_map : { _input_str_ : str0, _char_limit_int_ : 10  },
-        str : 'Georgey' },
-      { arg_map : { _input_str_ : str1, _char_limit_int_ : 10  },
-        str : 'Hee ...' },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : 10  },
-        str : 'Tim ...' },
-      { arg_map : { _input_str_ : str3, _char_limit_int_ : 10  },
-        str : 'This ...' },
-      { arg_map : { _input_str_ : str0, _char_limit_int_ : 25  },
-        str : 'Georgey' },
-      { arg_map : { _input_str_ : str1, _char_limit_int_ : 25  },
-        str : 'Hee haw and the boys' },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : 25  },
-        str : 'Tim knickers and the ...' },
-      { arg_map : { _input_str_ : str3, _char_limit_int_ : 25  },
-        str : 'This is by far the ...' },
-      { arg_map : { _input_str_ : str0, _char_limit_int_ : 40  },
-        str : 'Georgey' },
-      { arg_map : { _input_str_ : str1, _char_limit_int_ : 40  },
-        str : 'Hee haw and the boys' },
-      { arg_map : { _input_str_ : str2, _char_limit_int_ : 40  },
-        str : 'Tim knickers and the fem-fatale chicks' },
-      { arg_map : { _input_str_ : str3, _char_limit_int_ : 40  },
-        str : 'This is by far the longest string. ...' },
-      { arg_map : { _input_str_ : str3, _char_limit_int_ : 2e2 },
-        str     : 'This is by far the longest string. It contains html '
+      // [ arg_map, expect_str ]
+      [ { _input_str_ : __undef }, __blank ],
+      [ { _input_str_ : __null  }, __blank ],
+      [ { _input_str_ : str1    }, __blank ],
+      [ { _input_str_ : str2, _char_limit_int_ : __undef  }, __blank ],
+      [ { _input_str_ : __undef, _do_word_break_ : __undef }, __blank ],
+      [ { _input_str_ : __null, _do_word_break_ : __false  }, __blank ],
+      [ { _input_str_ : str1, _do_word_break_ : __0 }, __blank ],
+      [ { _input_str_ : str2, _do_word_break_ : __true,
+        _char_limit_int_ : __undef  }, __blank ],
+      [ { _input_str_ : str2, _char_limit_int_ : __undef  }, __blank ],
+      [ { _input_str_ : str2, _char_limit_int_ : __null  }, __blank ],
+      [ { _input_str_ : str2, _char_limit_int_ : __n1  }, __blank ],
+      [ { _input_str_ : str2, _char_limit_int_ : __0  }, __blank ],
+      [ { _input_str_ : str2, _char_limit_int_ : 'string'  }, __blank ],
+      [ { _input_str_ : str0, _char_limit_int_ : 5  }, '...' ],
+      [ { _input_str_ : str1, _char_limit_int_ : 5  }, '...' ],
+      [ { _input_str_ : str2, _char_limit_int_ : 5  }, '...' ],
+      [ { _input_str_ : str3, _char_limit_int_ : 5  }, '...' ],
+      [ { _input_str_ : str0, _char_limit_int_ : 10  }, 'Georgey' ],
+      [ { _input_str_ : str1, _char_limit_int_ : 10  }, 'Hee ...' ],
+      [ { _input_str_ : str2, _char_limit_int_ : 10  }, 'Tim ...' ],
+      [ { _input_str_ : str3, _char_limit_int_ : 10  }, 'This ...' ],
+      [ { _input_str_ : str0, _char_limit_int_ : 25  }, 'Georgey' ],
+      [ { _input_str_ : str1, _char_limit_int_ : 25  },
+        'Hee haw and the boys' ],
+      [ { _input_str_ : str2, _char_limit_int_ : 25  },
+        'Tim knickers and the ...' ],
+      [ { _input_str_ : str3, _char_limit_int_ : 25  },
+        'This is by far the ...' ],
+      [ { _input_str_ : str0, _char_limit_int_ : 40  },
+        'Georgey' ],
+      [ { _input_str_ : str1, _char_limit_int_ : 40  },
+        'Hee haw and the boys' ],
+      [ { _input_str_ : str2, _char_limit_int_ : 40  },
+        'Tim knickers and the fem-fatale chicks' ],
+      [ { _input_str_ : str3, _char_limit_int_ : 40  },
+        'This is by far the longest string. ...' ],
+      [ { _input_str_ : str3, _char_limit_int_ : 2e2 },
+        'This is by far the longest string. It contains html '
         + 'markup which makes it especially sucky, parse-wise'
-      },
-      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
-        _char_limit_int_ : 5  }, str : 'Ge...' },
-      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
-        _char_limit_int_ : 5  }, str : 'He...' },
-      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
-        _char_limit_int_ : 5  }, str : 'Ti...' },
-      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
-        _char_limit_int_ : 5  }, str : 'Th...' },
-      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
-        _char_limit_int_ : 10  }, str : 'Georgey' },
-      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
-        _char_limit_int_ : 10  }, str : 'Hee haw...' },
-      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
-        _char_limit_int_ : 10  }, str : 'Tim kni...' },
-      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
-        _char_limit_int_ : 10  }, str : 'This is...' },
-      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
-        _char_limit_int_ : 25  }, str : 'Georgey' },
-      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
-        _char_limit_int_ : 25  }, str : 'Hee haw and the boys' },
-      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
-        _char_limit_int_ : 25  }, str : 'Tim knickers and the f...' },
-      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
-        _char_limit_int_ : 25  }, str : 'This is by far the lon...' },
-      { arg_map : { _input_str_ : str0, _do_word_break_ : __false,
-        _char_limit_int_ : 40  }, str : 'Georgey' },
-      { arg_map : { _input_str_ : str1, _do_word_break_ : __false,
-        _char_limit_int_ : 40  }, str : 'Hee haw and the boys' },
-      { arg_map : { _input_str_ : str2, _do_word_break_ : __false,
+      ],
+      [ { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, 'Ge...' ],
+      [ { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, 'He...' ],
+      [ { _input_str_ : str2, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, 'Ti...' ],
+      [ { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 5  }, 'Th...' ],
+      [ { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, 'Georgey' ],
+      [ { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, 'Hee haw...' ],
+      [ { _input_str_ : str2, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, 'Tim kni...' ],
+      [ { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 10  }, 'This is...' ],
+      [ { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, 'Georgey' ],
+      [ { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, 'Hee haw and the boys' ],
+      [ { _input_str_ : str2, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, 'Tim knickers and the f...' ],
+      [ { _input_str_ : str3, _do_word_break_ : __false,
+        _char_limit_int_ : 25  }, 'This is by far the lon...' ],
+      [ { _input_str_ : str0, _do_word_break_ : __false,
+        _char_limit_int_ : 40  }, 'Georgey' ],
+      [ { _input_str_ : str1, _do_word_break_ : __false,
+        _char_limit_int_ : 40  }, 'Hee haw and the boys' ],
+      [ { _input_str_ : str2, _do_word_break_ : __false,
         _char_limit_int_ : 40  },
-        str : 'Tim knickers and the fem-fatale chicks' },
-      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
+        'Tim knickers and the fem-fatale chicks' ],
+      [ { _input_str_ : str3, _do_word_break_ : __false,
         _char_limit_int_ : 40  },
-        str : 'This is by far the longest string. It...' },
-      { arg_map : { _input_str_ : str3, _do_word_break_ : __false,
+        'This is by far the longest string. It...' ],
+      [ { _input_str_ : str3, _do_word_break_ : __false,
         _char_limit_int_ : 2e2 },
-        str  : 'This is by far the longest string. It contains html '
+        'This is by far the longest string. It contains html '
         + 'markup which makes it especially sucky, parse-wise'
-      }
+      ]
     ],
 
     assert_count = assert_list.length,
     make_str_fn   = xhi._util_._makeEllipsisStr_,
 
-    idx, assert_map, solve_str, msg_str
+    idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
+    expect_list  = assert_list[ idx ];
+    arg_map      = expect_list[ __0 ];
+    expect_str   = expect_list[ __1 ];
 
-    solve_str = make_str_fn( assert_map.arg_map );
+    solve_str = make_str_fn( arg_map );
     msg_str   = __Str( idx ) + '. '
-      + __Str( solve_str ) + ' === ' + __Str( assert_map.str );
-
-    test_obj.ok( solve_str === assert_map.str, msg_str );
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
+    test_obj.ok( solve_str === expect_str, msg_str );
   }
-
   test_obj.done();
 }
 
@@ -701,28 +695,26 @@ function makeErrorObj ( test_obj ) {
     key_list     = [ 'name', 'description', 'data' ],
     default_list = [ 'xhi:error', __blank, __undef ],
     assert_list = [
-      { arg_list : [], expect_list : default_list },
-      { arg_list : [ __0 ], expect_list : default_list },
-      { arg_list : [ __undef ], expect_list : default_list },
-      { arg_list : [ __0, __0 ], expect_list : default_list },
-      { arg_list : [ __undef, __undef ], expect_list : default_list },
-      { arg_list : [ __null, __undef ], expect_list : default_list },
-      { arg_list : [ __null, __null ], expect_list : default_list },
-      { arg_list : [ __null, __null, __undef ], expect_list : default_list },
-      { arg_list : [ __null, __0, __undef ], expect_list : default_list },
-      { arg_list    : [ __undef, __null, __null ], expect_list : default_list },
-      { arg_list : [ '' ], expect_list : default_list },
-      { arg_list : [ '_bad_data_' ],
-        expect_list : [ 'xhi:_bad_data_', __blank, __undef ]
-      },
-      { arg_list : [ __1 ], expect_list : [ 'xhi:1', __blank, __undef ] },
-      { arg_list : [ '_bad_data_', '_the_list_is_missing_' ],
-        expect_list : [ 'xhi:_bad_data_', '_the_list_is_missing_', __undef ]
-      },
-      { arg_list : [ '_bad_data_', '_the_list_is_missing_', { is : __true } ],
-        expect_list : [ 'xhi:_bad_data_', '_the_list_is_missing_',
-          { is : __true } ]
-      }
+      // [ arg_list, expect_list ]
+      [ [], default_list ],
+      [ [ __0 ], default_list ],
+      [ [ __undef ], default_list ],
+      [ [ __0, __0 ], default_list ],
+      [ [ __undef, __undef ], default_list ],
+      [ [ __null, __undef ], default_list ],
+      [ [ __null, __null ], default_list ],
+      [ [ __null, __null, __undef ], default_list ],
+      [ [ __null, __0, __undef ], default_list ],
+      [ [ __undef, __null, __null ], default_list ],
+      [ [ '' ], default_list ],
+      [ [ '_bad_data_' ], [ 'xhi:_bad_data_', __blank, __undef ] ],
+      [ [ __1 ], [ 'xhi:1', __blank, __undef ] ],
+      [ [ '_bad_data_', '_the_list_is_missing_' ],
+        [ 'xhi:_bad_data_', '_the_list_is_missing_', __undef ]
+      ],
+      [ [ '_bad_data_', '_the_list_is_missing_', { is : __true } ],
+        [ 'xhi:_bad_data_', '_the_list_is_missing_', { is : __true } ]
+      ]
     ],
 
     key_count    = key_list.length,
@@ -730,29 +722,28 @@ function makeErrorObj ( test_obj ) {
     make_fn      = xhi._util_._makeErrorObj_,
     test_count   = __0,
 
-    idx, assert_map, arg_list, expect_list, error_obj,
-
-    idj, expect_key, expect_val, test_val, msg_str
+    idx, expect_list, arg_list, expect_obj, solve_obj,
+    idj, expect_key, expect_data, solve_data, msg_str
     ;
 
   test_obj.expect( assert_count * key_count );
 
   for ( idx = __0; idx < assert_count; idx++ ) {
-    assert_map  = assert_list[ idx ];
-    arg_list    = assert_map.arg_list;
-    expect_list = assert_map.expect_list;
-    error_obj   = make_fn.apply( __undef, arg_list );
+    expect_list  = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_obj = expect_list[ __1 ];
+    solve_obj   = make_fn.apply( __undef, arg_list );
 
     for ( idj = __0; idj < key_count; idj++ ) {
       expect_key = key_list[ idj ];
-      expect_val = expect_list[ idj ];
-      test_val   = error_obj[ expect_key ];
+      expect_data = expect_obj[ idj ];
+      solve_data  = solve_obj[ expect_key ];
       msg_str    = __Str( test_count ) + '. '
-        + JSON.stringify( assert_map )
+        + JSON.stringify( expect_list )
         + expect_key + ': '
-        + JSON.stringify( test_val ) + ' <==> '
-        + JSON.stringify( expect_val );
-      test_obj.deepEqual( test_val, expect_val, msg_str );
+        + JSON.stringify( solve_data ) + ' <==> '
+        + JSON.stringify( expect_data );
+      test_obj.deepEqual( solve_data, expect_data, msg_str );
       test_count++;
     }
   }
@@ -809,20 +800,19 @@ function makePadNumStr( test_obj ) {
     ],
     assert_count = assert_list.length,
     make_str_fn  = xhi._util_._makePadNumStr_,
-    test_count   = __0,
 
-    idx, test_list, solve_str, test_str, msg_str
+    idx, expect_list, arg_list, expect_str,
+    solve_str, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    test_list = assert_list[ idx ];
-    solve_str = make_str_fn.apply( __undef, test_list[ __0 ] );
-    test_str  = test_list[ __1 ];
-    msg_str    = __Str( test_count ) + '. '
-      + solve_str + ' === ' + test_str;
-    test_obj.ok( solve_str === test_str, msg_str );
-    test_count++;
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str = make_str_fn.apply( __undef, arg_list );
+    msg_str    = __Str( idx ) + '. ' + solve_str + ' === ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
   }
   test_obj.done();
 }
@@ -830,6 +820,7 @@ function makePadNumStr( test_obj ) {
 function makePctStr ( test_obj ) {
   var
     assert_list  = [
+      // [ arg_list, expect_str ]
       [ [ __undef       ], '0%'       ],
       [ [ __undef, __0  ], '0%'       ],
       [ [ __null,  __n1 ], '0%'       ],
@@ -853,20 +844,18 @@ function makePctStr ( test_obj ) {
     ],
     assert_count = assert_list.length,
     make_str_fn  = xhi._util_._makePctStr_,
-    test_count   = __0,
 
-    idx, test_list, solve_str, test_str, msg_str
+    idx, expect_list, arg_list, expect_str, solve_str, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    test_list = assert_list[ idx ];
-    solve_str = make_str_fn.apply( __undef, test_list[ __0 ] );
-    test_str  = test_list[ __1 ];
-    msg_str    = __Str( test_count ) + '. '
-      + solve_str + ' === ' + test_str;
-    test_obj.ok( solve_str === test_str, msg_str );
-    test_count++;
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str = make_str_fn.apply( __undef, arg_list );
+    msg_str    = __Str( idx ) + '. ' + solve_str + ' === ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
   }
   test_obj.done();
 }
@@ -875,6 +864,7 @@ function makeSeenMap ( test_obj ) {
   var
     data_map     = { _foo_ : 'bar', _baz_ : 22 },
     assert_list  = [
+      // [ arg_list, expect_data ]
       [ [ [1,2,3,4] ], {1:__true,2:__true,3:__true,4:__true} ],
       [ [ {} ], {} ],
       [ [ 'fred' ], {} ],
@@ -892,7 +882,6 @@ function makeSeenMap ( test_obj ) {
     ],
     assert_count = assert_list.length,
     make_map_fn  = xhi._util_._makeSeenMap_,
-    test_count   = __0,
 
     idx, test_list, solve_map, test_map, msg_str
     ;
@@ -902,10 +891,9 @@ function makeSeenMap ( test_obj ) {
     test_list = assert_list[ idx ];
     solve_map = make_map_fn.apply( __undef, test_list[ __0 ] );
     test_map  = test_list[ __1 ];
-    msg_str    = __Str( test_count ) + '. '
+    msg_str    = __Str( idx ) + '. '
       + solve_map + ' <===> ' + test_map;
     test_obj.deepEqual( solve_map, test_map, msg_str );
-    test_count++;
   }
   test_obj.done();
 }
@@ -961,6 +949,8 @@ console.log( 'Use mockTestObj for debugging tests using nodejs instead '
   mockTestObj
 );
 
+// getListAttrIdx( mockTestObj );
+
 module.exports = {
   _clearMap_        : clearMap,
   _cloneData_       : cloneData,
@@ -981,7 +971,7 @@ module.exports = {
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
   _makeSeenMap_     : makeSeenMap
- // _makeSeriesMap_   : makeSeriesMap,
+ // _makeSeriesMap_   : makeSeriesMap
  // _makeStrFromMap_  : makeStrFromMap,
  // _makeTmpltStr_    : makeTmpltStr,
  // _makeUcFirstStr_  : makeUcFirstStr,
