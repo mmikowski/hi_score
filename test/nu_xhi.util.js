@@ -809,16 +809,103 @@ function makePadNumStr( test_obj ) {
     ],
     assert_count = assert_list.length,
     make_str_fn  = xhi._util_._makePadNumStr_,
-    idx, test_list, solve_str, test_str, msg_str;
+    test_count   = __0,
 
+    idx, test_list, solve_str, test_str, msg_str
+    ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     test_list = assert_list[ idx ];
     solve_str = make_str_fn.apply( __undef, test_list[ __0 ] );
     test_str  = test_list[ __1 ];
-    msg_str   = solve_str + ' === ' + test_str;
+    msg_str    = __Str( test_count ) + '. '
+      + solve_str + ' === ' + test_str;
     test_obj.ok( solve_str === test_str, msg_str );
+    test_count++;
+  }
+  test_obj.done();
+}
+
+function makePctStr ( test_obj ) {
+  var
+    assert_list  = [
+      [ [ __undef       ], '0%'       ],
+      [ [ __undef, __0  ], '0%'       ],
+      [ [ __null,  __n1 ], '0%'       ],
+      [ [ 'frank'       ], '0%'       ],
+      [ [ {},      __n1 ], '0%'       ],
+      [ [ [],      __1  ], '0.0%'     ],
+      [ [ '00.25', __n1 ], '25%'      ],
+      [ [ ' 0.25', __0  ], '25%'      ],
+      [ [ '  .25', __1  ], '25.0%'    ],
+      [ [ '  .25', __3  ], '25.000%'  ],
+      [ [    0.25, __n1 ], '25%'      ],
+      [ [    0.25, __0  ], '25%'      ],
+      [ [    0.25, __1  ], '25.0%'    ],
+      [ [    0.25, __3  ], '25.000%'  ],
+      [ [  '-.25', __n1 ], '-25%'     ],
+      [ [ '-0.25', __0  ], '-25%'     ],
+      [ [ '-0.25', __1  ], '-25.0%'   ],
+      [ ['-00.25', __3  ], '-25.000%' ],
+      [ [ (1/3),   __0  ], '33%'      ],
+      [ [ (2/3),   __0  ], '67%'      ]
+    ],
+    assert_count = assert_list.length,
+    make_str_fn  = xhi._util_._makePctStr_,
+    test_count   = __0,
+
+    idx, test_list, solve_str, test_str, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    test_list = assert_list[ idx ];
+    solve_str = make_str_fn.apply( __undef, test_list[ __0 ] );
+    test_str  = test_list[ __1 ];
+    msg_str    = __Str( test_count ) + '. '
+      + solve_str + ' === ' + test_str;
+    test_obj.ok( solve_str === test_str, msg_str );
+    test_count++;
+  }
+  test_obj.done();
+}
+
+function makeSeenMap ( test_obj ) {
+  var
+    data_map     = { _foo_ : 'bar', _baz_ : 22 },
+    assert_list  = [
+      [ [ [1,2,3,4] ], {1:__true,2:__true,3:__true,4:__true} ],
+      [ [ {} ], {} ],
+      [ [ 'fred' ], {} ],
+      [ [], {} ],
+      [ [ __0, __0 ], {} ],
+      [ [ [3,2,1], __0 ], {3:__0,2:__0,1:__0} ],
+      [ [ ['red','green','blue'] ],
+        {red:__true,green:__true,blue:__true} ],
+      [ [ ['red','green','blue'], __false ],
+        {red:__false,green:__false,blue:__false} ],
+      [ [ ['red','green','blue'], __0 ],
+        {red:__0,green:__0,blue:__0} ],
+      [ [ ['red','green','blue'], data_map ],
+        {red:data_map,green:data_map,blue:data_map} ]
+    ],
+    assert_count = assert_list.length,
+    make_map_fn  = xhi._util_._makeSeenMap_,
+    test_count   = __0,
+
+    idx, test_list, solve_map, test_map, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    test_list = assert_list[ idx ];
+    solve_map = make_map_fn.apply( __undef, test_list[ __0 ] );
+    test_map  = test_list[ __1 ];
+    msg_str    = __Str( test_count ) + '. '
+      + solve_map + ' <===> ' + test_map;
+    test_obj.deepEqual( solve_map, test_map, msg_str );
+    test_count++;
   }
   test_obj.done();
 }
@@ -891,10 +978,9 @@ module.exports = {
   _makeEllipsisStr_ : makeEllipsisStr,
   _makeErrorObj_    : makeErrorObj,
   _makeGuidStr_     : makeGuidStr,
-  _makePadNumStr_   : makePadNumStr
- // _makePctStr_      : makePctStr,
- // _makeRxObj_       : makeRxObj,
- // _makeSeenMap_     : makeSeenMap,
+  _makePadNumStr_   : makePadNumStr,
+  _makePctStr_      : makePctStr,
+  _makeSeenMap_     : makeSeenMap
  // _makeSeriesMap_   : makeSeriesMap,
  // _makeStrFromMap_  : makeStrFromMap,
  // _makeTmpltStr_    : makeTmpltStr,
@@ -908,6 +994,7 @@ module.exports = {
 };
 
 // Defer
+// _makeRxObj_       : makeRxObj,
 // _getLogUtilObj_   : getLogUtilObj,
 // _getTzOffsetMs_   : getTzOffsetMs,
 // _getTzCode_       : getTzCode,

@@ -259,7 +259,6 @@ xhi._util_ = (function () {
       num   = __Num( arg_num ),
       count = __Num( arg_count ),
 
-
       sign_int, num_str, zero_count;
 
     if ( isNaN( num ) || isNaN( count ) || count <= __0 ) {
@@ -286,7 +285,14 @@ xhi._util_ = (function () {
   // BEGIN Public method /makeRxObj/
   // Purpose   : Create a regular expression object
   // Example   : makeRxObj( '\s*hello\s*', 'i' );
-  function makeRxObj ( pattern_str, option_str ) {
+  function makeRxObj ( arg_pattern_str, arg_option_str ) {
+    var
+      pattern_str = __typeof( arg_pattern_str ) === vMap._string_
+        ? arg_pattern_str : __blank,
+      option_str  = __typeof( arg_pattern_str ) === vMap._string_
+        ? arg_option_str : __blank
+      ;
+
     if ( option_str ) {
       return new RegExp( pattern_str, option_str );
     }
@@ -954,26 +960,36 @@ xhi._util_ = (function () {
   //   1 : (optional) Number of decimal points to return.
   //       Default value is 0.
   //
-  function makePctStr ( arg_ratio, arg_dec_count ) {
+  function makePctStr ( arg_ratio, arg_dcount ) {
     var
-      ratio     = arg_ratio     || 0,
-      dec_count = arg_dec_count || 0
+      ratio  = __Num( arg_ratio  ) || __0,
+      dcount = __Num( arg_dcount ) || __0
       ;
-    return ( ratio * 100 )[ vMap._toFixed_ ]( dec_count ) + '%';
+
+    dcount = dcount < __0 ? __0 : __floor( dcount );
+    return ( ratio * 100 )[ vMap._toFixed_ ]( dcount ) + '%';
   }
   // END Public method /makePctStr/
 
   // BEGIN Public method /makeSeenMap/
-  // Purpose: Convert an array into a map keyed by the array values.
-  // Assign value to all keys.
+  // Purpose: Convert arg_key_list into a map with each key assigned
+  // the value of arg_seen_data.  If not provided, arg_seen_data === true
   //
-  function makeSeenMap ( list, value ) {
-    var i, key, seen_map = {};
-    for ( i = __0; i < list[ __length ]; i++ ) {
-      key = list[ i ];
-      seen_map[ key ] = value;
+  function makeSeenMap ( arg_key_list, arg_seen_data ) {
+    var
+      key_list  = __Array.isArray( arg_key_list ) ? arg_key_list : [],
+      key_count = key_list[ vMap._length_ ],
+
+      solve_data = arg_seen_data === __undef ? __true : arg_seen_data,
+      solve_map = {},
+      key, idx
+      ;
+
+    for ( idx = __0; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      solve_map[ key ] = solve_data;
     }
-    return seen_map;
+    return solve_map;
   }
   // END Public method /makeSeenMap/
 

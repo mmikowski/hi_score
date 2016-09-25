@@ -143,6 +143,7 @@ var xhi = (function () {
       _split_           : 'split',
       _status_          : 'status',
       _stopPropagation_ : 'stopPropagation',
+      _string_          : 'string',
       _stringify_       : 'stringify',
       _style_           : 'style',
       _submit_          : 'submit',
