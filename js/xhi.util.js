@@ -1068,6 +1068,29 @@ xhi._util_ = (function () {
   //   Remember to use your local timezone offset if you want to
   //   show local time. See example on makeClockStr, above.
   //
+
+  // _unit_ms_list_ : [
+  //   { _str_ : '1s',   _ms_ :     1000, _show_idx_ : __0 },
+  //   { _str_ : '2.5s', _ms_ :     2500, _show_idx_ : __0 },
+  //   { _str_ : '5s',   _ms_ :     5000, _show_idx_ : __0 },
+  //   { _str_ : '10s',  _ms_ :    10000, _show_idx_ : __0 },
+  //   { _str_ : '15s',  _ms_ :    15000, _show_idx_ : __0 },
+  //   { _str_ : '30s',  _ms_ :    30000, _show_idx_ : __0 },
+  //   { _str_ : '1m',   _ms_ :    60000, _show_idx_ : __1 },
+  //   { _str_ : '2.5m', _ms_ :   150000, _show_idx_ : __0 },
+  //   { _str_ : '5m',   _ms_ :   300000, _show_idx_ : __1 },
+  //   { _str_ : '10m',  _ms_ :   600000, _show_idx_ : __1 },
+  //   { _str_ : '15m',  _ms_ :   900000, _show_idx_ : __1 },
+  //   { _str_ : '30m',  _ms_ :  1800000, _show_idx_ : __1 },
+  //   { _str_ : '1hr',  _ms_ :  3600000, _show_idx_ : __1 },
+  //   { _str_ : '2hr',  _ms_ :  7200000, _show_idx_ : __1 },
+  //   { _str_ : '4hr',  _ms_ : 14400000, _show_idx_ : __1 },
+  //   { _str_ : '6hr',  _ms_ : 21600000, _show_idx_ : __1 },
+  //   { _str_ : '8hr',  _ms_ : 28800000, _show_idx_ : __1 },
+  //   { _str_ : '12hr', _ms_ : 43200000, _show_idx_ : __2 },
+  //   { _str_ : '1day', _ms_ : 86400000, _show_idx_ : __2 }
+  // ]
+  //
   function makeSeriesMap( arg_map ) {
     var
       tz_offset_ms = arg_map._tz_offset_ms_ || __0,
@@ -1079,9 +1102,10 @@ xhi._util_ = (function () {
       offset_str   = makeClockStr( tz_offset_ms ),
       offset_list  = offset_str[ vMap._split_ ](':'),
 
-      span_ms,         unit_list,    unit_count,
-      btm_idx,         top_idx,      btm_count,
-      top_count,
+      span_ms,         uni_ms_list,  unit_count,
+      btm_idx,         top_idx,      last_btm_idx,
+      last_top_idx,    btm_count,    top_count,
+      expand_ratio,
 
       jdx, idx,        check_idx,    check_map,
       check_count,     mod_unit_ms,  offset_ms,
@@ -1093,35 +1117,42 @@ xhi._util_ = (function () {
       ;
 
     // Get the time span and a list of available units
-    span_ms    = max_ms - min_ms;
-    unit_list  = topCmap._unit_ms_list_;
-    unit_count = unit_list[ __length ];
+    span_ms     = max_ms - min_ms;
+    uni_ms_list = topCmap._unit_ms_list_;
+    unit_count  = uni_ms_list[ __length ];
 
     // Init for solve loop
-    btm_idx    = __0;
-    top_idx    = unit_count - __1;
-    btm_count  = tgt_count * 0.75;
-    top_count  = tgt_count * 1.25;
+    btm_count  = tgt_count;
+    top_count  = tgt_count;
+
     // Back off limits to resolve as close to target as possible
     BACKOFF: for ( jdx = __0; jdx < nMap._10_; jdx ++ ) {
       // Solve for unit size through interpolation
-      idx = __0;
-      INTERPOLATE: while ( idx < unit_count ) {
+      btm_idx    = __0;
+      top_idx    = unit_count - __1;
+      last_btm_idx = __undef;
+      last_top_idx = __undef;
+      INTERPOLATE: for ( idx = __0; idx < unit_count; idx++ ) {
         // Calculate ranges
         check_idx   = btm_idx
           + __floor( ( ( top_idx - btm_idx ) / __2 ) + nMap._d5_ );
-        check_map   = unit_list[ check_idx ];
+        check_map   = uni_ms_list[ check_idx ];
         check_count = __floor( ( span_ms / check_map._ms_ ) + nMap._d5_);
+        if ( ( top_idx - btm_idx ) === __1 && last_btm_idx !== __undef ) {
+          if ( btm_idx === last_btm_idx && top_idx === last_top_idx ) {
+            break INTERPOLATE;
+          }
+        }
+        last_btm_idx = btm_idx;
+        last_top_idx = top_idx;
 
         // Continue loop if out of range
         if ( check_count < btm_count ) {
           top_idx = check_idx;
-          idx++;
           continue INTERPOLATE;
         }
         if ( check_count > top_count ) {
           btm_idx = check_idx;
-          idx++;
           continue INTERPOLATE;
         }
         solve_map = {
@@ -1133,11 +1164,12 @@ xhi._util_ = (function () {
         idx = unit_count;
       }
 
-      if ( solve_map ) { break BACKOFF;}
+      if ( solve_map ) { break BACKOFF; }
 
       // No solution found; Increase range and try again
-      btm_count = btm_count * 0.9;
-      top_count = btm_count * 1.1;
+      expand_ratio = __1 + ( ( jdx + __1 ) /nMap._10_ );
+      top_count = tgt_count * expand_ratio;
+      btm_count = tgt_count / expand_ratio;
     }
     if ( ! solve_map ) { return; }
 
@@ -1372,25 +1404,31 @@ xhi._util_ = (function () {
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
       _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
       _unit_ms_list_ : [
-        { _str_ : '1s',   _ms_ :     1000, _show_idx_ : __0 },
-        { _str_ : '2.5s', _ms_ :     2500, _show_idx_ : __0 },
-        { _str_ : '5s',   _ms_ :     5000, _show_idx_ : __0 },
-        { _str_ : '10s',  _ms_ :    10000, _show_idx_ : __0 },
-        { _str_ : '15s',  _ms_ :    15000, _show_idx_ : __0 },
-        { _str_ : '30s',  _ms_ :    30000, _show_idx_ : __0 },
-        { _str_ : '1m',   _ms_ :    60000, _show_idx_ : __1 },
-        { _str_ : '2.5m', _ms_ :   150000, _show_idx_ : __0 },
-        { _str_ : '5m',   _ms_ :   300000, _show_idx_ : __1 },
-        { _str_ : '10m',  _ms_ :   600000, _show_idx_ : __1 },
-        { _str_ : '15m',  _ms_ :   900000, _show_idx_ : __1 },
-        { _str_ : '30m',  _ms_ :  1800000, _show_idx_ : __1 },
-        { _str_ : '1hr',  _ms_ :  3600000, _show_idx_ : __1 },
-        { _str_ : '2hr',  _ms_ :  7200000, _show_idx_ : __1 },
-        { _str_ : '4hr',  _ms_ : 14400000, _show_idx_ : __1 },
-        { _str_ : '6hr',  _ms_ : 21600000, _show_idx_ : __1 },
-        { _str_ : '8hr',  _ms_ : 28800000, _show_idx_ : __1 },
-        { _str_ : '12hr', _ms_ : 43200000, _show_idx_ : __2 },
-        { _str_ : '1day', _ms_ : 86400000, _show_idx_ : __2 }
+        { _str_ : '0.1s',  _ms_ :      100, _show_idx_ : __0 },
+        { _str_ : '0.25s', _ms_ :      250, _show_idx_ : __0 },
+        { _str_ : '0.5s',  _ms_ :      500, _show_idx_ : __0 },
+        { _str_ : '1s',    _ms_ :     1000, _show_idx_ : __0 },
+        { _str_ : '2.5s',  _ms_ :     2500, _show_idx_ : __0 },
+        { _str_ : '5s',    _ms_ :     5000, _show_idx_ : __0 },
+        { _str_ : '10s',   _ms_ :    10000, _show_idx_ : __0 },
+        { _str_ : '15s',   _ms_ :    15000, _show_idx_ : __0 },
+        { _str_ : '30s',   _ms_ :    30000, _show_idx_ : __0 },
+        { _str_ : '1m',    _ms_ :    60000, _show_idx_ : __1 },
+        { _str_ : '2.5m',  _ms_ :   150000, _show_idx_ : __0 },
+        { _str_ : '5m',    _ms_ :   300000, _show_idx_ : __1 },
+        { _str_ : '10m',   _ms_ :   600000, _show_idx_ : __1 },
+        { _str_ : '15m',   _ms_ :   900000, _show_idx_ : __1 },
+        { _str_ : '30m',   _ms_ :  1800000, _show_idx_ : __1 },
+        { _str_ : '1hr',   _ms_ :  3600000, _show_idx_ : __1 },
+        { _str_ : '2hr',   _ms_ :  7200000, _show_idx_ : __1 },
+        { _str_ : '4hr',   _ms_ : 14400000, _show_idx_ : __1 },
+        { _str_ : '6hr',   _ms_ : 21600000, _show_idx_ : __1 },
+        { _str_ : '8hr',   _ms_ : 28800000, _show_idx_ : __1 },
+        { _str_ : '12hr',  _ms_ : 43200000, _show_idx_ : __2 },
+        { _str_ : '1d',    _ms_ : 86400000, _show_idx_ : __2 },
+        { _str_ : '2d',    _ms_ : 86400000*2, _show_idx_ : __2 },
+        { _str_ : '4d',    _ms_ : 86400000*4, _show_idx_ : __2 },
+        { _str_ : '1wk',   _ms_ : 86400000*7, _show_idx_ : __2 }
       ]
     };
   }
