@@ -58,6 +58,7 @@ function clearMap( test_obj ) {
     proto = { do_fn : function () { return 1; } },
     complex_obj = Object.create( proto ),
     assert_list = [
+      // arg_data, expect_data
       [ __1,        __undef ],
       [ -694567,    __undef ],
       [ __blank,    __undef ],
@@ -78,7 +79,7 @@ function clearMap( test_obj ) {
     assert_count = assert_list.length,
     test_fn      = xhi._util_._clearMap_,
 
-    msg_str, idx, expect_list,
+    msg_str,  idx,         expect_list,
     arg_data, expect_data, solve_data
     ;
 
@@ -87,15 +88,15 @@ function clearMap( test_obj ) {
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    expect_list   = assert_list[ idx ];
+    expect_list  = assert_list[ idx ];
     arg_data    = expect_list[ __0 ];
     expect_data = expect_list[ __1 ];
     solve_data  = test_fn( arg_data );
-    msg_str = __Str( idx ) + '.  type:'
-      + xhi._util_._getVarType_( arg_data )
-      + ' clearMap(' + JSON.stringify( arg_data ) + ') expect: '
-      + JSON.stringify( expect_data ) + ' actual: '
-      + JSON.stringify( solve_data );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_data ) + '\n solve_map: '
+      + JSON.stringify( solve_data )
+      + '\n expect_map: ' + JSON.stringify( expect_data )
+      ;
     test_obj.ok(
       JSON.stringify( solve_data ) === JSON.stringify( expect_data ), msg_str
     );
@@ -883,17 +884,109 @@ function makeSeenMap ( test_obj ) {
     assert_count = assert_list.length,
     make_map_fn  = xhi._util_._makeSeenMap_,
 
-    idx, test_list, solve_map, test_map, msg_str
+    idx, expect_list, arg_list, expect_map, solve_map, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    test_list = assert_list[ idx ];
-    solve_map = make_map_fn.apply( __undef, test_list[ __0 ] );
-    test_map  = test_list[ __1 ];
-    msg_str    = __Str( idx ) + '. '
-      + solve_map + ' <===> ' + test_map;
-    test_obj.deepEqual( solve_map, test_map, msg_str );
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_map  = expect_list[ __1 ];
+    solve_map   = make_map_fn.apply( __undef, arg_list );
+    msg_str     = __Str( idx ) + '. arg_map: '
+      + JSON.stringify( arg_list ) + ' solve_map: '
+      + JSON.stringify( solve_map )
+      + ' expect_map: ' + JSON.stringify( expect_map );
+    test_obj.deepEqual( solve_map, expect_map, msg_str );
+  }
+  test_obj.done();
+}
+
+function makeSeriesMap ( test_obj ) {
+  var
+    start_ms = 1465452840000,
+    delta_list = [
+      5000,         // 5s
+      20000,        // 20s
+      40000,        // 40s
+      // 140000,       // 2.3m
+      // 3540000,      // 5.9m
+      // 7140000,      // 11.9m
+      // 14280000,     // 3.97hr
+      // 28560000,     // 7.93hr
+      // 57440000,     // 15.96hr
+      // 114080000,    // 31.69hr
+      // 231360000,    // 2.68d
+      // 460800000,    // 5.33d
+      // 928000000,    // 10.74d
+      // 1840640000,   // 21.30d
+      // 3769600000,   // 43.67d
+      // 7354419200,   // 85.12d
+      // 14708838400   // 170.24d
+    ],
+    intvl_list = [ 5,6, 7, 9, 11, 13, 15, 17 ],
+    expect_map_list = [
+      // begin 5s expect list
+      {"_show_idx_":0,"_unit_count_":2,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03"]},
+      {"_show_idx_":0,"_unit_count_":2,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03"]},
+      __undef,
+      __undef,
+      __undef,
+      __undef,
+      __undef,
+      __undef,
+      // end 5s expect list
+      // begin 20s expect list
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15"]},
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
+      // end 20s expect list
+      // begin 40s expect list
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":10000,"_unit_name_":"10s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:10","23:14:20","23:14:30"]},
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":10000,"_unit_name_":"10s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:10","23:14:20","23:14:30"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15","23:14:20","23:14:25","23:14:30","23:14:35"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15","23:14:20","23:14:25","23:14:30","23:14:35"]},
+      {"_show_idx_":0,"_unit_count_":8,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15","23:14:20","23:14:25","23:14:30","23:14:35"]},
+      {"_show_idx_":0,"_unit_count_":16,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.0625,"_unit_ratio_":0.0625,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18","23:14:20","23:14:23","23:14:25","23:14:28","23:14:30","23:14:33","23:14:35","23:14:38"]},
+      {"_show_idx_":0,"_unit_count_":16,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.0625,"_unit_ratio_":0.0625,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18","23:14:20","23:14:23","23:14:25","23:14:28","23:14:30","23:14:33","23:14:35","23:14:38"]},
+      {"_show_idx_":0,"_unit_count_":16,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.0625,"_unit_ratio_":0.0625,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18","23:14:20","23:14:23","23:14:25","23:14:28","23:14:30","23:14:33","23:14:35","23:14:38"]},
+      // end 40s expect list
+    ],
+    expect_count = __0,
+    delta_count  = delta_list.length,
+    intvl_count  = intvl_list.length,
+    make_map_fn  = xhi._util_._makeSeriesMap_,
+
+    delta_idx, delta_ms, intvl_idx, intvl_int,
+    arg_map, expect_map, solve_map, msg_str
+    ;
+
+  test_obj.expect( delta_count * intvl_count );
+
+  for ( delta_idx = __0; delta_idx < delta_count; delta_idx ++ ) {
+    delta_ms = delta_list[ delta_idx ];
+    for ( intvl_idx = __0; intvl_idx < intvl_count; intvl_idx ++ ) {
+      intvl_int = intvl_list[ intvl_idx ];
+      arg_map = {
+        _max_ms_       : start_ms + delta_ms,
+        _min_ms_       : start_ms,
+        _tgt_count_    : intvl_int,
+        _tz_offset_ms_ : 25200000
+      };
+      solve_map  = make_map_fn( arg_map );
+      expect_map = expect_map_list[ expect_count ];
+      msg_str     = __Str( expect_count ) + '. arg_map: '
+        + JSON.stringify( arg_map ) + '\n solve_map: '
+        + JSON.stringify( solve_map )
+        + '\n expect_map: ' + JSON.stringify( expect_map );
+      test_obj.deepEqual( solve_map, expect_map, msg_str );
+      expect_count++;
+    }
   }
   test_obj.done();
 }
@@ -970,8 +1063,8 @@ module.exports = {
   _makeGuidStr_     : makeGuidStr,
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
-  _makeSeenMap_     : makeSeenMap
- // _makeSeriesMap_   : makeSeriesMap
+  _makeSeenMap_     : makeSeenMap,
+  _makeSeriesMap_   : makeSeriesMap
  // _makeStrFromMap_  : makeStrFromMap,
  // _makeTmpltStr_    : makeTmpltStr,
  // _makeUcFirstStr_  : makeUcFirstStr,

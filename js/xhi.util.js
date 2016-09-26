@@ -1018,52 +1018,50 @@ xhi._util_ = (function () {
 
   // BEGIN Public method /makeSeriesMap/
   // Purpose   : Create a list of time labels quantitized to match
-  //   standard time intervales
+  //   standard time intervals
   // Example   :
-  //    series_map = makeSeriesMap({
-  //      _max_ms_       : 1465459980000,
-  //      _min_ms_       : 1465452840000,
-  //      _tgt_count_    : 12,
-  //      _tz_offset_ms_ : 25200000
-  //    });
-  // Arguments : (required)
+  //   series_map = makeSeriesMap({
+  //     _max_ms_       : 1465459980000,
+  //     _min_ms_       : 1465452840000,
+  //     _tgt_count_    : 12,
+  //     _tz_offset_ms_ : 25200000
+  //   });
+  // Arguments :
   //   _max_ms_       : (req) int start UTC time in milliseconds
   //   _min_ms_       : (req) int end UTC time in milliseconds
   //   _tgt_count_    : (req) int desired number of divisions (+/- 50%)
   //   _tz_offset_ms_ : (req) int UTC offset for timezone
   //
-  // Returns:
+  //  Returns
   //   A map useful for plotting a quantized time series like so:
-  //      +-----+------+-----+
-  //      |     |      |     |
-  //    00:06 00:10  00:15 00:19
+  //   -+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+
+  //    |     |     |     |     |     |     |     |     |     |     |     |
+  //  23:20 23:30 23:40 23:50 00:00 00:10 00:20 00:30 00:40 00:50 01:00 01:10
+  //                2016-06-07                      2016-06-08
   //
-  //    { _time_list_    : [...],
-  //      _date_list_    : [...],
-  //      _offset_ratio_ : 0.3428,
-  //      _unit_name_    : '10min',
-  //      _unit_ms_      : 600 000,
-  //      _unit_ratio_   : 0.4615,
-  //      _unit_count_   : 2
+  //    { _date_list_  : [
+  //        { _date_str_ : '2016-06-07', _width_ratio_ : 0.38655462184873 },
+  //        { _date_str_ : '2016-06-08', _width_ratio_ : 0.61344537815126 }
+  //      ],
+  //      _left_ratio_ : 0.050420168067226,
+  //      _time_list_ : [
+  //        '23:20', '23:30', '23:40', '23:50', '00:00', '00:10',
+  //        '00:20', '00:30', '00:40', '00:50', '01:00', '01:10'
+  //      ]
+  //      _show_idx_   : 1,
+  //      _unit_count_ : 12,
+  //      _unit_ms_    : 600000,
+  //      _unit_name_  : '10m',
+  //      _unit_ratio_ : 0.084033613445378,
   //    }
   //
-  //    day_offset is amount of seconds into the day
-  //    min_ms   = 6 * 60k     =  360 000
-  //    max_ms   = 19 * 60k    = 1140 000
-  //    span_ms  = 1140 - 360k =  780 000
-  //    unit_ms  = 10 * 60k    =  600 000
-  //
-  //    mod_unit_ms = min_ms % unit_ms = 360k
-  //    offset for first unit: 600k - 360k - 240k (4 minutes)
-  //    offset_ms = unit_ms - mod_unit_ms
-  //
-  //    Calculate ratio
-  //
-  //    offset_ratio = offset_ms / span_ms
-  //      = 240k / 780k  = .3428 ( ~34.28% )
-  //
-  //    unit_ratio   = unit_ms / span_ms
-  //      = 360k / 780k  = .4615 ( ~46.15% )
+  //    _date_list_  = list of dates and position of date labels
+  //    _left_ratio_ = starting postion of time stamps
+  //    _show_idx_   = precision of time to show; 0=HH, 1=HH:MM, 2=HH:MM:SS
+  //    _time_list_  = list of time labels
+  //    _unit_count_ = number of time labels units returned
+  //    _unit_ms_    = number of ms in
+  //    _unit_ratio_ = ratio per time unit for plotting center of time
   //
   // Throws    :
   // Cautions  :
@@ -1087,7 +1085,7 @@ xhi._util_ = (function () {
 
       jdx, idx,        check_idx,    check_map,
       check_count,     mod_unit_ms,  offset_ms,
-      width_ratio,     offset_ratio, accum_ratio,
+      width_ratio,     left_ratio,   accum_ratio,
       date_ms,         date_offset,
 
       solve_map,       solve_ms,     solve_str,
@@ -1146,10 +1144,10 @@ xhi._util_ = (function () {
     // Store values to solve_map
     mod_unit_ms  = min_ms % solve_map._unit_ms_;
     offset_ms    = solve_map._unit_ms_ - mod_unit_ms;
-    offset_ratio = ( offset_ms / span_ms );
+    left_ratio = ( offset_ms / span_ms );
 
-    solve_map._offset_ratio_ = offset_ratio;
-    solve_map._unit_ratio_   = solve_map._unit_ms_ / span_ms;
+    solve_map._left_ratio_ = left_ratio;
+    solve_map._unit_ratio_ = solve_map._unit_ms_ / span_ms;
 
     // Create date list
     date_obj.setTime( min_ms );
@@ -1168,8 +1166,8 @@ xhi._util_ = (function () {
         width_ratio = width_ratio + ( __1 - accum_ratio );
       }
       solve_date_list[ vMap._push_ ]({
-        _date_str_     : makeDateStr( date_ms ),
-        _width_ratio_  : width_ratio
+        _date_str_    : makeDateStr({ _date_ms_ : date_ms }),
+        _width_ratio_ : width_ratio
       });
       date_offset = __0;
       date_ms += topCmap._day_ms_;
@@ -1177,11 +1175,11 @@ xhi._util_ = (function () {
     solve_map._date_list_ = solve_date_list;
 
     solve_time_list = [];
-    while ( offset_ratio < __1 ) {
-      solve_ms  = __floor( offset_ratio * span_ms ) + min_ms;
+    while ( left_ratio < __1 ) {
+      solve_ms  = __floor( left_ratio * span_ms ) + min_ms;
       solve_str = makeClockStr( solve_ms, solve_map._show_idx_ );
       solve_time_list[ __push ]( solve_str );
-      offset_ratio += solve_map._unit_ratio_;
+      left_ratio += solve_map._unit_ratio_;
     }
     solve_map._time_list_ = solve_time_list;
 
@@ -1374,6 +1372,7 @@ xhi._util_ = (function () {
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
       _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
       _unit_ms_list_ : [
+        { _str_ : '1s',   _ms_ :     1000, _show_idx_ : __0 },
         { _str_ : '2.5s', _ms_ :     2500, _show_idx_ : __0 },
         { _str_ : '5s',   _ms_ :     5000, _show_idx_ : __0 },
         { _str_ : '10s',  _ms_ :    10000, _show_idx_ : __0 },
