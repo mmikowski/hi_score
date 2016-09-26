@@ -651,7 +651,7 @@ xhi._util_ = (function () {
   // Examples:
   // 1. makeDateStr({ _date_obj_ : new Date() });
   //    Returns a string like '2016-09-18'
-  // 2. makeDateStr({ _date_obj_ : new Date(), do_time : true });
+  // 2. makeDateStr({ _date_obj_ : new Date(), _do_time_ : true });
   //    Returns a string like '2016-09-18 12:45:52'
   // 3. makeDateStr({ _date_ms_ : 1474311626050 })
   //    Returns '2016-09-19'
@@ -663,7 +663,7 @@ xhi._util_ = (function () {
   //       current date.
   //     If BOTH are provided, _date_ms_ will be used in
   //       preference to date_obj.
-  //   * do_time_ : (opt) A boolean.  Default is false.
+  //   * _do_time_ : (opt) A boolean.  Default is false.
   //
   function makeDateStr ( arg_map ) {
     var
@@ -1067,29 +1067,6 @@ xhi._util_ = (function () {
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. See example on makeClockStr, above.
-  //
-
-  // _unit_ms_list_ : [
-  //   { _str_ : '1s',   _ms_ :     1000, _show_idx_ : __0 },
-  //   { _str_ : '2.5s', _ms_ :     2500, _show_idx_ : __0 },
-  //   { _str_ : '5s',   _ms_ :     5000, _show_idx_ : __0 },
-  //   { _str_ : '10s',  _ms_ :    10000, _show_idx_ : __0 },
-  //   { _str_ : '15s',  _ms_ :    15000, _show_idx_ : __0 },
-  //   { _str_ : '30s',  _ms_ :    30000, _show_idx_ : __0 },
-  //   { _str_ : '1m',   _ms_ :    60000, _show_idx_ : __1 },
-  //   { _str_ : '2.5m', _ms_ :   150000, _show_idx_ : __0 },
-  //   { _str_ : '5m',   _ms_ :   300000, _show_idx_ : __1 },
-  //   { _str_ : '10m',  _ms_ :   600000, _show_idx_ : __1 },
-  //   { _str_ : '15m',  _ms_ :   900000, _show_idx_ : __1 },
-  //   { _str_ : '30m',  _ms_ :  1800000, _show_idx_ : __1 },
-  //   { _str_ : '1hr',  _ms_ :  3600000, _show_idx_ : __1 },
-  //   { _str_ : '2hr',  _ms_ :  7200000, _show_idx_ : __1 },
-  //   { _str_ : '4hr',  _ms_ : 14400000, _show_idx_ : __1 },
-  //   { _str_ : '6hr',  _ms_ : 21600000, _show_idx_ : __1 },
-  //   { _str_ : '8hr',  _ms_ : 28800000, _show_idx_ : __1 },
-  //   { _str_ : '12hr', _ms_ : 43200000, _show_idx_ : __2 },
-  //   { _str_ : '1day', _ms_ : 86400000, _show_idx_ : __2 }
-  // ]
   //
   function makeSeriesMap( arg_map ) {
     var
