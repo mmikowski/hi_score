@@ -777,22 +777,22 @@ function makePadNumStr( test_obj ) {
       [ [ __undef, __0  ], __blank ],
       [ [ __null,  __n1 ], __blank ],
       [ [ 'frank'       ], __blank ],
-      [ [ '   25', __n1 ], __blank ],
+      [ [ '   25', __n1 ],    '25' ],
       [ [ '   25', __1  ],    '25' ],
       [ [ '   25', __2  ],    '25' ],
       [ [ '   25', __3  ],   '025' ],
       [ [ '   25', __4  ],  '0025' ],
-      [ [ '00025', __n1 ], __blank ],
+      [ [ '00025', __n1 ], '00025' ],
       [ [ '00025', __1  ],    '25' ],
       [ [ '00025', __2  ],    '25' ],
       [ [ '00025', __3  ],   '025' ],
       [ [ '00025', __4  ],  '0025' ],
-      [ [      25, __n1 ], __blank ],
+      [ [      25, __n1 ],    '25' ],
       [ [      25, __1  ],    '25' ],
       [ [      25, __2  ],    '25' ],
       [ [      25, __3  ],   '025' ],
       [ [      25, __4  ],  '0025' ],
-      [ [ '-025', __n1 ], __blank  ],
+      [ [ '-025', __n1 ],  '-025'  ],
       [ [ '-025', __1  ],   '-25'  ],
       [ [ '-025', __2  ],   '-25'  ],
       [ [ '-025', __3  ],   '-25'  ],
@@ -1172,6 +1172,85 @@ function makeSeriesMap ( test_obj ) {
   test_obj.done();
 }
 
+function makeStrFromMap( test_obj ) {
+  var
+    prop01_map = {
+      _name_ : 'fred', _state_code_: 'LA', _country_code_ : 'US'
+    },
+    prop02_map = {
+      _first_name_ : 'Wilma', _last_name_ : 'Rubble', _age_num_ : 48,
+      _mole_count_ : __0
+    },
+    prop01_list = Object.keys( prop01_map ),
+    prop02_list = Object.keys( prop02_map ),
+    prop01a_list = [ '_name_', '_missing_', __undef, null, {} ],
+    // prop02a_list = [ {}, null, __undef, '_first_name_', '_unseen_' ],
+    // prop01b_list = [ __undef, null, {} ],
+    // prop02b_list = {},
+    label01_map = { _name_ : 'Name', _state_code_ : 'State Code',
+      _country_code_ : 'Country Code'
+    },
+    label02_map = { _first_name_ : 'First', _last_name_ : 'Last',
+      _age_num_ : 'Age', _mole_count_ : 'Number of moles'
+    },
+
+    assert_list  = [
+      // [ arg_map, expect_str ]
+      [ { _prop_map_ : prop01_map }, __blank ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01_list }, 'fred LA US' ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01_list,
+        _delim_str_ : ',' }, 'fred,LA,US' ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01_list,
+        _do_label_ : __true, _delim_str_ : ', ' },
+        '_name_: fred, _state_code_: LA, _country_code_: US' ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01_list,
+        _delim_str_ : ', ', _label_map_ : label01_map },
+        'Name: fred, State Code: LA, Country Code: US'
+      ],
+      [ { _prop_map_ : prop02_map }, __blank ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02_list },
+        'Wilma Rubble 48 0' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02_list,
+        _delim_str_ : ',' }, 'Wilma,Rubble,48,0' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02_list,
+        _do_label_ : __true, _delim_str_ : ', ' },
+        '_first_name_: Wilma, _last_name_: Rubble, _age_num_: 48,'
+        + ' _mole_count_: 0' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02_list,
+        _delim_str_ : ', ', _label_map_ : label02_map },
+        'First: Wilma, Last: Rubble, Age: 48, Number of moles: 0'
+      ],
+      [ { _prop_map_ : prop01_map }, __blank ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01a_list }, 'fred' ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01a_list,
+        _delim_str_ : ',' }, 'fred' ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01a_list,
+        _do_label_ : __true, _delim_str_ : ', ' }, '_name_: fred' ],
+      [ { _prop_map_ : prop01_map, _key_list_ : prop01a_list,
+        _delim_str_ : ', ', _label_map_ : label01_map }, 'Name: fred'
+      ]
+    ],
+    // prop01a_list = [ '_name_', '_missing_', __undef, null, {} ],
+    assert_count = assert_list.length,
+    make_str_fn  = xhi._util_._makeStrFromMap_,
+
+    idx, expect_list, arg_map, expect_str, solve_str, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_map     = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str   = make_str_fn( arg_map );
+    msg_str     = __Str( idx ) + '. arg_map: '
+      + JSON.stringify( arg_map ) + ' solve_str: '
+      + solve_str + ' expect_str: ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
 function getVarType( test_obj ) {
   var
     // this is a hack to get around jslint warnings
@@ -1217,13 +1296,12 @@ function getVarType( test_obj ) {
 }
 // ======== END NODEUNIT TEST FUNCTIONS ===========
 //
-console.log( 'Use mockTestObj for debugging tests using nodejs instead '
-  + 'of nodeunit, which obscures error messages.  Use like so:'
-  + 'makeErrorObj( mockTestObj ); ',
-  mockTestObj
-);
-
-// getListAttrIdx( mockTestObj );
+// Use mockTestObj for debugging tests using nodejs instead
+// of nodeunit, which obscures error messages. Use like so:
+// 1. Add the test you would like to run:
+// makeStrFromMap( mockTestObj );
+// 2. Run node <this_file>
+// 3. Inspect the output
 
 module.exports = {
   _clearMap_        : clearMap,
@@ -1245,8 +1323,8 @@ module.exports = {
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
   _makeSeenMap_     : makeSeenMap,
-  _makeSeriesMap_   : makeSeriesMap
- // _makeStrFromMap_  : makeStrFromMap,
+  _makeSeriesMap_   : makeSeriesMap,
+  _makeStrFromMap_  : makeStrFromMap
  // _makeTmpltStr_    : makeTmpltStr,
  // _makeUcFirstStr_  : makeUcFirstStr,
  // _mergeMaps_       : mergeMaps,
