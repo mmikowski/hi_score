@@ -48,6 +48,7 @@ xhi._util_ = (function () {
     __random  = vMap._fnGetRandom_,
     __setTo   = vMap._fnSetTimeout_,
     __typeof  = vMap._fnTypeof_,
+    __keys    = vMap._fnGetKeyList_,
 
     topSmap, topCmap, // State and config maps are set in initModule
 
@@ -112,6 +113,17 @@ xhi._util_ = (function () {
   function getBool ( data ) { return !! data; }
   // END Public prereq method /getBool/
 
+  // BEGIN Public prereq method /getFn/
+  // Purpose   : Returns a boolean, always
+  //   If data is false or falsey, returns false
+  //   Otherwise returns true.
+  //
+  function getFn ( data, alt_data ) {
+    var var_type = getVarType( data );
+    return var_type === '_Function_' ? data : alt_data;
+  }
+
+  // END Public prereq method /getBool/
   // BEGIN Public prereq method /getInt/
   // Purpose   : Returns an integer from any data provided.
   //   If a number, returns the number rounded to nearest int.
@@ -166,7 +178,7 @@ xhi._util_ = (function () {
     if ( var_type === '_String_' ) {
       num = __Num( data );
     }
-    return isNaN( num ) ? alt_data : data;
+    return isNaN( num ) ? alt_data : num;
   }
   // END Public prereq method /getNum/
 
@@ -342,7 +354,7 @@ xhi._util_ = (function () {
 
     if ( getVarType( arg_map ) !== '_Object_' ) { return; }
 
-    key_list  = vMap._fnGetKeyList_( arg_map );
+    key_list  = __keys( arg_map );
     key_count = key_list[ __length ];
 
     for ( idx = __0; idx < key_count; idx++ ) {
@@ -449,7 +461,7 @@ xhi._util_ = (function () {
       base_map   = getMap( arg_base_map,   {} ),
       extend_map = getMap( arg_extend_map, {} ),
       tmp_map   = cloneData( extend_map ),
-      key_list  = vMap._fnGetKeyList_( tmp_map ),
+      key_list  = __keys( tmp_map ),
       key_count = key_list[ __length ],
 
       i, tmp_key
@@ -527,7 +539,9 @@ xhi._util_ = (function () {
       walk_map = walk_map[ key ];
     }
     if ( is_good ) { return walk_map; }
-    logUtilObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
+    if ( idx === 100 ) {
+      logUtilObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
+    }
     return __undef;
   }
   // END Public method /getDeepMapVal/
@@ -1404,7 +1418,7 @@ xhi._util_ = (function () {
       settable_list = getList( arg_map._settable_list_, [] ),
       target_map    = getMap(  arg_map._target_map_,    {} ),
 
-      key_list     = vMap._fnGetKeyList_( input_map ),
+      key_list     = __keys( input_map ),
       key_count    = key_list[ __length ],
 
       idx, key, error
@@ -1521,6 +1535,7 @@ xhi._util_ = (function () {
 
   return {
     _getBool_         : getBool,
+    _getFn_           : getFn,
     _getInt_          : getInt,
     _getList_         : getList,
     _getMap_          : getMap,
