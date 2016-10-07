@@ -88,9 +88,13 @@ xhi._css_shell_ = (function () {
           }
         },
         { _selector_str_  : '.xhi-_shell_head_search_ .xhi-_x_mag_:hover',
-          _rule_map_ : {
-            _color_ : '_hex_link_lt_'
-          }
+          _rule_map_ : { _color_ : '_hex_link_lt_' }
+        },
+        { _selector_str_ : '.xhi-_shell_head_ a',
+          _rule_map_     : { _color_ : '_hex_link_lt_' }
+        },
+        { _selector_str_ : '.xhi-_shell_head_ a:hover',
+          _rule_map_     : { _color_ : '_hex_link_xlt_' }
         },
         { _selector_str_ : '.xhi-_shell_umenu_',
           _rule_map_ : {
@@ -167,14 +171,14 @@ xhi._css_shell_ = (function () {
             _line_height_: '_3d75rem_',
             _font_family_: '_font_family_awesome_',
             _font_size_  : '_1d5rem_',
-            _color_      : '_hex_link_',
+            _color_      : '_hex_link_lt_',
             _background_ : '_hex_frame_dk_',
             _text_align_ : '_center_',
             _cursor_     : '_pointer_'
           }
         },
         { _selector_str_ : '.xhi-_shell_tgl_:hover',
-          _rule_map_ : { _color_ : '_hex_link_lt_' }
+          _rule_map_ : { _color_ : '_hex_link_xlt_' }
         },
         { _selector_str_ : '.xhi-_shell_nav_',
           _rule_map_ : {
@@ -200,15 +204,17 @@ xhi._css_shell_ = (function () {
             _line_height_   : '_2rem_',
             _font_size_     : '_1d125rem_',
             _margin_bottom_ : '_d875rem_',
-            _color_         : '_hex_link_',
             _cursor_        : '_pointer_'
           }
         },
+        { _selector_str_ : '.xhi-_shell_nav_>li a',
+          _rule_map_ : { _color_ : '_hex_link_lt_' }
+        },
+        { _selector_str_ : '.xhi-_shell_nav_>li a:hover',
+          _rule_map_ : { _color_ : '_hex_link_xlt_' }
+        },
         { _selector_str_ : '.xhi-_shell_nav_>li.xhi-_x_select_',
           _rule_map_ : { _background_ : '_hex_frame_xdk_' }
-        },
-        { _selector_str_ : '.xhi-_shell_nav_ li:hover',
-          _rule_map_ : { _color_ : '_hex_link_lt_' }
         },
         { _selector_str_ : '.xhi-_shell_nav_ li span',
           _rule_map_ : {
@@ -225,12 +231,12 @@ xhi._css_shell_ = (function () {
           _rule_map_     : {
             _z_index_       : [ '30' ],
             _position_      : '_fixed_',
-            _background_    : '_hex_area_',
             _bottom_        : '_0_',
-            _left_          : '_0_',
-            _border_radius_ : [[ '_0_', '_d375rem_', '_0_','_0_' ]],
-            _padding_       : [[ '_d25rem_', '_d75rem_','_d75rem_','_d75rem_' ]],
-            _color_         : '_hex_link_dk_'
+            _right_         : '_0_',
+            _border_radius_ : [[ '_d375rem_', '_0_', '_0_','_0_' ]],
+            _padding_       : [[ '_d375rem_', '_d75rem_','_d75rem_','_d75rem_' ]],
+            _background_    : '_hex_frame_dk_',
+            _color_         : '_hex_link_lt_'
           }
         },
         { _selector_str_ : '.xhi-_shell_foot_txt_',
@@ -263,7 +269,7 @@ xhi._css_shell_ = (function () {
         // Keep this padding and max_width in sync with xhi-_shell_cont_
         { _selector_str_ : '.xhi-_shell_base_',
           _rule_map_ : {
-            _z_index_    : [ '5' ],
+            _z_index_    : [ '35' ],
             _position_   : '_fixed_',
             _left_       : '_0_',
             _right_      : '_0_',
@@ -271,7 +277,7 @@ xhi._css_shell_ = (function () {
             _height_     : '_3rem_',
             _border_top_ : [[ '_d125rem_', '_solid_', '_hex_accent_dk_' ]],
             _padding_    : [[ '_0_', '_2rem_', '_0_', '_5d5rem_' ]],
-            _background_ : '_hex_area_'
+            _background_ : '_hex_area_core_'
           }
         },
         { _selector_str_ : '.xhi-_shell_cont_head_',

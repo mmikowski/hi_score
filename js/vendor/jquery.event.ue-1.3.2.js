@@ -10,6 +10,7 @@
  * Versions
  *  1.3.x   - Removed all console references
  *          - Change bind to on, unbind to off
+ *          - Reinstated ignore_select to ignore text and input areas by default
  *  1.2.x   - ignore_class => ignore_select, now defaults to ''
  *  1.1.9   - Fixed ue-test.html demo to scale properly
  *  1.1.8   - Removed prevent default from non-ue events
@@ -53,7 +54,7 @@
       bound_ns_map  : {},         // Map of bound namespaces e.g.
                                   // bound_ns_map.utap.fred
       px_radius     : 10,         // Tolerated distance before dragstart
-      ignore_select : '',         // Selector of elements to ignore (e.g. :input)
+      ignore_select : 'textarea, select, input', // Elements to ignore
       max_tap_ms    : 200,        // Maximum time allowed for tap
       min_held_ms   : 300         // Minimum time require for long-press
     },

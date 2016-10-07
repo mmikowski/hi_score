@@ -187,7 +187,7 @@ xhi._css_base_ = (function () {
         _rule_map_     : {
           _display_       : '_block_',
           _position_      : '_relative_',
-          _margin_        : [['_d5rem_', '_1d5rem_', '_1rem_', '_1d5rem_']],
+          _margin_        : [['_d75rem_', '_1d5rem_', '_d75rem_', '_1d5rem_']],
           _box_shadow_    : '_shdw_01_',
           _border_        : [[ '_d125rem_', '_solid_', '_hex_link_' ]],
           _outline_       : '_none_',
@@ -216,8 +216,9 @@ xhi._css_base_ = (function () {
       },
       { _selector_str_ : 'button.xhi-_x_alt_',
         _rule_map_ : {
-          _background_ : '_hex_area_',
-          _color_      : '_hex_link_'
+          _background_  : '_hex_area_',
+          _color_       : '_hex_link_',
+          _text_shadow_ : '_none_'
         }
       },
       { _selector_str_ : 'button.xhi-_x_disable_, button.xhi-_x_disable_:hover',

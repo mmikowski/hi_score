@@ -5,19 +5,22 @@
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
-
 /*jslint         browser : true, continue : true,
   devel  : true,  indent : 2,      maxerr : 50,
   newcap : true,   nomen : true, plusplus : true,
   regexp : true,  sloppy : true,     vars : false,
   white  : true,    todo : true,  unparam : true
 */
+
 (function () {
   'use strict';
   var
+    bool = true,
     list = [],
     map  = {},
-    num  = 0,
+    fn   = Function,
+    int  = 1,
+    num  = 0.5,
     obj  = {},
     str  = ''
     ;
@@ -25,6 +28,9 @@
  return {
    // xhi.util.js argument keys
    // These should be deleted after all regression tests are implemented
+   _bool_           : bool,
+   _fn_             : fn,
+   _int_            : int,
    _example_str_    : str,
    _example_obj_    : obj,
    _char_limit_int_ : num,

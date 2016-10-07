@@ -1,6 +1,6 @@
 /**
  *    jquery.scrolli.js
- *    Provides scrolli content indicators
+ *    Provides scroll content indicators
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -34,7 +34,6 @@ jQuery.scrolli = (function ( $ ) {
   // ================== END MODULE SCOPE VARIABLES =====================
 
   // ===================== BEGIN UTILITY METHODS =======================
-
   function isjQuery ( obj ) {
     return obj && ( obj instanceof jQuery
       || obj.constructor.prototype.jquery )
@@ -126,7 +125,7 @@ jQuery.scrolli = (function ( $ ) {
 
   function rmSingle( $single ) {
     var
-      el  = $single.get(0),
+      el  = $single.get( __0 ),
       idx = elList.indexOf( el )
       ;
 
@@ -141,7 +140,7 @@ jQuery.scrolli = (function ( $ ) {
   function recalc$All () {
     var i, el;
     if ( elList && elList.length ) {
-      for ( i = 0; i < elList.length; i++ ) {
+      for ( i = __0; i < elList.length; i++ ) {
         el = elList[ i ];
         calcSingle.bind( el )();
       }

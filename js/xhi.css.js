@@ -11,6 +11,7 @@
   white : true,   todo : true,  unparam : true
 */
 /*global jQuery, pcss, xhi */
+
 xhi._css_ = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';

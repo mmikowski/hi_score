@@ -11,6 +11,7 @@
   white : true,    todo : true,  unparam : true
 */
 /*global xhi, pcss */
+
 xhi._css_lb_ = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';

@@ -34,6 +34,18 @@ xhi._utilb_ = (function ( $ ) {
     __1       = nMap._1_,
     __10      = nMap._10_,
 
+    __util = xhi._util_,
+    // Add if needed from util: __getObjType
+    // __getBool     = __util._getBool_,
+    // __getFn       = __util._getFn_,
+    // __getInt      = __util._getInt_,
+    // __getNum      = __util._getNum_,
+    // __getVarType  = __util._getVarType_,
+    __getList     = __util._getList_,
+    __getMap      = __util._getMap_,
+    __getStr      = __util._getStr_,
+
+
     topCmap = {
       _encode_html_rx_  : /[&"'><]/g,
       _encode_noamp_rx_ : /["'><]/g,
@@ -203,20 +215,23 @@ xhi._utilb_ = (function ( $ ) {
   // END Public method /getFormMap/
 
   // BEGIN Public method /makeOptionHtml/
-  function makeOptionHtml ( arg_match_str, value_list, arg_title_map ) {
+  function makeOptionHtml ( arg_map ) {
+    // arg_match_str, value_list, arg_title_map ) {
     var
+      select_str  = __getStr(  arg_map._select_str_, __blank ),
+      title_map   = __getMap(  arg_map._title_map_,       {} ),
+      value_list  = __getList( arg_map._value_list_,         [] ),
       html_str    = __blank,
-      title_map   = arg_title_map || {},
-      target_str  = __Str(arg_match_str),
-      idx, match_str, title_text
+
+      idx, value_str, title_text
       ;
 
     for ( idx = __0; idx < value_list[ vMap._length_ ]; idx++ ) {
-      match_str      = __Str(value_list[ idx ]);
-      title_text     = title_map[ match_str ]
-        || xhi._util_._makeUcFirstStr_( match_str );
-      html_str   += '<option value="' + match_str + '"';
-      if ( match_str === target_str ) {
+      value_str  = __Str( value_list[ idx ] );
+      title_text = title_map[ value_str ]
+        || xhi._util_._makeUcFirstStr_( value_str );
+      html_str   += '<option value="' + value_str + '"';
+      if ( value_str === select_str ) {
         html_str += ' selected="selected"';
       }
       html_str += '>' + title_text + '</option>';

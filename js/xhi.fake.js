@@ -11,6 +11,7 @@
    white : true,    todo : true,  unparam : true
 */
 /*global xhi */
+
 xhi.fake = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
