@@ -23,7 +23,7 @@ var
   vMap = xhi._vMap_,
   nMap = xhi._nMap_,
 
-
+  __util  = xhi._util_,
   __blank = vMap._blank_,
   __false = vMap._false_,
   __null  = vMap._null_,
@@ -77,7 +77,7 @@ function clearMap( test_obj ) {
         name_list : [ 'tim', 'bob' ] }, {} ]
     ],
     assert_count = assert_list.length,
-    test_fn      = xhi._util_._clearMap_,
+    test_fn      = __util._clearMap_,
 
     msg_str,  idx,         expect_list,
     arg_data, expect_data, solve_data
@@ -116,7 +116,7 @@ function cloneData( test_obj ) {
       { a : 'complex', name_list : [ 'tim', 'bob' ], map: { this : 'that' } }
     ],
     assert_count = assert_list.length,
-    clone_fn     = xhi._util_._cloneData_,
+    clone_fn     = __util._cloneData_,
 
     msg_str, idx, assert_data, cloned_data
     ;
@@ -150,8 +150,8 @@ function getBasename ( test_obj ) {
       [ [ ':colon:word',   ':' ], 'word', ':colon:' ]
     ],
     assert_count = assert_list.length,
-    basename_fn  = xhi._util_._getBasename_,
-    dirname_fn   = xhi._util_._getDirname_,
+    basename_fn  = __util._getBasename_,
+    dirname_fn   = __util._getDirname_,
 
     idx, expect_list, arg_list, expect_basename, expect_dirname,
     msg_str, solve_basename, solve_dirname
@@ -193,7 +193,7 @@ function getDeepMapVal ( test_obj ) {
       [ [ deep_map_1, [] ], deep_map_1 ]
     ],
     assert_count = assert_list.length,
-    deep_fn      = xhi._util_._getDeepMapVal_,
+    deep_fn      = __util._getDeepMapVal_,
 
     idx, expect_list, arg_list, expect_data, solve_data, msg_str
     ;
@@ -234,8 +234,8 @@ function getListAttrIdx ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    get_idx_fn   = xhi._util_._getListAttrIdx_,
-    get_map_fn   = xhi._util_._getListAttrMap_,
+    get_idx_fn   = __util._getListAttrIdx_,
+    get_map_fn   = __util._getListAttrMap_,
     check_count  = __0,
 
     idx,          expect_list,  arg_list,
@@ -297,7 +297,7 @@ function getListDiff ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    get_diff_fn   = xhi._util_._getListDiff_,
+    get_diff_fn   = __util._getListDiff_,
 
     idx, expect_list, arg_list, expect_data, solve_data, msg_str
     ;
@@ -319,7 +319,7 @@ function getListDiff ( test_obj ) {
 
 function getNowMs ( test_obj ) {
   var
-    now_ms = xhi._util_._getNowMs_(),
+    now_ms = __util._getNowMs_(),
     rx     = /^[\d]{13}$/;
 
   test_obj.expect( __1 );
@@ -344,7 +344,7 @@ function getNumSign ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    get_sign_fn   = xhi._util_._getNumSign_,
+    get_sign_fn   = __util._getNumSign_,
 
     idx,        expect_list,  arg_list,
     expect_int, solve_int,    msg_str
@@ -435,7 +435,7 @@ function makeArgList ( test_obj ) {
 
     assert_count = assert_list.length,
     get_args_fn  = function () {
-      return xhi._util_._makeArgList_( arguments );
+      return __util._makeArgList_( arguments );
     },
 
     idx, expect_list, solve_list, msg_str
@@ -467,7 +467,7 @@ function makeClockStr ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    make_str_fn   = xhi._util_._makeClockStr_,
+    make_str_fn   = __util._makeClockStr_,
 
     idx, expect_list, arg_list, expect_str, solve_str, msg_str
     ;
@@ -511,7 +511,7 @@ function makeCommaNumStr ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    make_str_fn  = xhi._util_._makeCommaNumStr_,
+    make_str_fn  = __util._makeCommaNumStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -558,7 +558,7 @@ function makeDateStr( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    make_str_fn   = xhi._util_._makeDateStr_,
+    make_str_fn   = __util._makeDateStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -672,7 +672,7 @@ function makeEllipsisStr( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    make_str_fn   = xhi._util_._makeEllipsisStr_,
+    make_str_fn   = __util._makeEllipsisStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -720,7 +720,7 @@ function makeErrorObj ( test_obj ) {
 
     key_count    = key_list.length,
     assert_count = assert_list.length,
-    make_fn      = xhi._util_._makeErrorObj_,
+    make_fn      = __util._makeErrorObj_,
     test_count   = __0,
 
     idx, expect_list, arg_list, expect_obj, solve_obj,
@@ -755,7 +755,7 @@ function makeGuidStr( test_obj ) {
   var
     seen_map     = {},
     assert_count = 100,
-    make_str_fn  = xhi._util_._makeGuidStr_,
+    make_str_fn  = __util._makeGuidStr_,
     guid_rx      = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/,
     idx, solve_str;
 
@@ -800,7 +800,7 @@ function makePadNumStr( test_obj ) {
       [ [ '-025',   5  ], '-0025'  ]
     ],
     assert_count = assert_list.length,
-    make_str_fn  = xhi._util_._makePadNumStr_,
+    make_str_fn  = __util._makePadNumStr_,
 
     idx, expect_list, arg_list, expect_str,
     solve_str, msg_str
@@ -844,7 +844,7 @@ function makePctStr ( test_obj ) {
       [ [ (2/3),   __0  ], '67%'      ]
     ],
     assert_count = assert_list.length,
-    make_str_fn  = xhi._util_._makePctStr_,
+    make_str_fn  = __util._makePctStr_,
 
     idx, expect_list, arg_list, expect_str, solve_str, msg_str
     ;
@@ -882,7 +882,7 @@ function makeSeenMap ( test_obj ) {
         {red:data_map,green:data_map,blue:data_map} ]
     ],
     assert_count = assert_list.length,
-    make_map_fn  = xhi._util_._makeSeenMap_,
+    make_map_fn  = __util._makeSeenMap_,
 
     idx, expect_list, arg_list, expect_map, solve_map, msg_str
     ;
@@ -1141,7 +1141,7 @@ function makeSeriesMap ( test_obj ) {
     expect_count = __0,
     delta_count  = delta_list.length,
     intvl_count  = intvl_list.length,
-    make_map_fn  = xhi._util_._makeSeriesMap_,
+    make_map_fn  = __util._makeSeriesMap_,
 
     delta_idx, delta_ms, intvl_idx, intvl_int,
     arg_map, expect_map, solve_map, msg_str
@@ -1184,9 +1184,7 @@ function makeStrFromMap( test_obj ) {
     prop01_list = Object.keys( prop01_map ),
     prop02_list = Object.keys( prop02_map ),
     prop01a_list = [ '_name_', '_missing_', __undef, null, {} ],
-    // prop02a_list = [ {}, null, __undef, '_first_name_', '_unseen_' ],
-    // prop01b_list = [ __undef, null, {} ],
-    // prop02b_list = {},
+    prop02a_list = [ {}, null, __undef, '_first_name_', '_unseen_', '_age_num_' ],
     label01_map = { _name_ : 'Name', _state_code_ : 'State Code',
       _country_code_ : 'Country Code'
     },
@@ -1228,11 +1226,30 @@ function makeStrFromMap( test_obj ) {
         _do_label_ : __true, _delim_str_ : ', ' }, '_name_: fred' ],
       [ { _prop_map_ : prop01_map, _key_list_ : prop01a_list,
         _delim_str_ : ', ', _label_map_ : label01_map }, 'Name: fred'
-      ]
+      ],
+      [ { _prop_map_ : prop02_map }, __blank ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list },
+        'Wilma 48' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list,
+        _do_label_ : __true }, '_first_name_: Wilma _age_num_: 48' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list,
+        _do_label_ : __true, _delim_str_ : ' | ' },
+        '_first_name_: Wilma | _age_num_: 48' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list,
+        _do_label_ : __true, _delim_str_ : ' | ', _label_map_ : {
+        _first_name_ : 'fff' , _age_num_ : 'isss' }
+       }, 'fff: Wilma | isss: 48' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list,
+        _delim_str_ : ' | ', _label_map_ : {
+          _first_name_ : 'fff' , _age_num_ : 'isss' }
+      }, 'fff: Wilma | isss: 48' ],
+      [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list,
+        _delim_str_ : ' | ', _label_delim_str_ : ' === ', _label_map_ : {
+          _first_name_ : 'fff' , _age_num_ : 'isss' }
+      }, 'fff === Wilma | isss === 48' ]
     ],
-    // prop01a_list = [ '_name_', '_missing_', __undef, null, {} ],
     assert_count = assert_list.length,
-    make_str_fn  = xhi._util_._makeStrFromMap_,
+    make_str_fn  = __util._makeStrFromMap_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -1244,8 +1261,42 @@ function makeStrFromMap( test_obj ) {
     expect_str  = expect_list[ __1 ];
     solve_str   = make_str_fn( arg_map );
     msg_str     = __Str( idx ) + '. arg_map: '
-      + JSON.stringify( arg_map ) + ' solve_str: '
-      + solve_str + ' expect_str: ' + expect_str;
+      + JSON.stringify( arg_map ) + ' solve_str: >>'
+      + solve_str + '<< expect_str: >>' + expect_str + '<<';
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
+function makeTmpltStr ( test_obj ) {
+  var
+    assert_list  = [
+      // [ arg_map, expect_str ]
+      [ [],   __blank ],
+      [ null, __blank ],
+      [ __undef, __blank ],
+      [ 'fred', __blank ],
+      [ [1,2,3,4], __blank ],
+      [ {}, __blank ],
+      [ {_input_str_ : 'some {_test_}'}, 'some ' ],
+      [ {_input_str_ : 'some {_test_}', _lookup_map_ : { _test_ : 'bobby'}},
+        'some bobby' ],
+      [ {_input_str_ : 'some {_test_}', _lookup_map_ : { _test_ : 'Frank'}},
+        'some Frank' ]
+    ],
+    assert_count = assert_list.length,
+    make_str_fn  = __util._makeTmpltStr_,
+
+    idx, expect_list, arg_map, expect_str, solve_str, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_map     = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str = make_str_fn( arg_map );
+    msg_str    = __Str( idx ) + '. ' + solve_str + ' === ' + expect_str;
     test_obj.ok( solve_str === expect_str, msg_str );
   }
   test_obj.done();
@@ -1273,7 +1324,7 @@ function getVarType( test_obj ) {
     str2  = new os(),
     d_obj = new Date(),
 
-    get_type_fn = xhi._util_._getVarType_;
+    get_type_fn = __util._getVarType_;
 
   test_obj.expect( 12 );
 
@@ -1324,8 +1375,8 @@ module.exports = {
   _makePctStr_      : makePctStr,
   _makeSeenMap_     : makeSeenMap,
   _makeSeriesMap_   : makeSeriesMap,
-  _makeStrFromMap_  : makeStrFromMap
- // _makeTmpltStr_    : makeTmpltStr,
+  _makeStrFromMap_  : makeStrFromMap,
+  _makeTmpltStr_    : makeTmpltStr
  // _makeUcFirstStr_  : makeUcFirstStr,
  // _mergeMaps_       : mergeMaps,
  // _pollFunction_    : pollFunction,

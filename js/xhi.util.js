@@ -1346,10 +1346,11 @@ xhi._util_ = (function () {
       return ( return_data === __undef ) ? __blank : return_data;
     }
 
-    function mainFn ( arg_map ) {
+    function mainFn ( arg_data ) {
       var
-        input_str  = getStr( arg_map._input_str_  ),
-        lookup_map = getMap( arg_map._lookup_map_ ),
+        arg_map    = getMap( arg_data, {} ),
+        input_str  = getStr( arg_map._input_str_, __blank  ),
+        lookup_map = getMap( arg_map._lookup_map_,      {} ),
         tmplt_rx   = arg_map._tmplt_rx_ || topCmap._tmplt_rx_,
         bound_fn   = lookupFn.bind( lookup_map )
         ;
