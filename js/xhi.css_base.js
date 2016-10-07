@@ -80,9 +80,9 @@ xhi._css_base_ = (function () {
         // Link colors should be only used on elements which users tap,
         // click, drag, or otherwise interact.
         _hex_link_           : '#6cafff', // link on both lt and dk bkg
-        _hex_link_dk_        : '#89c3ff', // hover on lt bkg
+        _hex_link_lt_        : '#89c3ff', // hover on dk bkg
         _hex_link_fade_      : '#4b576b', // faded link on color
-        _hex_link_lt_        : '#3e5e96', // hover on dk bkg
+        _hex_link_dk_        : '#3e5e96', // hover on lt bkg
 
         // The placeholder color is a subdued text color shown in input
         // fields when there is no content.
