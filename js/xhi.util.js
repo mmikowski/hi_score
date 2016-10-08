@@ -1338,12 +1338,13 @@ xhi._util_ = (function () {
         lookup_map  = this,
         return_data = lookup_name && lookup_map
         ;
-      lookup_name[ vMap._split_ ]('.')[ vMap._forEach_ ](
+      lookup_name[ vMap._split_ ]( '.' )[ vMap._forEach_ ](
         function ( key_name ) {
-          return_data = return_data && return_data[ key_name ];
+          return_data = ( return_data && return_data[ key_name ] )
+            || __blank;
         }
       );
-      return ( return_data === __undef ) ? __blank : return_data;
+      return getStr( return_data, __blank );
     }
 
     function mainFn ( arg_data ) {

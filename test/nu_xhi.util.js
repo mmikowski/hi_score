@@ -1270,22 +1270,88 @@ function makeStrFromMap( test_obj ) {
 
 function makeTmpltStr ( test_obj ) {
   var
+    t1_str  = 'some {_test_}',
+    t2_str  = 'I told {_name_} some {_thing_._name_}s have {_thing_._part_}s',
+    t3_str  = 'I wonder about {_thing_}s',
+    t4_str  = '{_thing_} and {_thing_._name_} and {_thing_._part_} '
+      + 'and {_thing_._foo_} and {_foo_} and {_foo_._bar_}.',
     assert_list  = [
       // [ arg_map, expect_str ]
-      [ [],   __blank ],
-      [ null, __blank ],
-      [ __undef, __blank ],
-      [ 'fred', __blank ],
+      [ [],        __blank ],
+      [ null,      __blank ],
+      [ __undef,   __blank ],
+      [ 'fred',    __blank ],
       [ [1,2,3,4], __blank ],
-      [ {}, __blank ],
-      [ {_input_str_ : 'some {_test_}'}, 'some ' ],
-      [ {_input_str_ : 'some {_test_}', _lookup_map_ : { _test_ : 'bobby'}},
+      [ {},        __blank ],
+      [ { _input_str_ : t1_str }, 'some ' ],
+      [ { _input_str_ : t1_str, _lookup_map_ : { _test_ : 'bobby'}},
         'some bobby' ],
-      [ {_input_str_ : 'some {_test_}', _lookup_map_ : { _test_ : 'Frank'}},
-        'some Frank' ]
+      [ { _input_str_ : t1_str, _lookup_map_ : { _test_ : 'Frank'}},
+        'some Frank' ],
+      [ { _input_str_ : t2_str }, 'I told  some s have s' ],
+      [ { _input_str_ : t2_str, _lookup_map_ : { thing: {} } },
+        'I told  some s have s' ],
+      [ { _input_str_ : t2_str, _lookup_map_ : { _thing_: { _part_ : 'udder'} } },
+        'I told  some s have udders' ],
+      [ { _input_str_ : t2_str, _lookup_map_ : { _name_ : 'Frank',
+        _thing_: { _part_ : 'udder' } } }, 'I told Frank some s have udders' ],
+      [ { _input_str_ : t2_str, _lookup_map_ : { _name_ : 'Frank',
+        _thing_: { _part_ : 'udder', _name_: 'cow' } } },
+        'I told Frank some cows have udders' ],
+      [ { _input_str_ : t3_str, _lookup_map_ : { _thing_: {
+        _part_ : 'udder', _name_: 'cow' } } }, 'I wonder about s' ],
+      [ { _input_str_ : t3_str, _lookup_map_ : { _thing_: 'Big Foot' } },
+        'I wonder about Big Foots' ],
+      [ { _input_str_ : t4_str }, ' and  and  and  and  and .' ],
+      [ { _input_str_ : t4_str, _lookup_map_ : {} }, ' and  and  and  and  and .' ],
+      [ { _input_str_ : t4_str, _lookup_map_ : { _thing_ : {} } },
+        ' and  and  and  and  and .' ],
+      [ { _input_str_ : t4_str, _lookup_map_ : { _thing_ : 'Tommy' } },
+        'Tommy and  and  and  and  and .' ],
+      [ { _input_str_ : t4_str, _lookup_map_ : { _thing_ : { _name_ : 'testy' }}},
+        ' and testy and  and  and  and .' ],
+      [ { _input_str_ : t4_str, _lookup_map_ : { _thing_ : { _name_ : 'testy',
+        _part_ : 'part' }} }, ' and testy and part and  and  and .' ],
+      [ { _input_str_ : t4_str, _lookup_map_ : { _thing_ : { _name_ : 'testy',
+        _part_ : 'part' }, _foo_ : 'Bobby' } },
+        ' and testy and part and  and Bobby and .' ],
+      [ { _input_str_ : t4_str, _lookup_map_ : { _thing_ : { _name_ : 'testy',
+        _part_ : 'part' }, _foo_ : { _bar_: 'Bat' } } },
+        ' and testy and part and  and  and Bat.' ]
     ],
+
     assert_count = assert_list.length,
     make_str_fn  = __util._makeTmpltStr_,
+
+    idx, expect_list, arg_map, expect_str, solve_str, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_map     = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str = make_str_fn( arg_map );
+    msg_str    = __Str( idx ) + '. ' + solve_str + ' === ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
+function makeUcFirstStr ( test_obj ) {
+  var
+    assert_list  = [
+      // [ arg_map, expect_str ]
+      [ [],        __blank ],
+      [ null,      __blank ],
+      [ __undef,   __blank ],
+      [ 'fred',    'Fred'  ],
+      [ [1,2,3,4], __blank ],
+      [ {},        __blank ],
+    ],
+
+    assert_count = assert_list.length,
+    make_str_fn  = __util._makeUcFirstStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -1376,8 +1442,8 @@ module.exports = {
   _makeSeenMap_     : makeSeenMap,
   _makeSeriesMap_   : makeSeriesMap,
   _makeStrFromMap_  : makeStrFromMap,
-  _makeTmpltStr_    : makeTmpltStr
- // _makeUcFirstStr_  : makeUcFirstStr,
+  _makeTmpltStr_    : makeTmpltStr,
+  _makeUcFirstStr_  : makeUcFirstStr
  // _mergeMaps_       : mergeMaps,
  // _pollFunction_    : pollFunction,
  // _rmAllObjKeys_    : rmAllObjKeys,
