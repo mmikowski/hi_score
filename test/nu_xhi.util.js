@@ -906,6 +906,67 @@ function makePctStr ( test_obj ) {
   test_obj.done();
 }
 
+function makeScrubStr ( test_obj ) {
+  var
+    assert_list  = [
+      // [ arg_list, expect_data ]
+      [ [ __undef       ], __blank  ],
+      [ [ __undef, __0  ], __blank  ],
+      [ [ __null,  __n1 ], __blank  ],
+      [ [ [],      __1  ], __blank  ],
+      [ [ {}            ], __blank  ],
+      [ [ 'hello' ], 'hello' ],
+      [ [ '<h1>hello</h1>' ], 'hello' ],
+      [ [ '<div>hello</div>' ], 'hello' ],
+      [ [ '<div><h1>hello</h1><p>This is lc.</p></div>' ],
+          'helloThis is lc.' ],
+      [ [ '<div><h1>Hello! </h1><p>This is lc.</p></div>' ],
+        'Hello! This is lc.' ],
+      [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li>' ],
+        'FredBarneyWilmaBetty' ],
+      [ [ 'hello', __false ], 'hello' ],
+      [ [ '<h1>hello</h1>', 'freddy' ], 'hello' ],
+      [ [ '<div>hello</div>', 12 ], 'hello' ],
+      [ [ '<div><h1>hello</h1><p>This is lc.</p></div>', __undef ],
+        'helloThis is lc.' ],
+      [ [ '<div><h1>Hello! </h1><p>This is lc.</p></div>', __null ],
+        'Hello! This is lc.' ],
+      [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li>', __0 ],
+        'FredBarneyWilmaBetty' ],
+      [ [ 'hello', __true ], 'hello' ],
+      [ [ '<h1>hello</h1>', 'freddy' ], 'hello' ],
+      [ [ '<div>hello</div>', __true ], 'hello' ],
+      [ [ '<div><h1>hello</h1><p>This is lc.</p></div>', __1 ],
+        'hello This is lc.' ],
+      [ [ '<div><h1>Hello!</h1><p>This is lc.</p></div>', __1 ],
+        'Hello! This is lc.' ],
+      [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li></ul>',
+        __true ],
+        'Fred Barney Wilma Betty' ],
+    ],
+
+    assert_count = assert_list.length,
+    make_str_fn   = __util._makeScrubStr_,
+
+    idx,        expect_list, arg_list,
+    expect_str, solve_str,   msg_str
+    ;
+
+  test_obj.expect( assert_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_str   = expect_list[ __1 ];
+    solve_str   = make_str_fn.apply( __undef, arg_list );
+    msg_str    = __Str( idx ) + '. '
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
+
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
 function makeSeenMap ( test_obj ) {
   var
     data_map     = { _foo_ : 'bar', _baz_ : 22 },
@@ -1510,6 +1571,7 @@ module.exports = {
   _makeGuidStr_     : makeGuidStr,
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
+  _makeScrubStr_    : makeScrubStr,
   _makeSeenMap_     : makeSeenMap,
   _makeSeriesMap_   : makeSeriesMap,
   _makeStrFromMap_  : makeStrFromMap,
@@ -1517,7 +1579,6 @@ module.exports = {
   _makeUcFirstStr_  : makeUcFirstStr,
   _mergeMaps_       : mergeMaps,
   _pollFunction_    : pollFunction
- // _scrubHtmlTags_   : scrubHtmlTags,
  // _setCmap_         : setCmap,
  // _setDeepMapVal_   : setDeepMapVal
 };

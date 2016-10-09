@@ -218,6 +218,20 @@ xhi._util_ = (function () {
     return topSmap._date_obj_;
   }
   // END private method /getTzDateObj/
+
+  // BEGIN Public prereq method /makeScrubStr/
+  function makeScrubStr ( arg_str, arg_do_space ) {
+    var
+      raw_str    = getStr( arg_str, __blank ),
+      do_space   = getBool( arg_do_space ),
+      interm_str = do_space
+        ? raw_str[ vMap._replace_ ]( topCmap._tag_end_rx_, ' ' )
+        : raw_str;
+
+    interm_str = interm_str[ vMap._trim_ ]();
+    return interm_str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
+  }
+  // END Public prereq method /scrubPctStr/
   // ====================== END PRIVATE METHODS =======================
 
   // ===================== BEGIN UTILITY METHODS ======================
@@ -671,7 +685,7 @@ xhi._util_ = (function () {
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
-  //       tz_offset_ms = xhi._util_._getTzOffsetMs_(),
+  //       tz_offset_ms = __util._getTzOffsetMs_(),
   //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
@@ -836,13 +850,6 @@ xhi._util_ = (function () {
   }
   // END Public method /makeDateStr/
 
-  // BEGIN Public method /scrubHtmlTags/
-  function scrubHtmlTags ( arg_str ) {
-    var str = getStr( arg_str, __blank );
-    return str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
-  }
-  // END Public method /scrubHtmlTags/
-
   // BEGIN Public method /makeEllipsisStr/
   // Purpose: Shorten a string to a maximum length and append ellipsis
   //   if it is exceeded.
@@ -862,10 +869,10 @@ xhi._util_ = (function () {
   //
   function makeEllipsisStr( arg_map ) {
     var
-      scrub_str       = scrubHtmlTags( arg_map._input_str_ ),
+      scrub_str       = makeScrubStr( arg_map._input_str_, __false ),
       char_limit_int  = getInt( arg_map._char_limit_int_, __0 ),
-      do_word_break   = arg_map._do_word_break_ === __undef
-        ? __true : !! arg_map._do_word_break_,
+      do_word_break   = ( arg_map[ vMap._hasOwnProp_ ]( '_do_word_break_' ) )
+        ? ( !! arg_map._do_word_break_ ) : __true,
       scrub_count     = scrub_str[ __length ],
 
       word_list,   word_count,
@@ -1504,6 +1511,7 @@ xhi._util_ = (function () {
 
       _offset_yr_ : 1900,
       _comma_rx_  : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
+      _tag_end_rx_: makeRxObj( '(</[^>]+>)+', 'g' ),
       _tag_rx_    : makeRxObj( '</?[^>]+>', 'g' ),
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
       _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
@@ -1575,6 +1583,7 @@ xhi._util_ = (function () {
     _makePadNumStr_   : makePadNumStr,
     _makePctStr_      : makePctStr,
     _makeRxObj_       : makeRxObj,
+    _makeScrubStr_    : makeScrubStr,
     _makeSeenMap_     : makeSeenMap,
     _makeSeriesMap_   : makeSeriesMap,
     _makeStrFromMap_  : makeStrFromMap,
@@ -1582,7 +1591,6 @@ xhi._util_ = (function () {
     _makeUcFirstStr_  : makeUcFirstStr,
     _mergeMaps_       : mergeMaps,
     _pollFunction_    : pollFunction,
-    _scrubHtmlTags_   : scrubHtmlTags,
     _setCmap_         : setCmap,
     _setDeepMapVal_   : setDeepMapVal
   };
