@@ -460,15 +460,15 @@ xhi._util_ = (function () {
     var
       base_map   = getMap( arg_base_map,   {} ),
       extend_map = getMap( arg_extend_map, {} ),
-      tmp_map   = cloneData( extend_map ),
-      key_list  = __keys( tmp_map ),
-      key_count = key_list[ __length ],
+      tmp_map    = cloneData( extend_map ),
+      key_list   = __keys( tmp_map ),
+      key_count  = key_list[ __length ],
 
-      i, tmp_key
+      idx, tmp_key
       ;
 
-    for ( i = __0; i < key_count; i++ ) {
-      tmp_key = key_list[ i ];
+    for ( idx = __0; idx < key_count; idx++ ) {
+      tmp_key = key_list[ idx ];
       base_map[ tmp_key ] = tmp_map[ tmp_key ];
     }
     return base_map;
@@ -1374,34 +1374,38 @@ xhi._util_ = (function () {
   // BEGIN Public method /pollFunction/
   // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
   //   either <arg_count> number of times or until the function
-  //   returns false, whichever comes first.
+  //   returns __false, whichever comes first.
   // Arguments
   //   arg_fn    : function to poll, return false to stop polling
   //   arg_ms    : time between function invocation
   //   arg_count : (optional) Maximum number of times to run the function.
   //
   //
-  function pollFunction ( arg_fn, arg_ms, arg_count ) {
-    var count;
+  function pollFunction ( arg_fn, arg_ms, arg_count, arg_finish_fn ) {
+    var
+      poll_fn   = getFn(  arg_fn ),
+      ms        = getInt( arg_ms,        __0    ),
+      count     = getInt( arg_count,     __null ),
+      finish_fn = getFn(  arg_finish_fn, __null ),
+      idx     = __0,
+      do_fn
+      ;
 
-    count = arg_count || null;
+    if ( ! poll_fn ) { return; }
 
-    function pollIt () {
-      __setTo(function() {
-        var continue_poll = arg_fn();
-        if ( continue_poll === false ) { return; }
-        if ( count === null ) {
-          pollIt();
-          return;
+    do_fn = function () {
+      __setTo( function() {
+        var do_next;
+        if ( count && idx >= count ) {
+          return finish_fn && finish_fn();
         }
-        if ( count > __0 ) {
-          count -= __1;
-          pollIt();
-        }
-      }, arg_ms );
-    }
+        do_next = poll_fn( idx );
+        idx++;
+        if ( do_next !== __false ) { do_fn(); }
+      }, ms );
+    };
 
-    pollIt();
+    do_fn();
   }
   // END Public method /pollFunction/
 

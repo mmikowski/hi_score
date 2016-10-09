@@ -40,10 +40,11 @@ var
 
   nuFn = function () { console.log( 'nu:' + this , arguments ); },
   mockTestObj = {
-    done   : nuFn.bind( 'done'   ),
-    expect : nuFn.bind( 'expect' ),
-    ok     : nuFn.bind( 'ok'     ),
-    test   : nuFn.bind( 'test'   )
+    deepEqual : nuFn.bind( 'deepEqual' ),
+    done      : nuFn.bind( 'done'      ),
+    expect    : nuFn.bind( 'expect'    ),
+    ok        : nuFn.bind( 'ok'        ),
+    test      : nuFn.bind( 'test'      )
   }
   ;
 // ================== END MODULE SCOPE VARIABLES ====================
@@ -362,6 +363,50 @@ function getNumSign ( test_obj ) {
 
     test_obj.ok( solve_int === expect_int, msg_str );
   }
+  test_obj.done();
+}
+
+function getVarType( test_obj ) {
+  var
+    // this is a hack to get around jslint warnings
+    ob = Boolean, oa = Array, os = String,
+    on = Number,  // oo = Object,
+
+    und1 = __undef,
+    msg_str,
+
+    bool1 = __true,
+    list1 = [ 'a','b','c' ],
+    null1 = null,
+    num1  = 25,
+    str1  = 'cde',
+    obj1  = { length : 12 },
+
+    bool2 = new ob(),
+    list2 = new oa(),
+    num2  = new on(),
+    str2  = new os(),
+    d_obj = new Date(),
+
+    get_type_fn = __util._getVarType_;
+
+  test_obj.expect( 12 );
+
+  msg_str = 'Should match expected type';
+
+  test_obj.ok( get_type_fn( und1  ) === '_Undefined_', msg_str );
+  test_obj.ok( get_type_fn( null1 ) === '_Null_',      msg_str );
+  test_obj.ok( get_type_fn( bool1 ) === '_Boolean_',   msg_str );
+  test_obj.ok( get_type_fn( str1  ) === '_String_',    msg_str );
+  test_obj.ok( get_type_fn( num1  ) === '_Number_',    msg_str );
+  test_obj.ok( get_type_fn( list1 ) === '_Array_',     msg_str );
+  test_obj.ok( get_type_fn( obj1  ) === '_Object_',    msg_str );
+  test_obj.ok( get_type_fn( bool2 ) === '_Boolean_',   msg_str );
+  test_obj.ok( get_type_fn( str2  ) === '_String_',    msg_str );
+  test_obj.ok( get_type_fn( num2  ) === '_Number_',    msg_str );
+  test_obj.ok( get_type_fn( list2 ) === '_Array_',     msg_str );
+  test_obj.ok( get_type_fn( d_obj ) ===  'Date',       msg_str );
+
   test_obj.done();
 }
 
@@ -1348,6 +1393,8 @@ function makeUcFirstStr ( test_obj ) {
       [ 'fred',    'Fred'  ],
       [ [1,2,3,4], __blank ],
       [ {},        __blank ],
+      [ 'a long sentence.', 'A long sentence.' ],
+      [ 'oNE sENTENCE', 'ONE sENTENCE']
     ],
 
     assert_count = assert_list.length,
@@ -1368,48 +1415,70 @@ function makeUcFirstStr ( test_obj ) {
   test_obj.done();
 }
 
-function getVarType( test_obj ) {
+function mergeMaps ( test_obj ) {
   var
-    // this is a hack to get around jslint warnings
-    ob = Boolean, oa = Array, os = String,
-    on = Number,  // oo = Object,
+    base0_map = { attr1 : 'val1', attr2 : 'val2' },
+    base1_map = { attr3 : 10,     attr4 : 20     },
+    base2_map = { fn : function () { console.warn( arguments ); } },
+    out0_map  = {
+      attr1 : 'val1', attr2 : 'val2', attr3 : 10, attr4 : 20
+    },
+    out1_map  = { attr1 : 'val1', attr2  : 'val2', list : [] },
+    out2_map  = { attr3 : 10, attr4 : 20, list : [] },
+    out3_map  = { attr1 : 'val1', attr2 : 'val2' },
+    assert_list  = [
+      // [ arg_list, expect_data ]
+      [ [],                 {} ],
+      [ [ {}],              {} ],
+      [ [ __null],          {} ],
+      [ [ __undef],         {} ],
+      [ [ 1,2,3,4],         {} ],
+      [ [ __0,            __undef ],         {} ],
+      [ [ __blank,             {} ],         {} ],
+      [ [ base0_map,      __null  ],  base0_map ],
+      [ [ base0_map,           {} ],  base0_map ],
+      [ [ base0_map,    base1_map ],   out0_map ],
+      [ [ base0_map,    base1_map ],   out0_map ],
+      [ [ base0_map, { list: [] } ],   out1_map ],
+      [ [ base0_map, { list: [] } ],   out1_map ],
+      [ [ base1_map, { list: [] } ],   out2_map ],
+      [ [ base1_map, { list: [] } ],   out2_map ],
+      [ [ base0_map,    base2_map ],   out3_map ]
+    ],
 
-    und1 = __undef,
-    msg_str,
+    assert_count = assert_list.length,
+    merge_maps_fn  = __util._mergeMaps_,
 
-    bool1 = __true,
-    list1 = [ 'a','b','c' ],
-    null1 = null,
-    num1  = 25,
-    str1  = 'cde',
-    obj1  = { length : 12 },
+    idx, expect_list, arg_list,
+    expect_map, solve_map, msg_str
+    ;
 
-    bool2 = new ob(),
-    list2 = new oa(),
-    num2  = new on(),
-    str2  = new os(),
-    d_obj = new Date(),
-
-    get_type_fn = __util._getVarType_;
-
-  test_obj.expect( 12 );
-
-  msg_str = 'Should match expected type';
-
-  test_obj.ok( get_type_fn( und1  ) === '_Undefined_', msg_str );
-  test_obj.ok( get_type_fn( null1 ) === '_Null_',      msg_str );
-  test_obj.ok( get_type_fn( bool1 ) === '_Boolean_',   msg_str );
-  test_obj.ok( get_type_fn( str1  ) === '_String_',    msg_str );
-  test_obj.ok( get_type_fn( num1  ) === '_Number_',    msg_str );
-  test_obj.ok( get_type_fn( list1 ) === '_Array_',     msg_str );
-  test_obj.ok( get_type_fn( obj1  ) === '_Object_',    msg_str );
-  test_obj.ok( get_type_fn( bool2 ) === '_Boolean_',   msg_str );
-  test_obj.ok( get_type_fn( str2  ) === '_String_',    msg_str );
-  test_obj.ok( get_type_fn( num2  ) === '_Number_',    msg_str );
-  test_obj.ok( get_type_fn( list2 ) === '_Array_',     msg_str );
-  test_obj.ok( get_type_fn( d_obj ) === 'Date',    msg_str );
-
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list    = __util._cloneData_( expect_list[ __0 ] );
+    expect_map  = expect_list[ __1 ];
+    solve_map   = merge_maps_fn.apply( __undef, arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_map: '
+      + JSON.stringify( solve_map )
+      + '\n expect_map: ' + JSON.stringify( expect_map );
+    test_obj.deepEqual( solve_map, expect_map, msg_str );
+  }
   test_obj.done();
+}
+
+function pollFunction ( test_obj ) {
+  var
+    test_list = [],
+    test_fn   = function ( idx ) { test_list.push( idx ); return __true; },
+    finish_fn = function () {
+      test_obj.deepEqual( test_list, [ 0,1,2,3 ], 'fn runs 4 times' );
+      test_obj.done();
+    };
+
+  test_obj.expect( __1 );
+  __util._pollFunction_( test_fn, __0, 4, finish_fn );
 }
 // ======== END NODEUNIT TEST FUNCTIONS ===========
 //
@@ -1419,6 +1488,8 @@ function getVarType( test_obj ) {
 // makeStrFromMap( mockTestObj );
 // 2. Run node <this_file>
 // 3. Inspect the output
+
+// pollFunction( mockTestObj );
 
 module.exports = {
   _clearMap_        : clearMap,
@@ -1443,10 +1514,9 @@ module.exports = {
   _makeSeriesMap_   : makeSeriesMap,
   _makeStrFromMap_  : makeStrFromMap,
   _makeTmpltStr_    : makeTmpltStr,
-  _makeUcFirstStr_  : makeUcFirstStr
- // _mergeMaps_       : mergeMaps,
- // _pollFunction_    : pollFunction,
- // _rmAllObjKeys_    : rmAllObjKeys,
+  _makeUcFirstStr_  : makeUcFirstStr,
+  _mergeMaps_       : mergeMaps,
+  _pollFunction_    : pollFunction
  // _scrubHtmlTags_   : scrubHtmlTags,
  // _setCmap_         : setCmap,
  // _setDeepMapVal_   : setDeepMapVal
