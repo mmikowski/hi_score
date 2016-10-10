@@ -28,6 +28,7 @@
  return {
    // xhi.util.js argument keys
    // These should be deleted after all regression tests are implemented
+   _attr_list_      : list,
    _bool_           : bool,
    _fn_             : fn,
    _int_            : int,
@@ -36,7 +37,6 @@
    _char_limit_int_ : num,
    _input_map_      : map,
    _max_ms_         : num,
-   _settable_list_  : list,
    _target_map_     : map,
    _tgt_count_      : num
  };

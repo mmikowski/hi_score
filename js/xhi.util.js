@@ -54,7 +54,7 @@ xhi._util_ = (function () {
 
     getNowMs,     getVarType,  getBasename,
     getDirname,   logUtilObj,  makeGuidStr,
-    makeListPlus, makeTmpltStr
+    makeTmpltStr
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
 
@@ -470,10 +470,12 @@ xhi._util_ = (function () {
   // BEGIN Public prereq method /mergeMaps/
   // Purpose : Merge properties of extend_map into base_map
   //
-  function mergeMaps( arg_base_map, arg_extend_map ) {
+  function mergeMaps( arg_base_map, arg_extend_map, arg_attr_list ) {
     var
-      base_map   = getMap( arg_base_map,   {} ),
-      extend_map = getMap( arg_extend_map, {} ),
+      base_map   = getMap(  arg_base_map,   {} ),
+      extend_map = getMap(  arg_extend_map, {} ),
+      attr_list  = getList( arg_attr_list ),
+
       tmp_map    = cloneData( extend_map ),
       key_list   = __keys( tmp_map ),
       key_count  = key_list[ __length ],
@@ -483,6 +485,9 @@ xhi._util_ = (function () {
 
     for ( idx = __0; idx < key_count; idx++ ) {
       tmp_key = key_list[ idx ];
+      if ( attr_list && attr_list[ vMap._indexOf_ ]( tmp_key ) !== __n1 ) {
+        logUtilObj._logIt_( '_warn_', '_key_not_supported_' );
+      }
       base_map[ tmp_key ] = tmp_map[ tmp_key ];
     }
     return base_map;
@@ -951,96 +956,75 @@ xhi._util_ = (function () {
   }());
   // END Public method /makeGuidStr/
 
-  // BEGIN Public method /makeListPlus/
-  // Returns an array with much desired methods:
-  //   * remove_val(value) : remove element that matches
-  //     the provided value. Returns number of elements
-  //     removed.
-  //   * match_val(value)  : shows if a value exists
-  //   * push_uniq(value)  : pushes a value onto the stack
-  //     iff it does not already exist there
-  // The reason I need this is to compare objects to
-  //   primary utility.
-  makeListPlus = (function () {
-    function checkMatchVal ( data ) {
-      var match_count = __0, idx;
-      for ( idx = this[ __length]; idx; __0 ) {
-        //noinspection IncrementDecrementResultUsedJS
-        if ( this[--idx] === data ) { match_count++; }
-      }
-      return match_count;
-    }
-    function removeListVal ( data ) {
-      var removed_count = __0, idx;
-      for ( idx = this[ __length ]; idx; __0 ) {
-        //noinspection IncrementDecrementResultUsedJS
-        if ( this[--idx] === data ) {
-          this.splice(idx, __1 );
-          removed_count++;
-          idx++;
-        }
-      }
-      return removed_count;
-    }
-    function pushUniqVal ( data ) {
-      if ( checkMatchVal.call(this, data ) ) { return __false; }
-      this.push( data );
-      return __true;
-    }
-    function mainFn ( input_list ) {
-      var return_list;
-      if ( input_list && __Array.isArray( input_list ) ) {
-        if ( input_list.remove_val ) {
-          logUtilObj._logIt_(
-            '_warn_',
-            'The array appears to already have listPlus capabilities'
-          );
-          return input_list;
-        }
-        return_list = input_list;
-      }
-      else {
-        return_list = [];
-      }
-      return_list.remove_val = removeListVal;
-      return_list.match_val  = checkMatchVal;
-      return_list.push_uniq  = pushUniqVal;
+  function getListValCount ( arg_list, arg_data ) {
+    var
+      input_list  = getList( arg_list, [] ),
+      input_count = input_list[ __length ],
+      match_count = __0,
+      idx;
 
-      return return_list;
+    for ( idx = input_count; idx; __0 ) {
+      //noinspection IncrementDecrementResultUsedJS
+      if ( input_list[ --idx ] === arg_data ) { match_count++; }
     }
-    return mainFn;
-  }());
-  // END Public method /makeListPlus/
+    return match_count;
+  }
+
+  function removeListVal ( arg_list, arg_data ) {
+    var
+      input_list   = getList( arg_list, [] ),
+      input_count  = input_list[ __length ],
+      remove_count = __0,
+      idx;
+
+    for ( idx = input_count; idx; __0 ) {
+      //noinspection IncrementDecrementResultUsedJS
+      if ( input_list[ --idx ] === arg_data ) {
+        input_list[ vMap._splice_ ]( idx, __1 );
+        remove_count++;
+        idx++;
+      }
+    }
+    return remove_count;
+  }
+
+  function pushUniqListVal ( arg_list, arg_data ) {
+    var input_list   = getList( arg_list, [] );
+    if ( input_list[ vMap._indexOf_ ]( arg_data ) === __n1 ) {
+      input_list[ __push ]( arg_data );
+    }
+  }
 
   // BEGIN Public method /makeMapUtilObj/
   // Purpose: Creates a thread-safe map utility object
   //   useful to streamlining list.map() functions and
-  //   avoiding nested functions.
+  //   avoiding nesting.
   // Example:
   // 1. Create a map_util object:
-  // var map_util_obj = makeMapUtilObj();
+  //    | var map_util_obj = makeMapUtilObj();
   // 2. (optional) Set any data your map function will use.
-  //   map_util_obj._setArgList_ = [ name_list ];
+  //    | map_util_obj._setArgList_ = [ name_list ];
   // 3. Create a function that for element of the array.
-  // function mapUtil_renameFn ( field_data, idx, list, setArgList ) {
-  //   var
-  //     name_list  = setArgList[ __0 ],
-  //     field_key = name_list[ idx ];
-  //
-  //   // return key, value
-  //   return [ field_key, field_data ];
-  //
-  //   // return nothing to not add to the map
-  // }
-  //
+  //    The arg_list provided is set in step 2:
+  //    | function mapUtil_renameFn ( field_data, idx, list, arg_list ) {
+  //    |   var
+  //    |     name_list  = arg_list[ __0 ],
+  //    |     field_key  = name_list[ idx ],
+  //    |     field_data = idx % 2;
+  //    |
+  //    |   // Return [ key, value ] to add to map.
+  //    |   // Return undef to not add anything.
+  //    |   return [ field_key, field_data ];
+  //    | }
   // 4. Set the function in the utility
-  //   map_util_obj._setMapFn_( mapUtil_renameFn );
+  //    | map_util_obj._setMapFn_( mapUtil_renameFn );
   // 5. Initialize the result map.  You need this pointer.
-  //   result_map = {};
-  //   map_util_obj._setResultMap_( result_map );
+  //    | result_map = {};
+  //    | map_util_obj._setResultMap_( result_map );
   // 6. Invoke the map function:
-  //   my_list.map( map_util_obj._invokeFn_ );
-  // 7. result_map will now contain the results!
+  //    | my_list.map( map_util_obj._invokeFn_ );
+  // 7. result_map will now contain the key value pairs return by
+  //    mapUtil_renameFn for the provided list.
   //
   // This is an excellent example of how a closure creates
   // unique private variables in each instance returned, such
@@ -1050,10 +1034,10 @@ xhi._util_ = (function () {
   function makeMapUtilObj () {
     var resultMap, argList, mapFn;
 
-    function getArgList   (            ) { return argList;         }
-    function setArgList   ( arg_list   ) { argList = arg_list;     }
-    function setMapFn     ( map_fn     ) { mapFn = map_fn;         }
-    function setResultMap ( result_map ) { resultMap = result_map; }
+    function getArgList   (          ) { return argList;                  }
+    function setArgList   ( arg_list ) { argList   = getList( arg_list ); }
+    function setMapFn     ( map_fn   ) { mapFn     = getFn(   map_fn   ); }
+    function setResultMap ( rmap     ) { resultMap = getMap(  rmap     ); }
 
     function invokeFn ( field_data, idx, list ) {
       var ret_list, ret_key, ret_data;
@@ -1416,43 +1400,6 @@ xhi._util_ = (function () {
   }
   // END Public method /pollFunction/
 
-  // BEGIN Public method /setCmap/
-  // Purpose: Common code to set config map in feature modules
-  // Arguments:
-  //   * _input_map_     - map of key-values to set in config
-  //   * _settable_list_ - map of allowable keys to set
-  //   * _target_map_    - map to apply settings to
-  // Returns: undef
-  // Throws : Exception if input key not allowed
-  //
-  function setCmap ( arg_map ) {
-    var
-      input_map     = getMap(  arg_map._input_map_,     {} ),
-      settable_list = getList( arg_map._settable_list_, [] ),
-      target_map    = getMap(  arg_map._target_map_,    {} ),
-
-      key_list     = __keys( input_map ),
-      key_count    = key_list[ __length ],
-
-      idx, key, error
-      ;
-
-    for ( idx = __0; idx < key_count; idx++ ) {
-      key = key_list[ idx ];
-      if ( settable_list[ vMap._indexOf_ ]( key ) > __n1 ) {
-        target_map[ key ] = input_map[ key ];
-      }
-      else {
-        error = makeErrorObj( 'Bad Input',
-          'Setting config key |' + key + '| is not supported'
-        );
-        logUtilObj._logIt_( '_error_', error);
-        throw error;
-      }
-    }
-  }
-  // END Public method /setCmap/
-
   // BEGIN Public method /setDeepMapVal/
   // Purpose   : Set a deep map attribute value
   // Example   : _setDeepMapVal_( {}, [ 'foo','bar' ], 'hello' );
@@ -1466,28 +1413,23 @@ xhi._util_ = (function () {
   //
   function setDeepMapVal ( arg_base_map, arg_path_list, val_data ) {
     var
-      base_map  = getMap(  arg_base_map,  {} ),
-      path_list = getList( arg_path_list, [] ),
-      walk_map  = base_map,
-      is_good   = __false,
-      key;
+      base_map   = getMap(  arg_base_map,  {} ),
+      path_list  = getList( arg_path_list, [] ),
+      path_count = path_list[ vMap._length_ ],
+      last_idx   = path_count - __1,
+      walk_map   = base_map,
+      idx, key;
 
-    while ( __true ) {
-      key = path_list.shift();
-      if ( key === undefined ) { break; }
-
+    for ( idx = __0; idx < path_count; idx++ ) {
+      key = path_list[ idx ];
+      if ( getVarType( walk_map ) !== '_Object_' ) { break; }
       if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ) {
         walk_map[ key ] = {};
       }
-      if ( ! path_list[ __0 ] ) {
-        walk_map[ key ] = val_data;
-        is_good = __true;
-        break;
-      }
-      walk_map = walk_map[ key ];
+      if ( idx === last_idx ) { walk_map[ key ] = val_data; }
+      else { walk_map = walk_map[ key ]; }
     }
-    if ( is_good ) { return base_map; }
-    return __undef;
+    return base_map;
   }
   // END Public method /setDeepMapVal/
   // ======================= END PUBLIC METHODS =======================
@@ -1560,16 +1502,17 @@ xhi._util_ = (function () {
     _clearMap_        : clearMap,
     _cloneData_       : cloneData,
     _getBasename_     : getBasename,
-    _getDirname_      : getDirname,
     _getDeepMapVal_   : getDeepMapVal,
+    _getDirname_      : getDirname,
     _getListAttrIdx_  : getListAttrIdx,
     _getListAttrMap_  : getListAttrMap,
     _getListDiff_     : getListDiff,
+    _getListValCount_ : getListValCount,
     _getLogUtilObj_   : getLogUtilObj,
     _getNowMs_        : getNowMs,
     _getNumSign_      : getNumSign,
-    _getTzOffsetMs_   : getTzOffsetMs,
     _getTzCode_       : getTzCode,
+    _getTzOffsetMs_   : getTzOffsetMs,
     _getVarType_      : getVarType,
     _makeArgList_     : makeArgList,
     _makeClockStr_    : makeClockStr,
@@ -1578,7 +1521,6 @@ xhi._util_ = (function () {
     _makeEllipsisStr_ : makeEllipsisStr,
     _makeErrorObj_    : makeErrorObj,
     _makeGuidStr_     : makeGuidStr,
-    _makeListPlus_    : makeListPlus,
     _makeMapUtilObj_  : makeMapUtilObj,
     _makePadNumStr_   : makePadNumStr,
     _makePctStr_      : makePctStr,
@@ -1591,7 +1533,8 @@ xhi._util_ = (function () {
     _makeUcFirstStr_  : makeUcFirstStr,
     _mergeMaps_       : mergeMaps,
     _pollFunction_    : pollFunction,
-    _setCmap_         : setCmap,
+    _pushUniqListVal_ : pushUniqListVal,
+    _rmListVal_       : removeListVal,
     _setDeepMapVal_   : setDeepMapVal
   };
 }());

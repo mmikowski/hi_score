@@ -16,8 +16,8 @@
 //noinspection MagicNumberJS
 'use strict';
 
-require('../js/xhi.js');
-require('../js/xhi.util.js');
+require( '../js/xhi.js'      );
+require( '../js/xhi.util.js' );
 
 var
   vMap = xhi._vMap_,
@@ -1480,20 +1480,21 @@ function mergeMaps ( test_obj ) {
   var
     base0_map = { attr1 : 'val1', attr2 : 'val2' },
     base1_map = { attr3 : 10,     attr4 : 20     },
-    base2_map = { fn : function () { console.warn( arguments ); } },
+    base2_map = { fn : function () { console.log( arguments ); } },
     out0_map  = {
       attr1 : 'val1', attr2 : 'val2', attr3 : 10, attr4 : 20
     },
     out1_map  = { attr1 : 'val1', attr2  : 'val2', list : [] },
     out2_map  = { attr3 : 10, attr4 : 20, list : [] },
     out3_map  = { attr1 : 'val1', attr2 : 'val2' },
-    assert_list  = [
+    attr0_list  = [ 'attr3' ],
+    assert_list = [
       // [ arg_list, expect_data ]
       [ [],                 {} ],
       [ [ {}],              {} ],
-      [ [ __null],          {} ],
-      [ [ __undef],         {} ],
-      [ [ 1,2,3,4],         {} ],
+      [ [ __null ],         {} ],
+      [ [ __undef ],        {} ],
+      [ [ 1,2,3,4 ],        {} ],
       [ [ __0,            __undef ],         {} ],
       [ [ __blank,             {} ],         {} ],
       [ [ base0_map,      __null  ],  base0_map ],
@@ -1504,11 +1505,19 @@ function mergeMaps ( test_obj ) {
       [ [ base0_map, { list: [] } ],   out1_map ],
       [ [ base1_map, { list: [] } ],   out2_map ],
       [ [ base1_map, { list: [] } ],   out2_map ],
-      [ [ base0_map,    base2_map ],   out3_map ]
+      [ [ base0_map,    base2_map ],   out3_map ],
+
+      // Using a restricted list of key
+      [ [ [],[],[] ],          {} ],
+      [ [ [],[],__null ],      {} ],
+      [ [ __0,'fred',__null ], {} ],
+      [ [ base0_map, 'fred',__null ], base0_map ],
+      [ [ base0_map,__undef, attr0_list ], base0_map ],
+      [ [ base0_map,__undef,'fred' ], base0_map ]
     ],
 
-    assert_count = assert_list.length,
-    merge_maps_fn  = __util._mergeMaps_,
+    assert_count  = assert_list.length,
+    merge_maps_fn = __util._mergeMaps_,
 
     idx, expect_list, arg_list,
     expect_map, solve_map, msg_str
@@ -1521,9 +1530,9 @@ function mergeMaps ( test_obj ) {
     expect_map  = expect_list[ __1 ];
     solve_map   = merge_maps_fn.apply( __undef, arg_list );
     msg_str = __Str( idx ) + '. arg_list: '
-      + JSON.stringify( arg_list ) + '\n solve_map: '
+      + JSON.stringify( arg_list ) + '\r solve_map: '
       + JSON.stringify( solve_map )
-      + '\n expect_map: ' + JSON.stringify( expect_map );
+      + '\r expect_map: ' + JSON.stringify( expect_map );
     test_obj.deepEqual( solve_map, expect_map, msg_str );
   }
   test_obj.done();
@@ -1541,6 +1550,49 @@ function pollFunction ( test_obj ) {
   test_obj.expect( __1 );
   __util._pollFunction_( test_fn, __0, 4, finish_fn );
 }
+
+function setDeepMapVal ( test_obj ) {
+  var
+    base0_map = { attr1 : 'val1', attr2 : 'val2', sub_map : {} },
+    expect0_map = { attr1 : 'val1', attr2 : 'val2', sub_map : {
+      dakota : [ 'hello', 'world' ]
+    } },
+    assert_list = [
+      [ [],                 {} ],
+      [ [ __null ],         {} ],
+      [ [ __null, __null ], {} ],
+      [ [ 'liz', 'mary'  ], {} ],
+      [ [ __undef, []    ], {} ],
+      [ [ base0_map, __undef ], base0_map ],
+      [ [ base0_map,
+          [ 'sub_map', 'dakota' ],
+          [ 'hello', 'world' ]
+        ],
+        expect0_map
+      ]
+    ],
+
+    assert_count  = assert_list.length,
+    set_deep_fn = __util._setDeepMapVal_,
+
+    idx, expect_list, arg_list,
+    expect_map, solve_map, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list    = __util._cloneData_( expect_list[ __0 ] );
+    expect_map  = expect_list[ __1 ];
+    solve_map   = set_deep_fn.apply( __undef, arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_map: '
+      + JSON.stringify( solve_map )
+      + '\n expect_map: ' + JSON.stringify( expect_map );
+    test_obj.deepEqual( solve_map, expect_map, msg_str );
+  }
+  test_obj.done();
+}
 // ======== END NODEUNIT TEST FUNCTIONS ===========
 //
 // Use mockTestObj for debugging tests using nodejs instead
@@ -1549,8 +1601,6 @@ function pollFunction ( test_obj ) {
 // makeStrFromMap( mockTestObj );
 // 2. Run node <this_file>
 // 3. Inspect the output
-
-// pollFunction( mockTestObj );
 
 module.exports = {
   _clearMap_        : clearMap,
@@ -1578,15 +1628,6 @@ module.exports = {
   _makeTmpltStr_    : makeTmpltStr,
   _makeUcFirstStr_  : makeUcFirstStr,
   _mergeMaps_       : mergeMaps,
-  _pollFunction_    : pollFunction
- // _setCmap_         : setCmap,
- // _setDeepMapVal_   : setDeepMapVal
+  _pollFunction_    : pollFunction,
+  _setDeepMapVal_   : setDeepMapVal
 };
-
-// Defer
-// _makeRxObj_       : makeRxObj,
-// _getLogUtilObj_   : getLogUtilObj,
-// _getTzOffsetMs_   : getTzOffsetMs,
-// _getTzCode_       : getTzCode,
-// _makeListPlus_    : makeListPlus,
-// _makeMapUtilObj_  : makeMapUtilObj,
