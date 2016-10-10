@@ -45,24 +45,12 @@ xhi._utilb_ = (function ( $ ) {
     __getMap      = __util._getMap_,
     __getStr      = __util._getStr_,
 
-
-    topCmap = {
-      _encode_html_rx_  : /[&"'><]/g,
-      _encode_noamp_rx_ : /["'><]/g,
-      _cookie_rx_tmplt_ : '\\s*{_attr_key_}\\s*=\\s*([^;]+)[;]*',
-      _html_encode_map_ : {
-        '&' : '&#38;',
-        '"' : '&#34;',
-        "'" : '&#39;',
-        '>' : '&#62;',
-        '<' : '&#60;'
-      }
-    },
+    // topCmap = {
+    //   _cookie_rx_tmplt_ : '\\s*{_attr_key_}\\s*=\\s*([^;]+)[;]*',
+    // },
     onBufferReady
     ;
 
-  topCmap._encode_noamp_map_ = $.extend({},topCmap._html_encode_map_);
-  delete topCmap._encode_noamp_map_['&'];
   // ================== END MODULE SCOPE VARIABLES ====================
 
   // ===================== BEGIN UTILITY METHODS ======================
@@ -77,29 +65,6 @@ xhi._utilb_ = (function ( $ ) {
     return $('<div></div>').html(str||__blank).text();
   }
   // END Public method /decodeHtml/
-
-  // BEGIN Public method /encodeHtml/
-  // This is single pass encoder for html entities and handles
-  // an arbitrary number of characters to encode
-  function encodeHtml ( arg_str, do_exclude_amp ) {
-    var
-      source_str = __Str(arg_str),
-      noamp_rx, lookup_map
-      ;
-
-    if ( do_exclude_amp ) {
-      lookup_map = topCmap._encode_noamp_map_;
-      noamp_rx   = topCmap._encode_noamp_rx_;
-    }
-    else {
-      lookup_map = topCmap._html_encode_map_;
-      noamp_rx   = topCmap._encode_html_rx_;
-    }
-    return source_str.replace(noamp_rx,
-      function ( match /*, name */ ) { return lookup_map[match] || __blank; }
-    );
-  }
-  // END Public method /encodeHtml/
 
   // BEGIN Public method /fillForm/
   function fillForm ( $form, value_map ) {
@@ -344,7 +309,6 @@ xhi._utilb_ = (function ( $ ) {
 
   return {
     _decodeHtml_     : decodeHtml,
-    _encodeHtml_     : encodeHtml,
     _fillForm_       : fillForm,
     _getFormMap_     : getFormMap,
     _makeOptionHtml_ : makeOptionHtml,

@@ -231,7 +231,7 @@ xhi._util_ = (function () {
     interm_str = interm_str[ vMap._trim_ ]();
     return interm_str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
   }
-  // END Public prereq method /scrubPctStr/
+  // END Public prereq method /makeScrubStr/
   // ====================== END PRIVATE METHODS =======================
 
   // ===================== BEGIN UTILITY METHODS ======================
@@ -389,6 +389,29 @@ xhi._util_ = (function () {
     return __jparse( __j2str( data ) );
   }
   // END Public prereq method /cloneData/
+
+  // BEGIN Public method /encodeHtml/
+  // This is single pass encoder for html entities and handles
+  // an arbitrary number of characters to encode
+  function encodeHtml ( arg_str, do_exclude_amp ) {
+    var
+      source_str = getStr( arg_str, __blank ),
+      match_fn, match_rx, lookup_map
+      ;
+
+    match_fn = function ( key ) { return lookup_map[ key ] || __blank; };
+    if ( do_exclude_amp ) {
+      lookup_map = topCmap._encode_noamp_map_;
+      match_rx   = topCmap._encode_noamp_rx_;
+    }
+    else {
+      lookup_map = topCmap._html_encode_map_;
+      match_rx   = topCmap._encode_html_rx_;
+    }
+
+    return source_str.replace( match_rx, match_fn );
+  }
+  // END Public method /encodeHtml/
 
   // BEGIN Public prereq method /getNumSign/
   // Purpose : Provided an argument, will attempt to convert it into
@@ -1450,8 +1473,18 @@ xhi._util_ = (function () {
       _min_ms_    : 60000,
       _hrs_ms_    : 3600000,
       _day_ms_    : 86400000,
-
       _offset_yr_ : 1900,
+
+      _encode_html_rx_  : /[&"'><]/g,
+      _encode_noamp_rx_ : /["'><]/g,
+      _encode_html_map_ : {
+        '&' : '&#38;',
+        '"' : '&#34;',
+        "'" : '&#39;',
+        '>' : '&#62;',
+        '<' : '&#60;'
+      },
+
       _comma_rx_  : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
       _tag_end_rx_: makeRxObj( '(</[^>]+>)+', 'g' ),
       _tag_rx_    : makeRxObj( '</?[^>]+>', 'g' ),
@@ -1485,6 +1518,8 @@ xhi._util_ = (function () {
         { _str_ : '1wk',   _ms_ : 86400000*7, _show_idx_ : __2 }
       ]
     };
+    topCmap._encode_noamp_map_ = cloneData(topCmap._encode_html_map_);
+    delete topCmap._encode_noamp_map_['&'];
   }
   initModule();
   // END initialize module
@@ -1501,6 +1536,7 @@ xhi._util_ = (function () {
 
     _clearMap_        : clearMap,
     _cloneData_       : cloneData,
+    _encode_html_     : encodeHtml,
     _getBasename_     : getBasename,
     _getDeepMapVal_   : getDeepMapVal,
     _getDirname_      : getDirname,
