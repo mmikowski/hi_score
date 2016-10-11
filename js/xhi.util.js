@@ -218,7 +218,7 @@ xhi._util_ = (function () {
   // Purpose   : Returns a date object singleton for use by Tz methods
   //
   function getTzDateObj () {
-    if ( ! topSmap._date_obj_) {
+    if ( ! topSmap._date_obj_ ) {
       topSmap._date_obj_ = new __Date();
     }
     return topSmap._date_obj_;
@@ -284,11 +284,11 @@ xhi._util_ = (function () {
     }
 
     function setLogLevel ( level_key ) {
-      if ( ! levelXIdxMap[ level_key ] ) { return __false; }
+      if ( ! levelXCmdMap[ level_key ] ) { return levelKey; }
 
       levelKey = level_key;
       levelIdx = levelXIdxMap[ level_key ];
-      return __true;
+      return levelKey;
     }
 
     function getLogLevel () {
@@ -370,20 +370,23 @@ xhi._util_ = (function () {
   // ===================== BEGIN PREREQ METHODS =======================
   // BEGIN Public prereq method /clearMap/
   function clearMap ( arg_map ) {
-    var key_list, key_count, idx, key;
+    var
+      input_map = getMap( arg_map ),
 
-    if ( getVarType( arg_map ) !== '_Object_' ) { return; }
+      key_list, key_count, idx, key;
 
-    key_list  = __keys( arg_map );
+    if ( ! input_map ) { return; }
+
+    key_list  = __keys( input_map );
     key_count = key_list[ __length ];
 
     for ( idx = __0; idx < key_count; idx++ ) {
       key = key_list[ idx ];
-      if ( arg_map[ vMap._hasOwnProp_ ]( key ) ) {
-        delete arg_map[ key ];
+      if ( input_map[ vMap._hasOwnProp_ ]( key ) ) {
+        delete input_map[ key ];
       }
     }
-    return arg_map;
+    return input_map;
   }
   // END Public prereq method /clearMap/
 
@@ -521,19 +524,20 @@ xhi._util_ = (function () {
       extend_map = getMap(  arg_extend_map, {} ),
       attr_list  = getList( arg_attr_list ),
 
-      tmp_map    = cloneData( extend_map ),
-      key_list   = __keys( tmp_map ),
+      clone_map  = cloneData( extend_map ),
+      key_list   = __keys( clone_map ),
       key_count  = key_list[ __length ],
 
-      idx, tmp_key
+      idx, key
       ;
 
-    for ( idx = __0; idx < key_count; idx++ ) {
-      tmp_key = key_list[ idx ];
-      if ( attr_list && attr_list[ vMap._indexOf_ ]( tmp_key ) !== __n1 ) {
+    KEY: for ( idx = __0; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
         logUtilObj._logIt_( '_warn_', '_key_not_supported_' );
+        continue KEY;
       }
-      base_map[ tmp_key ] = tmp_map[ tmp_key ];
+      base_map[ key ] = clone_map[ key ];
     }
     return base_map;
   }
@@ -602,18 +606,21 @@ xhi._util_ = (function () {
       }
       walk_map = walk_map[ key ];
     }
-    if ( is_good ) { return walk_map; }
     if ( idx === 100 ) {
       logUtilObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
+      is_good = __false;
     }
+    if ( is_good ) { return walk_map; }
     return __undef;
   }
   // END Public method /getDeepMapVal/
 
   // BEGIN Public method /getListAttrIdx/
-  function getListAttrIdx ( arg_map_list, key_name, key_val ) {
+  function getListAttrIdx ( arg_map_list, arg_key, data ) {
     var
-      map_list  = getList( arg_map_list, [] ),
+      map_list = getList( arg_map_list, [] ),
+      key      = getStr(  arg_key, __blank ),
+
       map_count = map_list[ __length ],
       found_idx  = __n1,
       idx, row_map
@@ -622,8 +629,8 @@ xhi._util_ = (function () {
     for ( idx = __0; idx < map_count; idx++ ) {
       row_map = map_list[ idx ];
       if ( __typeof( row_map ) !== 'object' ) { continue; }
-      if ( ! row_map[ vMap._hasOwnProp_ ]( key_name ) ) { continue; }
-      if ( row_map[ key_name ] === key_val ) {
+      if ( ! row_map[ vMap._hasOwnProp_ ]( key ) ) { continue; }
+      if ( row_map[ key ] === data ) {
         found_idx = idx;
         break;
       }
@@ -677,9 +684,12 @@ xhi._util_ = (function () {
   // END Public method /getlogUtilObj/
 
   // BEGIN Public method /getTzOffsetMs/
-  function getTzOffsetMs ( do_force ) {
-    var date_obj = getTzDateObj();
-    if ( ! topSmap._tz_offset_ms_ || do_force ) {
+  function getTzOffsetMs ( arg_do_recalc ) {
+    var
+      do_recalc = getBool( arg_do_recalc, __false ),
+      date_obj  = getTzDateObj();
+
+    if ( do_recalc || topSmap._tz_offset_ms_ === __undef ) {
       topSmap._tz_offset_ms_
         = date_obj.getTimezoneOffset() * topCmap._min_ms_;
     }
@@ -1056,11 +1066,12 @@ xhi._util_ = (function () {
   //    |   var
   //    |     name_list  = arg_list[ __0 ],
   //    |     field_key  = name_list[ idx ],
-  //    |     field_data = idx % 2;
+  //    |     field_str  = __Str( field_data )
+  //    |     ;
   //    |
   //    |   // Return [ key, value ] to add to map.
   //    |   // Return undef to not add anything.
-  //    |   return [ field_key, field_data ];
+  //    |   return [ field_key, field_str ];
   //    | }
   // 4. Set the function in the utility
   //    | map_util_obj._setMapFn_( mapUtil_renameFn );
@@ -1081,6 +1092,8 @@ xhi._util_ = (function () {
     var resultMap, argList, mapFn;
 
     function getArgList   (          ) { return argList;                  }
+    function getMapFn     (          ) { return mapFn;                    }
+    function getResultMap (          ) { return resultMap;                }
     function setArgList   ( arg_list ) { argList   = getList( arg_list ); }
     function setMapFn     ( map_fn   ) { mapFn     = getFn(   map_fn   ); }
     function setResultMap ( rmap     ) { resultMap = getMap(  rmap     ); }
@@ -1099,6 +1112,8 @@ xhi._util_ = (function () {
 
     return {
       _getArgList_   : getArgList,
+      _getMapFn_     : getMapFn,
+      _getResultMap_ : getResultMap,
       _setResultMap_ : setResultMap,
       _setArgList_   : setArgList,
       _setMapFn_     : setMapFn,
@@ -1154,13 +1169,14 @@ xhi._util_ = (function () {
   // into a single string
   function makeStrFromMap ( arg_map ) {
     var
-      prop_map  = getMap(  arg_map._prop_map_, {} ),
-      key_list  = getList( arg_map._key_list_, [] ),
-      delim_str = getStr( arg_map._delim_str_, ' ' ),
-      label_delim_str = getStr( arg_map._label_delim_str_, ': ' ),
-      label_map = getMap( arg_map._label_map_, __undef ),
+      input_map = getMap(  arg_map, {} ),
+      prop_map  = getMap(  input_map._prop_map_, {} ),
+      key_list  = getList( input_map._key_list_, [] ),
+      delim_str = getStr( input_map._delim_str_, ' ' ),
+      label_delim_str = getStr( input_map._label_delim_str_, ': ' ),
+      label_map = getMap( input_map._label_map_, __undef ),
 
-      do_label   = !! ( label_map || arg_map._do_label_ ),
+      do_label   = !! ( label_map || input_map._do_label_ ),
       key_count  = key_list[ __length ],
       solve_list = [],
 
@@ -1241,10 +1257,11 @@ xhi._util_ = (function () {
   //
   function makeSeriesMap( arg_map ) {
     var
-      tz_offset_ms = getInt( arg_map._tz_offset_ms_, __0 ),
-      max_ms       = getInt( arg_map._max_ms_ - tz_offset_ms, __0 ),
-      min_ms       = getInt( arg_map._min_ms_ - tz_offset_ms, __0 ),
-      tgt_count    = getInt( arg_map._tgt_count_ ),
+      input_map    = getMap( arg_map, {} ),
+      tz_offset_ms = getInt( input_map._tz_offset_ms_, __0 ),
+      max_ms       = getInt( input_map._max_ms_ - tz_offset_ms, __0 ),
+      min_ms       = getInt( input_map._min_ms_ - tz_offset_ms, __0 ),
+      tgt_count    = getInt( input_map._tgt_count_ ),
 
       date_obj     = new Date(),
       offset_str   = makeClockStr( tz_offset_ms ),
@@ -1384,12 +1401,12 @@ xhi._util_ = (function () {
       return getStr( return_data, __blank );
     }
 
-    function mainFn ( arg_data ) {
+    function mainFn ( arg_map ) {
       var
-        arg_map    = getMap( arg_data, {} ),
-        input_str  = getStr( arg_map._input_str_, __blank  ),
-        lookup_map = getMap( arg_map._lookup_map_,      {} ),
-        tmplt_rx   = arg_map._tmplt_rx_ || topCmap._tmplt_rx_,
+        input_map  = getMap( arg_map, {} ),
+        input_str  = getStr( input_map._input_str_, __blank  ),
+        lookup_map = getMap( input_map._lookup_map_,      {} ),
+        tmplt_rx   = input_map._tmplt_rx_ || topCmap._tmplt_rx_,
         bound_fn   = lookupFn.bind( lookup_map )
         ;
       return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );

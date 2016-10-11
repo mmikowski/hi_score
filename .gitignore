@@ -3,3 +3,6 @@
 *.swp
 npm-debug.log
 node_modules
+coverage
+js-cov
+.coveralls.yml

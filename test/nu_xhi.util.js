@@ -16,28 +16,8 @@
 //noinspection MagicNumberJS
 'use strict';
 
-require( '../js/xhi.js'      );
-require( '../js/xhi.util.js' );
-
 var
-  vMap = xhi._vMap_,
-  nMap = xhi._nMap_,
-
-  __util  = xhi._util_,
-  __blank = vMap._blank_,
-  __false = vMap._false_,
-  __null  = vMap._null_,
-  __Str   = vMap._String_,
-  __true  = vMap._true_,
-  __undef = vMap._undefined_,
-
-  __n1 = nMap._n1_,
-  __0  = nMap._0_,
-  __1  = nMap._1_,
-  __2  = nMap._2_,
-  __3  = nMap._3_,
-  __4  = nMap._4_,
-
+  root_dir = process.env.DO_COV ? '../js-cov/' : '../js/',
   nuFn = function () { console.log( 'nu:' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
@@ -45,14 +25,88 @@ var
     expect    : nuFn.bind( 'expect'    ),
     ok        : nuFn.bind( 'ok'        ),
     test      : nuFn.bind( 'test'      )
-  }
+  },
+  nMap, vMap, __Str, __blank, __false, __null, __true, __undef, __util,
+  __n1, __0, __1, __2, __3, __4
   ;
+
+require( root_dir + 'xhi.js'      );
+require( root_dir + 'xhi.util.js' );
+
+vMap = xhi._vMap_;
+nMap = xhi._nMap_;
+
+__util  = xhi._util_;
+__blank = vMap._blank_;
+__false = vMap._false_;
+__null  = vMap._null_;
+__Str   = vMap._String_;
+__true  = vMap._true_;
+__undef = vMap._undefined_;
+
+__n1 = nMap._n1_;
+__0  = nMap._0_;
+__1  = nMap._1_;
+__2  = nMap._2_;
+__3  = nMap._3_;
+__4  = nMap._4_;
+
 // ================== END MODULE SCOPE VARIABLES ====================
 
 // ==================== BEGIN UTILITY METHODS =======================
 // ===================== END UTILITY METHODS ========================
 
 // ================ BEGIN NODEUNIT TEST FUNCTIONS ===================
+function setLogLevel ( test_obj ) {
+  var
+    assert_list = [
+      [ [ ],                         '_warn_'  ],
+      [ [ __null ],                  '_warn_'  ],
+      [ [ __undef ],                 '_warn_'  ],
+      [ [ '_emerg_' ],               '_emerg_' ],
+      [ [ ],                         '_emerg_' ],
+      [ [ __null ],                  '_emerg_' ],
+      [ [ __undef ],                 '_emerg_' ],
+      [ [ 'str', {}, 29 ],           '_emerg_' ],
+      [ [ '_crit_', __false ],       '_crit_'  ],
+      [ [ '_error_', 'betty' ],      '_error_' ],
+      [ [ '_warn_', 3e6, 'string' ], '_warn_'  ],
+      [ [ 0, 3e6, 'string' ],        '_warn_'  ],
+      [ [ ],                         '_warn_'  ],
+      [ [ '_notice_' ],             '_notice_' ],
+      [ [ '_info_' ],                 '_info_' ],
+      [ [ '_debug_' ],               '_debug_' ],
+      [ [ __undef ],                 '_debug_' ],
+      [ [ '_error_' ],               '_error_' ]
+    ],
+
+    assert_count = assert_list.length,
+    log_obj      = __util._getLogUtilObj_(),
+
+    idx,        expect_list, arg_list,
+    expect_str, solve_str,   msg_str
+    ;
+
+  test_obj.expect( assert_count * __2 + __2 );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list   = expect_list[ __0 ];
+    expect_str = expect_list[ __1 ];
+    solve_str = log_obj._setLogLevel_.apply( __undef, arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: '
+      + JSON.stringify( solve_str )
+      + '\n expect_str: ' + JSON.stringify( expect_str );
+    test_obj.ok( solve_str === expect_str, msg_str );
+    test_obj.ok( log_obj._getLogLevel_() === expect_str, msg_str );
+  }
+  log_obj._logIt_( 'bodus', '_this_should_default_to_error_' );
+  test_obj.ok( log_obj._logIt_( 'bodus' ) === __false, 'no log on 1 arg' );
+  test_obj.ok( log_obj._logIt_() === __false, 'no log on 0 arg' );
+
+  test_obj.done();
+}
+
 function clearMap( test_obj ) {
   //noinspection JSUnusedGlobalSymbols
   var
@@ -235,24 +289,41 @@ function getDeepMapVal ( test_obj ) {
   var
     deep_map_0   = { foo : { bar : __1 } },
     deep_map_1   = { bing : { bang : 'string' }, list : [ __1, __2 ] },
+    deepest_map  = {},
+    deepest_list = [],
     assert_list  = [
       // [ arg_list, expect_data ]
       [ [ __null,  [ 'foo', 'bar' ] ], __undef ],
       [ [ __undef, [ 'foo', 'bar' ] ], __undef ],
       [ [ 'foofy', [ 'foo', 'bar' ] ], __undef ],
+      [ [ deep_map_0, [ 'foo', 'chaz_bono' ] ], __undef ],
       [ [ deep_map_0, [ 'foo', 'bar' ] ], __1 ],
       [ [ deep_map_0, [ 'foo' ] ], deep_map_0.foo ],
       [ [ deep_map_0, [] ], deep_map_0 ],
       [ [ deep_map_1, [ 'bing' ] ], deep_map_1.bing ],
       [ [ deep_map_1, [ 'bing', 'bang' ] ], 'string' ],
       [ [ deep_map_1, [ 'list'] ], deep_map_1.list  ],
-      [ [ deep_map_1, [] ], deep_map_1 ]
+      [ [ deep_map_1, [] ], deep_map_1 ],
+      [ [ deepest_map, deepest_list ], __undef ]
     ],
     assert_count = assert_list.length,
     deep_fn      = __util._getDeepMapVal_,
 
-    idx, expect_list, arg_list, expect_data, solve_data, msg_str
+    idx,         expect_list, arg_list,
+    expect_data, solve_data,  msg_str,
+    walk_map,    walk_key
     ;
+
+
+  // Load up very deep map to test recursion limits
+  walk_map = deepest_map;
+  for ( idx = __0; idx < 102; idx++ ) {
+    walk_key = 'foo' + __Str( idx );
+    deepest_list[ vMap._push_ ]( walk_key );
+
+    walk_map[ walk_key ] = {};
+    walk_map = walk_map[ walk_key ];
+  }
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
@@ -461,6 +532,54 @@ function getNumSign ( test_obj ) {
       + __Str( solve_int ) + ' === ' + __Str( expect_int );
 
     test_obj.ok( solve_int === expect_int, msg_str );
+  }
+  test_obj.done();
+}
+
+function getTzCode ( test_obj ) {
+  var tz_code = __util._getTzCode_();
+  test_obj.expect( __1 );
+
+  test_obj.ok( tz_code.match( /^[A-Z]+$/ ),
+    'Code looks good'
+  );
+  test_obj.done();
+}
+
+function getTzOffsetMs ( test_obj ) {
+  var
+    assert_list  = [
+      // [ arg_list, expect_data ]
+      [],
+      [ __0       ],
+      [ __true    ],
+      [ __false   ],
+      [ __n1      ],
+      [ 25        ],
+      [ 3.28e24   ],
+      [ -4562     ],
+      [ -0.000001 ],
+      [ 2e5 - 2e4 ],
+      [ 2e4 - 2e5 ],
+      [ 'fred'    ]
+    ],
+
+    assert_count  = assert_list.length,
+    get_offset_fn = __util._getTzOffsetMs_,
+
+    idx,        arg_list,
+    solve_int,    msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    arg_list  = assert_list[ idx ];
+
+    solve_int = get_offset_fn.apply( __undef, arg_list );
+    msg_str    = __Str( idx ) + '. '
+      + __Str( solve_int ) + ' === /^\\d\\d*$/';
+
+    test_obj.ok( __Str(solve_int).match( /^\d\d*$/ ), msg_str );
   }
   test_obj.done();
 }
@@ -916,6 +1035,36 @@ function makeGuidStr( test_obj ) {
 
   test_obj.done();
 }
+function makeMapUtilObj( test_obj ) {
+  var
+    map_util_obj = __util._makeMapUtilObj_(),
+    arg_list = [ [ 'cows', 'donkeys', 'sheep' ] ],
+    map_fn   = function ( field_data, idx, list, arg_list ) {
+      var
+        name_list  = arg_list[  __0 ],
+        field_key  = name_list[ idx ],
+        field_str  = String( field_data )
+        ;
+      if ( field_key ) {
+        return [ field_key, field_str ];
+      }
+    },
+    result_map = {}
+    ;
+
+  test_obj.expect( __3 );
+
+  map_util_obj._setArgList_(     arg_list );
+  map_util_obj._setMapFn_(         map_fn );
+  map_util_obj._setResultMap_( result_map );
+
+  test_obj.deepEqual( map_util_obj._getArgList_(),   arg_list,   'check' );
+  test_obj.deepEqual( map_util_obj._getMapFn_(),     map_fn,     'check' );
+  test_obj.deepEqual( map_util_obj._getResultMap_(), result_map, 'check' );
+
+  test_obj.done();
+}
+
 function makePadNumStr( test_obj ) {
   var
     assert_list  = [
@@ -1588,6 +1737,8 @@ function mergeMaps ( test_obj ) {
     out1_map  = { attr1 : 'val1', attr2  : 'val2', list : [] },
     out2_map  = { attr3 : 10, attr4 : 20, list : [] },
     out3_map  = { attr1 : 'val1', attr2 : 'val2' },
+    out4_map  = { attr1 : 'val1', attr2 : 'val2', attr3 : 10 },
+
     attr0_list  = [ 'attr3' ],
     assert_list = [
       // [ arg_list, expect_data ]
@@ -1614,7 +1765,8 @@ function mergeMaps ( test_obj ) {
       [ [ __0,'fred',__null ], {} ],
       [ [ base0_map, 'fred',__null ], base0_map ],
       [ [ base0_map,__undef, attr0_list ], base0_map ],
-      [ [ base0_map,__undef,'fred' ], base0_map ]
+      [ [ base0_map,__undef,'fred' ], base0_map ],
+      [ [ base0_map, base1_map, attr0_list ], out4_map ]
     ],
 
     assert_count  = assert_list.length,
@@ -1814,6 +1966,7 @@ function setDeepMapVal ( test_obj ) {
 // 3. Inspect the output
 
 module.exports = {
+  _setLogLevel_     : setLogLevel,
   _clearMap_        : clearMap,
   _cloneData_       : cloneData,
   _encodeHtml_      : encodeHtml,
@@ -1824,6 +1977,8 @@ module.exports = {
   _getListValCount_ : getListValCount,
   _getNowMs_        : getNowMs,
   _getNumSign_      : getNumSign,
+  _getTzCode_       : getTzCode,
+  _getTzOffsetMs_   : getTzOffsetMs,
   _getVarType_      : getVarType,
   _makeArgList_     : makeArgList,
   _makeClockStr_    : makeClockStr,
@@ -1832,6 +1987,7 @@ module.exports = {
   _makeEllipsisStr_ : makeEllipsisStr,
   _makeErrorObj_    : makeErrorObj,
   _makeGuidStr_     : makeGuidStr,
+  _makeMapUtilObj_  : makeMapUtilObj,
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
   _makeScrubStr_    : makeScrubStr,
