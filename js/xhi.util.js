@@ -679,6 +679,22 @@ xhi._util_ = (function () {
   }
   // END Public method /getListDiff/
 
+  // BEGIN Public method /getListValCount/
+  function getListValCount ( arg_list, arg_data ) {
+    var
+      input_list  = getList( arg_list, [] ),
+      input_count = input_list[ __length ],
+      match_count = __0,
+      idx;
+
+    for ( idx = input_count; idx; __0 ) {
+      //noinspection IncrementDecrementResultUsedJS
+      if ( input_list[ --idx ] === arg_data ) { match_count++; }
+    }
+    return match_count;
+  }
+  // END Public method /getListValCount/
+
   // BEGIN Public method /getLogUtilObj/
   function getLogUtilObj () { return logUtilObj; }
   // END Public method /getlogUtilObj/
@@ -1011,45 +1027,6 @@ xhi._util_ = (function () {
     return mainFn;
   }());
   // END Public method /makeGuidStr/
-
-  function getListValCount ( arg_list, arg_data ) {
-    var
-      input_list  = getList( arg_list, [] ),
-      input_count = input_list[ __length ],
-      match_count = __0,
-      idx;
-
-    for ( idx = input_count; idx; __0 ) {
-      //noinspection IncrementDecrementResultUsedJS
-      if ( input_list[ --idx ] === arg_data ) { match_count++; }
-    }
-    return match_count;
-  }
-
-  function rmListVal ( arg_list, arg_data ) {
-    var
-      input_list   = getList( arg_list, [] ),
-      input_count  = input_list[ __length ],
-      rm_count     = __0,
-      idx;
-
-    for ( idx = input_count; idx; __0 ) {
-      //noinspection IncrementDecrementResultUsedJS
-      if ( input_list[ --idx ] === arg_data ) {
-        input_list[ vMap._splice_ ]( idx, __1 );
-        rm_count++;
-        idx++;
-      }
-    }
-    return rm_count;
-  }
-
-  function pushUniqListVal ( arg_list, data ) {
-    var input_list = getList( arg_list, [] );
-    if ( input_list[ vMap._indexOf_ ]( data ) === __n1 ) {
-      input_list[ __push ]( data );
-    }
-  }
 
   // BEGIN Public method /makeMapUtilObj/
   // Purpose: Creates a thread-safe map utility object
@@ -1462,6 +1439,36 @@ xhi._util_ = (function () {
     do_fn();
   }
   // END Public method /pollFunction/
+
+  // BEGIN Public method /pushUniqListVal/
+  function pushUniqListVal ( arg_list, data ) {
+    var input_list = getList( arg_list, [] );
+    if ( input_list[ vMap._indexOf_ ]( data ) === __n1 ) {
+      input_list[ __push ]( data );
+    }
+  }
+  // END Public method /pushUniqListVal/
+
+  // BEGIN Public method /rmListVal/
+  function rmListVal ( arg_list, arg_data ) {
+    var
+      input_list   = getList( arg_list, [] ),
+      input_count  = input_list[ __length ],
+      rm_count     = __0,
+      idx;
+
+    for ( idx = input_count; idx; __0 ) {
+      //noinspection IncrementDecrementResultUsedJS
+      if ( input_list[ --idx ] === arg_data ) {
+        input_list[ vMap._splice_ ]( idx, __1 );
+        rm_count++;
+        idx++;
+      }
+    }
+    return rm_count;
+  }
+  // END Public method /rmUniqListVal/
+
 
   // BEGIN Public method /setDeepMapVal/
   // Purpose   : Set a deep map attribute value
