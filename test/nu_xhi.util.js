@@ -134,6 +134,61 @@ function cloneData( test_obj ) {
   test_obj.done();
 }
 
+function encodeHtml ( test_obj ) {
+  var
+    assert_list  = [
+      // [ arg_map, expect_str ]
+      [ [],            __blank ],
+      [ [ __null ],    __blank ],
+      [ [ __undef ],   __blank ],
+      [ [ 'fred'  ],   'fred'  ],
+      [ [1,2,3,4],     '1'     ],
+      [ [ "<h1>'Help me!'</h1> she said." ],
+        '&#60;h1&#62;&#39;Help me!&#39;&#60;/h1&#62; she said.'
+      ],
+      [ [ "<h1>'Help me!'</h1> & fast!" ],
+        '&#60;h1&#62;&#39;Help me!&#39;&#60;/h1&#62; &#38; fast!'
+      ],
+      [ [ "<h1>'Help me!'</h1> & fast!", __false ],
+        '&#60;h1&#62;&#39;Help me!&#39;&#60;/h1&#62; &#38; fast!'
+      ],
+      [ [ "<h1>'Help me!'</h1> & fast!", __true ],
+        '&#60;h1&#62;&#39;Help me!&#39;&#60;/h1&#62; & fast!'
+      ],
+  [ [ '<p>"And so began, ...",'
+          + " she 'said' with her eyes & mouth...</p>" ],
+        '&#60;p&#62;&#34;And so began, ...&#34;,'
+        + " she &#39;said&#39; with her eyes &#38; mouth..."
+        + '&#60;/p&#62;'
+      ],
+      [ [ '<p>"And so began, ...",'
+      + " she 'said' with her eyes & mouth...</p>", __true ],
+        '&#60;p&#62;&#34;And so began, ...&#34;,'
+        + " she &#39;said&#39; with her eyes & mouth..."
+        + '&#60;/p&#62;'
+      ],
+      [ [ '& start and end &', __false ], '&#38; start and end &#38;' ],
+      [ [ '& start and end &', __true ], '& start and end &' ]
+    ],
+
+    assert_count = assert_list.length,
+    encode_fn    = __util._encodeHtml_,
+
+    idx, expect_list, arg_list, expect_str, solve_str, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str   = encode_fn[ vMap._apply_ ]( __undef, arg_list );
+    msg_str     = __Str( idx ) + '. ' + solve_str + ' === ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
 function getBasename ( test_obj ) {
   var
     assert_list = [
@@ -271,8 +326,8 @@ function getListAttrIdx ( test_obj ) {
 
 function getListDiff ( test_obj ) {
   var
-    map_01  = { boo: 'bob' },
-    map_02  = { boo: 'bob' },
+    map_01  = { boo: 'bob'   },
+    map_02  = { bar: 'frank' },
 
     list_01 = [ 1, 2, 3, 4 ],
     list_02 = [ 'fred', 1, 2, 3, 4 ],
@@ -293,7 +348,7 @@ function getListDiff ( test_obj ) {
       [ [ list_05, list_06 ], [ 1,2,3,4 ] ],
       [ [ list_06, list_07 ], [ map_01, map_02] ],
       [ [ list_07, list_08 ], [ 1,2,3 ] ],
-      [ [ list_08, list_09 ], [ map_01, map_02 ] ],
+      [ [ list_08, list_09 ], [ map_02, map_01 ] ],
       [ [ list_09, list_09 ], [] ]
     ],
 
@@ -309,6 +364,50 @@ function getListDiff ( test_obj ) {
     arg_list     = expect_list[ __0 ];
     expect_data  = expect_list[ __1 ];
     solve_data = get_diff_fn.apply( __undef, arg_list );
+    msg_str    = __Str( idx ) + '. '
+      + JSON.stringify( solve_data ) + ' <===> '
+      + JSON.stringify( expect_data );
+
+    test_obj.deepEqual( solve_data, expect_data, msg_str );
+  }
+  test_obj.done();
+}
+
+function getListValCount ( test_obj ) {
+  var
+    map_01  = { boo: 'bob'   },
+    map_02  = { bar: 'frank' },
+
+    list_01 = [ 1, 2, 1, 4, 'dog' ],
+    list_02 = [ 'fred', 1, 2, 3, 4, 'fred' ],
+    list_03 = [ __null, __null, 3, map_01, __null, map_01 ],
+    assert_list  = [
+      // [ arg_list, expect_data ]
+      [ [], __0  ],
+      [ [ list_01 ], __0 ],
+      [ [ list_01, 'cow' ],   __0 ],
+      [ [ list_01, __1   ],   __2 ],
+      [ [ list_01, 'dog' ],   __1 ],
+      [ [ list_02, __undef ], __0 ],
+      [ [ list_02, 'fred' ],  __2 ],
+      [ [ list_03, __null ],  __3 ],
+      [ [ list_03, map_01 ],  __2 ],
+      [ [ list_03, map_02 ],  __0 ]
+    ],
+
+    assert_count = assert_list.length,
+    get_count_fn = __util._getListValCount_,
+
+    idx,          expect_list,   arg_list,
+    expect_data,  solve_data,    msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_data  = expect_list[ __1 ];
+    solve_data = get_count_fn.apply( __undef, arg_list );
     msg_str    = __Str( idx ) + '. '
       + JSON.stringify( solve_data ) + ' <===> '
       + JSON.stringify( expect_data );
@@ -377,7 +476,7 @@ function getVarType( test_obj ) {
 
     bool1 = __true,
     list1 = [ 'a','b','c' ],
-    null1 = null,
+    null1 = __null,
     num1  = 25,
     str1  = 'cde',
     obj1  = { length : 12 },
@@ -581,6 +680,8 @@ function makeDateStr( test_obj ) {
     date_obj     = new Date(),
     assert_list  = [
       // [ arg_map, expect_data ]
+      [ __null, __blank ],
+      [ { foo : '_bar_' }, __blank ],
       [ { _date_ms_ : 1474323404010 }, '2016-09-19' ],
       [ { _date_ms_ : 1474323404020, _do_time_ : __false },
         '2016-09-19' ],
@@ -1289,8 +1390,8 @@ function makeStrFromMap( test_obj ) {
     },
     prop01_list = Object.keys( prop01_map ),
     prop02_list = Object.keys( prop02_map ),
-    prop01a_list = [ '_name_', '_missing_', __undef, null, {} ],
-    prop02a_list = [ {}, null, __undef, '_first_name_', '_unseen_', '_age_num_' ],
+    prop01a_list = [ '_name_', '_missing_', __undef, __null, {} ],
+    prop02a_list = [ {}, __null, __undef, '_first_name_', '_unseen_', '_age_num_' ],
     label01_map = { _name_ : 'Name', _state_code_ : 'State Code',
       _country_code_ : 'Country Code'
     },
@@ -1384,7 +1485,7 @@ function makeTmpltStr ( test_obj ) {
     assert_list  = [
       // [ arg_map, expect_str ]
       [ [],        __blank ],
-      [ null,      __blank ],
+      [ __null,    __blank ],
       [ __undef,   __blank ],
       [ 'fred',    __blank ],
       [ [1,2,3,4], __blank ],
@@ -1449,7 +1550,7 @@ function makeUcFirstStr ( test_obj ) {
     assert_list  = [
       // [ arg_map, expect_str ]
       [ [],        __blank ],
-      [ null,      __blank ],
+      [ __null,    __blank ],
       [ __undef,   __blank ],
       [ 'fred',    'Fred'  ],
       [ [1,2,3,4], __blank ],
@@ -1538,6 +1639,116 @@ function mergeMaps ( test_obj ) {
   test_obj.done();
 }
 
+function pushUniqListVal ( test_obj ) {
+  var
+    base0_map  = { attr1 : 'val1', attr2 : 'val2' },
+    base0_list = [ 'ding', __undef ],
+    assert_list  = [
+      [ [], [] ],
+      [ [ 1, 2, 1, 4, 'dog' ], [ 1,2,4,'dog' ] ],
+      [ [ 3, 8, 'dog', 3, 'dog', __null ], [ 3,8,'dog',__null ] ],
+      [ [ __true, __true, __0, __false, __true ],
+        [ __true, __0, __false ] ],
+      [ [ __undef, __true, __0, __null, 'bob' ],
+        [ __undef, __true, __0, __null, 'bob' ] ],
+      [ [ 'patch', base0_map, __1, base0_map, base0_list, base0_list ],
+        [ 'patch', base0_map, __1, base0_list ] ],
+      [ [ 'string', 1.23456, -467.88, 0, 'string', 1.23456, -467.88, 0 ],
+        [ 'string', 1.23456, -467.88, 0 ]
+      ],
+      [ [ __null  ], [ __null  ] ],
+      [ [ __undef ], [ __undef ] ]
+    ],
+
+    assert_count = assert_list.length,
+    push_uniq_fn = __util._pushUniqListVal_,
+
+    idx, jdx,     val_list,     val_count,
+    expect_list,  expect_data,  solve_list,
+    push_val,     msg_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_list[ idx ];
+    val_list     = expect_list[ __0 ];
+    expect_data  = expect_list[ __1 ];
+    val_count    = val_list.length;
+    solve_list   = [];
+
+    for ( jdx = __0; jdx < val_count; jdx++ ) {
+      push_val = val_list[ jdx ];
+      push_uniq_fn( solve_list, push_val );
+    }
+
+    msg_str    = __Str( idx ) + '. '
+      + JSON.stringify( solve_list  ) + ' <===> '
+      + JSON.stringify( expect_data );
+
+    test_obj.deepEqual( solve_list, expect_data, msg_str );
+  }
+  test_obj.done();
+}
+
+function rmListVal ( test_obj ) {
+  var
+    base0_map  = { attr1 : 'val1', attr2 : 'val2' },
+    base0_list = [ 'ding', __undef ],
+    test0_list = [
+      'string', 1.23456, -467.88, 0, 'string', 1.23456, -467.88,
+      base0_map, base0_list, base0_map, base0_list
+    ],
+    expect0_list = [
+      'string', 1.23456, -467.88, 0, 'string', 1.23456, -467.88,
+      base0_list, base0_list
+    ],
+    expect1_list = [
+      'string', 1.23456, -467.88, 0, 'string', 1.23456, -467.88 ],
+    expect2_list = [ 1.23456, -467.88, 0, 1.23456, -467.88 ],
+    expect3_list = [ 1.23456, -467.88, 1.23456, -467.88 ],
+    assert_list  = [
+      [ [],          __undef, __0 ],
+      [ [ __undef ], __undef, __0 ],
+      [ [ __null  ], __undef, __0 ],
+      [ [ __true  ], __undef, __0 ],
+      [ [ test0_list ], test0_list, __0 ],
+      [ [ test0_list, base0_map  ], expect0_list, __2 ],
+      [ [ test0_list, base0_list ], expect1_list, __2 ],
+      [ [ test0_list, 'string'   ], expect2_list, __2 ],
+      [ [ test0_list, 'fetzer'   ], expect2_list, __0 ],
+      [ [ test0_list, '0'        ], expect2_list, __0 ],
+      [ [ test0_list, __0        ], expect3_list, __1 ]
+    ],
+
+    assert_count = assert_list.length,
+    rm_val_fn    = __util._rmListVal_,
+
+    idx,          expect_list,  arg_list,
+    expect_data,  expect_count, solve_list,
+    solve_count,  msg_str
+    ;
+
+  test_obj.expect( assert_count  * __2 );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_data  = expect_list[ __1 ];
+    expect_count = expect_list[ __2 ];
+
+    solve_list = ( arg_list[ __0 ] && Array.isArray( arg_list[ __0 ] ) )
+      ? arg_list[ __0 ] : __undef;
+    solve_count = rm_val_fn.apply( __undef, arg_list );
+
+    msg_str    = __Str( idx ) + '. '
+      + JSON.stringify( solve_list  ) + ' <===> '
+      + JSON.stringify( expect_data );
+
+    test_obj.deepEqual( solve_list,  expect_data,  msg_str );
+    test_obj.deepEqual( solve_count, expect_count, msg_str );
+  }
+  test_obj.done();
+}
+
 function pollFunction ( test_obj ) {
   var
     test_list = [],
@@ -1605,10 +1816,12 @@ function setDeepMapVal ( test_obj ) {
 module.exports = {
   _clearMap_        : clearMap,
   _cloneData_       : cloneData,
+  _encodeHtml_      : encodeHtml,
   _getBasename_     : getBasename,     // Includes getDirname
   _getDeepMapVal_   : getDeepMapVal,
   _getListAttrIdx_  : getListAttrIdx,  // Include getListAttrMap
   _getListDiff_     : getListDiff,
+  _getListValCount_ : getListValCount,
   _getNowMs_        : getNowMs,
   _getNumSign_      : getNumSign,
   _getVarType_      : getVarType,
@@ -1629,5 +1842,7 @@ module.exports = {
   _makeUcFirstStr_  : makeUcFirstStr,
   _mergeMaps_       : mergeMaps,
   _pollFunction_    : pollFunction,
+  _pushUniqListVal_ : pushUniqListVal,
+  _rmListVal_       : rmListVal,
   _setDeepMapVal_   : setDeepMapVal
 };

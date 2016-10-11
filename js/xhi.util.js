@@ -106,11 +106,17 @@ xhi._util_ = (function () {
   // END Public prereq method /getVarType/
 
   // BEGIN Public prereq method /getBool/
-  // Purpose   : Returns a boolean, always
-  //   If data is false or falsey, returns false
-  //   Otherwise returns true.
+  // Purpose   : Returns a boolean.  If the value is undef
+  //   AND a alternate value is provided, returns the alternate
+  //   value.
   //
-  function getBool ( data ) { return !! data; }
+  function getBool( data, alt_data ) {
+    if ( arguments[ __length ] >= __2 ) {
+      if ( data === __true || data === __false ) { return data; }
+      return alt_data;
+    }
+    return !! data;
+  }
   // END Public prereq method /getBool/
 
   // BEGIN Public prereq method /getFn/
@@ -391,23 +397,39 @@ xhi._util_ = (function () {
   // END Public prereq method /cloneData/
 
   // BEGIN Public method /encodeHtml/
-  // This is single pass encoder for html entities and handles
-  // an arbitrary number of characters to encode
-  function encodeHtml ( arg_str, do_exclude_amp ) {
+  // Purpose : This is single pass encoder for html entities and handles
+  //   an arbitrary number of characters to encode.
+  // Examples:
+  //   | str = encodeHtml( "<h1>'Help me!'</h1> she said" );
+  //   | console.log( str );
+  //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; she said.'
+  //
+  //   | str = encodeHtml( "<h1>'Help me!'</h1> & fast!", false );
+  //   | console.log( str );
+  //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; &amp; fast!'
+  //
+  //   | str = encodeHtml( "<h1>'Help me!'</h1> & fast!", true );
+  //   | console.log( str );
+  //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; & fast!'
+  //
+  // Arguments (positional)
+  //   0 - arg_str (req) : The HTML string to encode
+  //   1 - arg_do_exclude_amp (opt, default = false ) : Exclude ampersands
+  //       from encoding.
+  //
+  function encodeHtml ( arg_str, arg_do_exclude_amp ) {
     var
-      source_str = getStr( arg_str, __blank ),
+      source_str     = getStr(  arg_str, __blank   ),
+      do_exclude_amp = getBool( arg_do_exclude_amp ),
+
       match_fn, match_rx, lookup_map
       ;
 
     match_fn = function ( key ) { return lookup_map[ key ] || __blank; };
-    if ( do_exclude_amp ) {
-      lookup_map = topCmap._encode_noamp_map_;
-      match_rx   = topCmap._encode_noamp_rx_;
-    }
-    else {
-      lookup_map = topCmap._html_encode_map_;
-      match_rx   = topCmap._encode_html_rx_;
-    }
+
+    lookup_map = topCmap._encode_html_map_;
+    match_rx   = do_exclude_amp
+      ? topCmap._encode_noamp_rx_ : topCmap._encode_html_rx_;
 
     return source_str.replace( match_rx, match_fn );
   }
@@ -771,11 +793,12 @@ xhi._util_ = (function () {
   // Example: str =
   function makeCommaNumStr ( arg_map ) {
     var
-      input_num       = getNum( arg_map._input_num_, __0 ),
-      round_limit_exp = getInt( arg_map._round_limit_exp_, __3 ),
-      round_unit_exp  = getInt( arg_map._round_unit_exp_,  __3 ),
-      round_unit_str  = getStr( arg_map._round_unit_str_,  'k' ),
-      round_dec_count = arg_map._round_dec_count_  || __1,
+      input_map       = getMap( arg_map, {} ),
+      input_num       = getNum( input_map._input_num_, __0 ),
+      round_limit_exp = getInt( input_map._round_limit_exp_, __3 ),
+      round_unit_exp  = getInt( input_map._round_unit_exp_,  __3 ),
+      round_unit_str  = getStr( input_map._round_unit_str_,  'k' ),
+      round_dec_count = input_map._round_dec_count_  || __1,
 
       round_limit_num = vMap._Math_.pow( __10, round_limit_exp  ),
       round_unit_num  = vMap._Math_.pow( __10, round_unit_exp   ),
@@ -802,7 +825,6 @@ xhi._util_ = (function () {
       solve_list[ idx ] = solve_list[ idx ][
         vMap._replace_ ]( topCmap._comma_rx_, "$1," );
     }
-
     return solve_list[ vMap._join_]('.') + solve_suffix;
   }
   // END Public method /makeCommaNumStr/
@@ -829,16 +851,17 @@ xhi._util_ = (function () {
   //
   function makeDateStr ( arg_map ) {
     var
-      mns      = makePadNumStr,
-      do_time  = getBool( arg_map._do_time_ ),
-      date_ms  = getInt( arg_map._date_ms_, __undef ),
-      date_obj = getObjType( 'Date', arg_map._date_obj_ ),
+      input_map = getMap(  arg_map, {} ),
+      do_time   = getBool( input_map._do_time_, __false ),
+      date_ms   = getInt(  input_map._date_ms_, __undef ),
 
-      yrs_int, mon_int, day_int,
-      hrs_int, min_int, sec_int,
+      date_obj  = getObjType( 'Date', input_map._date_obj_ ),
+      mns       = makePadNumStr,
 
-      date_list, date_str,
-      time_list, time_str
+      yrs_int,   mon_int,   day_int,
+      hrs_int,   min_int,   sec_int,
+      date_list, date_str,  time_list,
+      time_str
       ;
 
     if ( date_ms ) {
@@ -897,20 +920,20 @@ xhi._util_ = (function () {
   //
   function makeEllipsisStr( arg_map ) {
     var
-      scrub_str       = makeScrubStr( arg_map._input_str_, __false ),
-      char_limit_int  = getInt( arg_map._char_limit_int_, __0 ),
-      do_word_break   = ( arg_map[ vMap._hasOwnProp_ ]( '_do_word_break_' ) )
-        ? ( !! arg_map._do_word_break_ ) : __true,
-      scrub_count     = scrub_str[ __length ],
+      input_map     = getMap( arg_map, {} ),
+      scrub_str     = makeScrubStr( input_map._input_str_, __false ),
+      limit_int     = getInt(  input_map._char_limit_int_,     __0 ),
+      do_word_break = getBool( input_map._do_word_break_,   __true ),
+      scrub_count   = scrub_str[ __length ],
 
       word_list,   word_count,
       solve_count, solve_list,
       idx,         solve_word
       ;
 
-    if ( ! ( char_limit_int && char_limit_int > __3 ) ) { return __blank; }
+    if ( ! ( limit_int && limit_int > __3 ) ) { return __blank; }
 
-    if ( scrub_count <= char_limit_int ) { return scrub_str; }
+    if ( scrub_count <= limit_int ) { return scrub_str; }
 
     if ( do_word_break ) {
       word_list   = scrub_str[ vMap._split_ ]( ' ' );
@@ -921,7 +944,7 @@ xhi._util_ = (function () {
       WORD: for ( idx = __0; idx < word_count; idx++ ) {
         solve_word  = word_list[ idx ];
         solve_count += solve_word[ __length ] + __1;
-        if ( solve_count >= char_limit_int - __3 ) {
+        if ( solve_count >= limit_int - __3 ) {
           solve_list[ vMap._push_ ]( '...' );
           break WORD;
         }
@@ -930,7 +953,7 @@ xhi._util_ = (function () {
       return __blank + solve_list[ vMap._join_ ]( ' ' );
     }
 
-    return scrub_str.substr(__0, char_limit_int - __3 ) + '...';
+    return scrub_str.substr(__0, limit_int - __3 ) + '...';
   }
   // END Public method /makeEllipsisStr/
 
@@ -993,28 +1016,28 @@ xhi._util_ = (function () {
     return match_count;
   }
 
-  function removeListVal ( arg_list, arg_data ) {
+  function rmListVal ( arg_list, arg_data ) {
     var
       input_list   = getList( arg_list, [] ),
       input_count  = input_list[ __length ],
-      remove_count = __0,
+      rm_count     = __0,
       idx;
 
     for ( idx = input_count; idx; __0 ) {
       //noinspection IncrementDecrementResultUsedJS
       if ( input_list[ --idx ] === arg_data ) {
         input_list[ vMap._splice_ ]( idx, __1 );
-        remove_count++;
+        rm_count++;
         idx++;
       }
     }
-    return remove_count;
+    return rm_count;
   }
 
-  function pushUniqListVal ( arg_list, arg_data ) {
-    var input_list   = getList( arg_list, [] );
-    if ( input_list[ vMap._indexOf_ ]( arg_data ) === __n1 ) {
-      input_list[ __push ]( arg_data );
+  function pushUniqListVal ( arg_list, data ) {
+    var input_list = getList( arg_list, [] );
+    if ( input_list[ vMap._indexOf_ ]( data ) === __n1 ) {
+      input_list[ __push ]( data );
     }
   }
 
@@ -1518,8 +1541,6 @@ xhi._util_ = (function () {
         { _str_ : '1wk',   _ms_ : 86400000*7, _show_idx_ : __2 }
       ]
     };
-    topCmap._encode_noamp_map_ = cloneData(topCmap._encode_html_map_);
-    delete topCmap._encode_noamp_map_['&'];
   }
   initModule();
   // END initialize module
@@ -1536,7 +1557,7 @@ xhi._util_ = (function () {
 
     _clearMap_        : clearMap,
     _cloneData_       : cloneData,
-    _encode_html_     : encodeHtml,
+    _encodeHtml_      : encodeHtml,
     _getBasename_     : getBasename,
     _getDeepMapVal_   : getDeepMapVal,
     _getDirname_      : getDirname,
@@ -1570,7 +1591,7 @@ xhi._util_ = (function () {
     _mergeMaps_       : mergeMaps,
     _pollFunction_    : pollFunction,
     _pushUniqListVal_ : pushUniqListVal,
-    _rmListVal_       : removeListVal,
+    _rmListVal_       : rmListVal,
     _setDeepMapVal_   : setDeepMapVal
   };
 }());
