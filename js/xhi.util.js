@@ -737,10 +737,8 @@ xhi._util_ = (function () {
       date_str = date_obj[ vMap._toString_ ](),
       match_list = date_str[ vMap._match_ ]( topCmap._tzcode_rx_ )
       ;
-    if ( match_list && match_list[ __1 ] ) {
-      return match_list[ __1 ];
-    }
-    return __blank;
+    return ( match_list && match_list[ __1 ] )
+      ? match_list[ __1 ] : __blank;
   }
   // END Public method /getTzCode/
 
@@ -1095,7 +1093,7 @@ xhi._util_ = (function () {
     function invokeFn ( field_data, idx, list ) {
       var ret_list, ret_key, ret_data;
 
-      ret_list = mapFn( field_data, idx, list, argList );
+      ret_list = mapFn && mapFn( field_data, idx, list, argList );
       if ( ! ret_list ) { return; }
 
       //noinspection JSUnusedAssignment
@@ -1427,6 +1425,9 @@ xhi._util_ = (function () {
   //   arg_fn    : function to poll, return false to stop polling
   //   arg_ms    : time between function invocation
   //   arg_count : (optional) Maximum number of times to run the function.
+  // Returns
+  //   __true  : polling started
+  //   __false : polling declined
   //
   //
   function pollFunction ( arg_fn, arg_ms, arg_count, arg_finish_fn ) {
@@ -1436,12 +1437,12 @@ xhi._util_ = (function () {
       count     = getInt( arg_count,     __null ),
       finish_fn = getFn(  arg_finish_fn, __null ),
       idx     = __0,
-      do_fn
+      main_fn
       ;
 
-    if ( ! poll_fn ) { return; }
+    if ( ! poll_fn ) { return __false; }
 
-    do_fn = function () {
+    main_fn = function () {
       __setTo( function() {
         var do_next;
         if ( count && idx >= count ) {
@@ -1449,11 +1450,12 @@ xhi._util_ = (function () {
         }
         do_next = poll_fn( idx );
         idx++;
-        if ( do_next !== __false ) { do_fn(); }
+        if ( do_next !== __false ) { main_fn(); }
       }, ms );
     };
 
-    do_fn();
+    main_fn();
+    return __true;
   }
   // END Public method /pollFunction/
 

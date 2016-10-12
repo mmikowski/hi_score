@@ -1046,7 +1046,9 @@ function makeGuidStr( test_obj ) {
 function makeMapUtilObj( test_obj ) {
   var
     map_util_obj = __util._makeMapUtilObj_(),
-    arg_list = [ [ 'cows', 'donkeys', 'sheep' ] ],
+    arg_list   = [ [ 'cows', 'donkeys', 'sheep' ] ],
+    field_list = [ 'moo', 'garaaah', 'bahbah' ],
+    clone_list = __util._cloneData_( field_list ),
     map_fn   = function ( field_data, idx, list, arg_list ) {
       var
         name_list  = arg_list[  __0 ],
@@ -1060,7 +1062,10 @@ function makeMapUtilObj( test_obj ) {
     result_map = {}
     ;
 
-  test_obj.expect( __3 );
+  test_obj.expect( 5 );
+
+  field_list.map( map_util_obj._invokeFn_ );
+  test_obj.deepEqual( field_list, clone_list );
 
   map_util_obj._setArgList_(     arg_list );
   map_util_obj._setMapFn_(         map_fn );
@@ -1069,6 +1074,11 @@ function makeMapUtilObj( test_obj ) {
   test_obj.deepEqual( map_util_obj._getArgList_(),   arg_list,   'check' );
   test_obj.deepEqual( map_util_obj._getMapFn_(),     map_fn,     'check' );
   test_obj.deepEqual( map_util_obj._getResultMap_(), result_map, 'check' );
+
+  field_list.map( map_util_obj._invokeFn_ );
+  test_obj.deepEqual( result_map,
+    { cows : 'moo', donkeys : 'garaaah', sheep : 'bahbah'}
+  );
 
   test_obj.done();
 }
@@ -1270,6 +1280,7 @@ function makeSeriesMap ( test_obj ) {
   var
     start_ms = 1465452840000,
     delta_list = [
+      1000,         // 1s
       5000,         // 5s
       20000,        // 20s
       40000,        // 40s
@@ -1283,15 +1294,30 @@ function makeSeriesMap ( test_obj ) {
       231360000,    // 2.68d
       460800000,    // 5.33d
       928000000,    // 10.74d
+      1840640000    // 21.30d
 
       // These need some love to improve larger date-size presentation
-      1840640000    // 21.30d
       // 3769600000,   // 43.67d
       // 7354419200,   // 85.12d
       // 14708838400   // 170.24d
     ],
     intvl_list = [ 2,3,4,5,6,7,9,11,13,15,17,21 ],
     expect_map_list = [
+      // begin 1s expect list
+      {"_show_idx_":0,"_unit_count_":2,"_unit_ms_":500,"_unit_name_":"0.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:01"]},
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
+      {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
+      // these can not be solve with our current config
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+
       // begin 5s expect list
       {"_show_idx_":0,"_unit_count_":2,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03"]},
       {"_show_idx_":0,"_unit_count_":2,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:03"]},
@@ -1918,8 +1944,11 @@ function pollFunction ( test_obj ) {
       test_obj.done();
     };
 
-  test_obj.expect( __1 );
-  __util._pollFunction_( test_fn, __0, 4, finish_fn );
+  test_obj.expect( __3 );
+  test_obj.ok( ! __util._pollFunction_ ( __undef, __0, 29, finish_fn ),
+    'no fn should fail ' );
+  test_obj.ok( __util._pollFunction_( test_fn, __0, 4, finish_fn ),
+    'proper call should return true.' );
 }
 
 function setStructData ( test_obj ) {
@@ -1953,6 +1982,12 @@ function setStructData ( test_obj ) {
       [ [ [], [ 'car', null ], 'Meyers!'  ], [] ],
       [ [ [ 'power' ],  [ null, 'car', null ], 'Meyers!' ],
         [ 'power', { car : [ 'Meyers!' ] } ]
+      ],
+      [ [ { cat : 'power' },  [ null, 'car', null ], 'Meyers!' ],
+        { cat : 'power' }
+      ],
+      [ [ { cat : 'power' },  [ '', 'car', null ], 'Meyers!' ],
+        { cat : 'power' }
       ]
     ],
 
