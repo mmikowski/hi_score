@@ -28,32 +28,30 @@ xhi._utilb_ = (function ( $ ) {
     __blank   = vMap._blank_,
     __docRef  = document,
     __false   = vMap._false_,
-    __null    = vMap._null_,
 
     __0       = nMap._0_,
     __1       = nMap._1_,
     __10      = nMap._10_,
 
-    __util = xhi._util_,
-    // Add if needed from util: __getObjType
-    // __getBool     = __util._getBool_,
-    // __getFn       = __util._getFn_,
-    // __getInt      = __util._getInt_,
-    // __getNum      = __util._getNum_,
-    // __getVarType  = __util._getVarType_,
-    __getList     = __util._getList_,
-    __getMap      = __util._getMap_,
-    __getStr      = __util._getStr_,
+    __util   = xhi._util_,
 
-    // topCmap = {
-    //   _cookie_rx_tmplt_ : '\\s*{_attr_key_}\\s*=\\s*([^;]+)[;]*',
-    // },
+    // Add as needed __getObjType, __getBool,  __getVarType
+    __getFn   = __util._getFn_,
+    __getInt  = __util._getInt_,
+    __getNum  = __util._getNum_,
+    __getList = __util._getList_,
+    __getMap  = __util._getMap_,
+    __getStr  = __util._getStr_,
+
     onBufferReady
     ;
 
   // ================== END MODULE SCOPE VARIABLES ====================
 
   // ===================== BEGIN UTILITY METHODS ======================
+  function getJquery( $obj ) {
+    return ( $obj && $obj instanceof $ ) ? $obj : $();
+  }
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
@@ -61,14 +59,20 @@ xhi._utilb_ = (function ( $ ) {
   // Decodes HTML entities in a browser-friendly way
   // See http://stackoverflow.com/questions/1912501/\
   //   unescape-html-entities-in-javascript
-  function decodeHtml ( str ) {
+  function decodeHtml ( arg_str ) {
+    var str = __getStr( arg_str, __blank );
     return $('<div></div>').html(str||__blank).text();
   }
   // END Public method /decodeHtml/
 
   // BEGIN Public method /fillForm/
-  function fillForm ( $form, value_map ) {
-    $.each( value_map, function ( k, v ) {
+  function fillForm ( arg_$form, arg_map ) {
+    var
+      lookup_map = __getMap( arg_map, {} ),
+      $form      = getJquery( arg_$form )
+      ;
+
+    $.each( lookup_map, function ( k, v ) {
       $form.find('[name=' + k + ']').each(function() {
         var
           $input = $( this ),
@@ -90,48 +94,62 @@ xhi._utilb_ = (function ( $ ) {
   // END Public method /fillForm/
 
   // BEGIN Public method /fixInputByType/
-  function fixInputByType ($elem) {
-    var input_val = $elem.val().trim();
-    if ( $elem.attr('data-type') === 'number' ) {
-      input_val = parseFloat(input_val);
-      if ( isNaN( input_val) ) { input_val = __null; }
+  function fixInputByType ( arg_$input ) {
+    var
+      $elem     = getJquery( arg_$input ),
+      input_str = $elem[ vMap._val_ ][ vMap._trim_ ](),
+      data_type = $elem[ vMap._attr_ ]( 'data-type' ),
+      solve_data
+      ;
+
+    switch ( data_type ) {
+      case 'number':
+        solve_data = __getNum( parseFloat( input_str ), __0 );
+        break;
+      case 'integer':
+        solve_data = __getInt( parseInt( input_str, __10 ), __0 );
+        break;
+      default:
+        solve_data = input_str;
+        break;
     }
-    else if ( $elem.attr('data-type') === 'integer' ) {
-      input_val = parseInt (input_val, __10);
-      if ( isNaN( input_val) ) { input_val = __null; }
-    }
-    else if ( $elem.attr('data-type') === 'string' ) {
-      if ( input_val === __blank ) { input_val = null; }
-    }
-    return input_val;
+    return solve_data;
   }
   // END Public method /fixInputByType/
 
   // BEGIN Public method /getFormMap/
-  function getFormMap ( $elem ) {
-    var form_map = {};
+  function getFormMap ( arg_$form ) {
+    var
+      $form = getJquery( arg_$form ),
+      form_map = {};
 
-    $elem.find( 'input:not(:disabled):not(.xhi-_x_ignore_):not(td  > input)' )
-      .each( function() {
-        var $input = $( this ), input_val;
-        if ( ! this.name ) { return; }
+    $form
+      .find( 'input:not(:disabled):not(.xhi-_x_ignore_):not(td  > input)' )
+      .each( function () {
+        var
+          $input     = $( this ),
+          field_name = $input[ vMap._attr_ ]( 'name' )
+          ;
 
+        if ( ! field_name ) { return; }
         if ( $input.is( 'input:checkbox' ) ) {
-          form_map[ this.name ] = $input.is(':checked');
+          form_map[ field_name ] = $input.is(':checked');
         }
         else if ( !  $input.is('input:radio') || $input.is(':checked') ) {
-          input_val = fixInputByType( $input );
-          form_map[ this.name ] = input_val;
+          form_map[ field_name ]   = fixInputByType( $input );
         }
       });
 
     // TODO This selector can probably be combined with the previous one
     //
-    $elem.find( 'select:not(td > select), textarea:not(td > textarea)' )
+    $form
+      .find( 'select:not(td > select), textarea:not(td > textarea)' )
       .each( function() {
-        var $input = $( this ), input_val;
-        input_val = fixInputByType( $input );
-        form_map[ this.name ] = input_val;
+        var
+          $input     = $( this ),
+          field_name = $input[ vMap._attr_ ]( 'name' )
+          ;
+        form_map[ field_name ] = fixInputByType( $input );
       }
     );
 
@@ -139,41 +157,45 @@ xhi._utilb_ = (function ( $ ) {
     // For each table, get all the trs in tbody.  For each tr, if there's only
     // 1 column, push the value into the array.  Else, build an object that
     // represents each row and push the object into the array.
-    $elem.find( 'table' ).each( function() {
-      var table = $( this ), table_name = table.attr('data-name');
-      form_map[ table_name ] = [];
-      table.find( 'tbody tr' ).each( function() {
-        var row_obj, $input, input_str,
-          $input_list = $( this ).find( 'input, textarea, select' )
-          ;
-        if( $input_list[ vMap._length_ ] === __1 ) {
-          $input = $( $input_list[ __0 ] );
+    $form
+      .find( 'table' )
+      .each( function() {
+        var table = $( this ), table_name = table.attr('data-name');
+        form_map[ table_name ] = [];
+        table
+          .find( 'tbody tr' )
+          .each( function() {
+            var row_obj, $input, input_str,
+              $input_list = $( this ).find( 'input, textarea, select' )
+              ;
+            if( $input_list[ vMap._length_ ] === __1 ) {
+              $input = $( $input_list[ __0 ] );
 
-          if ( $input.is( 'input:checkbox' ) ) {
-            row_obj = $input.is( ':checked' );
-          }
-          else if ( ! $input.is( 'input:radio' ) || $input.is( ':checked' ) ) {
-            row_obj = fixInputByType( $input );
-          }
-        }
-        else {
-          row_obj = {};
-          $input_list.each( function () {
-            $input = $( this );
-            if ( ! this.name ) { return; }
+              if ( $input.is( 'input:checkbox' ) ) {
+                row_obj = $input.is( ':checked' );
+              }
+              else if ( ! $input.is( 'input:radio' ) || $input.is( ':checked' ) ) {
+                row_obj = fixInputByType( $input );
+              }
+            }
+            else {
+              row_obj = {};
+              $input_list.each( function () {
+                $input = $( this );
+                if ( ! this.name ) { return; }
 
-            if ( $input.is( 'input:checkbox' ) ) {
-              row_obj[ this.name ] = { value: $input.is( ':checked' ) };
+                if ( $input.is( 'input:checkbox' ) ) {
+                  row_obj[ this.name ] = { value: $input.is( ':checked' ) };
+                }
+                else if ( !  $input.is('input:radio') || $input.is( ':checked' ) ) {
+                  input_str = fixInputByType( $input );
+                  row_obj[ this.name ] = { value: input_str };
+                }
+              });
             }
-            else if ( !  $input.is('input:radio') || $input.is( ':checked' ) ) {
-              input_str = fixInputByType( $input );
-              row_obj[ this.name ] = { value: input_str };
-            }
+            form_map[ table_name ].push(row_obj);
           });
-        }
-        form_map[ table_name ].push(row_obj);
       });
-    });
 
     return form_map;
   }
@@ -181,11 +203,11 @@ xhi._utilb_ = (function ( $ ) {
 
   // BEGIN Public method /makeOptionHtml/
   function makeOptionHtml ( arg_map ) {
-    // arg_match_str, value_list, arg_title_map ) {
     var
-      select_str  = __getStr(  arg_map._select_str_, __blank ),
-      title_map   = __getMap(  arg_map._title_map_,       {} ),
-      value_list  = __getList( arg_map._value_list_,         [] ),
+      input_map   = __getMap( arg_map, {} ),
+      select_str  = __getStr(  input_map._select_str_, __blank ),
+      title_map   = __getMap(  input_map._title_map_,       {} ),
+      value_list  = __getList( input_map._value_list_,      [] ),
       html_str    = __blank,
 
       idx, value_str, title_text
@@ -194,7 +216,7 @@ xhi._utilb_ = (function ( $ ) {
     for ( idx = __0; idx < value_list[ vMap._length_ ]; idx++ ) {
       value_str  = __Str( value_list[ idx ] );
       title_text = title_map[ value_str ]
-        || xhi._util_._makeUcFirstStr_( value_str );
+        || __util._makeUcFirstStr_( value_str );
       html_str   += '<option value="' + value_str + '"';
       if ( value_str === select_str ) {
         html_str += ' selected="selected"';
@@ -222,7 +244,8 @@ xhi._utilb_ = (function ( $ ) {
     for ( idx = __0; idx < match_array[ vMap._length_ ]; idx++ ) {
       match_str   = match_array[ idx ];
       title_text     = title_map[ match_str ]
-        || xhi._util_._makeUcFirstStr_( match_str );
+        || __util._makeUcFirstStr_( match_str );
+
       html_str
         += '<label>'
           + '<input type="radio" name="'
@@ -244,7 +267,7 @@ xhi._utilb_ = (function ( $ ) {
   //
   onBufferReady = (function () {
     var
-    // 10x10px transparent png
+    // 10 x 10px transparent png
       blankImgStr  = __blank
         + 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAA'
         + 'CNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3'
@@ -254,12 +277,14 @@ xhi._utilb_ = (function ( $ ) {
       ;
 
     function onBuf ( arg_fn ) {
-      var img_el, s_obj;
+      var
+        callback_fn = __getFn( arg_fn ),
+        img_el, s_obj;
 
       if ( ! bodyEl ) {
         bodyEl = __docRef[ vMap._getElsByTagName_ ]( vMap._body_ )[__0];
-        if ( ! bodyEl ) { return __false; }
       }
+      if ( ! ( callback_fn && bodyEl ) ) { return __false; }
 
       img_el = new Image();
       s_obj  = img_el.style;
@@ -286,9 +311,11 @@ xhi._utilb_ = (function ( $ ) {
   // Example:
   //   $foo.on( 'keyup', function () { resizeTextarea( this, 25 ); } );
   //
-  function resizeTextarea ( $textarea, arg_max_ht_px ) {
+  function resizeTextarea ( arg_$textarea, arg_max_ht_px ) {
     var
-      max_ht_px     = arg_max_ht_px || 400,
+      $textarea     = getJquery( arg_$textarea ),
+      max_ht_px     = __getInt( arg_max_ht_px, 400 ),
+
       scroll_ht_px  = $textarea[ vMap._prop_ ]( vMap._scrollHeight_ ),
       outer_ht_px   = $textarea[ vMap._outerHeight_](),
       solve_ht_px
@@ -305,7 +332,6 @@ xhi._utilb_ = (function ( $ ) {
     $textarea[ vMap._css_ ]( cssKmap._height_, solve_ht_px );
   }
   // END Public method /resizeTextarea/
-
 
   return {
     _decodeHtml_     : decodeHtml,

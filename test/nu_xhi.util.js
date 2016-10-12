@@ -10,14 +10,16 @@
  regexp : true,  sloppy : true,     vars : false,
   white : true,    todo : true,  unparam : true
 */
-/*global xhi, module */
+/*global xhi, module, process */
 
 // ================= BEGIN MODULE SCOPE VARIABLES ===================
 //noinspection MagicNumberJS
 'use strict';
 
+//noinspection JSUnusedLocalSymbols
 var
-  root_dir = process.env.DO_COV ? '../js-cov/' : '../js/',
+  env_name = 'DO_COV',
+  root_dir = process.env[ env_name ] ? '../js-cov/' : '../js/',
   nuFn = function () { console.log( 'nu:' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
@@ -110,7 +112,7 @@ function setLogLevel ( test_obj ) {
 function clearMap( test_obj ) {
   //noinspection JSUnusedGlobalSymbols
   var
-    proto = { do_fn : function () { return 1; } },
+    proto = { callback_fn : function () { return 1; } },
     complex_obj = Object.create( proto ),
     assert_list = [
       // arg_data, expect_data
@@ -321,7 +323,6 @@ function getStructData ( test_obj ) {
     expect_data, solve_data,  msg_str,
     walk_map,    walk_key
     ;
-
 
   // Load up very deep map to test recursion limits
   walk_map = deepest_map;
@@ -1210,7 +1211,7 @@ function makeScrubStr ( test_obj ) {
         'Hello! This is lc.' ],
       [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li></ul>',
         __true ],
-        'Fred Barney Wilma Betty' ],
+        'Fred Barney Wilma Betty' ]
     ],
 
     assert_count = assert_list.length,

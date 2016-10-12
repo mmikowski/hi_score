@@ -285,7 +285,7 @@ xhi._util_ = (function () {
       }
     }
 //#JSCOVERAGE_ENDIF
-//
+
     function setLogLevel ( level_key ) {
       if ( ! levelXCmdMap[ level_key ] ) { return levelKey; }
 
