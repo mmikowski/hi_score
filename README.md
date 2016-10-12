@@ -206,17 +206,20 @@ command is as follows:
 MIT
 
 ### Version 0.0.x
-- Initial preparation
+- (x) Initial preparation
 
 ### Version 0.1.x
-- Library updates
+- (x) Library updates
 
 ### Version 0.2.x
-- Regression and integration testing
-- Rudimentary sample application
+- (x) Regression and integration testing
+- (x) Rudimentary sample application
 
 ### Version 0.3.x (current)
-- Add code coverage
+- (x) Add code coverage 
+- (x) Replace `getDeepMapVal` and `setDeepMapVal` with much more powerful
+  and tested `getStructData` and `setStructData` which empowers you with
+  transversal and creation of arbitrary mixed list and map structures.
 - More sophisticated sample application
 
 ## Similar Projects

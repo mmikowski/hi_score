@@ -42,6 +42,7 @@ xhi._util_ = (function () {
     __3       = nMap._3_,
     __4       = nMap._4_,
     __10      = nMap._10_,
+    __100     = nMap._100_,
     __n1      = nMap._n1_,
 
     __floor   = vMap._fnGetFloor_,
@@ -271,6 +272,7 @@ xhi._util_ = (function () {
       consoleRef
       ;
 
+//#JSCOVERAGE_IF window
     // favor node console if available
     //noinspection UnusedCatchParameterJS
     try { consoleRef = global.console; }
@@ -282,7 +284,8 @@ xhi._util_ = (function () {
         throw '_cannot_find_console_function_';
       }
     }
-
+//#JSCOVERAGE_ENDIF
+//
     function setLogLevel ( level_key ) {
       if ( ! levelXCmdMap[ level_key ] ) { return levelKey; }
 
@@ -573,48 +576,6 @@ xhi._util_ = (function () {
   getDirname  = getBaseDirname[ vMap._bind_ ]( '_dir_'  );
   // END utilities /getBasename/ and /getDirname/
 
-  // BEGIN Public method /getDeepMapVal/
-  // Purpose   : Get a deep map attribute value
-  // Example   : _getDeepMapVal_( { foo : { bar : 1 }}, [ 'foo','bar' ] );
-  //             Returns '1'
-  // Arguments :
-  //   * base_map  - A map to add a value
-  //   * path_list - A list of keys in order of depth
-  // Returns   :
-  //   * Success - Requested value
-  //   * Failure - undefined
-  // Cautions  : The recursion limit is set to 100. If this
-  //   is met, a warning is logged.
-  //
-  function getDeepMapVal ( base_map, path_list ) {
-    var
-      walk_map  = base_map,
-      is_good   = __true,
-      idx, key
-      ;
-
-    if ( ! ( walk_map && getVarType( walk_map ) === '_Object_' ) ) {
-      return __undef;
-    }
-
-    for ( idx = __0; idx < 100; idx++ ) {
-      key = path_list[ vMap._shift_ ]();
-      if ( key === __undef ) { break; }
-
-      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ) {
-        is_good = __false; break;
-      }
-      walk_map = walk_map[ key ];
-    }
-    if ( idx === 100 ) {
-      logUtilObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
-      is_good = __false;
-    }
-    if ( is_good ) { return walk_map; }
-    return __undef;
-  }
-  // END Public method /getDeepMapVal/
-
   // BEGIN Public method /getListAttrIdx/
   function getListAttrIdx ( arg_map_list, arg_key, data ) {
     var
@@ -698,6 +659,62 @@ xhi._util_ = (function () {
   // BEGIN Public method /getLogUtilObj/
   function getLogUtilObj () { return logUtilObj; }
   // END Public method /getlogUtilObj/
+
+  // BEGIN Public method /getStructData/
+  // Purpose   : Get a deep structure attribute value
+  // Example   : _getStructData_( { foo : { bar : 1 }}, [ 'foo','bar' ] );
+  //             Returns '1'
+  // Example   : _getStructData_( [ { car : [ 'seats', 'tyres' ]
+  // Arguments :
+  //   * base_struct - An array or map to add a value
+  //   * path_list   - A list of map or array keys in order of depth
+  // Returns   :
+  //   * Success - Requested value
+  //   * Failure - undefined
+  // Cautions  : The key list limit is set to __100. If this
+  //   is met, a warning is logged and __undef returned.
+  //
+  function getStructData ( base_struct, arg_path_list ) {
+    var
+      walk_struct = base_struct,
+      path_list   = getList( arg_path_list, [] ),
+      is_good     = __true,
+      key_count   = path_list[ vMap._length_ ],
+
+      idx, raw_key, struct_type, key
+      ;
+
+    if ( key_count > __100 ) {
+      logUtilObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
+      return __undef;
+    }
+
+    GET_KEY: for ( idx = __0; idx < key_count; idx++ ) {
+      raw_key = path_list[ idx ];
+      struct_type = getVarType( walk_struct );
+      switch ( struct_type ) {
+        case '_Array_' :
+          key = getInt( raw_key );
+          break;
+        case '_Object_' :
+          key = getStr( raw_key );
+          break;
+        default :
+          key = __undef;
+          break;
+      }
+      if ( key === __undef
+        || ( ! walk_struct[ vMap._hasOwnProp_ ]( key ) )
+      ) {
+        is_good = __false;
+        break GET_KEY;
+      }
+      walk_struct = walk_struct[ key ];
+    }
+    if ( is_good ) { return walk_struct; }
+    return __undef;
+  }
+  // END Public method /getStructData/
 
   // BEGIN Public method /getTzOffsetMs/
   function getTzOffsetMs ( arg_do_recalc ) {
@@ -1115,7 +1132,7 @@ xhi._util_ = (function () {
       ;
 
     dcount = dcount < __0 ? __0 : __floor( dcount );
-    return ( ratio * 100 )[ vMap._toFixed_ ]( dcount ) + '%';
+    return ( ratio * __100 )[ vMap._toFixed_ ]( dcount ) + '%';
   }
   // END Public method /makePctStr/
 
@@ -1469,10 +1486,35 @@ xhi._util_ = (function () {
   }
   // END Public method /rmUniqListVal/
 
-
-  // BEGIN Public method /setDeepMapVal/
+  // BEGIN Public method /setStructData/
+  // Purpose   : Set a deep structure attribute value
+  // Example   : _setStructData_({ foo:{ bar:1 }}, [ 'foo','bar' ], 99 );
+  //             Returns __true and set the and adjusts the structure:
+  //             { foo : { bar : 99 } }
+  // Example   : _setStructData_( [ { car : [ 'seats', 'tyres' ] } ],
+  //             [ 0, 'car', 1 ], 'Meyers!' ] );
+  //             Returns __true and set the and adjusts the structure:
+  //             [ { car : [ 'seats', 'Meyers!' ] } ]
+  // Example   : _setStructData_( [],  [ null, 'car', null ], 'Meyers!' );
+  //             Returns __true and adjust the structure:
+  //             [ { car : [ 'Meyers!' ] } ]
+  // Example   : _setStructData_( [], [ 'car', null ], 'Meyers!'  );
+  //             Returns __false, as 'car' cannot be a property of the
+  //             base structure.  It must be null which means "next
+  //             available array item" or an integer.
+  //
+  // Arguments :
+  //   * base_struct - An array or map to add a value
+  //   * path_list   - A list of map or array keys in order of depth
+  //   * val_data    - A data value to set
+  // Returns   :
+  //   * Success - __true
+  //   * Failure - __false
+  // Cautions  : The key list limit is set to __100. If this
+  //   is met, a warning is logged and __undef returned.
+  // BEGIN Public method /setStructData/
   // Purpose   : Set a deep map attribute value
-  // Example   : _setDeepMapVal_( {}, [ 'foo','bar' ], 'hello' );
+  // Example   : _setStructData_( {}, [ 'foo','bar' ], 'hello' );
   // Arguments :
   //   * base_map  - A map to add a value
   //   * path_list - A list of keys in order of depth
@@ -1481,27 +1523,64 @@ xhi._util_ = (function () {
   //   * Success - Updated object
   //   * Failure - undefined
   //
-  function setDeepMapVal ( arg_base_map, arg_path_list, val_data ) {
+  function setStructData ( arg_base_struct, arg_path_list, val_data ) {
     var
-      base_map   = getMap(  arg_base_map,  {} ),
-      path_list  = getList( arg_path_list, [] ),
-      path_count = path_list[ vMap._length_ ],
-      last_idx   = path_count - __1,
-      walk_map   = base_map,
-      idx, key;
+      base_struct = arg_base_struct,
+      path_list   = getList( arg_path_list, [] ),
+      path_count  = path_list[ vMap._length_ ],
+      last_idx    = path_count - __1,
+      walk_struct = base_struct,
+      is_good     = __true,
 
-    for ( idx = __0; idx < path_count; idx++ ) {
-      key = path_list[ idx ];
-      if ( getVarType( walk_map ) !== '_Object_' ) { break; }
-      if ( ! walk_map[ vMap._hasOwnProp_ ]( key ) ) {
-        walk_map[ key ] = {};
+      struct_type, idx,          raw_key,
+      solve_key,   raw_next_key, int_key,
+      int_next_key
+      ;
+
+    SET_KEY: for ( idx = __0; idx < path_count; idx++ ) {
+      raw_key      = path_list[ idx ];
+      raw_next_key = path_list[ idx + __1 ];
+      struct_type  = getVarType( walk_struct );
+      int_key      = getInt( raw_key );
+
+      if ( raw_key === __null ) {
+        if ( struct_type !== '_Array_' ) {
+          is_good = __false;
+          break SET_KEY;
+        }
+        solve_key = walk_struct[ vMap._length_ ];
       }
-      if ( idx === last_idx ) { walk_map[ key ] = val_data; }
-      else { walk_map = walk_map[ key ]; }
+      else if ( int_key !== __undef && struct_type === '_Array_' ) {
+        solve_key = int_key;
+      }
+      else {
+        solve_key = getStr( raw_key );
+        if ( ! solve_key ) {
+          is_good = __false;
+          break SET_KEY;
+        }
+      }
+
+      if ( idx === last_idx ) {
+        walk_struct[ solve_key ] = val_data;
+        break SET_KEY;
+      }
+
+      if ( ! walk_struct[ vMap._hasOwnProp_ ]( solve_key ) ) {
+        int_next_key = getInt( raw_next_key );
+        if ( raw_next_key === __null || int_next_key !== __undef ) {
+          walk_struct[ solve_key ] = [];
+        }
+        else {
+          walk_struct[ solve_key ] = {};
+        }
+      }
+
+      walk_struct = walk_struct[ solve_key ];
     }
-    return base_map;
+    return is_good;
   }
-  // END Public method /setDeepMapVal/
+  // END Public method /setStructData/
   // ======================= END PUBLIC METHODS =======================
 
   // BEGIN initialize module
@@ -1583,7 +1662,6 @@ xhi._util_ = (function () {
     _cloneData_       : cloneData,
     _encodeHtml_      : encodeHtml,
     _getBasename_     : getBasename,
-    _getDeepMapVal_   : getDeepMapVal,
     _getDirname_      : getDirname,
     _getListAttrIdx_  : getListAttrIdx,
     _getListAttrMap_  : getListAttrMap,
@@ -1592,6 +1670,7 @@ xhi._util_ = (function () {
     _getLogUtilObj_   : getLogUtilObj,
     _getNowMs_        : getNowMs,
     _getNumSign_      : getNumSign,
+    _getStructData_   : getStructData,
     _getTzCode_       : getTzCode,
     _getTzOffsetMs_   : getTzOffsetMs,
     _getVarType_      : getVarType,
@@ -1616,6 +1695,6 @@ xhi._util_ = (function () {
     _pollFunction_    : pollFunction,
     _pushUniqListVal_ : pushUniqListVal,
     _rmListVal_       : rmListVal,
-    _setDeepMapVal_   : setDeepMapVal
+    _setStructData_   : setStructData
   };
 }());

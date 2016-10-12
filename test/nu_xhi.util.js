@@ -42,7 +42,7 @@ __false = vMap._false_;
 __null  = vMap._null_;
 __Str   = vMap._String_;
 __true  = vMap._true_;
-__undef = vMap._undefined_;
+__undef = vMap._undef_;
 
 __n1 = nMap._n1_;
 __0  = nMap._0_;
@@ -285,10 +285,12 @@ function getBasename ( test_obj ) {
   test_obj.done();
 }
 
-function getDeepMapVal ( test_obj ) {
+function getStructData ( test_obj ) {
   var
-    deep_map_0   = { foo : { bar : __1 } },
-    deep_map_1   = { bing : { bang : 'string' }, list : [ __1, __2 ] },
+    deep0_map   = { foo : { bar : __1 } },
+    deep1_map   = { bing : { bang : 'string' }, list : [ __1, __2 ] },
+    deep0_list  = [ 0,1,2,3,{ car : { size : 'lg' } },
+      [ 0,1, [ 'kitty', 'cat'] ] ],
     deepest_map  = {},
     deepest_list = [],
     assert_list  = [
@@ -296,18 +298,24 @@ function getDeepMapVal ( test_obj ) {
       [ [ __null,  [ 'foo', 'bar' ] ], __undef ],
       [ [ __undef, [ 'foo', 'bar' ] ], __undef ],
       [ [ 'foofy', [ 'foo', 'bar' ] ], __undef ],
-      [ [ deep_map_0, [ 'foo', 'chaz_bono' ] ], __undef ],
-      [ [ deep_map_0, [ 'foo', 'bar' ] ], __1 ],
-      [ [ deep_map_0, [ 'foo' ] ], deep_map_0.foo ],
-      [ [ deep_map_0, [] ], deep_map_0 ],
-      [ [ deep_map_1, [ 'bing' ] ], deep_map_1.bing ],
-      [ [ deep_map_1, [ 'bing', 'bang' ] ], 'string' ],
-      [ [ deep_map_1, [ 'list'] ], deep_map_1.list  ],
-      [ [ deep_map_1, [] ], deep_map_1 ],
+      [ [ deep0_list, [ 4, 'car','size' ] ], 'lg' ],
+      [ [ deep0_list, [ 4, 'car','smut' ] ],  __undef ],
+      [ [ deep0_list, [ 0 ] ], 0 ],
+      [ [ deep0_list, [ 5, 2, 0 ] ], 'kitty' ],
+      [ [ deep0_list, [ 5, 2, 1 ] ],   'cat' ],
+      [ [ deep0_map, [ 'foo', 'chaz_bono' ]  ], __undef ],
+      [ [ deep0_map, [ 'foo', 'bar' ] ], __1 ],
+      [ [ deep0_map, [ 'foo' ] ], deep0_map.foo ],
+      [ [ deep0_map, [] ], deep0_map ],
+      [ [ deep1_map, [ 'bing' ] ], deep1_map.bing ],
+      [ [ deep1_map, [ 'bing', 'bang' ] ], 'string' ],
+      [ [ deep1_map, [ 'list'] ], deep1_map.list  ],
+      [ [ deep1_map, [] ], deep1_map ],
+      [ [ deep1_map, [ 'list', __1 ] ], __2 ],
       [ [ deepest_map, deepest_list ], __undef ]
     ],
     assert_count = assert_list.length,
-    deep_fn      = __util._getDeepMapVal_,
+    deep_fn      = __util._getStructData_,
 
     idx,         expect_list, arg_list,
     expect_data, solve_data,  msg_str,
@@ -1914,45 +1922,62 @@ function pollFunction ( test_obj ) {
   __util._pollFunction_( test_fn, __0, 4, finish_fn );
 }
 
-function setDeepMapVal ( test_obj ) {
+function setStructData ( test_obj ) {
   var
     base0_map = { attr1 : 'val1', attr2 : 'val2', sub_map : {} },
     expect0_map = { attr1 : 'val1', attr2 : 'val2', sub_map : {
       dakota : [ 'hello', 'world' ]
     } },
     assert_list = [
-      [ [],                 {} ],
-      [ [ __null ],         {} ],
-      [ [ __null, __null ], {} ],
-      [ [ 'liz', 'mary'  ], {} ],
-      [ [ __undef, []    ], {} ],
+      [ [],                 __undef ],
+      [ [ __null ],         __null  ],
+      [ [ __null, __null ], __null  ],
+      [ [ 'liz', 'mary'  ],   'liz' ],
+      [ [ { ad_lib: 'julie' }, []   ], { ad_lib:'julie'} ],
       [ [ base0_map, __undef ], base0_map ],
-      [ [ base0_map,
-          [ 'sub_map', 'dakota' ],
-          [ 'hello', 'world' ]
-        ],
-        expect0_map
+      [ [ base0_map, [ 'sub_map', 'dakota' ],
+          [ 'hello', 'world' ] ], expect0_map
+      ],
+      [ [ [], [ __null, 'car', __null ], 'tyres' ],
+        [ { car : [ 'tyres' ] } ]
+      ],
+      [ [ { foo:{ bar:1 }}, [ 'foo','bar' ], 99 ],
+        { foo : { bar : 99 } }
+      ],
+      [ [ [ { car : [ 'seats', 'tyres' ] } ], [ 0, 'car', 1 ], 'Meyers!' ],
+        [ { car : [ 'seats', 'Meyers!' ] } ]
+      ],
+      [ [ [],  [ null, 'car', null ], 'Meyers!' ],
+        [ { car : [ 'Meyers!' ] } ]
+      ],
+      [ [ [], [ 'car', null ], 'Meyers!'  ], [] ],
+      [ [ [ 'power' ],  [ null, 'car', null ], 'Meyers!' ],
+        [ 'power', { car : [ 'Meyers!' ] } ]
       ]
     ],
 
     assert_count  = assert_list.length,
-    set_deep_fn = __util._setDeepMapVal_,
+    set_deep_fn = __util._setStructData_,
 
     idx, expect_list, arg_list,
-    expect_map, solve_map, msg_str
+    expect_data, solve_data, msg_str
     ;
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list = assert_list[ idx ];
     arg_list    = __util._cloneData_( expect_list[ __0 ] );
-    expect_map  = expect_list[ __1 ];
-    solve_map   = set_deep_fn.apply( __undef, arg_list );
+    expect_data = expect_list[ __1 ];
+    solve_data  = arg_list[ __0 ];
+    set_deep_fn.apply( __undef, arg_list );
     msg_str = __Str( idx ) + '. arg_list: '
-      + JSON.stringify( arg_list ) + '\n solve_map: '
-      + JSON.stringify( solve_map )
-      + '\n expect_map: ' + JSON.stringify( expect_map );
-    test_obj.deepEqual( solve_map, expect_map, msg_str );
+      + JSON.stringify( arg_list ) + '\n solve_data: '
+      + JSON.stringify( solve_data )
+      + '\n expect_data: ' + JSON.stringify( expect_data );
+    test_obj.ok(
+      JSON.stringify( solve_data ) ===  JSON.stringify( expect_data ),
+      msg_str
+    );
   }
   test_obj.done();
 }
@@ -1961,9 +1986,9 @@ function setDeepMapVal ( test_obj ) {
 // Use mockTestObj for debugging tests using nodejs instead
 // of nodeunit, which obscures error messages. Use like so:
 // 1. Add the test you would like to run:
-// makeStrFromMap( mockTestObj );
 // 2. Run node <this_file>
 // 3. Inspect the output
+// setStructData( mockTestObj );
 
 module.exports = {
   _setLogLevel_     : setLogLevel,
@@ -1971,7 +1996,7 @@ module.exports = {
   _cloneData_       : cloneData,
   _encodeHtml_      : encodeHtml,
   _getBasename_     : getBasename,     // Includes getDirname
-  _getDeepMapVal_   : getDeepMapVal,
+  _getStructData_   : getStructData,
   _getListAttrIdx_  : getListAttrIdx,  // Include getListAttrMap
   _getListDiff_     : getListDiff,
   _getListValCount_ : getListValCount,
@@ -2000,5 +2025,5 @@ module.exports = {
   _pollFunction_    : pollFunction,
   _pushUniqListVal_ : pushUniqListVal,
   _rmListVal_       : rmListVal,
-  _setDeepMapVal_   : setDeepMapVal
+  _setStructData_   : setStructData
 };
