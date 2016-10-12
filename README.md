@@ -106,20 +106,20 @@ Below are the steps I used to get coverage working.
 Many thanks to Elliot Stokes who's [blog post][10] provided most of the
 information.
 
-1. Install lcov
+#### 1. Install lcov
 
 ```bash
 $ sudo apt-get install lcov # first time only
 ```
 
-2. Install jscoverage.
+#### 2. Install jscoverage
 
 ```bash
 $ cd hi_score
 $ npm install jscoverage --save-dev
 ```
 
-3. Prepare the coverage directory
+#### 3. Prepare the coverage directory
 
 ```bash
   $ cd hi_score
@@ -128,15 +128,20 @@ $ npm install jscoverage --save-dev
   $ cat 'js-cov'   >> .gitignore
 ```
 
-4. Run the coverage tool to create an alternate instrumented library
+#### 4. Run the coverage tool
+
+The coverage instrumentation tool creates an alternate library which we will
+just told `git` to ignore by adjusting the `.gitignore` file.
 
 ```bash
   $ cd hi_score
-  $ node_modules/.bin/jscoverage js; # This creates 
+  $ node_modules/.bin/jscoverage js; # This creates js-cov
 ```
 
-5. Modify the test to recognize the `DO_COV` environment variable and to use
-   the instrumented library on demand:
+#### 5. Modify the test for coverage
+
+We need to adjust our tests to recognize the `DO_COV` environment variable and to use
+   the instrumented library on demand.
 
 ```js
   root_dir = process.env.DO_COV ? '../js-cov/' : '../js/',
@@ -145,7 +150,11 @@ $ npm install jscoverage --save-dev
   require( root_dir + 'xhi.util.js' );
 ```
 
-6. Create the coverage data:
+#### 6. Create the coverage data
+
+We regenerate the coverage library on each run to ensure our code is properly
+instrumented.  We then output in `lcov` format for consumption by our report
+generator.
 
 ```bash
   $ cd hi_score
@@ -154,7 +163,11 @@ $ npm install jscoverage --save-dev
   $  test/nu_xhi.util.js > coverage/out.da
 ```
 
-7. Create the local report
+#### 7. Create the local report
+
+While `jscoverage` does provide for html output using `--reporter=html`  I found the results to be problematic (it reported failures where there were none).
+It is good practice to run local coverage reporting before publishing to
+coveralls.io.
 
 ```bash
   $ cd hi_score
@@ -163,11 +176,8 @@ $ npm install jscoverage --save-dev
   $ google-chrome index.html
 ```
 
-While `jscoverage` does provide for html output using `--reporter=html`  I found the results to be problematic (it reported failures where there were none).
-It is good practice to run local coverage reporting before publishing to
-coveralls.io.
 
-8. Integrate to coveralls.io
+#### 8. Integrate to coveralls.io
 
 Sign in to `https://coveralls.io` using your GitHub account.  Add the desired
 repo by selecting from the list of shown at `https://coveralls.io/repos/new`.
@@ -196,7 +206,6 @@ command is as follows:
   $ # Pipe to coveralls module
   $   | node_modules/.bin/coveralls
 ```
-## Test wor
 
 ## Release Notes
 ### Copyright (c)
