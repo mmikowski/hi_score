@@ -24,14 +24,15 @@ xhi._utilb_ = (function ( $ ) {
     cssKmap  = pcss._cfg_._cssKeyMap_,
     cssVmap  = pcss._cfg_._cssValMap_,
 
-    __Str     = vMap._String_,
-    __blank   = vMap._blank_,
-    __docRef  = document,
-    __false   = vMap._false_,
+    __Str    = vMap._String_,
+    __blank  = vMap._blank_,
+    __docRef = vMap._document_,
+    __false  = vMap._false_,
+    __true   = vMap._true_,
 
-    __0       = nMap._0_,
-    __1       = nMap._1_,
-    __10      = nMap._10_,
+    __0      = nMap._0_,
+    __1      = nMap._1_,
+    __10     = nMap._10_,
 
     __util   = xhi._util_,
 
@@ -301,6 +302,7 @@ xhi._utilb_ = (function ( $ ) {
       };
       bodyEl[ vMap._appendChild_ ]( img_el );
       img_el[ vMap._src_ ] = blankImgStr;
+      return __true;
     }
 
     return onBuf;

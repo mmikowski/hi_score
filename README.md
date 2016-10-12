@@ -236,7 +236,29 @@ MIT
 
 ## Contribute!
 If you want to help out, like all npm modules this is hosted on
-GitHub. Any improvements or suggestions are welcome!
+GitHub. Any improvements or suggestions are welcome, especially when presented
+with a pull request :).
+
+If you want to contribute, please follow the following steps:
+
+```bash
+$ cd hi_score
+$ npm install # Install development libs
+$ cd .git/hooks
+$ ln -s ../../bin/git-hook_pre-commit pre-commit
+$ cd ../../
+
+$ # The following should run successfully
+$ npm test
+$ npm run coverage
+
+$ # you will need to set the .coveralls.yml token for this:
+$ npm run coveralls
+
+$ # You should see regression tests run
+$ git commit -a
+```
+
 You can reach me at mike[dot]mikowski[at]gmail[dotcom].
 
 ## End
