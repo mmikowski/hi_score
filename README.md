@@ -86,19 +86,13 @@ For most people, the following will do the trick:
 
 And then point your browser to the hi_score [coverage page][10].
 
-### Coverage using local reporting (Ubuntu family)
-Local coverage is handy and provides most of the same details as coveralls.
-However it is not as cross-platform friendly. The following steps work for
-the Ubuntu family of Linux distributions. Other OSs will require
-modifications. Contributions for detailed instructions for other platforms are
-welcome!
+### Coverage using local reporting
+Local coverage is handy and provides most of the same details as `coveralls.io`
 
 ```bash
-$ sudo apt-get install lcov # first time only
 $ cd hi_score
 $ npm run coverage
-$ cd coverage
-$ google-chrome index.html
+$ google-chrome coverage/lcov-report/index.html
 ```
 
 ### Coverage reference
@@ -106,78 +100,32 @@ Below are the steps I used to get coverage working.
 Many thanks to Elliot Stokes who's [blog post][10] provided most of the
 information.
 
-#### 1. Install lcov
-
-```bash
-$ sudo apt-get install lcov # first time only
-```
-
-#### 2. Install jscoverage
-
-```bash
-$ cd hi_score
-$ npm install jscoverage --save-dev
-```
-
-#### 3. Prepare the coverage directory
+#### 1. Install istanbul
 
 ```bash
   $ cd hi_score
-  $ mkdir coverage
+  $ npm install istanbul --save-dev
+```
+
+#### 2. Configure git to ignore coverage directory
+
+```bash
+  $ cd hi_score
   $ cat 'coverage' >> .gitignore
-  $ cat 'js-cov'   >> .gitignore
 ```
 
-#### 4. Run the coverage tool
-
-The coverage instrumentation tool creates an alternate library which we will
-just told `git` to ignore by adjusting the `.gitignore` file.
+#### 3. Run the coverage tool
 
 ```bash
   $ cd hi_score
-  $ node_modules/.bin/jscoverage js; # This creates js-cov
+  $ node_modules/.bin/istanbul cover \
+  $  node_modules/.bin/nodeunit test/nu_xhi.util.js
 ```
 
-#### 5. Modify the test for coverage
+The local report is found in `coverage/lcov-report/index.html`.
+The local lcov data is found in `coverage/lcov.info`.
 
-We need to adjust our tests to recognize the `DO_COV` environment variable and to use
-   the instrumented library on demand.
-
-```js
-  root_dir = process.env.DO_COV ? '../js-cov/' : '../js/',
-  ....
-  require( root_dir + 'xhi.js'      );
-  require( root_dir + 'xhi.util.js' );
-```
-
-#### 6. Create the coverage data
-
-We regenerate the coverage library on each run to ensure our code is properly
-instrumented.  We then output in `lcov` format for consumption by our report
-generator.
-
-```bash
-  $ cd hi_score
-  $ node_modules/.bin/jscoverage js \
-  $  && DO_COV=1 node_modules/.bin/nodeunit --reporter=lcov \
-  $  test/nu_xhi.util.js > coverage/out.da
-```
-
-#### 7. Create the local report
-
-While `jscoverage` does provide for html output using `--reporter=html`  I found the results to be problematic (it reported failures where there were none).
-It is good practice to run local coverage reporting before publishing to
-coveralls.io.
-
-```bash
-  $ cd hi_score
-  $ genhtml coverage/out.da -o coverage
-  $ cd coverage
-  $ google-chrome index.html
-```
-
-
-#### 8. Integrate to coveralls.io
+#### 7. Integrate to coveralls.io
 
 Sign in to `https://coveralls.io` using your GitHub account.  Add the desired
 repo by selecting from the list of shown at `https://coveralls.io/repos/new`.
@@ -199,40 +147,10 @@ command is as follows:
 ```bash
   $ cd hi_score
   $ npm install coveralls
-  $ # Regenerate js-cov
-  $ node_modules/.bin/jscoverage js \
-  $ # Generate coverage report
-  $   && DO_COV=1 node_modules/.bin/nodeunit --reporter=lcov test/nu_xhi.util.js \
-  $ # Pipe to coveralls module
-  $   | node_modules/.bin/coveralls
+  $ node_modules/.bin/istanbul cover \
+  $  node_modules/.bin/nodeunit test/nu_xhi.util.js \
+  $  && cat coverage/lcov.info | node_modules/.bin/coveralls
 ```
-
-## Release Notes
-### Copyright (c)
-2016 Michael S. Mikowski (mike[dot]mikowski[at]gmail[dotcom])
-
-### License
-MIT
-
-### Version 0.0.x
-- (x) Initial preparation
-
-### Version 0.1.x
-- (x) Library updates
-
-### Version 0.2.x
-- (x) Regression and integration testing
-- (x) Rudimentary sample application
-
-### Version 0.3.x (current)
-- (x) Add code coverage 
-- (x) Replace `getDeepMapVal` and `setDeepMapVal` with much more powerful
-  and tested `getStructData` and `setStructData` which empowers you with
-  transversal and creation of arbitrary mixed list and map structures.
-- More sophisticated sample application
-
-## Similar Projects
-[absurd.js][12], [responsive.js][13]
 
 ## Contribute!
 If you want to help out, like all npm modules this is hosted on
@@ -259,7 +177,35 @@ $ # You should see regression tests run
 $ git commit -a
 ```
 
-You can reach me at mike[dot]mikowski[at]gmail[dotcom].
+## Release Notes
+### Copyright (c)
+2016 Michael S. Mikowski (mike[dot]mikowski[at]gmail[dotcom])
+
+### License
+MIT
+
+### Version 0.0.x
+- (x) Initial preparation
+
+### Version 0.1.x
+- (x) Library updates
+
+### Version 0.2.x
+- (x) Regression and integration testing
+- (x) Rudimentary sample application
+
+### Version 0.3.x
+- (x) Add code coverage 
+- (x) Replace `getDeepMapVal` and `setDeepMapVal` with much more powerful
+  and tested `getStructData` and `setStructData` which empowers you with
+  transversal and creation of arbitrary mixed list and map structures.
+
+### Version 0.4.x (current)
+- (x) Replaced `jscoverage` with much more complete and recent `istanbul` for code coverage
+- More sophisticated sample application
+
+## Similar Projects
+[absurd.js][12], [responsive.js][13]
 
 ## End
 [0]:http://jquery.org

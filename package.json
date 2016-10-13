@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "Are you ready to get off the framework-of-the-month treadmill and take control of your SPA? Hi_Score is here to help with an architecture guide, starter files, and best-in-class libraries.",
   "keywords": [
     "spa",
@@ -15,8 +15,8 @@
   "main": "hi_score",
   "scripts": {
     "test": "node_modules/.bin/nodeunit test/nu_xhi.util.js",
-    "coveralls": "node_modules/.bin/jscoverage js && DO_COV=1 node_modules/.bin/nodeunit --reporter=lcov test/nu_xhi.util.js | node_modules/.bin/coveralls",
-    "coverage" : "node_modules/.bin/jscoverage js && DO_COV=1 node_modules/.bin/nodeunit --reporter=lcov test/nu_xhi.util.js > coverage/out.da; genhtml coverage/out.da -o coverage"
+    "coverage": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js",
+    "coveralls": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   "dependencies": {},
   "devDependencies": {
     "coveralls": "^2.11.14",
+    "istanbul": "^0.4.5",
     "jscoverage": "^0.6.0",
     "jslint": "^0.9.6",
     "node-inspector": "^0.12.5",

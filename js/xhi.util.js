@@ -272,7 +272,7 @@ xhi._util_ = (function () {
       consoleRef
       ;
 
-//#JSCOVERAGE_IF window
+    //#XSCOVERAGE_IF window
     // favor node console if available
     //noinspection UnusedCatchParameterJS
     try { consoleRef = global.console; }
@@ -284,7 +284,7 @@ xhi._util_ = (function () {
         throw '_cannot_find_console_function_';
       }
     }
-//#JSCOVERAGE_ENDIF
+    //#XSCOVERAGE_ENDIF
 
     function setLogLevel ( level_key ) {
       if ( ! levelXCmdMap[ level_key ] ) { return levelKey; }
