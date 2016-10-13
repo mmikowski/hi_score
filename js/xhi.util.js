@@ -272,10 +272,11 @@ xhi._util_ = (function () {
       consoleRef
       ;
 
-    //#XSCOVERAGE_IF window
     // favor node console if available
     //noinspection UnusedCatchParameterJS
+    /* istanbul ignore next */
     try { consoleRef = global.console; }
+    /* istanbul ignore next */
     catch ( error ) {
       if ( window ) {
         consoleRef = window.console;
@@ -284,7 +285,6 @@ xhi._util_ = (function () {
         throw '_cannot_find_console_function_';
       }
     }
-    //#XSCOVERAGE_ENDIF
 
     function setLogLevel ( level_key ) {
       if ( ! levelXCmdMap[ level_key ] ) { return levelKey; }
@@ -294,9 +294,7 @@ xhi._util_ = (function () {
       return levelKey;
     }
 
-    function getLogLevel () {
-      return levelKey;
-    }
+    function getLogLevel () { return levelKey; }
 
     // This follows syslog level conventions
     function logIt () {
@@ -322,23 +320,13 @@ xhi._util_ = (function () {
         arg_list[ vMap._unshift_ ]( level_key );
       }
 
-      if ( level_idx > levelIdx ) {
-        return __false;
-      }
-
-      level_cmd = levelXCmdMap[ level_key ];
-
-      // Some safety precautions
-      //
-      if ( ! consoleRef ) { return __false; }
-      if ( ! level_cmd  ) { return __false;  }
-      if ( ! consoleRef[ level_cmd ] ) {
-        level_cmd = levelXCmdMap._info_;
-        if ( ! consoleRef[ level_cmd ] ) { return __false; }
-      }
+      if ( level_idx > levelIdx ) { return __false; }
+      level_cmd = levelXCmdMap[ level_key ]
+        /* istanbul ignore next */ || 'error';
 
       // Try to log the best we know how
       //noinspection UnusedCatchParameterJS
+      /* istanbul ignore next */
       try {
         consoleRef[ level_cmd ][ vMap._apply_ ]( consoleRef, arg_list );
       }
@@ -431,7 +419,9 @@ xhi._util_ = (function () {
       match_fn, match_rx, lookup_map
       ;
 
-    match_fn = function ( key ) { return lookup_map[ key ] || __blank; };
+    match_fn = function ( key ) {
+      return lookup_map[ key ] /* istanbul ignore next */ || __blank;
+    };
 
     lookup_map = topCmap._encode_html_map_;
     match_rx   = do_exclude_amp
@@ -461,6 +451,7 @@ xhi._util_ = (function () {
   //
   getNowMs = (function () {
     var return_fn;
+    /* istanbul ignore else */
     if ( __Date[ vMap._hasOwnProp_ ]( vMap._now_ ) ) {
       return_fn = function () { return __Date[ vMap._now_ ](); };
     }

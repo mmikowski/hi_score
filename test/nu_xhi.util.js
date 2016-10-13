@@ -18,9 +18,8 @@
 
 //noinspection JSUnusedLocalSymbols
 var
-  env_name = 'DO_COV',
-  root_dir = process.env[ env_name ] ? '../js-cov/' : '../js/',
-  nuFn = function () { console.log( 'nu:' + this , arguments ); },
+  root_dir = '../js/',
+  nuFn     = function () { console.log( 'nu:' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
     done      : nuFn.bind( 'done'      ),
