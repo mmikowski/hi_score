@@ -80,9 +80,9 @@ We recommend you inspect your coverage submitting to GitHub.  To
 do so simply run the npm `cover` script, as shown below.
 
 ```bash
-$ cd hi_score
-$ npm run cover
-$ google-chrome coverage/lcov-report/index.html
+  $ cd hi_score
+  $ npm run cover
+  $ google-chrome coverage/lcov-report/index.html
 ```
 ### Coverage using coveralls.io
 After you commit you should submit your coverage report to
@@ -98,7 +98,7 @@ to confirm the results have been recorded.
 
 ### Coverage reference
 Below are the steps I used to get coverage working.
-Many thanks to Elliot Stokes who's [blog post][10] provided most of the
+Many thanks to Elliot Stokes who's [blog post][11] provided most of the
 information.
 
 #### 1. Install istanbul
@@ -162,23 +162,23 @@ If you want to contribute first fork the repository.  Then set it up for
 development:
 
 ```bash
-$ cd hi_score
-$ # Install development libs
-$ npm install
-$ # Install commit hook
-$ cd .git/hooks
-$ ln -s ../../bin/git-hook_pre-commit pre-commit
-$ cd ../../
+  $ cd hi_score
+  $ # Install development libs
+  $ npm install
+  $ # Install commit hook
+  $ cd .git/hooks
+  $ ln -s ../../bin/git-hook_pre-commit pre-commit
+  $ cd ../../
 
-$ # The following should run successfully
-$ npm test
-$ npm run cover
+  $ # The following should run successfully
+  $ npm test
+  $ npm run cover
 
-$ # you will need to set the .coveralls.yml token for this:
-$ npm run covera
+  $ # you will need to set the .coveralls.yml token for this:
+  $ npm run covera
 
-$ # You should see regression tests run
-$ git commit -a
+  $ # You should see regression tests run
+  $ git commit -a
 ```
 
 ## Release Notes
