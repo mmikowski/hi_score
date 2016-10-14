@@ -275,7 +275,6 @@ xhi._util_ = (function () {
     //noinspection UnusedCatchParameterJS
     /* istanbul ignore next */
     try { consoleRef = global.console; }
-    /* istanbul ignore next */
     catch ( error ) {
       if ( window ) {
         consoleRef = window.console;
