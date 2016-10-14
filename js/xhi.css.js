@@ -24,7 +24,7 @@ xhi._css_ = (function () {
     __true   = vMap._true_,
     __undef  = vMap._undef_,
     __Number = vMap._Number_,
-    __logObj = xhi._util_._getLogUtilObj_(),
+    __logObj = xhi._util_._getLogObj_(),
     __logIt  = __logObj._logIt_,
 
     topSmap = {

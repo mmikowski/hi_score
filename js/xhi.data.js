@@ -24,7 +24,7 @@ xhi._data_ = (function ( $ ) {
     __1     = nMap._1_,
     __blank = vMap._blank_,
 
-    __logObj = xhi._util_._getLogUtilObj_(),
+    __logObj = xhi._util_._getLogObj_(),
     __logIt  = __logObj._logIt_,
 
     topCmap = {},

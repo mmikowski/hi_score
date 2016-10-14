@@ -75,25 +75,26 @@ presently on the utilities.  You can run the tests at any time like so:
   $ npm test
 ```
 
+### Inspecting coverage
+We recommend you inspect your coverage submitting to GitHub.  To
+do so simply run the npm `cover` script, as shown below.
+
+```bash
+$ cd hi_score
+$ npm run cover
+$ google-chrome coverage/lcov-report/index.html
+```
 ### Coverage using coveralls.io
-For most people, the following will do the trick:
+After you commit you should submit your coverage report to
+coveralls.io.  Here are the steps:
 
 ```bash
   $ cd hi_score
   $ npm install
-  $ npm run coveralls
+  $ npm run covera
 ```
-
-And then point your browser to the hi_score [coverage page][10].
-
-### Coverage using local reporting
-Local coverage is handy and provides most of the same details as `coveralls.io`
-
-```bash
-$ cd hi_score
-$ npm run coverage
-$ google-chrome coverage/lcov-report/index.html
-```
+And then point your browser to the `hi_score` [coverage page][10]
+to confirm the results have been recorded.
 
 ### Coverage reference
 Below are the steps I used to get coverage working.
@@ -141,7 +142,7 @@ file with this information to the `.gitignore` file.
   $ cat 'repo_token: ---------your-token-here---------` > .coveralls.yaml
 ```
 
-Running `npm coveralls` will now publish to coveralls.io.  The detailed
+Running `npm covera` publishes to coveralls.io as shown above.  The detailed
 command is as follows:
 
 ```bash
@@ -153,25 +154,28 @@ command is as follows:
 ```
 
 ## Contribute!
-If you want to help out, like all npm modules this is hosted on
-GitHub. Any improvements or suggestions are welcome, especially when presented
+If you want to help out, like all npm modules this is hosted on GitHub.
+Any improvements or suggestions are welcome, especially when presented
 with a pull request :).
 
-If you want to contribute, please follow the following steps:
+If you want to contribute first fork the repository.  Then set it up for
+development:
 
 ```bash
 $ cd hi_score
-$ npm install # Install development libs
+$ # Install development libs
+$ npm install
+$ # Install commit hook
 $ cd .git/hooks
 $ ln -s ../../bin/git-hook_pre-commit pre-commit
 $ cd ../../
 
 $ # The following should run successfully
 $ npm test
-$ npm run coverage
+$ npm run cover
 
 $ # you will need to set the .coveralls.yml token for this:
-$ npm run coveralls
+$ npm run covera
 
 $ # You should see regression tests run
 $ git commit -a
@@ -199,6 +203,21 @@ MIT
 - (x) Replace `getDeepMapVal` and `setDeepMapVal` with much more powerful
   and tested `getStructData` and `setStructData` which empowers you with
   transversal and creation of arbitrary mixed list and map structures.
+- (x) Updates to `xhi._util_`:
+  - Remove `xhi._util_makeListPlus_`  and replaced with 
+    - getListValCount
+    - pushUniqueListVal
+    - rmListVal
+  - Change `_getBool_` behavior: it now returns the provided
+    value only if a true boolean, the alternate value is provided otherwise.
+  - Rename `_getLogUtilObj_` to `xhi._getLogObj_`.
+    Returns the log object singleton as before.
+  - Change `log_obj._setLogLevel_` behavior: it now returns log level
+    as set (was true or false).
+  - Add more resiliant argument handling.
+  - Move `_encodeHtml_` from `xhi._utilb_.js`.
+  - Add limited key map capability to `_mergeMaps_`.
+  - Delete `_setCmap_` as it was redunant with `_mergeMaps_`.
 
 ### Version 0.4.x (current)
 - (x) Replaced `jscoverage` with much more complete and recent `istanbul` for code coverage

@@ -54,7 +54,7 @@ xhi._util_ = (function () {
     topSmap, topCmap, // State and config maps are set in initModule
 
     getNowMs,     getVarType,  getBasename,
-    getDirname,   logUtilObj,  makeGuidStr,
+    getDirname,   logObj,  makeGuidStr,
     makeTmpltStr
     ;
   // ================== END MODULE SCOPE VARIABLES ====================
@@ -107,9 +107,8 @@ xhi._util_ = (function () {
   // END Public prereq method /getVarType/
 
   // BEGIN Public prereq method /getBool/
-  // Purpose   : Returns a boolean.  If the value is undef
-  //   AND a alternate value is provided, returns the alternate
-  //   value.
+  // Purpose   : Returns a boolean.  If the value is not a
+  //   true boolean, returns the alternate value.
   //
   function getBool( data, alt_data ) {
     if ( arguments[ __length ] >= __2 ) {
@@ -242,8 +241,8 @@ xhi._util_ = (function () {
   // ====================== END PRIVATE METHODS =======================
 
   // ===================== BEGIN UTILITY METHODS ======================
-  // BEGIN define logUtilObj singleton
-  logUtilObj = (function () {
+  // BEGIN define logObj singleton
+  logObj = (function () {
     var
       levelXCmdMap = {
         _emerg_  : 'error',
@@ -355,7 +354,7 @@ xhi._util_ = (function () {
       _logIt_       : logIt
     };
   }());
-  // END define logUtilObj singleton
+  // END define logObj singleton
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PREREQ METHODS =======================
@@ -528,7 +527,7 @@ xhi._util_ = (function () {
     KEY: for ( idx = __0; idx < key_count; idx++ ) {
       key = key_list[ idx ];
       if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
-        logUtilObj._logIt_( '_warn_', '_key_not_supported_' );
+        logObj._logIt_( '_warn_', '_key_not_supported_' );
         continue KEY;
       }
       base_map[ key ] = clone_map[ key ];
@@ -647,9 +646,9 @@ xhi._util_ = (function () {
   }
   // END Public method /getListValCount/
 
-  // BEGIN Public method /getLogUtilObj/
-  function getLogUtilObj () { return logUtilObj; }
-  // END Public method /getlogUtilObj/
+  // BEGIN Public method /getLogObj/
+  function getLogObj () { return logObj; }
+  // END Public method /getlogObj/
 
   // BEGIN Public method /getStructData/
   // Purpose   : Get a deep structure attribute value
@@ -676,7 +675,7 @@ xhi._util_ = (function () {
       ;
 
     if ( key_count > __100 ) {
-      logUtilObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
+      logObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
       return __undef;
     }
 
@@ -1660,7 +1659,7 @@ xhi._util_ = (function () {
     _getListAttrMap_  : getListAttrMap,
     _getListDiff_     : getListDiff,
     _getListValCount_ : getListValCount,
-    _getLogUtilObj_   : getLogUtilObj,
+    _getLogObj_       : getLogObj,
     _getNowMs_        : getNowMs,
     _getNumSign_      : getNumSign,
     _getStructData_   : getStructData,

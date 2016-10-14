@@ -82,7 +82,7 @@ function setLogLevel ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    log_obj      = __util._getLogUtilObj_(),
+    log_obj      = __util._getLogObj_(),
 
     idx,        expect_list, arg_list,
     expect_str, solve_str,   msg_str

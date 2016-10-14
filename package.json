@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Are you ready to get off the framework-of-the-month treadmill and take control of your SPA? Hi_Score is here to help with an architecture guide, starter files, and best-in-class libraries.",
   "keywords": [
     "spa",
@@ -15,8 +15,8 @@
   "main": "hi_score",
   "scripts": {
     "test": "node_modules/.bin/nodeunit test/nu_xhi.util.js",
-    "coverage": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js",
-    "coveralls": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
+    "cover": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js",
+    "covera": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",

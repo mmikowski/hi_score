@@ -17,7 +17,7 @@ xhi.fake = (function () {
   'use strict';
   //noinspection MagicNumberJS
   var
-    __logObj = xhi._util_._getLogUtilObj_(),
+    __logObj = xhi._util_._getLogObj_(),
     __logIt  = __logObj._logIt_
     ;
   // ================== END MODULE SCOPE VARIABLES =====================
