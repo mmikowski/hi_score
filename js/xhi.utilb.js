@@ -32,17 +32,16 @@ xhi._utilb_ = (function ( $ ) {
 
     __0      = nMap._0_,
     __1      = nMap._1_,
-    __10     = nMap._10_,
 
     __util   = xhi._util_,
 
-    // Add as needed __getObjType, __getBool,  __getVarType
-    __getFn   = __util._getFn_,
-    __getInt  = __util._getInt_,
-    __getNum  = __util._getNum_,
-    __getList = __util._getList_,
-    __getMap  = __util._getMap_,
-    __getStr  = __util._getStr_,
+    // Add as needed __castObj, __castBool, __getVarType
+    __castFn   = __util._castFn_,
+    __castInt  = __util._castInt_,
+    __castNum  = __util._castNum_,
+    __castList = __util._castList_,
+    __castMap  = __util._castMap_,
+    __castStr  = __util._castStr_,
 
     onBufferReady
     ;
@@ -61,7 +60,7 @@ xhi._utilb_ = (function ( $ ) {
   // See http://stackoverflow.com/questions/1912501/\
   //   unescape-html-entities-in-javascript
   function decodeHtml ( arg_str ) {
-    var str = __getStr( arg_str, __blank );
+    var str = __castStr( arg_str, __blank );
     return $('<div></div>').html(str||__blank).text();
   }
   // END Public method /decodeHtml/
@@ -69,7 +68,7 @@ xhi._utilb_ = (function ( $ ) {
   // BEGIN Public method /fillForm/
   function fillForm ( arg_$form, arg_map ) {
     var
-      lookup_map = __getMap( arg_map, {} ),
+      lookup_map = __castMap( arg_map, {} ),
       $form      = getJquery( arg_$form )
       ;
 
@@ -105,13 +104,13 @@ xhi._utilb_ = (function ( $ ) {
 
     switch ( data_type ) {
       case 'number':
-        solve_data = __getNum( parseFloat( input_str ), __0 );
+        solve_data = __castNum( input_str, __0 );
         break;
       case 'integer':
-        solve_data = __getInt( parseInt( input_str, __10 ), __0 );
+        solve_data = __castInt( input_str, __0 );
         break;
       default:
-        solve_data = input_str;
+        solve_data = __castStr( input_str, __blank );
         break;
     }
     return solve_data;
@@ -205,10 +204,10 @@ xhi._utilb_ = (function ( $ ) {
   // BEGIN Public method /makeOptionHtml/
   function makeOptionHtml ( arg_map ) {
     var
-      input_map   = __getMap( arg_map, {} ),
-      select_str  = __getStr(  input_map._select_str_, __blank ),
-      title_map   = __getMap(  input_map._title_map_,       {} ),
-      value_list  = __getList( input_map._value_list_,      [] ),
+      input_map   = __castMap( arg_map, {} ),
+      select_str  = __castStr(  input_map._select_str_, __blank ),
+      title_map   = __castMap(  input_map._title_map_,       {} ),
+      value_list  = __castList( input_map._value_list_,      [] ),
       html_str    = __blank,
 
       idx, value_str, title_text
@@ -279,7 +278,7 @@ xhi._utilb_ = (function ( $ ) {
 
     function onBuf ( arg_fn ) {
       var
-        callback_fn = __getFn( arg_fn ),
+        callback_fn = __castFn( arg_fn ),
         img_el, s_obj;
 
       if ( ! bodyEl ) {
@@ -316,7 +315,7 @@ xhi._utilb_ = (function ( $ ) {
   function resizeTextarea ( arg_$textarea, arg_max_ht_px ) {
     var
       $textarea     = getJquery( arg_$textarea ),
-      max_ht_px     = __getInt( arg_max_ht_px, 400 ),
+      max_ht_px     = __castInt( arg_max_ht_px, 400 ),
 
       scroll_ht_px  = $textarea[ vMap._prop_ ]( vMap._scrollHeight_ ),
       outer_ht_px   = $textarea[ vMap._outerHeight_](),

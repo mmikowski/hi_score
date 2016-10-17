@@ -106,113 +106,113 @@ xhi._util_ = (function () {
   }());
   // END Public prereq method /getVarType/
 
-  // BEGIN Public prereq method /getBool/
+  // BEGIN Public prereq method /castBool/
   // Purpose   : Returns a boolean.  If the value is not a
   //   true boolean, returns the alternate value.
   //
-  function getBool( data, alt_data ) {
+  function castBool( data, alt_data ) {
     if ( arguments[ __length ] >= __2 ) {
       if ( data === __true || data === __false ) { return data; }
       return alt_data;
     }
     return !! data;
   }
-  // END Public prereq method /getBool/
+  // END Public prereq method /castBool/
 
-  // BEGIN Public prereq method /getFn/
+  // BEGIN Public prereq method /castFn/
   // Purpose   : Returns a boolean, always
   //   If data is false or falsey, returns false
   //   Otherwise returns true.
   //
-  function getFn ( data, alt_data ) {
+  function castFn ( data, alt_data ) {
     var var_type = getVarType( data );
     return var_type === '_Function_' ? data : alt_data;
   }
+  // END Public prereq method /castFn/
 
-  // END Public prereq method /getBool/
-  // BEGIN Public prereq method /getInt/
+  // BEGIN Public prereq method /castInt/
   // Purpose   : Returns an integer from any data provided.
   //   If a number, returns the number rounded to nearest int.
   //   If a string, returns the number rep rounded to nearest int.
   //   Any other value returns the alt_data provided
   //
-  function getInt ( data, alt_data ) {
+  function castInt ( data, alt_data ) {
     var
       var_type = getVarType( data ),
       num      = var_type === '_Number_'
         ? data : var_type === '_String_'
-        ? __Str( data ) : __undef
+        ? parseInt( data, 10 ) : __undef
         ;
     if ( isNaN( num ) ) { return alt_data; }
     return __floor( num + __d5 );
   }
-  // END Public prereq method /getInt/
+  // END Public prereq method /castInt/
 
-  // BEGIN Public prereq method /getList/
+  // BEGIN Public prereq method /castList/
   // Purpose   : Returns a map from any provided data.
   //   If an array, returns the data unchanged.
   //   Any other value returns the alt_data provided
   //
-  function getList ( data, alt_data ) {
+  function castList ( data, alt_data ) {
     var var_type = getVarType( data );
     return var_type === '_Array_'
       ? data : alt_data;
   }
-  // END Public prereq method /getList/
+  // END Public prereq method /castList/
 
-  // BEGIN Public prereq method /getMap/
+  // BEGIN Public prereq method /castMap/
   // Purpose   : Returns a map from any provided data.
   //   If an object, returns the data unchanged.
   //   Any other value returns the alt_data provided
   //
-  function getMap ( data, alt_data ) {
+  function castMap ( data, alt_data ) {
     var var_type = getVarType( data );
     return var_type === '_Object_'
       ? data : alt_data;
   }
-  // END Public prereq method /getMap/
+  // END Public prereq method /castMap/
 
-  // BEGIN Public prereq method /getNum/
+  // BEGIN Public prereq method /castNum/
   // Purpose   : Returns an number from any data provided.
   //   If a number, returns the number rounded to nearest int.
   //   If a string, returns the number rep rounded to nearest int.
   //   Any other value returns the alt_data provided
   //
-  function getNum ( data, alt_data ) {
+  function castNum ( data, alt_data ) {
     var var_type = getVarType( data ), num;
-    if ( var_type === '_Number_' ) { return data; }
-    if ( var_type === '_String_' ) {
-      num = __Num( data );
-    }
+    num = var_type === '_Number_'
+      ? data : var_type === '_String_'
+      ? parseFloat( data ) : __undef
+      ;
     return isNaN( num ) ? alt_data : num;
   }
-  // END Public prereq method /getNum/
+  // END Public prereq method /castNum/
 
-  // BEGIN Public prereq method /getObjType/
+  // BEGIN Public prereq method /castObj/
   // Purpose   : Returns a map from any provided data.
   //   If an object, returns the data unchanged.
   //   Any other value returns the alt_data provided
   //
-  function getObjType ( obj_type, data, alt_data ) {
+  function castObj ( obj_type, data, alt_data ) {
     var var_type = getVarType( data );
     return var_type === obj_type
       ? data : alt_data;
   }
-  // END Public prereq method /getObjType/
+  // END Public prereq method /castObj/
 
-  // BEGIN Public prereq method /getStr/
+  // BEGIN Public prereq method /castStr/
   // Purpose   : Returns a string from any provided data.
   //   If a string, returns the string unchanged.
   //   If a number, creates a string
   //   Any other value the alt_data provided
   //
-  function getStr ( data, alt_data ) {
+  function castStr ( data, alt_data ) {
     var var_type = getVarType( data );
     return var_type === '_String_'
       ? data : var_type === '_Number_'
       ? __Str( data ) : alt_data;
   }
-  // END Public prereq method /getStr/
+  // END Public prereq method /castStr/
 
   // BEGIN private method /getTzDateObj/
   // Purpose   : Returns a date object singleton for use by Tz methods
@@ -228,8 +228,8 @@ xhi._util_ = (function () {
   // BEGIN Public prereq method /makeScrubStr/
   function makeScrubStr ( arg_str, arg_do_space ) {
     var
-      raw_str    = getStr( arg_str, __blank ),
-      do_space   = getBool( arg_do_space ),
+      raw_str    = castStr( arg_str, __blank ),
+      do_space   = castBool( arg_do_space ),
       interm_str = do_space
         ? raw_str[ vMap._replace_ ]( topCmap._tag_end_rx_, ' ' )
         : raw_str;
@@ -360,7 +360,7 @@ xhi._util_ = (function () {
   // BEGIN Public prereq method /clearMap/
   function clearMap ( arg_map ) {
     var
-      input_map = getMap( arg_map ),
+      input_map = castMap( arg_map ),
 
       key_list, key_count, idx, key;
 
@@ -411,8 +411,8 @@ xhi._util_ = (function () {
   //
   function encodeHtml ( arg_str, arg_do_exclude_amp ) {
     var
-      source_str     = getStr(  arg_str, __blank   ),
-      do_exclude_amp = getBool( arg_do_exclude_amp ),
+      source_str     = castStr(  arg_str, __blank   ),
+      do_exclude_amp = castBool( arg_do_exclude_amp ),
 
       match_fn, match_rx, lookup_map
       ;
@@ -465,8 +465,8 @@ xhi._util_ = (function () {
   //
   function makePadNumStr( arg_num, arg_count ) {
     var
-      num   = getNum( arg_num,   __undef ),
-      count = getInt( arg_count, __undef ),
+      num   = castNum( arg_num,   __undef ),
+      count = castInt( arg_count, __undef ),
 
       sign_int, num_str, zero_count;
 
@@ -496,8 +496,8 @@ xhi._util_ = (function () {
   // Example   : makeRxObj( '\s*hello\s*', 'i' );
   function makeRxObj ( arg_pattern_str, arg_option_str ) {
     var
-      pattern_str = getStr( arg_pattern_str, __blank ),
-      option_str  = getStr( arg_option_str,  __blank )
+      pattern_str = castStr( arg_pattern_str, __blank ),
+      option_str  = castStr( arg_option_str,  __blank )
       ;
 
     if ( option_str ) {
@@ -512,9 +512,9 @@ xhi._util_ = (function () {
   //
   function mergeMaps( arg_base_map, arg_extend_map, arg_attr_list ) {
     var
-      base_map   = getMap(  arg_base_map,   {} ),
-      extend_map = getMap(  arg_extend_map, {} ),
-      attr_list  = getList( arg_attr_list ),
+      base_map   = castMap(  arg_base_map,   {} ),
+      extend_map = castMap(  arg_extend_map, {} ),
+      attr_list  = castList( arg_attr_list ),
 
       clone_map  = cloneData( extend_map ),
       key_list   = __keys( clone_map ),
@@ -548,8 +548,8 @@ xhi._util_ = (function () {
   function getBaseDirname( arg_path_str, arg_delim_str ) {
     var
       context_str = this,
-      path_str    = getStr( arg_path_str, __blank ),
-      delim_str   = getStr( arg_delim_str, '/'    ),
+      path_str    = castStr( arg_path_str, __blank ),
+      delim_str   = castStr( arg_delim_str, '/'    ),
       rx_obj      = context_str === '_base_'
         ? makeRxObj( '([^'  + delim_str + ']*)$' )
         : makeRxObj( '^(.*' + delim_str + ')[^' + delim_str + ']*$' ),
@@ -568,8 +568,8 @@ xhi._util_ = (function () {
   // BEGIN Public method /getListAttrIdx/
   function getListAttrIdx ( arg_map_list, arg_key, data ) {
     var
-      map_list = getList( arg_map_list, [] ),
-      key      = getStr(  arg_key, __blank ),
+      map_list = castList( arg_map_list, [] ),
+      key      = castStr(  arg_key, __blank ),
 
       map_count = map_list[ __length ],
       found_idx  = __n1,
@@ -592,7 +592,7 @@ xhi._util_ = (function () {
   // BEGIN Public methd /getListAttrMap/
   function getListAttrMap ( arg_list, key_name, key_val ) {
     var
-      list     = getList( arg_list, [] ),
+      list     = castList( arg_list, [] ),
       list_idx = getListAttrIdx( list, key_name, key_val );
     return list_idx > __n1 ? list[ list_idx ] : __undef;
   }
@@ -610,8 +610,8 @@ xhi._util_ = (function () {
   //
   function getListDiff ( arg0_list, arg1_list ) {
     var
-      first_list  = getList( arg0_list, [] ),
-      second_list = getList( arg1_list, [] ),
+      first_list  = castList( arg0_list, [] ),
+      second_list = castList( arg1_list, [] ),
       list_1, list_2
       ;
 
@@ -632,7 +632,7 @@ xhi._util_ = (function () {
   // BEGIN Public method /getListValCount/
   function getListValCount ( arg_list, arg_data ) {
     var
-      input_list  = getList( arg_list, [] ),
+      input_list  = castList( arg_list, [] ),
       input_count = input_list[ __length ],
       match_count = __0,
       idx;
@@ -666,7 +666,7 @@ xhi._util_ = (function () {
   function getStructData ( base_struct, arg_path_list ) {
     var
       walk_struct = base_struct,
-      path_list   = getList( arg_path_list, [] ),
+      path_list   = castList( arg_path_list, [] ),
       is_good     = __true,
       key_count   = path_list[ vMap._length_ ],
 
@@ -683,10 +683,10 @@ xhi._util_ = (function () {
       struct_type = getVarType( walk_struct );
       switch ( struct_type ) {
         case '_Array_' :
-          key = getInt( raw_key );
+          key = castInt( raw_key );
           break;
         case '_Object_' :
-          key = getStr( raw_key );
+          key = castStr( raw_key );
           break;
         default :
           key = __undef;
@@ -708,7 +708,7 @@ xhi._util_ = (function () {
   // BEGIN Public method /getTzOffsetMs/
   function getTzOffsetMs ( arg_do_recalc ) {
     var
-      do_recalc = getBool( arg_do_recalc, __false ),
+      do_recalc = castBool( arg_do_recalc, __false ),
       date_obj  = getTzDateObj();
 
     if ( do_recalc || topSmap._tz_offset_ms_ === __undef ) {
@@ -740,7 +740,7 @@ xhi._util_ = (function () {
     // See https://github.com/petkaantonov/bluebird/wiki/\
     //   Optimization-killers#3-managing-arguments
     var
-      src_obj    = getObjType( 'Arguments', arg_obj, {} ),
+      src_obj    = castObj( 'Arguments', arg_obj, {} ),
       arg_count  = src_obj[ __length ],
       solve_list = [],
       idx;
@@ -770,8 +770,8 @@ xhi._util_ = (function () {
   //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
     var
-      time_ms   = getInt( arg_time_ms, __0 ),
-      show_idx  = getInt( arg_show_idx, __0 ),
+      time_ms   = castInt( arg_time_ms, __0 ),
+      show_idx  = castInt( arg_show_idx, __0 ),
       sec_ms    = topCmap._sec_ms_,
       min_sec   = topCmap._min_sec_,
       hrs_min   = topCmap._hrs_min_,
@@ -823,11 +823,11 @@ xhi._util_ = (function () {
   // Example: str =
   function makeCommaNumStr ( arg_map ) {
     var
-      input_map       = getMap( arg_map, {} ),
-      input_num       = getNum( input_map._input_num_, __0 ),
-      round_limit_exp = getInt( input_map._round_limit_exp_, __3 ),
-      round_unit_exp  = getInt( input_map._round_unit_exp_,  __3 ),
-      round_unit_str  = getStr( input_map._round_unit_str_,  'k' ),
+      input_map       = castMap( arg_map, {} ),
+      input_num       = castNum( input_map._input_num_, __0 ),
+      round_limit_exp = castInt( input_map._round_limit_exp_, __3 ),
+      round_unit_exp  = castInt( input_map._round_unit_exp_,  __3 ),
+      round_unit_str  = castStr( input_map._round_unit_str_,  'k' ),
       round_dec_count = input_map._round_dec_count_  || __1,
 
       round_limit_num = vMap._Math_.pow( __10, round_limit_exp  ),
@@ -881,11 +881,11 @@ xhi._util_ = (function () {
   //
   function makeDateStr ( arg_map ) {
     var
-      input_map = getMap(  arg_map, {} ),
-      do_time   = getBool( input_map._do_time_, __false ),
-      date_ms   = getInt(  input_map._date_ms_, __undef ),
+      input_map = castMap(  arg_map, {} ),
+      do_time   = castBool( input_map._do_time_, __false ),
+      date_ms   = castInt(  input_map._date_ms_, __undef ),
 
-      date_obj  = getObjType( 'Date', input_map._date_obj_ ),
+      date_obj  = castObj( 'Date', input_map._date_obj_ ),
       mns       = makePadNumStr,
 
       yrs_int,   mon_int,   day_int,
@@ -950,10 +950,10 @@ xhi._util_ = (function () {
   //
   function makeEllipsisStr( arg_map ) {
     var
-      input_map     = getMap( arg_map, {} ),
+      input_map     = castMap( arg_map, {} ),
       scrub_str     = makeScrubStr( input_map._input_str_, __false ),
-      limit_int     = getInt(  input_map._char_limit_int_,     __0 ),
-      do_word_break = getBool( input_map._do_word_break_,   __true ),
+      limit_int     = castInt(  input_map._char_limit_int_,     __0 ),
+      do_word_break = castBool( input_map._do_word_break_,   __true ),
       scrub_count   = scrub_str[ __length ],
 
       word_list,   word_count,
@@ -1075,9 +1075,9 @@ xhi._util_ = (function () {
     function getArgList   (          ) { return argList;                  }
     function getMapFn     (          ) { return mapFn;                    }
     function getResultMap (          ) { return resultMap;                }
-    function setArgList   ( arg_list ) { argList   = getList( arg_list ); }
-    function setMapFn     ( map_fn   ) { mapFn     = getFn(   map_fn   ); }
-    function setResultMap ( rmap     ) { resultMap = getMap(  rmap     ); }
+    function setArgList   ( arg_list ) { argList   = castList( arg_list ); }
+    function setMapFn     ( map_fn   ) { mapFn     = castFn(   map_fn   ); }
+    function setResultMap ( rmap     ) { resultMap = castMap(  rmap     ); }
 
     function invokeFn ( field_data, idx, list ) {
       var ret_list, ret_key, ret_data;
@@ -1114,8 +1114,8 @@ xhi._util_ = (function () {
   //
   function makePctStr ( arg_ratio, arg_dcount ) {
     var
-      ratio  = getNum( arg_ratio,  __0 ),
-      dcount = getNum( arg_dcount, __0 )
+      ratio  = castNum( arg_ratio,  __0 ),
+      dcount = castNum( arg_dcount, __0 )
       ;
 
     dcount = dcount < __0 ? __0 : __floor( dcount );
@@ -1129,7 +1129,7 @@ xhi._util_ = (function () {
   //
   function makeSeenMap ( arg_key_list, arg_seen_data ) {
     var
-      key_list  = getList( arg_key_list, [] ),
+      key_list  = castList( arg_key_list, [] ),
       key_count = key_list[ vMap._length_ ],
 
       solve_data = arg_seen_data === __undef ? __true : arg_seen_data,
@@ -1150,12 +1150,12 @@ xhi._util_ = (function () {
   // into a single string
   function makeStrFromMap ( arg_map ) {
     var
-      input_map = getMap(  arg_map, {} ),
-      prop_map  = getMap(  input_map._prop_map_, {} ),
-      key_list  = getList( input_map._key_list_, [] ),
-      delim_str = getStr( input_map._delim_str_, ' ' ),
-      label_delim_str = getStr( input_map._label_delim_str_, ': ' ),
-      label_map = getMap( input_map._label_map_, __undef ),
+      input_map = castMap(  arg_map, {} ),
+      prop_map  = castMap(  input_map._prop_map_, {} ),
+      key_list  = castList( input_map._key_list_, [] ),
+      delim_str = castStr( input_map._delim_str_, ' ' ),
+      label_delim_str = castStr( input_map._label_delim_str_, ': ' ),
+      label_map = castMap( input_map._label_map_, __undef ),
 
       do_label   = !! ( label_map || input_map._do_label_ ),
       key_count  = key_list[ __length ],
@@ -1166,11 +1166,11 @@ xhi._util_ = (function () {
 
     for ( idx = __0; idx < key_count; idx++ ) {
       prop_key  = key_list[ idx ];
-      prop_str  = getStr( prop_map[ prop_key ], __blank );
+      prop_str  = castStr( prop_map[ prop_key ], __blank );
       if ( prop_str !== __blank ) {
         if ( do_label ) {
           if ( label_map ) {
-            label_str = getStr( label_map[ prop_key ], __blank );
+            label_str = castStr( label_map[ prop_key ], __blank );
             prop_str  = label_str + label_delim_str + prop_str;
           }
           else {
@@ -1238,11 +1238,11 @@ xhi._util_ = (function () {
   //
   function makeSeriesMap( arg_map ) {
     var
-      input_map    = getMap( arg_map, {} ),
-      tz_offset_ms = getInt( input_map._tz_offset_ms_, __0 ),
-      max_ms       = getInt( input_map._max_ms_ - tz_offset_ms, __0 ),
-      min_ms       = getInt( input_map._min_ms_ - tz_offset_ms, __0 ),
-      tgt_count    = getInt( input_map._tgt_count_ ),
+      input_map    = castMap( arg_map, {} ),
+      tz_offset_ms = castInt( input_map._tz_offset_ms_, __0 ),
+      max_ms       = castInt( input_map._max_ms_ - tz_offset_ms, __0 ),
+      min_ms       = castInt( input_map._min_ms_ - tz_offset_ms, __0 ),
+      tgt_count    = castInt( input_map._tgt_count_ ),
 
       date_obj     = new Date(),
       offset_str   = makeClockStr( tz_offset_ms ),
@@ -1379,14 +1379,14 @@ xhi._util_ = (function () {
             || __blank;
         }
       );
-      return getStr( return_data, __blank );
+      return castStr( return_data, __blank );
     }
 
     function mainFn ( arg_map ) {
       var
-        input_map  = getMap( arg_map, {} ),
-        input_str  = getStr( input_map._input_str_, __blank  ),
-        lookup_map = getMap( input_map._lookup_map_,      {} ),
+        input_map  = castMap( arg_map, {} ),
+        input_str  = castStr( input_map._input_str_, __blank  ),
+        lookup_map = castMap( input_map._lookup_map_,      {} ),
         tmplt_rx   = input_map._tmplt_rx_ || topCmap._tmplt_rx_,
         bound_fn   = lookupFn.bind( lookup_map )
         ;
@@ -1399,7 +1399,7 @@ xhi._util_ = (function () {
   // BEGIN Public method /makeUcFirstStr/
   function makeUcFirstStr ( arg_str ) {
     var
-      str    = getStr( arg_str, __blank ),
+      str    = castStr( arg_str, __blank ),
       uc_str = str.charAt( __0 ).toUpperCase()
       ;
     return uc_str + str[ vMap._substr_ ]( __1 );
@@ -1421,10 +1421,10 @@ xhi._util_ = (function () {
   //
   function pollFunction ( arg_fn, arg_ms, arg_count, arg_finish_fn ) {
     var
-      poll_fn   = getFn(  arg_fn ),
-      ms        = getInt( arg_ms,        __0    ),
-      count     = getInt( arg_count,     __null ),
-      finish_fn = getFn(  arg_finish_fn, __null ),
+      poll_fn   = castFn(  arg_fn ),
+      ms        = castInt( arg_ms,        __0    ),
+      count     = castInt( arg_count,     __null ),
+      finish_fn = castFn(  arg_finish_fn, __null ),
       idx     = __0,
       main_fn
       ;
@@ -1450,7 +1450,7 @@ xhi._util_ = (function () {
 
   // BEGIN Public method /pushUniqListVal/
   function pushUniqListVal ( arg_list, data ) {
-    var input_list = getList( arg_list, [] );
+    var input_list = castList( arg_list, [] );
     if ( input_list[ vMap._indexOf_ ]( data ) === __n1 ) {
       input_list[ __push ]( data );
     }
@@ -1460,7 +1460,7 @@ xhi._util_ = (function () {
   // BEGIN Public method /rmListVal/
   function rmListVal ( arg_list, arg_data ) {
     var
-      input_list   = getList( arg_list, [] ),
+      input_list   = castList( arg_list, [] ),
       input_count  = input_list[ __length ],
       rm_count     = __0,
       idx;
@@ -1517,7 +1517,7 @@ xhi._util_ = (function () {
   function setStructData ( arg_base_struct, arg_path_list, val_data ) {
     var
       base_struct = arg_base_struct,
-      path_list   = getList( arg_path_list, [] ),
+      path_list   = castList( arg_path_list, [] ),
       path_count  = path_list[ vMap._length_ ],
       last_idx    = path_count - __1,
       walk_struct = base_struct,
@@ -1532,7 +1532,7 @@ xhi._util_ = (function () {
       raw_key      = path_list[ idx ];
       raw_next_key = path_list[ idx + __1 ];
       struct_type  = getVarType( walk_struct );
-      int_key      = getInt( raw_key );
+      int_key      = castInt( raw_key );
 
       if ( raw_key === __null ) {
         if ( struct_type !== '_Array_' ) {
@@ -1545,7 +1545,7 @@ xhi._util_ = (function () {
         solve_key = int_key;
       }
       else {
-        solve_key = getStr( raw_key );
+        solve_key = castStr( raw_key );
         if ( ! solve_key ) {
           is_good = __false;
           break SET_KEY;
@@ -1558,7 +1558,7 @@ xhi._util_ = (function () {
       }
 
       if ( ! walk_struct[ vMap._hasOwnProp_ ]( solve_key ) ) {
-        int_next_key = getInt( raw_next_key );
+        int_next_key = castInt( raw_next_key );
         if ( raw_next_key === __null || int_next_key !== __undef ) {
           walk_struct[ solve_key ] = [];
         }
@@ -1640,14 +1640,14 @@ xhi._util_ = (function () {
   // END initialize module
 
   return {
-    _getBool_         : getBool,
-    _getFn_           : getFn,
-    _getInt_          : getInt,
-    _getList_         : getList,
-    _getMap_          : getMap,
-    _getNum_          : getNum,
-    _getObjType_      : getObjType,
-    _getStr_          : getStr,
+    _castBool_ : castBool,
+    _castFn_   : castFn,
+    _castInt_  : castInt,
+    _castList_ : castList,
+    _castMap_  : castMap,
+    _castNum_  : castNum,
+    _castObj_  : castObj,
+    _castStr_  : castStr,
 
     _clearMap_        : clearMap,
     _cloneData_       : cloneData,
