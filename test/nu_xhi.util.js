@@ -108,6 +108,14 @@ function setLogLevel ( test_obj ) {
   test_obj.done();
 }
 
+function castJQ( test_obj ) {
+  var cast_jq = __util._castJQ_;
+  test_obj.expect(1);
+
+  test_obj.ok( cast_jq( {} ) === __undef );
+  test_obj.done();
+}
+
 function clearMap( test_obj ) {
   //noinspection JSUnusedGlobalSymbols
   var
@@ -1248,6 +1256,23 @@ function makeRadioHtml ( test_obj ) {
         + '1</label>'
         + '<label><input type="radio" name="fred" value="2"/>2</label>'
         + '<label><input type="radio" name="fred" value="3"/>3</label>'
+      ],
+      [ { _group_name_ : 'bs', _match_str_: __null,
+          _val_list_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
+            '6', 'gal', 'pal', __undef ]
+          },
+        '<label><input type="radio" name="bs" value="6"/>6</label>'
+        + '<label><input type="radio" name="bs" value="gal"/>Gal</label>'
+        + '<label><input type="radio" name="bs" value="pal"/>Pal</label>'
+      ],
+      [ { _group_name_ : 'bs', _match_str_: 'gal',
+         _val_list_: [ '6', 'gal', 'pal' ],
+         _label_map_ : { 6 : 'Six', gal: 'Girl', pal : 'Friend' }
+      },
+        '<label><input type="radio" name="bs" value="6"/>Six</label>'
+        + '<label><input type="radio" name="bs" value="gal" '
+          + 'checked="checked"/>Girl</label>'
+        + '<label><input type="radio" name="bs" value="pal"/>Friend</label>'
       ]
     ],
 
@@ -2126,6 +2151,7 @@ function setStructData ( test_obj ) {
 // setStructData( mockTestObj );
 
 module.exports = {
+  _castJQ_          : castJQ,
   _setLogLevel_     : setLogLevel,
   _clearMap_        : clearMap,
   _cloneData_       : cloneData,

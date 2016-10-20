@@ -285,9 +285,15 @@ MIT
   - Add limited key map capability to `_mergeMaps_`.
   - Delete `_setCmap_` as it was redunant with `_mergeMaps_`.
 
-### Version 0.4.x (current)
-- (x) Replaced `jscoverage` with much more complete and recent `istanbul` for code coverage
+### Version 0.4.x
+- (x) Replac `jscoverage` with much more complete and recent `istanbul` for code coverage
+- (x) Added `cast` routines and write up their use
+- (x) Consolidate utilities to increase coverate
+- (x) Update lite-box using `cast` methods
+
+### Version 0.5.x (current)
 - More sophisticated sample application
+- Continued regression test expansion
 
 ## Similar Projects
 [absurd.js][12], [responsive.js][13]

@@ -151,6 +151,7 @@ xhi._util_ = (function () {
   // BEGIN Public prereq method /castJQ/
   function castJQ ( data, alt_data ) {
     if ( topSmap._has_jq_ ) {
+      /* istanbul ignore next */
       return ( data && data instanceof jQuery ) ? data : alt_data;
     }
     return alt_data;
