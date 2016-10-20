@@ -480,26 +480,36 @@ xhi._util_ = (function () {
   // END Public prereq method /getNowMs/
 
   // BEGIN Public method /makeOptionHtml/
+  // Arguments :
+  //    * _select_list_ : (opt) List of values to be of selected
+  //      This is useful for multi-select fields.
+  //    * _title_map_   : (opt) val_x_title map
+  //    * _val_list_    : (opt) List of values to process
+  // Output    :
+  //    * List of options as used in a select statement
   function makeOptionHtml ( arg_map ) {
     var
       input_map   = castMap(  arg_map, {} ),
-      select_str  = castStr(  input_map._select_str_, __blank ),
-      title_map   = castMap(  input_map._title_map_,       {} ),
-      value_list  = castList( input_map._value_list_,      [] ),
-      value_count = value_list[ __length ],
+      label_map   = castMap(  input_map._label_map_,   {} ),
+      select_list = castList( input_map._select_list_, [] ),
+      val_list    = castList( input_map._val_list_,  [] ),
+      val_count   = val_list[ __length ],
       html_str    = __blank,
 
-      idx, value_str, title_text
+      idx, val_data, val_str, label_str
       ;
 
-    for ( idx = __0; idx < value_count; idx++ ) {
-      value_str  = castStr( value_list[ idx ], __blank );
-      title_text = title_map[ value_str ] || makeUcFirstStr( value_str );
-      html_str   += '<option value="' + value_str + '"';
-      if ( value_str === select_str ) {
+    OPTION: for ( idx = __0; idx < val_count; idx++ ) {
+      val_data = val_list[ idx ];
+      val_str  = castStr( val_data, __blank );
+      if ( val_str === __blank ) { continue OPTION; }
+      label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
+
+      html_str += '<option value="' + val_str + '"';
+      if ( select_list[ vMap._indexOf_ ]( val_data ) !== __n1 ) {
         html_str += ' selected="selected"';
       }
-      html_str += '>' + title_text + '</option>';
+      html_str += '>' + label_str + '</option>';
     }
     return html_str;
   }
@@ -553,8 +563,10 @@ xhi._util_ = (function () {
       idx, val_str, label_str
       ;
 
-    for ( idx = __0; idx < val_count; idx++ ) {
-      val_str    = val_list[ idx ];
+    RADIO: for ( idx = __0; idx < val_count; idx++ ) {
+      val_str   = castStr( val_list[ idx ], __blank );
+      if ( val_str === __blank ) { continue RADIO; }
+
       label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
 
       html_str

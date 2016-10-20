@@ -1092,8 +1092,31 @@ function makeOptionHtml ( test_obj ) {
       [ -35,         __blank ],
       [ [],          __blank ],
       [ [ 1,2,3,4],  __blank ],
-      [ {},          __blank ]
-      // TODO: add more!
+      [ {},          __blank ],
+      [ { _val_list_ : [ 1 ] }, '<option value="1">1</option>' ],
+      [ { _val_list_ : [ 1 ], _label_map_ : { 1 : 'One' } },
+        '<option value="1">One</option>'
+      ],
+      [ { _val_list_  : [ 'rosey', 'betty' ],
+          _label_map_   : { 'rosey' : 'The Rose' },
+          _select_list_ : [ 'betty' ]
+        },
+        '<option value="rosey">The Rose</option>'
+        + '<option value="betty" selected="selected">Betty</option>'
+      ],
+      [ { _val_list_  : [ 'rosey', 'betty', 'debauch',
+          { cow: null }, [ 32 ], __undef, 99, 865, -22, __null
+         ],
+          _label_map_   : { 'debauch' : 'De Bauch Airy' },
+          _select_list_ : [ 'debauch', -22 ]
+        },
+        '<option value="rosey">Rosey</option>'
+        + '<option value="betty">Betty</option>'
+        + '<option value="debauch" selected="selected">De Bauch Airy</option>'
+        + '<option value="99">99</option>'
+        + '<option value="865">865</option>'
+        + '<option value="-22" selected="selected">-22</option>'
+      ]
     ],
 
     assert_count = assert_list.length,
@@ -1204,6 +1227,47 @@ function makePctStr ( test_obj ) {
     expect_str  = expect_list[ __1 ];
     solve_str = make_str_fn.apply( __undef, arg_list );
     msg_str    = __Str( idx ) + '. ' + solve_str + ' === ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
+function makeRadioHtml ( test_obj ) {
+  var
+    assert_list  = [
+      // [ arg_map, expect_data ]
+      [ __undef,     __blank ],
+      [ __null,      __blank ],
+      [ -35,         __blank ],
+      [ [],          __blank ],
+      [ [ 1,2,3,4],  __blank ],
+      [ {},          __blank ],
+      [ { _group_name_ : 'fred', _match_str_:1, _val_list_: [1,2,3]},
+        '<label>'
+        + '<input type="radio" name="fred" value="1" checked="checked"/>'
+        + '1</label>'
+        + '<label><input type="radio" name="fred" value="2"/>2</label>'
+        + '<label><input type="radio" name="fred" value="3"/>3</label>'
+      ]
+    ],
+
+    assert_count = assert_list.length,
+    make_str_fn  = __util._makeRadioHtml_,
+
+    idx,        expect_list, arg_map,
+    expect_str, solve_str,   msg_str
+    ;
+
+  test_obj.expect( assert_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_map     = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str   = make_str_fn( arg_map );
+    msg_str    = __Str( idx ) + '. '
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
+
     test_obj.ok( solve_str === expect_str, msg_str );
   }
   test_obj.done();
@@ -1796,6 +1860,7 @@ function makeUcFirstStr ( test_obj ) {
 }
 
 function mergeMaps ( test_obj ) {
+  //noinspection JSUnusedGlobalSymbols
   var
     base0_map = { attr1 : 'val1', attr2 : 'val2' },
     base1_map = { attr3 : 10,     attr4 : 20     },
@@ -2086,6 +2151,7 @@ module.exports = {
   _makeOptionHtml_  : makeOptionHtml,
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
+  _makeRadioHtml_   : makeRadioHtml,
   _makeScrubStr_    : makeScrubStr,
   _makeSeenMap_     : makeSeenMap,
   _makeSeriesMap_   : makeSeriesMap,
