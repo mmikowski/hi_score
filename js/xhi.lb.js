@@ -34,6 +34,13 @@ xhi._lb_ = (function ( $ ) {
     __setTo   = vMap._fnSetTimeout_,
     __clearTo = vMap._fnClearTimeout_,
 
+    __util     = xhi._util_,
+    __castBool = __util._castBool_,
+    __castFn   = __util._castFn_,
+    __castInt  = __util._castInt_,
+    __castMap  = __util._castMap_,
+    __castStr  = __util._castStr_,
+
     topSmap = {
       _cleanup_fn_   : __undef,  // Clean up function (bound)
       _cleanup_toid_ : __undef,  // Clean up timeout id
@@ -51,16 +58,17 @@ xhi._lb_ = (function ( $ ) {
     topCmap = {
       _trans_ms_  : 350, // transition time
       _main_html_ : __blank
-        + '<div id="xhi-_lb_mask_" class="xhi-_lb_mask_abs_"></div>'
-        + '<div id="xhi-_lb_spin_" class="xhi-_lb_spin_fixed_">'
+        + '<div id="xhi-_lb_mask_" class="xhi-_lb_mask_"></div>'
+        + '<div id="xhi-_lb_spin_" class="xhi-_lb_spin_">'
           + '&#xf021;'
         + '</div>'
         + '<div id="xhi-_lb_"></div>',
-      _spin_html_ : '<div class="xhi-_lb_spin_abs_">'
+      _spin_html_ : '<div class="xhi-_lb_spin_ xhi-_x_local_">'
         + '&#xf021;</div>',
       _local_tmplt_ : __blank
-        + '<div class="xhi-_lb_mask_abs_ xhi-_x_active_"></div>'
-        + '<div class="xhi-_lb_spin_abs_ xhi-_x_active_">&#xf021;</div>',
+        + '<div class="xhi-_lb_mask_ xhi-_x_local_ xhi-_x_active_"></div>'
+        + '<div class="xhi-_lb_spin_ xhi-_x_local_ xhi-_x_active_">'
+          + '&#xf021;</div>',
       _success_tmplt_ : __blank
         + '<div class="xhi-_lb_success_">'
           + '<div class="xhi-_lb_success_title_">'
@@ -349,10 +357,23 @@ xhi._lb_ = (function ( $ ) {
       $litebox      = $Map._$litebox_,
       $mask         = $Map._$mask_,
 
-      layout_key    = arg_map._layout_key_    || '_top_',
-      mod_class_str = arg_map._mod_class_str_ || __blank,
-      lb_class_str  = arg_map._lb_class_str_  || __blank,
-      do_mask       = arg_map._do_mask_ === __false ? __false : __true,
+      close_html    = __castStr(  arg_map._close_html_,    __blank ),
+      content_html  = __castStr( arg_map._content_html_ )
+        || topCmap._spin_html_,
+      layout_key    = __castStr(  arg_map._layout_key_ )   || '_top_',
+      lb_class_str  = __castStr(  arg_map._lb_class_str_ ) || 'xhi-_lb_',
+      mod_class_str = __castStr(  arg_map._mod_class_str_, __blank ),
+      title_html    = __castStr(  arg_map._title_html_,    __blank ),
+
+      autoclose_ms  = __castInt(  arg_map._autoclose_ms_ ),
+      position_map  = __castMap(  arg_map._position_map_ ),
+
+      do_bclick     = __castBool( arg_map._do_block_click_, __false ),
+      do_draggable  = __castBool( arg_map._do_draggable_,    __true ),
+      do_mask       = __castBool( arg_map._do_mask_,         __true ),
+      do_tclose     = __castBool( arg_map._do_title_close_,  __true ),
+      onclose_fn    = __castFn(   arg_map._onclose_fn_,      __null ),
+
       do_sizing     = __true,
 
       css_map,    inner_html,
@@ -371,12 +392,12 @@ xhi._lb_ = (function ( $ ) {
     }
 
     // Fill litebox content with desired layout
-    inner_html = xhi._util_._makeTmpltStr_({
+    inner_html = __util._makeTmpltStr_({
       _input_str_ : topCmap._tmplt_map_[ layout_key ],
       _lookup_map_ : {
-        _close_html_   : arg_map._close_html_   || __blank,
-        _content_html_ : arg_map._content_html_ || topCmap._spin_html_,
-        _title_html_   : arg_map._title_html_   || __blank
+        _close_html_   : close_html,
+        _content_html_ : content_html,
+        _title_html_   : title_html
       }
     });
     $litebox.html( inner_html );
@@ -393,23 +414,23 @@ xhi._lb_ = (function ( $ ) {
     $content.find( '.xhi-_lb_spin_' )[ vMap._addClass_ ]( 'xhi-_x_active_' );
 
     // Store close button function
-    topSmap._onclose_fn_ = arg_map._onclose_fn_ || null;
+    topSmap._onclose_fn_ = onclose_fn;
 
     // Hide or show close button
-    if ( arg_map._close_html_ ) {
+    if ( close_html ) {
       $close[ vMap._css_ ]( cssKmap._display_, cssVmap._block_  )[
         vMap._on_  ]( vMap._utap_, closeIt );
     }
 
     // Tap-on-title to close support
-    if ( arg_map._do_title_close_ && $title ) {
+    if ( do_tclose && $title ) {
       $title[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
         vMap._on_  ]( vMap._utap_, closeIt );
     }
 
     // Configure mask tap
     if ( do_mask ) {
-      if ( arg_map._do_block_click_ ) {
+      if ( do_bclick ) {
         $mask[ vMap._addClass_ ]( 'xhi-_lb_x_noclick_' );
         $mask[ vMap._off_ ]( vMap._utap_, closeIt );
       }
@@ -420,24 +441,22 @@ xhi._lb_ = (function ( $ ) {
     }
 
     // Autoclose if requested
-    if ( arg_map._autoclose_ms_ ) {
-      topSmap._close_toid_ = __setTo( closeIt, arg_map._autoclose_ms_ );
+    if ( autoclose_ms ) {
+      topSmap._close_toid_ = __setTo( closeIt, autoclose_ms );
     }
 
     // Handle position map
-    if ( arg_map._position_map_ ) {
-      css_map   = arg_map._position_map_;
+    if ( position_map ) {
+      css_map   = position_map;
       do_sizing = __false;
-      if ( ! lb_class_str ) { lb_class_str = 'xhi-_lb_abs_'; }
     }
     else {
       css_map = { top : '-100%', left : '-100%' };
-      if ( ! lb_class_str ) { lb_class_str = 'xhi-_lb_abs_'; }
     }
     css_map.display = cssVmap._block_;
 
     // Set specified class (or xhi-_lb_ default)
-    $litebox[ vMap._addClass_ ]( lb_class_str );
+    $litebox[ vMap._addClass_ ]( lb_class_str  );
     $litebox[ vMap._addClass_ ]( mod_class_str );
     topSmap._lb_class_str_  = lb_class_str;
     topSmap._mod_class_str_ = mod_class_str;
@@ -456,7 +475,7 @@ xhi._lb_ = (function ( $ ) {
     $litebox[ vMap._css_ ]( css_map )[ vMap._show_ ]( bound_fn );
 
     // Coordinate draggable if requested
-    coordDraggable( $title, arg_map._do_draggable_ );
+    coordDraggable( $title, do_draggable );
 
     topSmap._is_busy_ = __true;
     return $litebox;
@@ -549,7 +568,7 @@ xhi._lb_ = (function ( $ ) {
     var content_html;
     initModule();
 
-    content_html = xhi._util_._makeTmpltStr_({
+    content_html = __util._makeTmpltStr_({
       _input_str_  : topCmap._success_tmplt_,
       _lookup_map_ : { _success_msg_ : msg_text }
     });
@@ -569,13 +588,13 @@ xhi._lb_ = (function ( $ ) {
     error_count = error_list[ vMap._length_ ];
     for ( i = __0; i < error_count; i++ ) {
       error_map = error_list[ i ];
-      rows_html += xhi._util_._makeTmpltStr_({
+      rows_html += __util._makeTmpltStr_({
         _input_str_  : topCmap._erow_tmplt_,
         _lookup_map_ : error_map
       });
     }
 
-    error_html = xhi._util_._makeTmpltStr_({
+    error_html = __util._makeTmpltStr_({
       _input_str_  : topCmap._error_tmplt_,
       _lookup_map_ : { _rows_html_ : rows_html }
     });

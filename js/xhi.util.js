@@ -10,7 +10,7 @@
   regexp : true,  sloppy : true,     vars : false,
    white : true,    todo : true,  unparam : true
 */
-/*global xhi */
+/*global jQuery, xhi*/
 
 xhi._util_ = (function () {
   'use strict';
@@ -148,6 +148,15 @@ xhi._util_ = (function () {
   }
   // END Public prereq method /castInt/
 
+  // BEGIN Public prereq method /castJQ/
+  function castJQ ( data, alt_data ) {
+    if ( topSmap._has_jq_ ) {
+      return ( data && data instanceof jQuery ) ? data : alt_data;
+    }
+    return alt_data;
+  }
+  // END Public preq method /castJQ/
+
   // BEGIN Public prereq method /castList/
   // Purpose   : Returns a map from any provided data.
   //   If an array, returns the data unchanged.
@@ -225,10 +234,20 @@ xhi._util_ = (function () {
   }
   // END private method /getTzDateObj/
 
+  // BEGIN Public prereq method /makeUcFirstStr/
+  function makeUcFirstStr ( arg_str ) {
+    var
+      str    = castStr( arg_str, __blank ),
+      uc_str = str.charAt( __0 ).toUpperCase()
+      ;
+    return uc_str + str[ vMap._substr_ ]( __1 );
+  }
+  // END Public prereq method /makeUcFirstStr/
+
   // BEGIN Public prereq method /makeScrubStr/
   function makeScrubStr ( arg_str, arg_do_space ) {
     var
-      raw_str    = castStr( arg_str, __blank ),
+      raw_str    = castStr(  arg_str, __blank ),
       do_space   = castBool( arg_do_space ),
       interm_str = do_space
         ? raw_str[ vMap._replace_ ]( topCmap._tag_end_rx_, ' ' )
@@ -460,6 +479,32 @@ xhi._util_ = (function () {
   }());
   // END Public prereq method /getNowMs/
 
+  // BEGIN Public method /makeOptionHtml/
+  function makeOptionHtml ( arg_map ) {
+    var
+      input_map   = castMap(  arg_map, {} ),
+      select_str  = castStr(  input_map._select_str_, __blank ),
+      title_map   = castMap(  input_map._title_map_,       {} ),
+      value_list  = castList( input_map._value_list_,      [] ),
+      value_count = value_list[ __length ],
+      html_str    = __blank,
+
+      idx, value_str, title_text
+      ;
+
+    for ( idx = __0; idx < value_count; idx++ ) {
+      value_str  = castStr( value_list[ idx ], __blank );
+      title_text = title_map[ value_str ] || makeUcFirstStr( value_str );
+      html_str   += '<option value="' + value_str + '"';
+      if ( value_str === select_str ) {
+        html_str += ' selected="selected"';
+      }
+      html_str += '>' + title_text + '</option>';
+    }
+    return html_str;
+  }
+  // END Public method /makeOptionHtml/
+
   // BEGIN Public prereq method /makePadNumStr/
   // Example: makePadNumStr( 25, 3 ) return '025';
   //
@@ -490,6 +535,39 @@ xhi._util_ = (function () {
     return num_str;
   }
   // END Public method /makePadNumStr/
+
+  // BEGIN Public method /makeRadioHtml/
+  // Purpose: make a an array of checkboxes from a list
+  //
+  function makeRadioHtml ( arg_map ) {
+    var
+      input_map  = castMap(  arg_map, {} ),
+      group_name = castStr(  input_map._group_name_ ),    // name=...
+      match_str  = castStr(  input_map._match_str_  ),    // Selected val
+      val_list   = castList( input_map._val_list_,  [] ), // Vals in order
+      label_map  = castMap(  input_map._label_map_, {} ), // Labels
+
+      val_count  = val_list[ __length ],
+      html_str   = __blank,
+
+      idx, val_str, label_str
+      ;
+
+    for ( idx = __0; idx < val_count; idx++ ) {
+      val_str    = val_list[ idx ];
+      label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
+
+      html_str
+        += '<label>'
+          + '<input type="radio" name="' + group_name
+          + '" value="' + val_str + '"'
+          ;
+       if ( val_str === match_str ) { html_str += ' checked="checked"'; }
+       html_str += '/>' + label_str + '</label>';
+    }
+    return html_str;
+  }
+  // END Public method /makeRadioHtml/
 
   // BEGIN Public method /makeRxObj/
   // Purpose   : Create a regular expression object
@@ -539,7 +617,7 @@ xhi._util_ = (function () {
   // ===================== BEGIN PUBLIC METHODS =======================
   // BEGIN utilities /getBasename/ and /getDirname/
   // Purpose   : Returns the last bit of a path
-  // Example   : getBasename('/Common/_demo99/192.168.11_97_demo1')
+  // Example   : getBasename('/Common/demo99/192.168.11_97_demo1')
   //             returns '192.168.11.97_demo1'
   // Arguments : (positional)
   //   1 - (required) Path string
@@ -765,12 +843,12 @@ xhi._util_ = (function () {
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
-  //       tz_offset_ms = __util._getTzOffsetMs_(),
+  //       tz_offset_ms = xhi._util_._getTzOffsetMs_(),
   //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
     var
-      time_ms   = castInt( arg_time_ms, __0 ),
+      time_ms   = castInt( arg_time_ms,  __0 ),
       show_idx  = castInt( arg_show_idx, __0 ),
       sec_ms    = topCmap._sec_ms_,
       min_sec   = topCmap._min_sec_,
@@ -824,7 +902,7 @@ xhi._util_ = (function () {
   function makeCommaNumStr ( arg_map ) {
     var
       input_map       = castMap( arg_map, {} ),
-      input_num       = castNum( input_map._input_num_, __0 ),
+      input_num       = castNum( input_map._input_num_,       __0 ),
       round_limit_exp = castInt( input_map._round_limit_exp_, __3 ),
       round_unit_exp  = castInt( input_map._round_unit_exp_,  __3 ),
       round_unit_str  = castStr( input_map._round_unit_str_,  'k' ),
@@ -951,7 +1029,7 @@ xhi._util_ = (function () {
   function makeEllipsisStr( arg_map ) {
     var
       input_map     = castMap( arg_map, {} ),
-      scrub_str     = makeScrubStr( input_map._input_str_, __false ),
+      scrub_str     = makeScrubStr( input_map._input_str_,  __false ),
       limit_int     = castInt(  input_map._char_limit_int_,     __0 ),
       do_word_break = castBool( input_map._do_word_break_,   __true ),
       scrub_count   = scrub_str[ __length ],
@@ -1396,16 +1474,6 @@ xhi._util_ = (function () {
   }());
   // END Public method /makeTmpltStr/
 
-  // BEGIN Public method /makeUcFirstStr/
-  function makeUcFirstStr ( arg_str ) {
-    var
-      str    = castStr( arg_str, __blank ),
-      uc_str = str.charAt( __0 ).toUpperCase()
-      ;
-    return uc_str + str[ vMap._substr_ ]( __1 );
-  }
-  // END Public method /makeUcFirstStr/
-
   // BEGIN Public method /pollFunction/
   // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
   //   either <arg_count> number of times or until the function
@@ -1422,7 +1490,7 @@ xhi._util_ = (function () {
   function pollFunction ( arg_fn, arg_ms, arg_count, arg_finish_fn ) {
     var
       poll_fn   = castFn(  arg_fn ),
-      ms        = castInt( arg_ms,        __0    ),
+      ms        = castInt( arg_ms,           __0 ),
       count     = castInt( arg_count,     __null ),
       finish_fn = castFn(  arg_finish_fn, __null ),
       idx     = __0,
@@ -1635,19 +1703,27 @@ xhi._util_ = (function () {
         { _str_ : '1wk',   _ms_ : 86400000*7, _show_idx_ : __2 }
       ]
     };
+    /* istanbul ignore next */
+    try {
+      topSmap._has_jq_ = !! jQuery;
+    }
+    catch ( error ) {
+      topSmap._has_jq_ = __false;
+    }
   }
   initModule();
   // END initialize module
 
   return {
-    _castBool_ : castBool,
-    _castFn_   : castFn,
-    _castInt_  : castInt,
-    _castList_ : castList,
-    _castMap_  : castMap,
-    _castNum_  : castNum,
-    _castObj_  : castObj,
-    _castStr_  : castStr,
+    _castBool_        : castBool,
+    _castFn_          : castFn,
+    _castInt_         : castInt,
+    _castJQ_          : castJQ,
+    _castList_        : castList,
+    _castMap_         : castMap,
+    _castNum_         : castNum,
+    _castObj_         : castObj,
+    _castStr_         : castStr,
 
     _clearMap_        : clearMap,
     _cloneData_       : cloneData,
@@ -1673,8 +1749,10 @@ xhi._util_ = (function () {
     _makeErrorObj_    : makeErrorObj,
     _makeGuidStr_     : makeGuidStr,
     _makeMapUtilObj_  : makeMapUtilObj,
+    _makeOptionHtml_  : makeOptionHtml,
     _makePadNumStr_   : makePadNumStr,
     _makePctStr_      : makePctStr,
+    _makeRadioHtml_   : makeRadioHtml,
     _makeRxObj_       : makeRxObj,
     _makeScrubStr_    : makeScrubStr,
     _makeSeenMap_     : makeSeenMap,

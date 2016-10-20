@@ -24,7 +24,6 @@ xhi._utilb_ = (function ( $ ) {
     cssKmap  = pcss._cfg_._cssKeyMap_,
     cssVmap  = pcss._cfg_._cssValMap_,
 
-    __Str    = vMap._String_,
     __blank  = vMap._blank_,
     __docRef = vMap._document_,
     __false  = vMap._false_,
@@ -35,11 +34,11 @@ xhi._utilb_ = (function ( $ ) {
 
     __util   = xhi._util_,
 
-    // Add as needed __castObj, __castBool, __getVarType
+    // Add as needed __castBool, __castList, __castObj,  __getVarType
+    __castJQ   = __util._castJQ_,
     __castFn   = __util._castFn_,
     __castInt  = __util._castInt_,
     __castNum  = __util._castNum_,
-    __castList = __util._castList_,
     __castMap  = __util._castMap_,
     __castStr  = __util._castStr_,
 
@@ -49,9 +48,6 @@ xhi._utilb_ = (function ( $ ) {
   // ================== END MODULE SCOPE VARIABLES ====================
 
   // ===================== BEGIN UTILITY METHODS ======================
-  function getJquery( $obj ) {
-    return ( $obj && $obj instanceof $ ) ? $obj : $();
-  }
   // ====================== END UTILITY METHODS =======================
 
   // ===================== BEGIN PUBLIC METHODS =======================
@@ -69,9 +65,10 @@ xhi._utilb_ = (function ( $ ) {
   function fillForm ( arg_$form, arg_map ) {
     var
       lookup_map = __castMap( arg_map, {} ),
-      $form      = getJquery( arg_$form )
+      $form      = __castJQ( arg_$form )
       ;
 
+    if ( ! $form ) { return; }
     $.each( lookup_map, function ( k, v ) {
       $form.find('[name=' + k + ']').each(function() {
         var
@@ -96,11 +93,14 @@ xhi._utilb_ = (function ( $ ) {
   // BEGIN Public method /fixInputByType/
   function fixInputByType ( arg_$input ) {
     var
-      $elem     = getJquery( arg_$input ),
-      input_str = $elem[ vMap._val_ ][ vMap._trim_ ](),
-      data_type = $elem[ vMap._attr_ ]( 'data-type' ),
-      solve_data
+      $elem     = __castJQ( arg_$input ),
+      input_str, data_type, solve_data
       ;
+
+    if ( ! $elem ) { return; }
+
+    input_str = $elem[ vMap._val_ ][ vMap._trim_ ]();
+    data_type = $elem[ vMap._attr_ ]( 'data-type' );
 
     switch ( data_type ) {
       case 'number':
@@ -120,8 +120,10 @@ xhi._utilb_ = (function ( $ ) {
   // BEGIN Public method /getFormMap/
   function getFormMap ( arg_$form ) {
     var
-      $form = getJquery( arg_$form ),
+      $form    = __castJQ( arg_$form ),
       form_map = {};
+
+    if ( ! $form ) { return; }
 
     $form
       .find( 'input:not(:disabled):not(.xhi-_x_ignore_):not(td  > input)' )
@@ -160,9 +162,9 @@ xhi._utilb_ = (function ( $ ) {
     $form
       .find( 'table' )
       .each( function() {
-        var table = $( this ), table_name = table.attr('data-name');
+        var $table = $( this ), table_name = $table.attr('data-name');
         form_map[ table_name ] = [];
-        table
+        $table
           .find( 'tbody tr' )
           .each( function() {
             var row_obj, $input, input_str,
@@ -201,66 +203,6 @@ xhi._utilb_ = (function ( $ ) {
   }
   // END Public method /getFormMap/
 
-  // BEGIN Public method /makeOptionHtml/
-  function makeOptionHtml ( arg_map ) {
-    var
-      input_map   = __castMap( arg_map, {} ),
-      select_str  = __castStr(  input_map._select_str_, __blank ),
-      title_map   = __castMap(  input_map._title_map_,       {} ),
-      value_list  = __castList( input_map._value_list_,      [] ),
-      html_str    = __blank,
-
-      idx, value_str, title_text
-      ;
-
-    for ( idx = __0; idx < value_list[ vMap._length_ ]; idx++ ) {
-      value_str  = __Str( value_list[ idx ] );
-      title_text = title_map[ value_str ]
-        || __util._makeUcFirstStr_( value_str );
-      html_str   += '<option value="' + value_str + '"';
-      if ( value_str === select_str ) {
-        html_str += ' selected="selected"';
-      }
-      html_str += '>' + title_text + '</option>';
-    }
-    return html_str;
-  }
-  // END Public method /_makeOptionHtml_/
-
-  // BEGIN Public method /_makeRadioHtml_/
-  // Purpose: make a an array of checkboxes from a list
-  //
-  function makeRadioHtml (
-    checked_value_str, // used for name="..." property for radios
-    arg_value_str,     // selected value
-    match_array,       // array of potential values
-    arg_title_map      // hash map of labels to values
-  ) {
-    var
-      html_str     = __blank,
-      title_map    = arg_title_map || {},
-      idx, match_str, title_text
-      ;
-    for ( idx = __0; idx < match_array[ vMap._length_ ]; idx++ ) {
-      match_str   = match_array[ idx ];
-      title_text     = title_map[ match_str ]
-        || __util._makeUcFirstStr_( match_str );
-
-      html_str
-        += '<label>'
-          + '<input type="radio" name="'
-            + checked_value_str
-          + '" value="' + match_str + '"'
-          ;
-       if ( match_str === arg_value_str ) {
-        html_str += ' checked="checked"';
-       }
-       html_str += '/>' + title_text + '</label>';
-    }
-    return html_str;
-  }
-  // END Public method /makeRadioHtml/
-
   // BEGIN Public method /onBufferReady/
   // Purpose : Executes a provided function only after the browser DOM
   //           has been updated.
@@ -287,7 +229,7 @@ xhi._utilb_ = (function ( $ ) {
       if ( ! ( callback_fn && bodyEl ) ) { return __false; }
 
       img_el = new Image();
-      s_obj  = img_el.style;
+      s_obj  = img_el[ vMap._style_ ];
 
       s_obj[ cssKmap._position_ ] = cssVmap._absolute_;
       s_obj[ cssKmap._left_     ] = cssVmap._0_;
@@ -314,13 +256,16 @@ xhi._utilb_ = (function ( $ ) {
   //
   function resizeTextarea ( arg_$textarea, arg_max_ht_px ) {
     var
-      $textarea     = getJquery( arg_$textarea ),
-      max_ht_px     = __castInt( arg_max_ht_px, 400 ),
+      $textarea = __castJQ( arg_$textarea ),
+      max_ht_px = __castInt( arg_max_ht_px, 400 ),
 
-      scroll_ht_px  = $textarea[ vMap._prop_ ]( vMap._scrollHeight_ ),
-      outer_ht_px   = $textarea[ vMap._outerHeight_](),
-      solve_ht_px
+      scroll_ht_px, outer_ht_px, solve_ht_px
       ;
+
+    if ( ! $textarea ) { return; }
+
+    scroll_ht_px  = $textarea[ vMap._prop_ ]( vMap._scrollHeight_ );
+    outer_ht_px   = $textarea[ vMap._outerHeight_]();
 
     if ( ( scroll_ht_px > outer_ht_px )
       || ( scroll_ht_px < outer_ht_px - 30 )
@@ -338,8 +283,6 @@ xhi._utilb_ = (function ( $ ) {
     _decodeHtml_     : decodeHtml,
     _fillForm_       : fillForm,
     _getFormMap_     : getFormMap,
-    _makeOptionHtml_ : makeOptionHtml,
-    _makeRadioHtml_  : makeRadioHtml,
     _onBufferReady_  : onBufferReady,
     _resizeTextarea_ : resizeTextarea
   };

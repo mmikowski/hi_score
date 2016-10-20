@@ -1083,6 +1083,41 @@ function makeMapUtilObj( test_obj ) {
   test_obj.done();
 }
 
+function makeOptionHtml ( test_obj ) {
+  var
+    assert_list  = [
+      // [ arg_map, expect_data ]
+      [ __undef,     __blank ],
+      [ __null,      __blank ],
+      [ -35,         __blank ],
+      [ [],          __blank ],
+      [ [ 1,2,3,4],  __blank ],
+      [ {},          __blank ]
+      // TODO: add more!
+    ],
+
+    assert_count = assert_list.length,
+    make_str_fn  = __util._makeOptionHtml_,
+
+    idx,        expect_list, arg_map,
+    expect_str, solve_str,   msg_str
+    ;
+
+  test_obj.expect( assert_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_map     = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str   = make_str_fn( arg_map );
+    msg_str    = __Str( idx ) + '. '
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
+
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
 function makePadNumStr( test_obj ) {
   var
     assert_list  = [
@@ -2048,6 +2083,7 @@ module.exports = {
   _makeErrorObj_    : makeErrorObj,
   _makeGuidStr_     : makeGuidStr,
   _makeMapUtilObj_  : makeMapUtilObj,
+  _makeOptionHtml_  : makeOptionHtml,
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
   _makeScrubStr_    : makeScrubStr,

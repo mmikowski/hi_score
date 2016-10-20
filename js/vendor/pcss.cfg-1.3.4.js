@@ -153,6 +153,7 @@ pcss._cfg_ = (function () {
       // 1px increments for 16px nominal font-size
       // VIM tip: I used visual-select and tac reverse order
       // :'<'>!tac
+      // to create negative values
       _n2rem_         : '-2rem',
       _n1rem_         : '-1rem',
       _nd9375rem_     : '-.9375rem', // 15px
@@ -195,11 +196,13 @@ pcss._cfg_ = (function () {
       _1d625rem_      : '1.625rem',
       _1d75rem_       : '1.75rem',
       _1d875rem_      : '1.875rem',
+
       // 4px increments for 16px nominal font-size
       _2rem_          : '2rem',
       _2d25rem_       : '2.25rem',
       _2d5rem_        : '2.5rem',
       _2d75rem_       : '2.75rem',
+
       // 8px increments for 16px nominal font-size
       _3rem_          : '3rem',
       _3d5rem_        : '3.5rem',
@@ -245,7 +248,7 @@ pcss._cfg_ = (function () {
       _ellipsis_      : 'ellipsis',
       _fixed_         : 'fixed',
       _font_fixed_    : 'courier new,courier,fixed,monospace',
-      _font_sans_     : 'arial,helvetica,sans-serif',
+      _font_sans_     : 'opensans,arial,helvetica,sans-serif',
       _hidden_        : 'hidden',
       _important_     : '!important',
       _inherit_       : 'inherit',
