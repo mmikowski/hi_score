@@ -15,12 +15,17 @@
 */
 /*global jQuery, pcss, xhi */
 
-xhi._utilb_ = (function ( $ ) {
+var __ns = 'xhi', __NS;
+/* istanbul ignore next */
+try { __NS = window[ __ns ]; }
+catch ( error ) { __NS = global[ __ns ]; }
+
+__NS._utilb_ = (function ( $ ) {
   'use strict';
   // ================= BEGIN MODULE SCOPE VARIABLES ===================
   var
-    nMap     = xhi._nMap_,
-    vMap     = xhi._vMap_,
+    nMap     = __NS._nMap_,
+    vMap     = __NS._vMap_,
     cssKmap  = pcss._cfg_._cssKeyMap_,
     cssVmap  = pcss._cfg_._cssValMap_,
 
@@ -32,7 +37,7 @@ xhi._utilb_ = (function ( $ ) {
     __0      = nMap._0_,
     __1      = nMap._1_,
 
-    __util   = xhi._util_,
+    __util   = __NS._util_,
 
     // Add as needed __castBool, __castList, __castObj,  __getVarType
     __castJQ   = __util._castJQ_,
@@ -126,7 +131,8 @@ xhi._utilb_ = (function ( $ ) {
     if ( ! $form ) { return; }
 
     $form
-      .find( 'input:not(:disabled):not(.xhi-_x_ignore_):not(td  > input)' )
+      .find( 'input:not(:disabled):not(.' + __ns
+        + '-_x_ignore_):not(td  > input)' )
       .each( function () {
         var
           $input     = $( this ),
