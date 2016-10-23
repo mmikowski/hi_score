@@ -32,6 +32,7 @@
   "devDependencies": {
     "coveralls": "^2.11.14",
     "istanbul": "^0.4.5",
+    "jsdom": "^9.8.0",
     "jslint": "^0.9.6",
     "node-inspector": "^0.12.5",
     "nodeunit": "^0.9.1",
