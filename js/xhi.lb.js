@@ -37,6 +37,7 @@ xhi._lb_ = (function ( $ ) {
     __util     = xhi._util_,
     __castBool = __util._castBool_,
     __castFn   = __util._castFn_,
+    __castJQ   = __util._castJQ_,
     __castInt  = __util._castInt_,
     __castMap  = __util._castMap_,
     __castStr  = __util._castStr_,
@@ -133,7 +134,9 @@ xhi._lb_ = (function ( $ ) {
   // END DOM method /initModule/
 
   // BEGIN DOM method /addLocalSpin/
-  function addLocalSpin( $box ) {
+  function addLocalSpin( arg_$box ) {
+    var $box = __castJQ( arg_$box );
+    if ( ! $box ) { return; }
     $box.html( topCmap._local_tmplt_);
   }
   // END DOM method /addLocalSpin/
@@ -163,7 +166,7 @@ xhi._lb_ = (function ( $ ) {
   // BEGIN DOM method /hideIt/
   // This clears the litebox content
   function hideIt () {
-    var param_map = {}, bound_fn;
+    var param_map = {}, clean_fn;
     initModule();
 
     if ( topSmap._close_toid_ ) {
@@ -179,9 +182,9 @@ xhi._lb_ = (function ( $ ) {
     $Map._$litebox_[ vMap._removeClass_ ]( 'xhi-_x_active_' );
     $Map._$mask_[    vMap._removeClass_ ]( 'xhi-_x_active_' );
 
-    bound_fn = cleanUp[ vMap._bind_ ]( param_map );
-    topSmap._cleanup_fn_   = bound_fn;
-    topSmap._cleanup_toid_ = __setTo( bound_fn, topCmap._trans_ms_ );
+    clean_fn = cleanUp[ vMap._bind_ ]( param_map );
+    topSmap._cleanup_fn_   = clean_fn;
+    topSmap._cleanup_toid_ = __setTo( clean_fn, topCmap._trans_ms_ );
     return $Map._$litebox_;
   }
   // END DOM method /hideIt/
@@ -356,23 +359,24 @@ xhi._lb_ = (function ( $ ) {
     var
       $litebox      = $Map._$litebox_,
       $mask         = $Map._$mask_,
+      input_map     = __castMap(  arg_map, {} ),
 
-      close_html    = __castStr(  arg_map._close_html_,    __blank ),
-      content_html  = __castStr( arg_map._content_html_ )
+      close_html    = __castStr(  input_map._close_html_,    __blank ),
+      content_html  = __castStr(  input_map._content_html_ )
         || topCmap._spin_html_,
-      layout_key    = __castStr(  arg_map._layout_key_ )   || '_top_',
-      lb_class_str  = __castStr(  arg_map._lb_class_str_ ) || 'xhi-_lb_',
-      mod_class_str = __castStr(  arg_map._mod_class_str_, __blank ),
-      title_html    = __castStr(  arg_map._title_html_,    __blank ),
+      layout_key    = __castStr(  input_map._layout_key_ )   || '_top_',
+      lb_class_str  = __castStr(  input_map._lb_class_str_ ) || 'xhi-_lb_',
+      mod_class_str = __castStr(  input_map._mod_class_str_, __blank ),
+      title_html    = __castStr(  input_map._title_html_,    __blank ),
 
-      autoclose_ms  = __castInt(  arg_map._autoclose_ms_ ),
-      position_map  = __castMap(  arg_map._position_map_ ),
+      autoclose_ms  = __castInt(  input_map._autoclose_ms_ ),
+      position_map  = __castMap(  input_map._position_map_ ),
 
-      do_bclick     = __castBool( arg_map._do_block_click_, __false ),
-      do_draggable  = __castBool( arg_map._do_draggable_,    __true ),
-      do_mask       = __castBool( arg_map._do_mask_,         __true ),
-      do_tclose     = __castBool( arg_map._do_title_close_,  __true ),
-      onclose_fn    = __castFn(   arg_map._onclose_fn_,      __null ),
+      do_bclick     = __castBool( input_map._do_block_click_, __false ),
+      do_draggable  = __castBool( input_map._do_draggable_,    __true ),
+      do_mask       = __castBool( input_map._do_mask_,         __true ),
+      do_tclose     = __castBool( input_map._do_title_close_,  __true ),
+      onclose_fn    = __castFn(   input_map._onclose_fn_,      __null ),
 
       do_sizing     = __true,
 
@@ -564,6 +568,7 @@ xhi._lb_ = (function ( $ ) {
   // ======================== END COORDINATORS =========================
 
   // =================== BEGIN PUBLIC METHODS =========================
+  // BEGIN showSuccess
   function showSuccess ( msg_text ) {
     var content_html;
     initModule();
@@ -578,6 +583,7 @@ xhi._lb_ = (function ( $ ) {
       size_map     : { width : 400, height : 200 }
     });
   }
+  // END showSuccess
 
   function showError ( error_list ) {
     var

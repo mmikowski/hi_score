@@ -38,6 +38,16 @@
    _input_map_      : map,
    _max_ms_         : num,
    _target_map_     : map,
-   _tgt_count_      : num
+   _tgt_count_      : num,
+
+
+   // xhi.lb.js argument keys
+   _do_block_click_ : bool,
+   _do_draggable_   : bool,
+   _do_title_close_ : bool,
+   _layout_key_     : str,
+   _autoclose_ms_   : int,
+   _position_map_   : map
+
  };
 }());
