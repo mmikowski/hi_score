@@ -4,22 +4,19 @@
  *
  * Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint           node : true, continue : true,
-  devel : true,  indent : 2,      maxerr : 50,
- newcap : true,   nomen : true, plusplus : true,
- regexp : true,  sloppy : true,     vars : false,
-  white : true,    todo : true,  unparam : true
+/*jslint             node : true, continue : true,
+    devel : true,  indent : 2,      maxerr : 50,
+   newcap : true,   nomen : true, plusplus : true,
+   regexp : true,  sloppy : true,     vars : false,
+    white : true,    todo : true,  unparam : true
 */
-/*global xhi, module, process */
+/*global xhi, module, process, window */
 
 // ================= BEGIN MODULE SCOPE VARIABLES ===================
-//noinspection MagicNumberJS
 'use strict';
-
-//noinspection JSUnusedLocalSymbols
 var
-  root_dir = '../js/',
-  nuFn     = function () { console.log( 'nu:' + this , arguments ); },
+  rootDir = '../js/',
+  nuFn    = function () { console.log( 'nu:' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
     done      : nuFn.bind( 'done'      ),
@@ -27,17 +24,22 @@ var
     ok        : nuFn.bind( 'ok'        ),
     test      : nuFn.bind( 'test'      )
   },
-  nMap, vMap, __Str, __blank, __false, __null, __true, __undef, __util,
+  __ns  = 'xhi',
+  __NS, nMap, vMap, __Str, __blank,
+  __false, __null, __true, __undef, __util,
   __n1, __0, __1, __2, __3, __4
   ;
 
-require( root_dir + 'xhi.js'      );
-require( root_dir + 'xhi.util.js' );
+require( rootDir + __ns + '.js'      );
+require( rootDir + __ns + '.util.js' );
 
-vMap = xhi._vMap_;
-nMap = xhi._nMap_;
+try { __NS = window[ __ns ]; }
+catch ( error ) { __NS = global[ __ns ]; }
 
-__util  = xhi._util_;
+vMap = __NS._vMap_;
+nMap = __NS._nMap_;
+
+__util  = __NS._util_;
 __blank = vMap._blank_;
 __false = vMap._false_;
 __null  = vMap._null_;
@@ -51,7 +53,6 @@ __1  = nMap._1_;
 __2  = nMap._2_;
 __3  = nMap._3_;
 __4  = nMap._4_;
-
 // ================== END MODULE SCOPE VARIABLES ====================
 
 // ==================== BEGIN UTILITY METHODS =======================
@@ -975,7 +976,7 @@ function makeEllipsisStr( test_obj ) {
 function makeErrorObj ( test_obj ) {
   var
     key_list     = [ 'name', 'description', 'data' ],
-    default_list = [ 'xhi:error', __blank, __undef ],
+    default_list = [ __ns + ':error', __blank, __undef ],
     assert_list = [
       // [ arg_list, expect_list ]
       [ [], default_list ],
@@ -989,13 +990,13 @@ function makeErrorObj ( test_obj ) {
       [ [ __null, __0, __undef ], default_list ],
       [ [ __undef, __null, __null ], default_list ],
       [ [ '' ], default_list ],
-      [ [ '_bad_data_' ], [ 'xhi:_bad_data_', __blank, __undef ] ],
-      [ [ __1 ], [ 'xhi:1', __blank, __undef ] ],
+      [ [ '_bad_data_' ], [ __ns + ':_bad_data_', __blank, __undef ] ],
+      [ [ __1 ], [ __ns + ':1', __blank, __undef ] ],
       [ [ '_bad_data_', '_the_list_is_missing_' ],
-        [ 'xhi:_bad_data_', '_the_list_is_missing_', __undef ]
+        [ __ns + ':_bad_data_', '_the_list_is_missing_', __undef ]
       ],
       [ [ '_bad_data_', '_the_list_is_missing_', { is : __true } ],
-        [ 'xhi:_bad_data_', '_the_list_is_missing_', { is : __true } ]
+        [ __ns + ':_bad_data_', '_the_list_is_missing_', { is : __true } ]
       ]
     ],
 

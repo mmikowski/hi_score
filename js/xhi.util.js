@@ -12,13 +12,18 @@
 */
 /*global jQuery, xhi*/
 
-xhi._util_ = (function () {
+var __ns = 'xhi', __NS;
+/* istanbul ignore next */
+try { __NS = window[ __ns ]; }
+catch ( error ) { __NS = global[ __ns ]; }
+
+__NS._util_ = (function () {
   'use strict';
   // ================= BEGIN MODULE SCOPE VARIABLES ===================
   //noinspection MagicNumberJS
   var
-    vMap      = xhi._vMap_,
-    nMap      = xhi._nMap_,
+    vMap      = __NS._vMap_,
+    nMap      = __NS._nMap_,
 
     __j2str   = vMap._JSON_[ vMap._stringify_],
     __jparse  = vMap._JSON_[ vMap._parse_ ],
@@ -856,7 +861,7 @@ xhi._util_ = (function () {
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
-  //       tz_offset_ms = xhi._util_._getTzOffsetMs_(),
+  //       tz_offset_ms = __NS._util_._getTzOffsetMs_(),
   //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
@@ -1094,7 +1099,7 @@ xhi._util_ = (function () {
       data = arg_data || __undef,
       error_obj = new Error();
 
-    error_obj.name        = 'xhi:' + name;
+    error_obj.name        = __ns + ':' + name;
     error_obj.description = msg;
     error_obj.data        = data;
     return error_obj;
