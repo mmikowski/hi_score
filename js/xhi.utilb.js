@@ -59,7 +59,7 @@ __NS._utilb_ = (function ( $ ) {
   //   unescape-html-entities-in-javascript
   function decodeHtml ( arg_str ) {
     var str = __castStr( arg_str, __blank );
-    return $('<div></div>').html(str||__blank).text();
+    return $('<div></div>')[ vMap._html_]( str )[ vMap._text_ ]();
   }
   // END Public method /decodeHtml/
 
