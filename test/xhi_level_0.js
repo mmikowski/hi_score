@@ -1,22 +1,24 @@
 /*
- * nu_xhi.util.js
- * Node unit test suite for xhi.util.js
+ * xhi.nu_util.js
+ * Node unit test suite for xhi.util.js and xhi.utilb.js
  *
  * Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint             node : true, continue : true,
-    devel : true,  indent : 2,      maxerr : 50,
-   newcap : true,   nomen : true, plusplus : true,
-   regexp : true,  sloppy : true,     vars : false,
-    white : true,    todo : true,  unparam : true
+/*jslint           node   : true, continue : true,
+   devel  : true,  indent : 2,    maxerr   : 50,
+   newcap : true,  nomen  : true, plusplus : true,
+   regexp : true,  sloppy : true, vars     : false,
+   white  : true,  todo   : true, unparam  : true
 */
-/*global xhi, module, process, window */
+/*global xhi, module, process, window, console */
 
 // ================= BEGIN MODULE SCOPE VARIABLES ===================
 'use strict';
+//noinspection JSUnusedLocalSymbols
 var
-  rootDir = '../js/',
-  nuFn    = function () { console.log( 'nu:' + this , arguments ); },
+  __ns    = 'xhi',
+  libDir = '../js/',
+  nuFn    = function () { console.log( __ns + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
     done      : nuFn.bind( 'done'      ),
@@ -24,22 +26,34 @@ var
     ok        : nuFn.bind( 'ok'        ),
     test      : nuFn.bind( 'test'      )
   },
-  __ns  = 'xhi',
-  __NS, nMap, vMap, __Str, __blank,
-  __false, __null, __true, __undef, __util,
+  jsdomObj = require( 'jsdom' ),
+  docRef   = jsdomObj.jsdom(),
+  winRef   = docRef.defaultView,
+  jQuery   = require( 'jquery' )( winRef ),
+
+  __NS, nMap, vMap, __Str, __blank, __false,
+  __null, __true, __undef, __util, __utilb,
   __n1, __0, __1, __2, __3, __4
   ;
 
-require( rootDir + __ns + '.js'      );
-require( rootDir + __ns + '.util.js' );
+global.window   = winRef;
+global.document = docRef;
+global.jQuery   = jQuery;
+global.$        = jQuery;
 
-try { __NS = window[ __ns ]; }
-catch ( error ) { __NS = global[ __ns ]; }
+global.pcss = require( libDir + 'vendor/pcss-1.3.5.js' ).pcss;
+require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
 
+global.xhi  = require( libDir + __ns + '.js' ).xhi;
+require( libDir + __ns + '.util.js'  );
+require( libDir + __ns + '.utilb.js' );
+
+__NS = global.xhi;
 vMap = __NS._vMap_;
 nMap = __NS._nMap_;
 
 __util  = __NS._util_;
+__utilb = __NS._utilb_;
 __blank = vMap._blank_;
 __false = vMap._false_;
 __null  = vMap._null_;
@@ -62,26 +76,30 @@ __4  = nMap._4_;
 function setLogLevel ( test_obj ) {
   var
     assert_list = [
-      [ [ ],                         '_warn_'  ],
-      [ [ __null ],                  '_warn_'  ],
-      [ [ __undef ],                 '_warn_'  ],
+      [ ['_warn_'],                   '_warn_' ],
+      [ [],                           '_warn_' ],
+      [ [ __null ],                   '_warn_' ],
+      [ [ __undef ],                  '_warn_' ],
       [ [ '_emerg_' ],               '_emerg_' ],
       [ [ ],                         '_emerg_' ],
       [ [ __null ],                  '_emerg_' ],
       [ [ __undef ],                 '_emerg_' ],
       [ [ 'str', {}, 29 ],           '_emerg_' ],
-      [ [ '_crit_', __false ],       '_crit_'  ],
+      [ [ '_crit_', __false ],        '_crit_' ],
       [ [ '_error_', 'betty' ],      '_error_' ],
-      [ [ '_warn_', 3e6, 'string' ], '_warn_'  ],
-      [ [ 0, 3e6, 'string' ],        '_warn_'  ],
-      [ [ ],                         '_warn_'  ],
+      [ [ '_warn_', 3e6, 'string' ],  '_warn_' ],
+      [ [ 0, 3e6, 'string' ],         '_warn_' ],
+      [ [ ],                          '_warn_' ],
       [ [ '_notice_' ],             '_notice_' ],
       [ [ '_info_' ],                 '_info_' ],
       [ [ '_debug_' ],               '_debug_' ],
       [ [ __undef ],                 '_debug_' ],
+      [ [ '_error_' ],               '_error_' ],
+      [ [ '_wtf_', 'this', 'that' ], '_error_' ],
+      [ [ '_info_' ],                 '_info_' ],
+      [ [ '_wtf_', 'this', 'that' ],  '_info_' ],
       [ [ '_error_' ],               '_error_' ]
     ],
-
     assert_count = assert_list.length,
     log_obj      = __util._getLogObj_(),
 
@@ -94,11 +112,10 @@ function setLogLevel ( test_obj ) {
     expect_list = assert_list[ idx ];
     arg_list   = expect_list[ __0 ];
     expect_str = expect_list[ __1 ];
-    solve_str = log_obj._setLogLevel_.apply( __undef, arg_list );
-    msg_str = __Str( idx ) + '. arg_list: '
-      + JSON.stringify( arg_list ) + '\n solve_str: '
-      + JSON.stringify( solve_str )
-      + '\n expect_str: ' + JSON.stringify( expect_str );
+    solve_str  = log_obj._setLogLevel_.apply( __undef, arg_list );
+    msg_str    = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
+      + '\n expect_str: ' + expect_str;
     test_obj.ok( solve_str === expect_str, msg_str );
     test_obj.ok( log_obj._getLogLevel_() === expect_str, msg_str );
   }
@@ -109,11 +126,57 @@ function setLogLevel ( test_obj ) {
   test_obj.done();
 }
 
-function castJQ( test_obj ) {
-  var cast_jq = __util._castJQ_;
-  test_obj.expect(1);
+function castJQ ( test_obj ) {
+  var
+    cast_jq = __util._castJQ_,
+    $jq     = $('<div/>')
+    ;
 
-  test_obj.ok( cast_jq( {} ) === __undef );
+  test_obj.expect( __4 );
+
+  test_obj.ok( cast_jq( {}         ) === undefined, '0' );
+  test_obj.ok( cast_jq( {},  'bob' ) ===     'bob', '1' );
+  test_obj.ok( cast_jq( $jq        ) ===       $jq, '2' );
+  test_obj.ok( cast_jq( $jq, 'bob' ) ===       $jq, '3' );
+
+  test_obj.done();
+}
+
+function castStr ( test_obj ) {
+  var
+    assert_list = [
+      // arg_list, expect_data
+      [ [],                         __undef ],
+      [ [ __undef ],                __undef ],
+      [ [ __null  ],                __undef ],
+      [ [ {}  ],                    __undef ],
+      [ [ []  ],                    __undef ],
+      [ [ __0 ],                        '0' ],
+      [ [ 25  ],                       '25' ],
+      [ [ __blank,  'bob' ],        __blank ],
+      [ [ __undef,  'bob' ],          'bob' ],
+      [ [ 5.062e12, 'bob' ], '5062000000000'],
+      [ [ /regex/ ],                __undef ],
+      [ [ new Date() ],             __undef ]
+    ],
+    assert_count = assert_list.length,
+    test_fn      = __util._castStr_,
+
+    msg_str,  idx,         expect_list,
+    arg_list, expect_str,  solve_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str   = test_fn[ vMap._apply_ ]( __undef, arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
+      + '\n expect_str: ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
   test_obj.done();
 }
 
@@ -153,7 +216,7 @@ function clearMap( test_obj ) {
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
-    expect_list  = assert_list[ idx ];
+    expect_list = assert_list[ idx ];
     arg_data    = expect_list[ __0 ];
     expect_data = expect_list[ __1 ];
     solve_data  = test_fn( arg_data );
@@ -161,7 +224,7 @@ function clearMap( test_obj ) {
       + JSON.stringify( arg_data ) + '\n solve_map: '
       + JSON.stringify( solve_data )
       + '\n expect_map: ' + JSON.stringify( expect_data )
-      ;
+    ;
     test_obj.ok(
       JSON.stringify( solve_data ) === JSON.stringify( expect_data ), msg_str
     );
@@ -219,8 +282,8 @@ function encodeHtml ( test_obj ) {
       [ [ "<h1>'Help me!'</h1> & fast!", __true ],
         '&#60;h1&#62;&#39;Help me!&#39;&#60;/h1&#62; & fast!'
       ],
-  [ [ '<p>"And so began, ...",'
-          + " she 'said' with her eyes & mouth...</p>" ],
+      [ [ '<p>"And so began, ...",'
+      + " she 'said' with her eyes & mouth...</p>" ],
         '&#60;p&#62;&#34;And so began, ...&#34;,'
         + " she &#39;said&#39; with her eyes &#38; mouth..."
         + '&#60;/p&#62;'
@@ -405,7 +468,7 @@ function getListAttrIdx ( test_obj ) {
     msg_str    = __Str( check_count ) + '. '
       + JSON.stringify( solve_map ) + ' === '
       + JSON.stringify( expect_map )
-      ;
+    ;
     test_obj.ok( solve_map === expect_map, msg_str );
     check_count++;
   }
@@ -1107,18 +1170,18 @@ function makeOptionHtml ( test_obj ) {
         '<option value="1">One</option>'
       ],
       [ { _val_list_  : [ 'rosey', 'betty' ],
-          _label_map_   : { 'rosey' : 'The Rose' },
-          _select_list_ : [ 'betty' ]
-        },
+        _label_map_   : { 'rosey' : 'The Rose' },
+        _select_list_ : [ 'betty' ]
+      },
         '<option value="rosey">The Rose</option>'
         + '<option value="betty" selected="selected">Betty</option>'
       ],
       [ { _val_list_  : [ 'rosey', 'betty', 'debauch',
-          { cow: null }, [ 32 ], __undef, 99, 865, -22, __null
-         ],
-          _label_map_   : { 'debauch' : 'De Bauch Airy' },
-          _select_list_ : [ 'debauch', -22 ]
-        },
+        { cow: null }, [ 32 ], __undef, 99, 865, -22, __null
+      ],
+        _label_map_   : { 'debauch' : 'De Bauch Airy' },
+        _select_list_ : [ 'debauch', -22 ]
+      },
         '<option value="rosey">Rosey</option>'
         + '<option value="betty">Betty</option>'
         + '<option value="debauch" selected="selected">De Bauch Airy</option>'
@@ -1259,20 +1322,20 @@ function makeRadioHtml ( test_obj ) {
         + '<label><input type="radio" name="fred" value="3"/>3</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: __null,
-          _val_list_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
-            '6', 'gal', 'pal', __undef ]
-          },
+        _val_list_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
+          '6', 'gal', 'pal', __undef ]
+      },
         '<label><input type="radio" name="bs" value="6"/>6</label>'
         + '<label><input type="radio" name="bs" value="gal"/>Gal</label>'
         + '<label><input type="radio" name="bs" value="pal"/>Pal</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: 'gal',
-         _val_list_: [ '6', 'gal', 'pal' ],
-         _label_map_ : { 6 : 'Six', gal: 'Girl', pal : 'Friend' }
+        _val_list_: [ '6', 'gal', 'pal' ],
+        _label_map_ : { 6 : 'Six', gal: 'Girl', pal : 'Friend' }
       },
         '<label><input type="radio" name="bs" value="6"/>Six</label>'
         + '<label><input type="radio" name="bs" value="gal" '
-          + 'checked="checked"/>Girl</label>'
+        + 'checked="checked"/>Girl</label>'
         + '<label><input type="radio" name="bs" value="pal"/>Friend</label>'
       ]
     ],
@@ -1312,7 +1375,7 @@ function makeScrubStr ( test_obj ) {
       [ [ '<h1>hello</h1>' ], 'hello' ],
       [ [ '<div>hello</div>' ], 'hello' ],
       [ [ '<div><h1>hello</h1><p>This is lc.</p></div>' ],
-          'helloThis is lc.' ],
+        'helloThis is lc.' ],
       [ [ '<div><h1>Hello! </h1><p>This is lc.</p></div>' ],
         'Hello! This is lc.' ],
       [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li>' ],
@@ -1752,8 +1815,8 @@ function makeStrFromMap( test_obj ) {
         '_first_name_: Wilma | _age_num_: 48' ],
       [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list,
         _do_label_ : __true, _delim_str_ : ' | ', _label_map_ : {
-        _first_name_ : 'fff' , _age_num_ : 'isss' }
-       }, 'fff: Wilma | isss: 48' ],
+          _first_name_ : 'fff' , _age_num_ : 'isss' }
+      }, 'fff: Wilma | isss: 48' ],
       [ { _prop_map_ : prop02_map, _key_list_ : prop02a_list,
         _delim_str_ : ' | ', _label_map_ : {
           _first_name_ : 'fff' , _age_num_ : 'isss' }
@@ -2091,7 +2154,7 @@ function setStructData ( test_obj ) {
       [ [ { ad_lib: 'julie' }, []   ], { ad_lib:'julie'} ],
       [ [ base0_map, __undef ], base0_map ],
       [ [ base0_map, [ 'sub_map', 'dakota' ],
-          [ 'hello', 'world' ] ], expect0_map
+        [ 'hello', 'world' ] ], expect0_map
       ],
       [ [ [], [ __null, 'car', __null ], 'tyres' ],
         [ { car : [ 'tyres' ] } ]
@@ -2142,8 +2205,41 @@ function setStructData ( test_obj ) {
   }
   test_obj.done();
 }
+
+// ===== UTILB
+function decodeHtml ( test_obj ) {
+  var
+    assert_list = [
+      [ [ ],                          __blank ],
+      [ [ 'text'  ],                   'text' ],
+      [ [ __blank ],                  __blank ],
+      [ [ __null  ],                  __blank ],
+      [ [ __undef ],                  __blank ],
+      [ [ '<div>text</div>' ],         'text' ]
+    ],
+    assert_count = assert_list.length,
+    test_fn      = __utilb._decodeHtml_,
+
+    idx,        expect_list, arg_list,
+    expect_str, solve_str,   msg_str
+  ;
+
+  test_obj.expect( assert_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str   = test_fn[ vMap._apply_ ]( __undef, arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
+      + '\n expect_str: ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
 // ======== END NODEUNIT TEST FUNCTIONS ===========
-//
+
 // Use mockTestObj for debugging tests using nodejs instead
 // of nodeunit, which obscures error messages. Use like so:
 // 1. Add the test you would like to run:
@@ -2152,8 +2248,10 @@ function setStructData ( test_obj ) {
 // setStructData( mockTestObj );
 
 module.exports = {
-  _castJQ_          : castJQ,
+  // Util
   _setLogLevel_     : setLogLevel,
+  _castJQ_          : castJQ,
+  _castStr_         : castStr,
   _clearMap_        : clearMap,
   _cloneData_       : cloneData,
   _encodeHtml_      : encodeHtml,
@@ -2189,5 +2287,9 @@ module.exports = {
   _pollFunction_    : pollFunction,
   _pushUniqListVal_ : pushUniqListVal,
   _rmListVal_       : rmListVal,
-  _setStructData_   : setStructData
+  _setStructData_   : setStructData,
+
+  // UtilB
+  _decodeHtml_      : decodeHtml
 };
+

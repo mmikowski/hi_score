@@ -14,8 +14,8 @@
 
 var __ns = 'xhi', __NS;
 /* istanbul ignore next */
-try { __NS = window[ __ns ]; }
-catch ( error ) { __NS = global[ __ns ]; }
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
 
 __NS._util_ = (function () {
   'use strict';
@@ -250,6 +250,27 @@ __NS._util_ = (function () {
   }
   // END Public prereq method /makeUcFirstStr/
 
+  // BEGIN Public prereq method /makeArgList/
+  // Converts provided argument object into a real array
+  //
+  function makeArgList ( arg_obj ) {
+    // The following technique is around 3x faster than
+    //   return Array.prototype.slice.call( arg_obj );
+    // See https://github.com/petkaantonov/bluebird/wiki/\
+    //   Optimization-killers#3-managing-arguments
+    var
+      src_obj    = castObj( 'Arguments', arg_obj, {} ),
+      arg_count  = src_obj[ __length ],
+      solve_list = [],
+      idx;
+
+    for ( idx = __0; idx < arg_count; idx++ ) {
+      solve_list[ idx ] = arg_obj[ idx ];
+    }
+    return solve_list;
+  }
+  // END Public prereq method /makeArgList/
+
   // BEGIN Public prereq method /makeScrubStr/
   function makeScrubStr ( arg_str, arg_do_space ) {
     var
@@ -309,9 +330,9 @@ __NS._util_ = (function () {
       }
     }
 
-    function setLogLevel ( level_key ) {
+    function setLogLevel ( arg_key ) {
+      var level_key = castStr( arg_key, __blank );
       if ( ! levelXCmdMap[ level_key ] ) { return levelKey; }
-
       levelKey = level_key;
       levelIdx = levelXIdxMap[ level_key ];
       return levelKey;
@@ -322,30 +343,28 @@ __NS._util_ = (function () {
     // This follows syslog level conventions
     function logIt () {
       var
-        arg_list = [],
-        arg_count, level_key,
-        level_idx, level_cmd,
-        error_key
+        arg_list  = makeArgList( arguments ),
+        level_key = castStr( arg_list[ __0 ], __blank ),
+        level_idx = levelXIdxMap[ level_key ],
+        arg_count = arg_list[ __length ],
+
+        level_cmd
         ;
 
-      // convert argument list to an array (yeah!)
-      arg_list  = arg_list[ vMap._slice_ ][ vMap._call_ ]( arguments, __0 );
-      arg_count = arg_list[ __length ];
-
       if ( arg_count < __2 ) { return __false; }
-
-      level_key = arg_list[ __0 ];
-      level_idx = levelXIdxMap[ level_key ];
       if ( level_idx === __undef ) {
+        arg_list[ vMap._unshift_ ](
+          '_log_level_not_supported_:|' + level_key + '|'
+        );
+
+        arg_list[ vMap._shift_ ]();
         level_key = '_error_';
-        error_key   = arg_list[ vMap._shift_ ]();
-        arg_list[ vMap._unshift_ ]( error_key + ': _log_level_not_found_' );
-        arg_list[ vMap._unshift_ ]( level_key );
+        level_idx = levelXIdxMap[ level_key ];
+        arg_list[ vMap._unshift_]( level_key );
       }
 
       if ( level_idx > levelIdx ) { return __false; }
-      level_cmd = levelXCmdMap[ level_key ]
-        /* istanbul ignore next */ || 'error';
+      level_cmd = levelXCmdMap[ level_key ];
 
       // Try to log the best we know how
       //noinspection UnusedCatchParameterJS
@@ -357,17 +376,13 @@ __NS._util_ = (function () {
       // command can not handle more than a single argument or will not
       // allow the apply method (think: IE). We try our best...
       //
-      catch ( error0 ) {
+      catch ( e0 ) {
         //noinspection UnusedCatchParameterJS
         try  {
           consoleRef[ level_cmd ]( arg_list[ __1 ] );
         }
-
         // Everything failed.  We give up.
-        //
-        catch ( error1 ) {
-          return __false;
-        }
+        catch ( e1 ) { return __false; }
       }
       return __true;
     }
@@ -622,7 +637,9 @@ __NS._util_ = (function () {
     KEY: for ( idx = __0; idx < key_count; idx++ ) {
       key = key_list[ idx ];
       if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
-        logObj._logIt_( '_warn_', '_key_not_supported_' );
+        logObj._logIt_(
+          '_warn_', '_key_not_supported_:|' + __Str( key ) + '|'
+        );
         continue KEY;
       }
       base_map[ key ] = clone_map[ key ];
@@ -826,27 +843,6 @@ __NS._util_ = (function () {
       ? match_list[ __1 ] : __blank;
   }
   // END Public method /getTzCode/
-
-  // BEGIN Public method /makeArgList/
-  // Converts provided argument object into a real array
-  //
-  function makeArgList ( arg_obj ) {
-    // The following technique is around 3x faster than
-    //   return Array.prototype.slice.call( arg_obj );
-    // See https://github.com/petkaantonov/bluebird/wiki/\
-    //   Optimization-killers#3-managing-arguments
-    var
-      src_obj    = castObj( 'Arguments', arg_obj, {} ),
-      arg_count  = src_obj[ __length ],
-      solve_list = [],
-      idx;
-
-    for ( idx = __0; idx < arg_count; idx++ ) {
-      solve_list[ idx ] = arg_obj[ idx ];
-    }
-    return solve_list;
-  }
-  // END Public method /makeArgList/
 
   // BEGIN Public method /makeClockStr/
   // Purpose   : Create HH:MM:SS time string from UTC time integer in ms

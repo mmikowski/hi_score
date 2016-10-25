@@ -10,6 +10,7 @@
   white : true,    todo : true,  unparam : true
 */
 /*global pcss */
+
 pcss._cfg_ = (function () {
   'use strict';
   var
@@ -152,8 +153,9 @@ pcss._cfg_ = (function () {
 
       // 1px increments for 16px nominal font-size
       // VIM tip: I used visual-select and tac reverse order
+      // to create negative values:
       // :'<'>!tac
-      // to create negative values
+
       _n2rem_         : '-2rem',
       _n1rem_         : '-1rem',
       _nd9375rem_     : '-.9375rem', // 15px

@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Are you ready to get off the framework-of-the-month treadmill and take control of your SPA? Hi_Score is here to help with an architecture guide, starter files, and best-in-class libraries.",
   "keywords": [
     "spa",
@@ -14,9 +14,9 @@
   ],
   "main": "hi_score",
   "scripts": {
-    "test": "node_modules/.bin/nodeunit test/nu_xhi.util.js",
-    "cover": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js",
-    "covera": "node_modules/.bin/istanbul cover node_modules/.bin/nodeunit test/nu_xhi.util.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
+    "test": "node_modules/.bin/nodeunit test/xhi_level_0.js",
+    "cover": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
+    "covera": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "istanbul": "^0.4.5",
     "jsdom": "^9.8.0",
     "jslint": "^0.9.6",
+    "jquery": "3.1.1",
     "node-inspector": "^0.12.5",
     "nodeunit": "^0.9.1",
     "nodeunit-b": "^4.0.0"

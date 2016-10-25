@@ -233,24 +233,7 @@ var xhi = (function () {
 }());
 
 // ================== BEGIN BROWSER AND NODE SUPPORT ===================
-// Browser support
 /* istanbul ignore next */
-try {
-  if ( window ) {
-    xhi._vMap_._window_   = window;
-    xhi._vMap_._document_ = window.document;
-    xhi._isBrowser_ = true;
-  }
-}
-// Node support
-catch( e1 ) {
-  try {
-    xhi._vMap_._window_ = global;
-    xhi._isBrowser_     = false;
-    global.xhi = xhi;
-  }
-  catch( e2 ) {
-    throw '_no_browser_or_node_support_';
-  }
-}
+try { module.exports = { xhi : xhi }; }
+catch ( ignore ) {}
 // =================== END BROWSER AND NODE SUPPORT ====================

@@ -22,7 +22,7 @@ var pcss = (function () {
     __j2str     = JSON.stringify,
     __str2j     = JSON.parse,
 
-    __docRef    = document,
+    __docRef    = window.document,
     __isArray   = Array.isArray,
     __false     = false,
     __null      = null,
@@ -1497,3 +1497,7 @@ var pcss = (function () {
     _setStyleAttr_      : initCheck[ vMap._bind_ ]( setStyleAttr      )
   };
 }());
+
+/* istanbul ignore next */
+try { module.exports = { pcss : pcss }; }
+catch ( ignore ) {}

@@ -1,11 +1,8 @@
 /**
  *    xhi.utilb.js
  *    Utilities which require a browser and jQuery
- *    Michael S. Mikowski - mike.mikowski@gmail.com
  *
- *    These are routines I have created and updated
- *    since 1998, with inspiration from around the web.
- *    MIT License
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
    devel : true,  indent : 2,      maxerr : 50,
@@ -17,8 +14,8 @@
 
 var __ns = 'xhi', __NS;
 /* istanbul ignore next */
-try { __NS = window[ __ns ]; }
-catch ( error ) { __NS = global[ __ns ]; }
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
 
 __NS._utilb_ = (function ( $ ) {
   'use strict';
@@ -29,8 +26,8 @@ __NS._utilb_ = (function ( $ ) {
     cssKmap  = pcss._cfg_._cssKeyMap_,
     cssVmap  = pcss._cfg_._cssValMap_,
 
+    __docRef = window.document,
     __blank  = vMap._blank_,
-    __docRef = vMap._document_,
     __false  = vMap._false_,
     __true   = vMap._true_,
 

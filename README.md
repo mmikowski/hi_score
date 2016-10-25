@@ -156,7 +156,7 @@ information.
 ```bash
   $ cd hi_score
   $ node_modules/.bin/istanbul cover \
-  $  node_modules/.bin/nodeunit test/nu_xhi.util.js
+  $  node_modules/.bin/nodeunit test/xhi_level_0.js
 ```
 
 The local report is found in `coverage/lcov-report/index.html`.
@@ -184,8 +184,8 @@ command is as follows:
 ```bash
   $ cd hi_score
   $ npm install coveralls
-  $ node_modules/.bin/istanbul cover \
-  $  node_modules/.bin/nodeunit test/nu_xhi.util.js \
+  $ node_modules/.bin/istanbul cover -x '**/vendor/**' \
+  $  node_modules/.bin/nodeunit test/xhi_level_0.js \
   $  && cat coverage/lcov.info | node_modules/.bin/coveralls
 ```
 
@@ -292,8 +292,9 @@ MIT
 - (x) Update lite-box using `cast` methods
 
 ### Version 0.5.x (current)
+- (x) Add `jsdom` to expand testing to modules that use jQuery
+- (x) Continue regression test expansion
 - More sophisticated sample application
-- Continued regression test expansion
 
 ## Similar Projects
 [absurd.js][12], [responsive.js][13]
