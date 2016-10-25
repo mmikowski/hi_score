@@ -1,8 +1,8 @@
-/*
- * xhi.nu_util.js
- * Node unit test suite for xhi.util.js and xhi.utilb.js
+/**
+ *    xhi_level_0.js
+ *    Node unit test suite for xhi.util.js and xhi.utilb.js
  *
- * Michael S. Mikowski - mike.mikowski@gmail.com
+ *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint           node   : true, continue : true,
    devel  : true,  indent : 2,    maxerr   : 50,
@@ -17,7 +17,7 @@
 //noinspection JSUnusedLocalSymbols
 var
   __ns    = 'xhi',
-  libDir = '../js/',
+  libDir  = '../js/',
   nuFn    = function () { console.log( __ns + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
@@ -44,11 +44,11 @@ global.$        = jQuery;
 global.pcss = require( libDir + 'vendor/pcss-1.3.5.js' ).pcss;
 require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
 
-global.xhi  = require( libDir + __ns + '.js' ).xhi;
+global[ __ns ]  = require( libDir + __ns + '.js' )[ __ns ];
 require( libDir + __ns + '.util.js'  );
 require( libDir + __ns + '.utilb.js' );
 
-__NS = global.xhi;
+__NS = global[ __ns ];
 vMap = __NS._vMap_;
 nMap = __NS._nMap_;
 
@@ -100,6 +100,7 @@ function setLogLevel ( test_obj ) {
       [ [ '_wtf_', 'this', 'that' ],  '_info_' ],
       [ [ '_error_' ],               '_error_' ]
     ],
+
     assert_count = assert_list.length,
     log_obj      = __util._getLogObj_(),
 
@@ -129,7 +130,7 @@ function setLogLevel ( test_obj ) {
 function castJQ ( test_obj ) {
   var
     cast_jq = __util._castJQ_,
-    $jq     = $('<div/>')
+    $jq     = global.$('<div/>')
     ;
 
   test_obj.expect( __4 );
@@ -1177,11 +1178,11 @@ function makeOptionHtml ( test_obj ) {
         + '<option value="betty" selected="selected">Betty</option>'
       ],
       [ { _val_list_  : [ 'rosey', 'betty', 'debauch',
-        { cow: null }, [ 32 ], __undef, 99, 865, -22, __null
-      ],
-        _label_map_   : { 'debauch' : 'De Bauch Airy' },
-        _select_list_ : [ 'debauch', -22 ]
-      },
+          { cow: null }, [ 32 ], __undef, 99, 865, -22, __null
+         ],
+          _label_map_   : { 'debauch' : 'De Bauch Airy' },
+          _select_list_ : [ 'debauch', -22 ]
+        },
         '<option value="rosey">Rosey</option>'
         + '<option value="betty">Betty</option>'
         + '<option value="debauch" selected="selected">De Bauch Airy</option>'
@@ -1322,20 +1323,20 @@ function makeRadioHtml ( test_obj ) {
         + '<label><input type="radio" name="fred" value="3"/>3</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: __null,
-        _val_list_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
-          '6', 'gal', 'pal', __undef ]
-      },
+          _val_list_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
+            '6', 'gal', 'pal', __undef ]
+          },
         '<label><input type="radio" name="bs" value="6"/>6</label>'
         + '<label><input type="radio" name="bs" value="gal"/>Gal</label>'
         + '<label><input type="radio" name="bs" value="pal"/>Pal</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: 'gal',
-        _val_list_: [ '6', 'gal', 'pal' ],
-        _label_map_ : { 6 : 'Six', gal: 'Girl', pal : 'Friend' }
+          _val_list_: [ '6', 'gal', 'pal' ],
+          _label_map_ : { 6 : 'Six', gal: 'Girl', pal : 'Friend' }
       },
         '<label><input type="radio" name="bs" value="6"/>Six</label>'
         + '<label><input type="radio" name="bs" value="gal" '
-        + 'checked="checked"/>Girl</label>'
+          + 'checked="checked"/>Girl</label>'
         + '<label><input type="radio" name="bs" value="pal"/>Friend</label>'
       ]
     ],
@@ -1375,7 +1376,7 @@ function makeScrubStr ( test_obj ) {
       [ [ '<h1>hello</h1>' ], 'hello' ],
       [ [ '<div>hello</div>' ], 'hello' ],
       [ [ '<div><h1>hello</h1><p>This is lc.</p></div>' ],
-        'helloThis is lc.' ],
+          'helloThis is lc.' ],
       [ [ '<div><h1>Hello! </h1><p>This is lc.</p></div>' ],
         'Hello! This is lc.' ],
       [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li>' ],
@@ -2154,7 +2155,7 @@ function setStructData ( test_obj ) {
       [ [ { ad_lib: 'julie' }, []   ], { ad_lib:'julie'} ],
       [ [ base0_map, __undef ], base0_map ],
       [ [ base0_map, [ 'sub_map', 'dakota' ],
-        [ 'hello', 'world' ] ], expect0_map
+          [ 'hello', 'world' ] ], expect0_map
       ],
       [ [ [], [ __null, 'car', __null ], 'tyres' ],
         [ { car : [ 'tyres' ] } ]
@@ -2238,6 +2239,46 @@ function decodeHtml ( test_obj ) {
   }
   test_obj.done();
 }
+
+function fillForm ( test_obj ) {
+  var
+    form_01_html = '<form><input type="text" name="attr1" value=""/>'
+      + '<textarea name="attr2"></textarea></form>',
+    form_02_html = '<form><input type="checkbox" name="attr1"/>'
+      + '<input type="checkbox" name="attr2"/></form>',
+    $form_01 = global.$( form_01_html ),
+    $form_02 = global.$( form_02_html ),
+    solve_str, solve_bool
+    ;
+
+  test_obj.expect( 6 );
+
+  __utilb._fillForm_( $form_01, {
+    attr1 : 'my input', attr2 : 'Textarea'
+  });
+
+  solve_str = $form_01.find( '[name="attr1"]' ).val();
+  test_obj.ok( solve_str === 'my input', '0. ' + solve_str );
+
+  solve_str = $form_01.find( '[name="attr2"]' ).val();
+  test_obj.ok( solve_str === 'Textarea', '1. ' + solve_str );
+
+  solve_bool = $form_02.find( '[name="attr1"]' ).prop( 'checked' );
+  test_obj.ok( solve_bool === __false, '2. ' + solve_bool );
+
+  solve_bool = $form_02.find( '[name="attr2"]' ).prop( 'checked' );
+  test_obj.ok( solve_bool === __false, '3. ' + solve_bool );
+
+  __utilb._fillForm_( $form_02, { attr1 : true, attr2 : true });
+
+  solve_bool = $form_02.find( '[name="attr1"]' ).get( __0 ).checked;
+  test_obj.ok( solve_bool === __true, '4. ' + solve_bool );
+
+  solve_bool = $form_02.find( '[name="attr2"]' ).get( __0 ).checked;
+  test_obj.ok( solve_bool === __true, '5. ' + solve_bool );
+
+  test_obj.done();
+}
 // ======== END NODEUNIT TEST FUNCTIONS ===========
 
 // Use mockTestObj for debugging tests using nodejs instead
@@ -2290,6 +2331,7 @@ module.exports = {
   _setStructData_   : setStructData,
 
   // UtilB
-  _decodeHtml_      : decodeHtml
+  _decodeHtml_      : decodeHtml,
+  _fillForm_        : fillForm
 };
 

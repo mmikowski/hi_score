@@ -79,14 +79,12 @@ __NS._utilb_ = (function ( $ ) {
           ;
 
         if ( $input.is( 'input:radio' ) ) {
-          $input.attr( 'checked', ( current_str === v ) && 'checked' );
+          $input.prop( 'checked', ( current_str === v ) && 'checked' );
         }
         else if ( $input.is( 'input:checkbox' ) ) {
-          $input.attr( 'checked', !! v );
+          $input.prop( 'checked', !! v );
         }
-        else {
-          $input.val( v );
-        }
+        else { $input.val( v ); }
       });
     });
   }

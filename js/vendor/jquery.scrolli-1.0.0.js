@@ -19,17 +19,19 @@ jQuery.scrolli = (function ( $ ) {
   var
     __0     = 0,
     __n1    = -1,
+    __ns    = 'xhi',
     elList  = [],
     topSmap = {
       _last_recalc_ms_ : __n1,
       _recalc_toid_    : __n1
     },
     topCmap = {
+      _namespace_     : __ns,
       _margin_int_    : 32,
       _max_recalc_ms_ : 132,
-      _namespace_     : '.p6-_scrolli_',
-      _top_class_     : 'p6-_x_top_on_',
-      _btm_class_     : 'p6-_x_btm_on_'
+      _namespace_     : '.' + __ns + '-_scrolli_',
+      _top_class_     : __ns + '-_x_top_on_',
+      _btm_class_     : __ns + '-_x_btm_on_'
     };
   // ================== END MODULE SCOPE VARIABLES =====================
 
