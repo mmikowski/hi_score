@@ -146,7 +146,7 @@ __NS._util_ = (function () {
       var_type = getVarType( data ),
       num      = var_type === '_Number_'
         ? data : var_type === '_String_'
-        ? parseInt( data, 10 ) : __undef
+        ? parseFloat( data ) : __undef
         ;
     if ( isNaN( num ) ) { return alt_data; }
     return __floor( num + __d5 );
@@ -158,6 +158,7 @@ __NS._util_ = (function () {
     if ( topSmap._has_jq_ ) {
       return ( data && data instanceof jQuery ) ? data : alt_data;
     }
+    /* istanbul ignore next */
     return alt_data;
   }
   // END Public preq method /castJQ/
@@ -399,22 +400,22 @@ __NS._util_ = (function () {
   // BEGIN Public prereq method /clearMap/
   function clearMap ( arg_map ) {
     var
-      input_map = castMap( arg_map ),
+      map = castMap( arg_map ),
 
       key_list, key_count, idx, key;
 
-    if ( ! input_map ) { return; }
+    if ( ! map ) { return; }
 
-    key_list  = __keys( input_map );
+    key_list  = __keys( map );
     key_count = key_list[ __length ];
 
     for ( idx = __0; idx < key_count; idx++ ) {
       key = key_list[ idx ];
-      if ( input_map[ vMap._hasOwnProp_ ]( key ) ) {
-        delete input_map[ key ];
+      if ( map[ vMap._hasOwnProp_ ]( key ) ) {
+        delete map[ key ];
       }
     }
-    return input_map;
+    return map;
   }
   // END Public prereq method /clearMap/
 
@@ -509,10 +510,10 @@ __NS._util_ = (function () {
   //    * List of options as used in a select statement
   function makeOptionHtml ( arg_map ) {
     var
-      input_map   = castMap(  arg_map, {} ),
-      label_map   = castMap(  input_map._label_map_,   {} ),
-      select_list = castList( input_map._select_list_, [] ),
-      val_list    = castList( input_map._val_list_,  [] ),
+      map         = castMap(  arg_map, {} ),
+      label_map   = castMap(  map._label_map_,   {} ),
+      select_list = castList( map._select_list_, [] ),
+      val_list    = castList( map._val_list_,    [] ),
       val_count   = val_list[ __length ],
       html_str    = __blank,
 
@@ -571,11 +572,11 @@ __NS._util_ = (function () {
   //
   function makeRadioHtml ( arg_map ) {
     var
-      input_map  = castMap(  arg_map, {} ),
-      group_name = castStr(  input_map._group_name_ ),    // name=...
-      match_str  = castStr(  input_map._match_str_  ),    // Selected val
-      val_list   = castList( input_map._val_list_,  [] ), // Vals in order
-      label_map  = castMap(  input_map._label_map_, {} ), // Labels
+      map  = castMap(  arg_map, {} ),
+      group_name = castStr(  map._group_name_ ),    // name=...
+      match_str  = castStr(  map._match_str_  ),    // Selected val
+      val_list   = castList( map._val_list_,  [] ), // Vals in order
+      label_map  = castMap(  map._label_map_, {} ), // Labels
 
       val_count  = val_list[ __length ],
       html_str   = __blank,
@@ -780,7 +781,7 @@ __NS._util_ = (function () {
       walk_struct = base_struct,
       path_list   = castList( arg_path_list, [] ),
       is_good     = __true,
-      key_count   = path_list[ vMap._length_ ],
+      key_count   = path_list[ __length ],
 
       idx, raw_key, struct_type, key
       ;
@@ -914,12 +915,12 @@ __NS._util_ = (function () {
   // Example: str =
   function makeCommaNumStr ( arg_map ) {
     var
-      input_map       = castMap( arg_map, {} ),
-      input_num       = castNum( input_map._input_num_,       __0 ),
-      round_limit_exp = castInt( input_map._round_limit_exp_, __3 ),
-      round_unit_exp  = castInt( input_map._round_unit_exp_,  __3 ),
-      round_unit_str  = castStr( input_map._round_unit_str_,  'k' ),
-      round_dec_count = input_map._round_dec_count_  || __1,
+      map       = castMap( arg_map, {} ),
+      input_num       = castNum( map._input_num_,       __0 ),
+      round_limit_exp = castInt( map._round_limit_exp_, __3 ),
+      round_unit_exp  = castInt( map._round_unit_exp_,  __3 ),
+      round_unit_str  = castStr( map._round_unit_str_,  'k' ),
+      round_dec_count = map._round_dec_count_  || __1,
 
       round_limit_num = vMap._Math_.pow( __10, round_limit_exp  ),
       round_unit_num  = vMap._Math_.pow( __10, round_unit_exp   ),
@@ -972,11 +973,11 @@ __NS._util_ = (function () {
   //
   function makeDateStr ( arg_map ) {
     var
-      input_map = castMap(  arg_map, {} ),
-      do_time   = castBool( input_map._do_time_, __false ),
-      date_ms   = castInt(  input_map._date_ms_, __undef ),
+      map = castMap(  arg_map, {} ),
+      do_time   = castBool( map._do_time_, __false ),
+      date_ms   = castInt(  map._date_ms_, __undef ),
 
-      date_obj  = castObj( 'Date', input_map._date_obj_ ),
+      date_obj  = castObj( 'Date', map._date_obj_ ),
       mns       = makePadNumStr,
 
       yrs_int,   mon_int,   day_int,
@@ -1041,10 +1042,10 @@ __NS._util_ = (function () {
   //
   function makeEllipsisStr( arg_map ) {
     var
-      input_map     = castMap( arg_map, {} ),
-      scrub_str     = makeScrubStr( input_map._input_str_,  __false ),
-      limit_int     = castInt(  input_map._char_limit_int_,     __0 ),
-      do_word_break = castBool( input_map._do_word_break_,   __true ),
+      map     = castMap( arg_map, {} ),
+      scrub_str     = makeScrubStr( map._input_str_,  __false ),
+      limit_int     = castInt(  map._char_limit_int_,     __0 ),
+      do_word_break = castBool( map._do_word_break_,   __true ),
       scrub_count   = scrub_str[ __length ],
 
       word_list,   word_count,
@@ -1066,10 +1067,10 @@ __NS._util_ = (function () {
         solve_word  = word_list[ idx ];
         solve_count += solve_word[ __length ] + __1;
         if ( solve_count >= limit_int - __3 ) {
-          solve_list[ vMap._push_ ]( '...' );
+          solve_list[ __push ]( '...' );
           break WORD;
         }
-        solve_list[ vMap._push_ ]( solve_word );
+        solve_list[ __push ]( solve_word );
       }
       return __blank + solve_list[ vMap._join_ ]( ' ' );
     }
@@ -1221,7 +1222,7 @@ __NS._util_ = (function () {
   function makeSeenMap ( arg_key_list, arg_seen_data ) {
     var
       key_list  = castList( arg_key_list, [] ),
-      key_count = key_list[ vMap._length_ ],
+      key_count = key_list[ __length ],
 
       solve_data = arg_seen_data === __undef ? __true : arg_seen_data,
       solve_map = {},
@@ -1241,14 +1242,14 @@ __NS._util_ = (function () {
   // into a single string
   function makeStrFromMap ( arg_map ) {
     var
-      input_map = castMap(  arg_map, {} ),
-      prop_map  = castMap(  input_map._prop_map_, {} ),
-      key_list  = castList( input_map._key_list_, [] ),
-      delim_str = castStr( input_map._delim_str_, ' ' ),
-      label_delim_str = castStr( input_map._label_delim_str_, ': ' ),
-      label_map = castMap( input_map._label_map_, __undef ),
+      map = castMap(  arg_map, {} ),
+      prop_map  = castMap(  map._prop_map_, {} ),
+      key_list  = castList( map._key_list_, [] ),
+      delim_str = castStr( map._delim_str_, ' ' ),
+      label_delim_str = castStr( map._label_delim_str_, ': ' ),
+      label_map = castMap( map._label_map_, __undef ),
 
-      do_label   = !! ( label_map || input_map._do_label_ ),
+      do_label   = !! ( label_map || map._do_label_ ),
       key_count  = key_list[ __length ],
       solve_list = [],
 
@@ -1329,13 +1330,13 @@ __NS._util_ = (function () {
   //
   function makeSeriesMap( arg_map ) {
     var
-      input_map    = castMap( arg_map, {} ),
-      tz_offset_ms = castInt( input_map._tz_offset_ms_, __0 ),
-      max_ms       = castInt( input_map._max_ms_ - tz_offset_ms, __0 ),
-      min_ms       = castInt( input_map._min_ms_ - tz_offset_ms, __0 ),
-      tgt_count    = castInt( input_map._tgt_count_ ),
+      map    = castMap( arg_map, {} ),
+      tz_offset_ms = castInt( map._tz_offset_ms_, __0 ),
+      max_ms       = castInt( map._max_ms_ - tz_offset_ms, __0 ),
+      min_ms       = castInt( map._min_ms_ - tz_offset_ms, __0 ),
+      tgt_count    = castInt( map._tgt_count_ ),
 
-      date_obj     = new Date(),
+      date_obj     = new __Date(),
       offset_str   = makeClockStr( tz_offset_ms ),
       offset_list  = offset_str[ vMap._split_ ](':'),
 
@@ -1434,7 +1435,7 @@ __NS._util_ = (function () {
       if ( accum_ratio >= __1 ) {
         width_ratio = width_ratio + ( __1 - accum_ratio );
       }
-      solve_date_list[ vMap._push_ ]({
+      solve_date_list[ __push ]({
         _date_str_    : makeDateStr({ _date_ms_ : date_ms }),
         _width_ratio_ : width_ratio
       });
@@ -1475,10 +1476,10 @@ __NS._util_ = (function () {
 
     function mainFn ( arg_map ) {
       var
-        input_map  = castMap( arg_map, {} ),
-        input_str  = castStr( input_map._input_str_, __blank  ),
-        lookup_map = castMap( input_map._lookup_map_,      {} ),
-        tmplt_rx   = input_map._tmplt_rx_ || topCmap._tmplt_rx_,
+        map        = castMap( arg_map, {} ),
+        input_str  = castStr( map._input_str_, __blank  ),
+        lookup_map = castMap( map._lookup_map_,      {} ),
+        tmplt_rx   = map._tmplt_rx_ || topCmap._tmplt_rx_,
         bound_fn   = lookupFn.bind( lookup_map )
         ;
       return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
@@ -1599,7 +1600,7 @@ __NS._util_ = (function () {
     var
       base_struct = arg_base_struct,
       path_list   = castList( arg_path_list, [] ),
-      path_count  = path_list[ vMap._length_ ],
+      path_count  = path_list[ __length ],
       last_idx    = path_count - __1,
       walk_struct = base_struct,
       is_good     = __true,
@@ -1620,7 +1621,7 @@ __NS._util_ = (function () {
           is_good = __false;
           break SET_KEY;
         }
-        solve_key = walk_struct[ vMap._length_ ];
+        solve_key = walk_struct[ __length ];
       }
       else if ( int_key !== __undef && struct_type === '_Array_' ) {
         solve_key = int_key;

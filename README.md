@@ -62,9 +62,9 @@ Let's see them in action:
 ```js
 function getTimeList( arg_map ) {
   var
-    input_map = __castMap( arg_map, {} ),
-    end_ms    = __castInt( input_map._end_ms_   ),
-    start_ms  = __castInt( input_map._start_ms_ )
+    map      = __castMap( arg_map, {} ),
+    end_ms   = __castInt( map._end_ms_   ),
+    start_ms = __castInt( map._start_ms_ )
     ;
 
   if ( ! ( end_ms && start_ms ) ) { return []; }

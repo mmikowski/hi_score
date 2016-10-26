@@ -32,8 +32,6 @@ __NS._utilb_ = (function ( $ ) {
     __true   = vMap._true_,
 
     __0      = nMap._0_,
-    __1      = nMap._1_,
-
     __util   = __NS._util_,
 
     // Add as needed __castBool, __castList, __castObj,  __getVarType
@@ -99,7 +97,7 @@ __NS._utilb_ = (function ( $ ) {
 
     if ( ! $elem ) { return; }
 
-    input_str = $elem[ vMap._val_ ][ vMap._trim_ ]();
+    input_str = $elem[ vMap._val_ ]()[ vMap._trim_ ]();
     data_type = $elem[ vMap._attr_ ]( 'data-type' );
 
     switch ( data_type ) {
@@ -126,8 +124,7 @@ __NS._utilb_ = (function ( $ ) {
     if ( ! $form ) { return; }
 
     $form
-      .find( 'input:not(:disabled):not(.' + __ns
-        + '-_x_ignore_):not(td  > input)' )
+      .find( 'input:not(:disabled)' )
       .each( function () {
         var
           $input     = $( this ),
@@ -138,66 +135,19 @@ __NS._utilb_ = (function ( $ ) {
         if ( $input.is( 'input:checkbox' ) ) {
           form_map[ field_name ] = $input.is(':checked');
         }
-        else if ( !  $input.is('input:radio') || $input.is(':checked') ) {
-          form_map[ field_name ]   = fixInputByType( $input );
+        else if ( ! $input.is('input:radio') || $input.is(':checked') ) {
+          form_map[ field_name ] = fixInputByType( $input );
         }
       });
 
-    // TODO This selector can probably be combined with the previous one
-    //
     $form
-      .find( 'select:not(td > select), textarea:not(td > textarea)' )
+      .find( 'select, textarea' )
       .each( function() {
         var
           $input     = $( this ),
           field_name = $input[ vMap._attr_ ]( 'name' )
           ;
         form_map[ field_name ] = fixInputByType( $input );
-      }
-    );
-
-    // Process array properties
-    // For each table, get all the trs in tbody.  For each tr, if there's only
-    // 1 column, push the value into the array.  Else, build an object that
-    // represents each row and push the object into the array.
-    $form
-      .find( 'table' )
-      .each( function() {
-        var $table = $( this ), table_name = $table.attr('data-name');
-        form_map[ table_name ] = [];
-        $table
-          .find( 'tbody tr' )
-          .each( function() {
-            var row_obj, $input, input_str,
-              $input_list = $( this ).find( 'input, textarea, select' )
-              ;
-            if( $input_list[ vMap._length_ ] === __1 ) {
-              $input = $( $input_list[ __0 ] );
-
-              if ( $input.is( 'input:checkbox' ) ) {
-                row_obj = $input.is( ':checked' );
-              }
-              else if ( ! $input.is( 'input:radio' ) || $input.is( ':checked' ) ) {
-                row_obj = fixInputByType( $input );
-              }
-            }
-            else {
-              row_obj = {};
-              $input_list.each( function () {
-                $input = $( this );
-                if ( ! this.name ) { return; }
-
-                if ( $input.is( 'input:checkbox' ) ) {
-                  row_obj[ this.name ] = { value: $input.is( ':checked' ) };
-                }
-                else if ( !  $input.is('input:radio') || $input.is( ':checked' ) ) {
-                  input_str = fixInputByType( $input );
-                  row_obj[ this.name ] = { value: input_str };
-                }
-              });
-            }
-            form_map[ table_name ].push(row_obj);
-          });
       });
 
     return form_map;

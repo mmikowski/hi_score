@@ -10,7 +10,7 @@
    regexp : true,  sloppy : true, vars     : false,
    white  : true,  todo   : true, unparam  : true
 */
-/*global xhi, module, process, window, console */
+/*global xhi, module, process, window, console, $ */
 
 // ================= BEGIN MODULE SCOPE VARIABLES ===================
 'use strict';
@@ -2246,8 +2246,8 @@ function fillForm ( test_obj ) {
       + '<textarea name="attr2"></textarea></form>',
     form_02_html = '<form><input type="checkbox" name="attr1"/>'
       + '<input type="checkbox" name="attr2"/></form>',
-    $form_01 = global.$( form_01_html ),
-    $form_02 = global.$( form_02_html ),
+    $form_01 = $( form_01_html ),
+    $form_02 = $( form_02_html ),
     solve_str, solve_bool
     ;
 
@@ -2276,6 +2276,74 @@ function fillForm ( test_obj ) {
 
   solve_bool = $form_02.find( '[name="attr2"]' ).get( __0 ).checked;
   test_obj.ok( solve_bool === __true, '5. ' + solve_bool );
+
+  test_obj.done();
+}
+
+function getFormMap ( test_obj ) {
+  var
+    form_01_html = '<form><input type="text" name="attr1" value=""/>'
+      + '<textarea name="attr2"></textarea>'
+      + '<input type="checkbox" name="attr3"/>'
+      + '<input type="checkbox" name="attr4"/>'
+      + '</form>',
+    form_02_html
+      = '<form><input type="text" name="attr1_1" value="peabody"/>'
+      + '<input type="text" data-type="integer" name="attr1_2" value="peabody"/>'
+      + '<input type="text" data-type="number"  name="attr1_3" value="peabody"/>'
+      + '<input type="text" data-type="string"  name="attr2_1" value="22"/>'
+      + '<input type="text" data-type="integer" name="attr2_2" value="22"/>'
+      + '<input type="text" data-type="number"  name="attr2_3" value="22"/>'
+      + '<input type="text" data-type="string"  name="attr3_1" value="-29.625"/>'
+      + '<input type="text" data-type="integer" name="attr3_2" value="-29.625"/>'
+      + '<input type="text" data-type="number"  name="attr3_3" value="-29.625"/>'
+      + '<textarea name="attr4_1" data-type="string">Hello Bobby 5.5</textarea>'
+      + '<textarea name="attr4_2" data-type="integer">Hello Bobby 5.5</textarea>'
+      + '<textarea name="attr4_3" data-type="number">Hello Bobby 5.5</textarea>'
+      + '<textarea name="attr5_1" data-type="string">0.9625</textarea>'
+      + '<textarea name="attr5_2" data-type="integer">0.9625</textarea>'
+      + '<textarea name="attr5_3" data-type="number">0.9625</textarea>'
+      + '<input data-type="number" type="checkbox" name="attr6" checked="checked"/>'
+      + '<input data-type="zoolander" type="checkbox" name="attr7"/>'
+      + '</form>',
+    form_01_map = {
+      attr1 : 'Duty!',
+      attr2 : 'in-the-line-of',
+      attr3 : __false,
+      attr4 : __true
+    },
+    form_02_map = {
+      attr1_1 : 'peabody',
+      attr1_2 : 0,
+      attr1_3 : 0,
+      attr2_1 : '22',
+      attr2_2 : 22,
+      attr2_3 : 22,
+      attr3_1 : '-29.625',
+      attr3_2 : -30,
+      attr3_3 : -29.625,
+      attr4_1 : 'Hello Bobby 5.5',
+      attr4_2 : 0,
+      attr4_3 : 0,
+      attr5_1 : '0.9625',
+      attr5_2 : 1,
+      attr5_3 : 0.9625,
+      attr6   : __true,
+      attr7   : __false
+    },
+    $form_01 = $( form_01_html ),
+    $form_02 = $( form_02_html ),
+    solve_map;
+
+  test_obj.expect( 2 );
+  __utilb._fillForm_( $form_01,  form_01_map );
+
+  solve_map = __utilb._getFormMap_( $form_01 );
+
+  test_obj.deepEqual( solve_map, form_01_map, '0. Maps match' );
+
+  solve_map = __utilb._getFormMap_( $form_02 );
+  test_obj.deepEqual( solve_map, form_02_map, '1. Maps match' );
 
   test_obj.done();
 }
@@ -2332,6 +2400,7 @@ module.exports = {
 
   // UtilB
   _decodeHtml_      : decodeHtml,
-  _fillForm_        : fillForm
+  _fillForm_        : fillForm,
+  _getFormMap_      : getFormMap
 };
 

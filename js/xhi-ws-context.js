@@ -29,7 +29,7 @@
     // svg
     correspondingUseElement : obj,
 
-    // xhi._uti_
+    // xhi._util_
     _attr_list_      : list,
     _bool_           : bool,
     _fn_             : fn,
@@ -53,7 +53,7 @@
     _do_title_close_ : bool,
     _layout_key_     : str,
     _autoclose_ms_   : int,
-    _position_map_   : map
+    _position_map_   : map,
 
   };
 }());
