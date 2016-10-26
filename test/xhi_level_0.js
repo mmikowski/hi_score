@@ -284,7 +284,7 @@ function encodeHtml ( test_obj ) {
         '&#60;h1&#62;&#39;Help me!&#39;&#60;/h1&#62; & fast!'
       ],
       [ [ '<p>"And so began, ...",'
-      + " she 'said' with her eyes & mouth...</p>" ],
+          + " she 'said' with her eyes & mouth...</p>" ],
         '&#60;p&#62;&#34;And so began, ...&#34;,'
         + " she &#39;said&#39; with her eyes &#38; mouth..."
         + '&#60;/p&#62;'

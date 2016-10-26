@@ -21,7 +21,7 @@ xhi._css_lb_ = (function () {
         { _selector_str_ : '.xhi-_lb_',
           _rule_map_ : {
             _z_index_       : [ '36' ],
-            _position_      : '_fixed_',
+            _position_      : '_absolute_',
             _display_       : '_block_',
             _opacity_       : '_0_',
             _border_        : [[ '_d25rem_', '_solid_','_hex_area_hover_' ]],
