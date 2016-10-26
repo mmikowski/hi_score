@@ -127,6 +127,62 @@ function setLogLevel ( test_obj ) {
   test_obj.done();
 }
 
+function castInt ( test_obj ) {
+  var
+    assert_list = [
+      // arg_list, expect_data
+      [ [],                         __undef ],
+      [ [ __undef ],                __undef ],
+      [ [ __null  ],                __undef ],
+      [ [ {}  ],                    __undef ],
+      [ [ []  ],                    __undef ],
+      [ [ '0'  ],                         0 ],
+      [ [ '25' ],                        25 ],
+      [ [ '025' ],                       25 ],
+      [ [ '-025' ],                     -25 ],
+      [ [ __0 ],                          0 ],
+      [ [ 25  ],                         25 ],
+      [ [ -25 ],                        -25 ],
+      [ [ 0.5 ],                          1 ],
+      [ [ 0.499 ],                        0 ],
+      [ [ -0.1 ],                         0 ],
+      [ [ -0.5 ],                         0 ],
+      [ [ -0.501 ],                      -1 ],
+      [ [ 9.5,      'bob' ],             10 ],
+      [ [ 23.232,   'bob' ],             23 ],
+      [ [ 23.828,   'bob' ],             24 ],
+      [ [ -23.232,  'bob' ],            -23 ],
+      [ [ -23.828,  'bob' ],            -24 ],
+      [ [ __null,   'bob' ],          'bob' ],
+      [ [ __blank,  'bob' ],          'bob' ],
+      [ [ __undef,  'bob' ],          'bob' ],
+      [ [ 5.062e12, 'bob' ],      5.062e12  ],
+      [ [ /regex/ ],                __undef ],
+      [ [ /regex/,  'bob' ],          'bob' ],
+      [ [ new Date() ],             __undef ],
+      [ [ new Date(), 'jeani' ],    'jeani' ]
+    ],
+    assert_count = assert_list.length,
+    test_fn      = __util._castInt_,
+
+    msg_str,  idx,         expect_list,
+    arg_list, expect_str,  solve_str
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_str  = expect_list[ __1 ];
+    solve_str   = test_fn[ vMap._apply_ ]( __undef, arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
+      + '\n expect_str: ' + expect_str;
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
 function castJQ ( test_obj ) {
   var
     cast_jq = __util._castJQ_,
@@ -2359,6 +2415,7 @@ function getFormMap ( test_obj ) {
 module.exports = {
   // Util
   _setLogLevel_     : setLogLevel,
+  _castInt_         : castInt,
   _castJQ_          : castJQ,
   _castStr_         : castStr,
   _clearMap_        : clearMap,
