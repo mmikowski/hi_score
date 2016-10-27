@@ -2301,37 +2301,38 @@ function fillForm ( test_obj ) {
     form_01_html = '<form><input type="text" name="attr1" value=""/>'
       + '<textarea name="attr2"></textarea></form>',
     form_02_html = '<form><input type="checkbox" name="attr1"/>'
-      + '<input type="checkbox" name="attr2"/></form>',
+      + '<input type="checkbox" name="attr2" checked="checked"/></form>',
+    $body    = $('body'),
     $form_01 = $( form_01_html ),
     $form_02 = $( form_02_html ),
     solve_str, solve_bool
     ;
 
   test_obj.expect( 6 );
+  $body.append( $form_01 );
+  $body.append( $form_02 );
 
-  __utilb._fillForm_( $form_01, {
-    attr1 : 'my input', attr2 : 'Textarea'
-  });
+  __utilb._fillForm_( $form_01, { attr1 : 'my input', attr2 : 'My writing' });
 
   solve_str = $form_01.find( '[name="attr1"]' ).val();
   test_obj.ok( solve_str === 'my input', '0. ' + solve_str );
 
   solve_str = $form_01.find( '[name="attr2"]' ).val();
-  test_obj.ok( solve_str === 'Textarea', '1. ' + solve_str );
+  test_obj.ok( solve_str === 'My writing', '1. ' + solve_str );
 
-  solve_bool = $form_02.find( '[name="attr1"]' ).prop( 'checked' );
-  test_obj.ok( solve_bool === __false, '2. ' + solve_bool );
+  solve_bool = $form_02.find( '[name="attr1"]' ).is( ':checked' );
+  test_obj.ok( solve_bool === __false, '2. ' + __Str( solve_bool ) );
 
-  solve_bool = $form_02.find( '[name="attr2"]' ).prop( 'checked' );
-  test_obj.ok( solve_bool === __false, '3. ' + solve_bool );
+  solve_bool = $form_02.find( '[name="attr2"]' ).is( ':checked' );
+  test_obj.ok( solve_bool === __true, '3. ' + __Str( solve_bool ) );
 
-  __utilb._fillForm_( $form_02, { attr1 : true, attr2 : true });
+  __utilb._fillForm_( $form_02, { attr1 : __true, attr2 : __true });
 
-  solve_bool = $form_02.find( '[name="attr1"]' ).get( __0 ).checked;
-  test_obj.ok( solve_bool === __true, '4. ' + solve_bool );
+  solve_bool = $form_02.find( '[name="attr1"]' ).is( ':checked' );
+  test_obj.ok( solve_bool === __true, '4. ' + __Str( solve_bool ) );
 
-  solve_bool = $form_02.find( '[name="attr2"]' ).get( __0 ).checked;
-  test_obj.ok( solve_bool === __true, '5. ' + solve_bool );
+  solve_bool = $form_02.find( '[name="attr2"]' ).is( ':checked' );
+  test_obj.ok( solve_bool === __true, '5. ' + __Str( solve_bool ) );
 
   test_obj.done();
 }
@@ -2403,6 +2404,65 @@ function getFormMap ( test_obj ) {
 
   test_obj.done();
 }
+
+function resizeTextarea ( test_obj ) {
+  var
+    form_01_html = '<form><textarea name="tex"></textarea></form>',
+    blank_map    = { tex : __blank },
+    short_str    = 'a short sentence',
+    long_str     =
+      'One of many lines that we have inclued for a long entry. '
+      + 'One of many lines that we have inclued for a long entry. '
+      + 'One of many lines that we have inclued for a long entry. '
+      + 'One of many lines that we have inclued for a long entry. '
+      + 'One of many lines that we have inclued for a long entry. '
+      + 'One of many lines that we have inclued for a long entry. '
+      + 'One of many lines that we have inclued for a long entry. '
+      + 'One of many lines that we have inclued for a long entry.',
+
+    assert_list  = [
+      [ __undef,      blank_map ],
+      [ __null,       blank_map ],
+      [ __blank,      blank_map ],
+      [ [ 1,2,3,4 ],  blank_map ],
+      [ { pew : 'charitable_trust' }, blank_map ],
+      [ short_str, { tex : short_str } ],
+      [ long_str,  { tex : long_str  } ]
+    ],
+    assert_count = assert_list.length,
+    text_idx     = __0,
+    $form_01     = $( form_01_html ),
+
+    idx, expect_list, arg_str, expect_map, solve_map, msg_str
+    ;
+
+  test_obj.expect( assert_count * 2 );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_str     = expect_list[ __0 ];
+    expect_map  = expect_list[ __1 ];
+
+    __utilb._fillForm_( $form_01, { tex : arg_str } );
+    solve_map = __utilb._getFormMap_( $form_01 );
+
+    msg_str = __Str( text_idx ) + '. arg_str: ' + arg_str
+      + '\n solve_map: '  + JSON.stringify( solve_map  )
+      + '\n expect_str: ' + JSON.stringify( expect_map );
+    test_obj.deepEqual( solve_map, expect_map, msg_str );
+    text_idx++;
+
+    __utilb._resizeTextarea_( $form_01 );
+    solve_map = __utilb._getFormMap_( $form_01 );
+
+    msg_str = __Str( text_idx ) + '. arg_str: ' + arg_str
+      + '\n solve_map: '  + JSON.stringify( solve_map  )
+      + '\n expect_str: ' + JSON.stringify( expect_map );
+    test_obj.deepEqual( solve_map, expect_map, msg_str );
+    text_idx++;
+  }
+  test_obj.done();
+}
 // ======== END NODEUNIT TEST FUNCTIONS ===========
 
 // Use mockTestObj for debugging tests using nodejs instead
@@ -2458,6 +2518,7 @@ module.exports = {
   // UtilB
   _decodeHtml_      : decodeHtml,
   _fillForm_        : fillForm,
-  _getFormMap_      : getFormMap
+  _getFormMap_      : getFormMap,
+  _resizeTextarea_  : resizeTextarea
 };
 

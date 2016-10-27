@@ -70,19 +70,20 @@ __NS._utilb_ = (function ( $ ) {
 
     if ( ! $form ) { return; }
     $.each( lookup_map, function ( k, v ) {
+      var solve_str = __castStr( v );
       $form.find('[name=' + k + ']').each(function() {
         var
-          $input = $( this ),
+          $input      = $( this ),
           current_str = $input.val()
           ;
 
         if ( $input.is( 'input:radio' ) ) {
-          $input.prop( 'checked', ( current_str === v ) && 'checked' );
+          $input.prop( 'checked', ( current_str === solve_str ) && 'checked' );
         }
         else if ( $input.is( 'input:checkbox' ) ) {
           $input.prop( 'checked', !! v );
         }
-        else { $input.val( v ); }
+        else { $input.val( solve_str ); }
       });
     });
   }
@@ -154,13 +155,19 @@ __NS._utilb_ = (function ( $ ) {
   }
   // END Public method /getFormMap/
 
-  // BEGIN Public method /onBufferReady/
+  // BEGIN Public method /onDomReady/
   // Purpose : Executes a provided function only after the browser DOM
   //           has been updated.
+  // Example :
+  //   onDomReady( loadImages );
   //
+  // The Image object is not available in JSDOM, so we skip coverage
+  // for this function.
+  //
+  /* istanbul ignore next */
   onBufferReady = (function () {
     var
-    // 10 x 10px transparent png
+      // 10 x 10px transparent png
       blankImgStr  = __blank
         + 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAA'
         + 'CNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3'
@@ -200,6 +207,7 @@ __NS._utilb_ = (function ( $ ) {
     return onBuf;
   }());
   // END Public method /onBufferReady/
+
 
   // BEGIN Public method /resizeTextarea/
   // Example:
