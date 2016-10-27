@@ -62,13 +62,18 @@ __NS._utilb_ = (function ( $ ) {
   // END Public method /decodeHtml/
 
   // BEGIN Public method /fillForm/
+  // Purpose: Fills a form by input names
+  // Returns:
+  //   * true - the form is valid and was processed.
+  //   * false - the form was not valid.
+  //
   function fillForm ( arg_$form, arg_map ) {
     var
       lookup_map = __castMap( arg_map, {} ),
       $form      = __castJQ( arg_$form )
       ;
 
-    if ( ! $form ) { return; }
+    if ( ! $form ) { return __false; }
     $.each( lookup_map, function ( k, v ) {
       var solve_str = __castStr( v );
       $form.find('[name=' + k + ']').each(function() {
@@ -86,6 +91,7 @@ __NS._utilb_ = (function ( $ ) {
         else { $input.val( solve_str ); }
       });
     });
+    return __true;
   }
   // END Public method /fillForm/
 

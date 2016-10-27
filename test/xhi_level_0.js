@@ -2308,9 +2308,15 @@ function fillForm ( test_obj ) {
     solve_str, solve_bool
     ;
 
-  test_obj.expect( 6 );
+  test_obj.expect( 11 );
   $body.append( $form_01 );
   $body.append( $form_02 );
+
+  test_obj.ok( __utilb._fillForm_(         ) === __false, 'a. no form false' );
+  test_obj.ok( __utilb._fillForm_( __undef ) === __false, 'b. bad form false' );
+  test_obj.ok( __utilb._fillForm_( {}      ) === __false, 'c. bad form false' );
+  test_obj.ok( __utilb._fillForm_( $form_01) === __true,  'd. good form true' );
+  test_obj.ok( __utilb._fillForm_( $form_02) === __true,  'e. good form true' );
 
   __utilb._fillForm_( $form_01, { attr1 : 'my input', attr2 : 'My writing' });
 
