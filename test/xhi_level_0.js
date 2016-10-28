@@ -2302,15 +2302,15 @@ function fillForm ( test_obj ) {
       + '<textarea name="attr2"></textarea></form>',
     form_02_html = '<form><input type="checkbox" name="attr1"/>'
       + '<input type="checkbox" name="attr2" checked="checked"/></form>',
-    $body    = $('body'),
+    // $body    = $('body'),
     $form_01 = $( form_01_html ),
     $form_02 = $( form_02_html ),
     solve_str, solve_bool
     ;
 
   test_obj.expect( 11 );
-  $body.append( $form_01 );
-  $body.append( $form_02 );
+  // $body.append( $form_01 );
+  // $body.append( $form_02 );
 
   test_obj.ok( __utilb._fillForm_(         ) === __false, 'a. no form false' );
   test_obj.ok( __utilb._fillForm_( __undef ) === __false, 'b. bad form false' );
@@ -2345,6 +2345,8 @@ function fillForm ( test_obj ) {
 
 function getFormMap ( test_obj ) {
   var
+    form_00_html = '<div><input type="text" name="name"'
+      + ' value="Franky"/></div>',
     form_01_html = '<form><input type="text" name="attr1" value=""/>'
       + '<textarea name="attr2"></textarea>'
       + '<input type="checkbox" name="attr3"/>'
@@ -2369,6 +2371,7 @@ function getFormMap ( test_obj ) {
       + '<input data-type="number" type="checkbox" name="attr6" checked="checked"/>'
       + '<input data-type="zoolander" type="checkbox" name="attr7"/>'
       + '</form>',
+    form_00_map = { name : 'Franky' },
     form_01_map = {
       attr1 : 'Duty!',
       attr2 : 'in-the-line-of',
@@ -2394,19 +2397,29 @@ function getFormMap ( test_obj ) {
       attr6   : __true,
       attr7   : __false
     },
+    $form_00 = $( form_00_html ),
     $form_01 = $( form_01_html ),
     $form_02 = $( form_02_html ),
     solve_map;
 
-  test_obj.expect( 2 );
+  test_obj.expect( 5 );
   __utilb._fillForm_( $form_01,  form_01_map );
 
-  solve_map = __utilb._getFormMap_( $form_01 );
+  solve_map = __utilb._getFormMap_();
+  test_obj.ok( solve_map === __undef, '0. no args result in undef' );
 
-  test_obj.deepEqual( solve_map, form_01_map, '0. Maps match' );
+  solve_map = __utilb._getFormMap_( $() );
+  test_obj.deepEqual( solve_map, {}, '1. Empty container results in empty'
+    + ' map' );
+
+  solve_map = __utilb._getFormMap_( $form_00 );
+  test_obj.deepEqual( solve_map, form_00_map, '2. Maps match' );
+
+  solve_map = __utilb._getFormMap_( $form_01 );
+  test_obj.deepEqual( solve_map, form_01_map, '3. Maps match' );
 
   solve_map = __utilb._getFormMap_( $form_02 );
-  test_obj.deepEqual( solve_map, form_02_map, '1. Maps match' );
+  test_obj.deepEqual( solve_map, form_02_map, '4. Maps match' );
 
   test_obj.done();
 }
@@ -2436,13 +2449,20 @@ function resizeTextarea ( test_obj ) {
       [ long_str,  { tex : long_str  } ]
     ],
     assert_count = assert_list.length,
-    text_idx     = __0,
+    text_idx     = __2,
     $form_01     = $( form_01_html ),
 
     idx, expect_list, arg_str, expect_map, solve_map, msg_str
     ;
 
-  test_obj.expect( assert_count * 2 );
+  test_obj.expect( assert_count * 2  + 2 );
+
+  test_obj.ok( __utilb._resizeTextarea_() === __false, '0. No args returns'
+    + ' false' );
+  test_obj.ok( __utilb._resizeTextarea_( $form_01 ) === __true,
+    '1. valid form returns true' );
+
+
 
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list = assert_list[ idx ];

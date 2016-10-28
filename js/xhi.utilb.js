@@ -30,6 +30,7 @@ __NS._utilb_ = (function ( $ ) {
     __blank  = vMap._blank_,
     __false  = vMap._false_,
     __true   = vMap._true_,
+    __undef  = vMap._undef_,
 
     __0      = nMap._0_,
     __util   = __NS._util_,
@@ -123,6 +124,14 @@ __NS._utilb_ = (function ( $ ) {
   // END Public method /fixInputByType/
 
   // BEGIN Public method /getFormMap/
+  // Purpose: Create a map of form values key by input name
+  // Example: form_map = getFormMap( $form );
+  // Returns:
+  //   * On success returns a map with name and key values.
+  //     Use data-type="..." to cast returned values as numbers,
+  //     integrers, or strings (see fixInputByType, above).
+  //   * If arg_$form is invalid, returns undef.
+  //
   function getFormMap ( arg_$form ) {
     var
       $form    = __castJQ( arg_$form ),
@@ -137,7 +146,6 @@ __NS._utilb_ = (function ( $ ) {
           $input     = $( this ),
           field_name = $input[ vMap._attr_ ]( 'name' )
           ;
-
         if ( ! field_name ) { return; }
         if ( $input.is( 'input:checkbox' ) ) {
           form_map[ field_name ] = $input.is(':checked');
@@ -217,7 +225,9 @@ __NS._utilb_ = (function ( $ ) {
 
   // BEGIN Public method /resizeTextarea/
   // Example:
-  //   $foo.on( 'keyup', function () { resizeTextarea( this, 25 ); } );
+  //   $foo.on( 'keyup', function () { resizeTextarea( $foo, 25 ); } );
+  // Returns:
+  //   * true: V
   //
   function resizeTextarea ( arg_$textarea, arg_max_ht_px ) {
     var
@@ -227,7 +237,7 @@ __NS._utilb_ = (function ( $ ) {
       scroll_ht_px, outer_ht_px, solve_ht_px
       ;
 
-    if ( ! $textarea ) { return; }
+    if ( $textarea === __undef ) { return __false; }
 
     scroll_ht_px  = $textarea[ vMap._prop_ ]( vMap._scrollHeight_ );
     outer_ht_px   = $textarea[ vMap._outerHeight_]();
@@ -235,12 +245,13 @@ __NS._utilb_ = (function ( $ ) {
     if ( ( scroll_ht_px > outer_ht_px )
       || ( scroll_ht_px < outer_ht_px - 30 )
     ) { solve_ht_px = scroll_ht_px + 8; }
-    else { return; }
+    else { return __true; }
 
     if ( solve_ht_px > max_ht_px ) { solve_ht_px = max_ht_px; }
     if ( solve_ht_px < 30 ) { solve_ht_px = 30; }
 
     $textarea[ vMap._css_ ]( cssKmap._height_, solve_ht_px );
+    return __true;
   }
   // END Public method /resizeTextarea/
 
