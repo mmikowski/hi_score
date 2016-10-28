@@ -32,7 +32,7 @@ var
   jQuery   = require( 'jquery' )( winRef ),
 
   __NS, nMap, vMap, __Str, __blank, __false,
-  __null, __true, __undef, __util, __utilb,
+  __null, __true, __undef, __util, __utilb, __lb,
   __n1, __0, __1, __2, __3, __4
   ;
 
@@ -47,13 +47,16 @@ require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
 global[ __ns ]  = require( libDir + __ns + '.js' )[ __ns ];
 require( libDir + __ns + '.util.js'  );
 require( libDir + __ns + '.utilb.js' );
+require( libDir + __ns + '.lb.js' );
 
-__NS = global[ __ns ];
-vMap = __NS._vMap_;
-nMap = __NS._nMap_;
+__NS    = global[ __ns ];
+vMap    = __NS._vMap_;
+nMap    = __NS._nMap_;
 
 __util  = __NS._util_;
 __utilb = __NS._utilb_;
+__lb    = __NS._lb_;
+
 __blank = vMap._blank_;
 __false = vMap._false_;
 __null  = vMap._null_;
@@ -2455,7 +2458,7 @@ function resizeTextarea ( test_obj ) {
     idx, expect_list, arg_str, expect_map, solve_map, msg_str
     ;
 
-  test_obj.expect( assert_count * 2  + 2 );
+  test_obj.expect( assert_count * __2  + __2 );
 
   test_obj.ok( __utilb._resizeTextarea_() === __false, '0. No args returns'
     + ' false' );
@@ -2487,6 +2490,310 @@ function resizeTextarea ( test_obj ) {
     test_obj.deepEqual( solve_map, expect_map, msg_str );
     text_idx++;
   }
+  test_obj.done();
+}
+
+// ===== LiteBox (LB)
+function __showErrorListCb( $lite_box ) {
+  var
+    smap       = this,
+    test_obj   = smap._test_obj_,
+
+    solve_str  = $lite_box[ __0 ].outerHTML,
+
+    msg_str    = 'CALLBACK ' + __Str( smap._test_idx_ ) + ': '
+      + 'arg_list: ' + JSON.stringify( smap._arg_list_ )
+      + '\n solve_str: ' + solve_str
+      + '\n expect3_str: ' + smap._expect3_str_
+    ;
+
+  test_obj.ok( solve_str === smap._expect3_str_, msg_str );
+  if ( smap._do_done_ ) { test_obj.done(); }
+}
+
+function showErrorList ( test_obj ) {
+  var
+    html1_tmplt = __blank
+      + '<div id="xhi-_lb_" class="xhi-_lb_ xhi-_x_active_" '
+      + 'style="display: block; top: 50%; left: 50%; '
+      + 'margin-top: 0px; margin-left: 0px;"><div '
+      + 'class="xhi-_lb_title_" style="display: block;"></div>'
+      + '<div class="xhi-_lb_close_"></div>'
+      + '<div class="xhi-_lb_content_"><div class="xhi-_lb_error_">'
+      + '<h1>Error</h1><div class="xhi-_lb_error_list_">'
+      + '{_rows_html_}</div></div></div></div>',
+
+    html2_tmplt = __blank
+      + '<div id="xhi-_lb_" style="display: block; top: 50%; left: 50%; '
+      + 'margin-top: 0px; margin-left: 0px;" '
+      + 'class="xhi-_lb_ xhi-_x_active_"><div '
+      + 'class="xhi-_lb_title_" style="display: block;"></div>'
+      + '<div class="xhi-_lb_close_"></div>'
+      + '<div class="xhi-_lb_content_"><div class="xhi-_lb_error_">'
+      + '<h1>Error</h1><div class="xhi-_lb_error_list_">'
+      + '{_rows_html_}</div></div></div></div>',
+
+    rows01_html = __blank
+        + '<div class="xhi-_lb_error_row_">'
+        + '<div class="xhi-_lb_error_row_code_">29</div>'
+        + '<div class="xhi-_lb_error_row_name_">bad_apples</div>'
+        + '<div class="xhi-_lb_error_row_descr_">I am blue</div>'
+        + '</div>',
+    rows02_html = __blank
+      + '<div class="xhi-_lb_error_row_">'
+      + '<div class="xhi-_lb_error_row_code_"></div>'
+      + '<div class="xhi-_lb_error_row_name_"></div>'
+      + '<div class="xhi-_lb_error_row_descr_"></div>'
+      + '</div>',
+
+    blank3_html = '<div id="xhi-_lb_" class="" style="display: none;">'
+      + '<div class="xhi-_lb_title_"></div>'
+      + '<div class="xhi-_lb_close_"></div>'
+      + '<div class="xhi-_lb_content_"></div></div>',
+    blank1_html = __util._makeTmpltStr_( {
+      _input_str_  : html1_tmplt,
+      _lookup_map_ : { _rows_html_ : 'unknown error' }
+    }),
+    blank2_html = __util._makeTmpltStr_( {
+      _input_str_  : html2_tmplt,
+      _lookup_map_ : { _rows_html_ : 'unknown error' }
+    }),
+    solve01_1_html = __util._makeTmpltStr_({
+      _input_str_ : html1_tmplt,
+      _lookup_map_ : { _rows_html_ : rows01_html }
+    }),
+    solve01_2_html = __util._makeTmpltStr_({
+      _input_str_ : html2_tmplt,
+      _lookup_map_ : { _rows_html_ : rows01_html }
+    }),
+    solve02_1_html = __util._makeTmpltStr_({
+      _input_str_ : html1_tmplt,
+      _lookup_map_ : { _rows_html_ : rows02_html }
+    }),
+    solve02_2_html = __util._makeTmpltStr_({
+      _input_str_ : html2_tmplt,
+      _lookup_map_ : { _rows_html_ : rows02_html }
+    }),
+    assert_list = [
+      // arg_list, expected html, alt form html, expected html after cleanup
+      [ [],                        blank1_html, blank2_html,   blank3_html ],
+      [ [ __undef ],               blank1_html, blank2_html,   blank3_html ],
+      [ [ __null  ],               blank1_html, blank2_html,   blank3_html ],
+      [ [ { boo:'bar'} ],          blank1_html, blank2_html,   blank3_html ],
+      [ [ [1,2,3] ],               blank1_html, blank2_html,   blank3_html ],
+      [ [ 'Hi bunny' ],            blank1_html, blank2_html,   blank3_html ],
+      [ [[ { _code_ : 29, _name_ : 'bad_apples', _descr_ : 'I am blue'} ]],
+        solve01_1_html, solve01_2_html, blank3_html
+      ],
+      [ [[ {} ]], solve02_1_html, solve02_2_html, blank3_html ]
+    ],
+
+    assert_count = assert_list.length,
+    show_fn      = __lb._showErrorList_,
+    hide_fn      = __lb._hideIt_,
+
+    idx,       expect_list, arg_list,
+    solve_$lb, expect1_str, expect2_str, expect3_str,
+    solve_str, msg_str, check_fn
+    ;
+
+  test_obj.expect( assert_count * __2 );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect1_str = expect_list[ __1 ];
+    expect2_str = expect_list[ __2 ];
+    expect3_str = expect_list[ __3 ];
+    solve_$lb   = show_fn.apply( window, arg_list );
+    solve_str   = solve_$lb[__0 ].outerHTML;
+    msg_str     = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
+      + '\n expect1_str: ' + expect1_str
+      + '\n expect2_str: ' + expect2_str;
+    test_obj.ok(
+      ( solve_str === expect1_str || solve_str === expect2_str ),
+      msg_str
+    );
+
+    check_fn = __showErrorListCb.bind({
+      _arg_list_    : arg_list,
+      _do_done_     : idx === assert_count - __1,
+      _expect3_str_ : expect3_str,
+      _msg_str_     : msg_str,
+      _test_idx_    : idx,
+      _test_obj_    : test_obj
+    });
+    hide_fn( check_fn );
+  }
+}
+
+function __showSuccessCb( $lite_box ) {
+  var
+    smap       = this,
+    test_obj   = smap._test_obj_,
+
+    solve_str  = $lite_box[ __0 ].outerHTML,
+
+    msg_str    = 'CALLBACK ' + __Str( smap._test_idx_ ) + ': '
+    + 'arg_list: ' + JSON.stringify( smap._arg_list_ )
+    + '\n solve_str: ' + solve_str
+    + '\n expect3_str: ' + smap._expect3_str_
+    ;
+
+  test_obj.ok( solve_str === smap._expect3_str_, msg_str );
+  if ( smap._do_done_ ) { test_obj.done(); }
+}
+
+function showSuccess ( test_obj ) {
+  var
+    html1_tmplt = '<div id="xhi-_lb_" style="display: block; top: 50%; '
+     + 'left: 50%; margin-top: 0px; margin-left: 0px;" '
+     + 'class="xhi-_lb_ xhi-_x_active_"><div class="xhi-_lb_title_" '
+     + 'style="display: block;"></div><div class="xhi-_lb_close_">'
+     + '</div><div class="xhi-_lb_content_">'
+     + '<div class="xhi-_lb_success_">'
+     + '<div class="xhi-_lb_success_title_">{_msg_str_}'
+     + '</div></div></div></div>',
+    html2_tmplt = '<div id="xhi-_lb_" class="xhi-_lb_ xhi-_x_active_" '
+     + 'style="display: block; top: 50%; left: 50%; margin-top: '
+     + '0px; margin-left: 0px;"><div class="xhi-_lb_title_" '
+     + 'style="display: block;"></div><div class="xhi-_lb_close_">'
+     + '</div><div class="xhi-_lb_content_"><div class="xhi-_lb_success_">'
+     + '<div class="xhi-_lb_success_title_">{_msg_str_}'
+     + '</div></div></div></div>',
+
+    blank1_html   = __util._makeTmpltStr_({ _input_str_ : html1_tmplt }),
+    blank2_html   = __util._makeTmpltStr_({ _input_str_ : html2_tmplt }),
+    blank3_html = '<div id="xhi-_lb_" class="" style="display: none;">'
+      + '<div class="xhi-_lb_title_"></div>'
+      + '<div class="xhi-_lb_close_"></div>'
+      + '<div class="xhi-_lb_content_"></div></div>',
+    success1_html = __util._makeTmpltStr_({
+      _input_str_  : html1_tmplt,
+      _lookup_map_ : { _msg_str_ : 'Success!' }
+    }),
+    success2_html = __util._makeTmpltStr_({
+      _input_str_  : html2_tmplt,
+      _lookup_map_ : { _msg_str_ : 'Success!' }
+    }),
+    hello1_html = __util._makeTmpltStr_({
+      _input_str_  : html1_tmplt,
+      _lookup_map_ : { _msg_str_ : 'Hi bunny' }
+    }),
+    hello2_html = __util._makeTmpltStr_({
+      _input_str_  : html2_tmplt,
+      _lookup_map_ : { _msg_str_ : 'Hi bunny' }
+    }),
+    assert_list = [
+      // arg_list, expected html, alt form html, expected html after cleanup
+      [ [],                        blank1_html, blank2_html,   blank3_html ],
+      [ [ __undef ],               blank1_html, blank2_html,   blank3_html ],
+      [ [ __null  ],               blank1_html, blank2_html,   blank3_html ],
+      [ [ { boo:'bar'} ],          blank1_html, blank2_html,   blank3_html ],
+      [ [ [1,2,3] ],               blank1_html, blank2_html,   blank3_html ],
+      [ [ 'Success!' ],          success1_html, success2_html, blank3_html ],
+      [ [ 'Success!', __null ],  success1_html, success2_html, blank3_html ],
+      [ [ 'Hi bunny' ],           hello1_html,  hello2_html,   blank3_html ],
+      [ [ 'Hi bunny', __undef ],  hello1_html,  hello2_html,   blank3_html ],
+      [ [ 'Hi bunny', [1,2,3 ]],  hello1_html,  hello2_html,   blank3_html ]
+    ],
+
+    assert_count = assert_list.length,
+    show_fn      = __lb._showSuccess_,
+    hide_fn      = __lb._hideIt_,
+
+    idx,       expect_list, arg_list,
+    solve_$lb, expect1_str, expect2_str, expect3_str,
+    solve_str, msg_str, check_fn
+    ;
+
+  test_obj.expect( assert_count * __2 );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_list[ idx ];
+    arg_list   = expect_list[ __0 ];
+    expect1_str= expect_list[ __1 ];
+    expect2_str= expect_list[ __2 ];
+    expect3_str= expect_list[ __3 ];
+    solve_$lb  = show_fn.apply( window, arg_list );
+    solve_str  = solve_$lb[__0 ].outerHTML;
+    msg_str    = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
+      + '\n expect1_str: ' + expect1_str
+      + '\n expect2_str: ' + expect2_str;
+    test_obj.ok(
+      ( solve_str === expect1_str || solve_str === expect2_str ),
+      msg_str
+    );
+
+    check_fn = __showSuccessCb.bind({
+      _arg_list_    : arg_list,
+      _do_done_     : idx === assert_count - __1,
+      _expect3_str_ : expect3_str,
+      _msg_str_     : msg_str,
+      _test_idx_    : idx,
+      _test_obj_    : test_obj
+    });
+
+    hide_fn( check_fn );
+  }
+}
+
+function addLocalSpin ( test_obj ) {
+  test_obj.expect( 7 );
+  var
+    spin_html  = __blank
+      + '<div class="xhi-_lb_mask_ xhi-_x_local_ xhi-_x_active_"></div>'
+      + '<div class="xhi-_lb_spin_ xhi-_x_local_ xhi-_x_active_">'
+      + '\uf021</div>',
+    blow_html = '<p>This html should be destroy</p>',
+    $div = $('<div/>'),
+    solve_str
+    ;
+
+  __lb._addLocalSpin_( $div );
+  solve_str = $div.html();
+  test_obj.ok( solve_str === spin_html,
+    '0. Apply 0 - ' + solve_str  + ' | ' + spin_html
+  );
+
+  __lb._addLocalSpin_( $div );
+  solve_str = $div.html();
+  test_obj.ok( solve_str === spin_html,
+    '1. Apply 1' + solve_str  + ' | ' + spin_html
+  );
+
+  $div.empty();
+  solve_str = $div.html();
+  test_obj.ok( solve_str === __blank,
+    '2. Clear 0 ' + solve_str  + ' | __blank'
+  );
+
+  __lb._addLocalSpin_( $div );
+  solve_str = $div.html();
+  test_obj.ok( solve_str === spin_html,
+    '3. Fresh Apply 0 ' + solve_str  + ' | ' + spin_html
+  );
+
+  $div.empty();
+  solve_str = $div.html();
+  test_obj.ok( solve_str === __blank,
+    '4. Clear 1 ' + solve_str  + ' | __blank'
+  );
+
+  $div.html( blow_html );
+  solve_str = $div.html();
+  test_obj.ok( solve_str === blow_html,
+    '5. Apply blow html ' + solve_str  + ' | ' + blow_html
+  );
+
+  __lb._addLocalSpin_( $div );
+  solve_str = $div.html();
+  test_obj.ok( solve_str === spin_html,
+    '6. Blow html destroyed ' + solve_str  + ' | ' + spin_html
+  );
+
   test_obj.done();
 }
 // ======== END NODEUNIT TEST FUNCTIONS ===========
@@ -2545,6 +2852,11 @@ module.exports = {
   _decodeHtml_      : decodeHtml,
   _fillForm_        : fillForm,
   _getFormMap_      : getFormMap,
-  _resizeTextarea_  : resizeTextarea
+  _resizeTextarea_  : resizeTextarea,
+
+  // LiteBox (lb)
+  _showErrorList_   : showErrorList,
+  _showSuccess_     : showSuccess,
+  _addLocalSpin_    : addLocalSpin
 };
 

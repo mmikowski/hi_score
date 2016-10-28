@@ -39,6 +39,7 @@ xhi._lb_ = (function ( $ ) {
     __castFn   = __util._castFn_,
     __castJQ   = __util._castJQ_,
     __castInt  = __util._castInt_,
+    __castList = __util._castList_,
     __castMap  = __util._castMap_,
     __castStr  = __util._castStr_,
 
@@ -73,13 +74,14 @@ xhi._lb_ = (function ( $ ) {
       _success_tmplt_ : __blank
         + '<div class="xhi-_lb_success_">'
           + '<div class="xhi-_lb_success_title_">'
-            + '{_success_msg_}'
+            + '{_msg_str_}'
           + '</div>'
         + '</div>',
       _erow_tmplt_ : __blank
         + '<div class="xhi-_lb_error_row_">'
-          + '<div class="xhi-_lb_error_row_name_"></div>'
-          + '<div class="xhi-_lb_error_row_descr_">{_error_msg_}</div>'
+          + '<div class="xhi-_lb_error_row_code_">{_code_}</div>'
+          + '<div class="xhi-_lb_error_row_name_">{_name_}</div>'
+          + '<div class="xhi-_lb_error_row_descr_">{_descr_}</div>'
         + '</div>',
       _error_tmplt_ : __blank
         + '<div class="xhi-_lb_error_">'
@@ -137,36 +139,54 @@ xhi._lb_ = (function ( $ ) {
   function addLocalSpin( arg_$box ) {
     var $box = __castJQ( arg_$box );
     if ( ! $box ) { return; }
-    $box.html( topCmap._local_tmplt_);
+    $box.html( topCmap._local_tmplt_ );
   }
   // END DOM method /addLocalSpin/
 
   // BEGIN DOM method /cleanUp/
   function cleanUp () {
-    var param_map = this;
-    topSmap._cleanup_toid_  = __undef;
-    if ( ! param_map ) { return; }
+    var
+      smap = this;
+      topSmap._cleanup_toid_  = __undef;
+    if ( ! smap ) { return; }
 
-    if ( $Map._$content_ ) {
-      $Map._$content_[ vMap._empty_ ]()[ vMap._removeAttr_ ]( vMap._style_ );
-    }
-    $Map._$litebox_[ vMap._removeAttr_ ]( vMap._style_ )[
-      vMap._css_ ]( cssKmap._display_, cssVmap._none_ )[
-      vMap._removeClass_ ]( param_map._lb_class_str_ )[
-      vMap._removeClass_ ]( param_map._mod_class_str_ );
     $Map._$mask_[ vMap._removeAttr_ ]( vMap._style_ )[
       vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
+    $Map._$litebox_[ vMap._removeAttr_ ]( vMap._style_ )[
+      vMap._css_ ]( cssKmap._display_, cssVmap._none_ )[
+      vMap._removeClass_ ]( smap._lb_class_str_ )[
+      vMap._removeClass_ ]( smap._mod_class_str_ );
+
+    if ( $Map._$content_ ) {
+      $Map._$content_[ vMap._removeAttr_ ]( vMap._style_ )[
+        vMap._empty_ ]();
+    }
+    if ( $Map._$title_ ) {
+      $Map._$title_[ vMap._removeAttr_ ]( vMap._style_ )[
+        vMap._empty_ ]();
+    }
+    if ( $Map._$close_ ) {
+      $Map._$close_[ vMap._removeAttr_ ]( vMap._style_ )[
+        vMap._empty_ ]();
+    }
 
     topSmap._mod_class_str_ = __blank;
     topSmap._lb_class_str_  = __blank;
     topSmap._is_busy_       = __false;
+
+    if ( smap._callback_fn_ ) {
+      smap._callback_fn_( $Map._$litebox_ );
+    }
   }
   // END DOM method /cleanUp/
 
   // BEGIN DOM method /hideIt/
   // This clears the litebox content
-  function hideIt () {
-    var param_map = {}, clean_fn;
+  function hideIt ( arg_callback_fn ) {
+    var
+      callback_fn = __castFn( arg_callback_fn ),
+      clean_smap, clean_fn;
+
     initModule();
 
     if ( topSmap._close_toid_ ) {
@@ -174,15 +194,18 @@ xhi._lb_ = (function ( $ ) {
       topSmap._close_toid_ = __undef;
     }
 
-    param_map._lb_class_str_  = topSmap._lb_class_str_;
-    param_map._mod_class_str_ = topSmap._mod_class_str_;
+    clean_smap = {
+      _callback_fn_   : callback_fn,
+      _lb_class_str_  : topSmap._lb_class_str_,
+      _mod_class_str_ : topSmap._mod_class_str_
+    };
 
     topSmap._lb_class_str_ = __blank;
     topSmap._is_masked_    = __false;
     $Map._$litebox_[ vMap._removeClass_ ]( 'xhi-_x_active_' );
     $Map._$mask_[    vMap._removeClass_ ]( 'xhi-_x_active_' );
 
-    clean_fn = cleanUp[ vMap._bind_ ]( param_map );
+    clean_fn = cleanUp[ vMap._bind_ ]( clean_smap );
     topSmap._cleanup_fn_   = clean_fn;
     topSmap._cleanup_toid_ = __setTo( clean_fn, topCmap._trans_ms_ );
     return $Map._$litebox_;
@@ -194,15 +217,14 @@ xhi._lb_ = (function ( $ ) {
   // fires the _onclose_fn_ callback, whereas hide does not
   function closeIt () {
     initModule();
+    // Do not close litebox on falsey return from _onclose_fn_
     if ( topSmap._onclose_fn_ ) {
-      // Do not close litebox on falsey return from _onclose_fn_
       if ( topSmap._onclose_fn_( $Map._$content_ ) ) {
-        hideIt();
+        return hideIt();
       }
+      return $Map._$litebox_;
     }
-    else {
-      hideIt();
-    }
+    return hideIt();
   }
   // END DOM method /closeIt/
 
@@ -255,11 +277,11 @@ xhi._lb_ = (function ( $ ) {
   //
   function afterShow() {
     var
-      param_map = this,
-      do_sizing = param_map._do_sizing_,
-      do_mask   = param_map._do_mask_,
-      $litebox  = param_map._$litebox_,
-      $mask     = param_map._$mask_,
+      smap = this,
+      do_sizing = smap._do_sizing_,
+      do_mask   = smap._do_mask_,
+      $litebox  = smap._$litebox_,
+      $mask     = smap._$mask_,
 
       margin_left_px, margin_top_px, css_map
       ;
@@ -489,6 +511,9 @@ xhi._lb_ = (function ( $ ) {
   // ======================== END DOM METHODS =========================
 
   // =================== BEGIN EVENT HANDLERS =========================
+  // The event handlers are impossible to test well without a browser.
+  // Skipped in coverage.
+  /* istanbul ignore next */
   function onDragstart( event_obj ) {
     var
       $target = $( event_obj.elem_target ),
@@ -502,6 +527,7 @@ xhi._lb_ = (function ( $ ) {
     $Map._$litebox_[ vMap._css_ ]( offset_map );
   }
 
+  /* istanbul ignore next */
   function onDragmove ( event_obj ) {
     var offset_map = $Map._$litebox_.offset();
     offset_map.top  += event_obj.px_delta_y;
@@ -509,6 +535,7 @@ xhi._lb_ = (function ( $ ) {
     $Map._$litebox_[ vMap._css_ ]( offset_map );
   }
 
+  /* istanbul ignore next */
   function onDragend ( /* event_obj */ ) {
     var $target = topSmap._$drag_target_;
     if ( $target ) {
@@ -518,32 +545,33 @@ xhi._lb_ = (function ( $ ) {
   }
 
   function onResize ( /*event_obj */ ) {
-   if ( topSmap._resize_toid_ ) { return __true; }
-     topSmap._resize_toid_ = __setTo(function () {
-     var
-       body_w_px  = $Map.$body[ cssKmap._width_ ](),
-       body_h_px  = $Map.$body[ cssKmap._height_ ](),
-       $litebox, w_px, h_px
-       ;
-     if ( topSmap._is_masked_ ) {
-       $litebox = $Map._$litebox_;
-       w_px     = $litebox[ cssKmap._width_  ]();
-       h_px     = $litebox[ cssKmap._height_ ]();
+   if ( topSmap._resize_toid_ ) { return __false; }
 
-       $litebox[ vMap._css_ ]({
-         top  : vMap._fnGetFloor_(
-           ( body_h_px - h_px ) / nMap._2_ + nMap._d5_
-         ),
-         left : vMap._fnGetFloor_(
-           ( body_w_px - w_px ) / nMap._2_ + nMap._d5_
-         )
-       });
-     }
-     topSmap._body_w_px_   = body_w_px;
-     topSmap._body_h_px_   = body_h_px;
-     topSmap._resize_toid_ = __undef;
-   }, nMap._200_ );
-   return __true;
+   topSmap._resize_toid_ = __setTo(function () {
+    var
+      body_w_px  = $Map.$body[ cssKmap._width_ ](),
+      body_h_px  = $Map.$body[ cssKmap._height_ ](),
+      $litebox, w_px, h_px
+      ;
+      if ( topSmap._is_masked_ ) {
+        $litebox = $Map._$litebox_;
+        w_px     = $litebox[ cssKmap._width_  ]();
+        h_px     = $litebox[ cssKmap._height_ ]();
+
+        $litebox[ vMap._css_ ]({
+          top  : vMap._fnGetFloor_(
+            ( body_h_px - h_px ) / nMap._2_ + nMap._d5_
+          ),
+          left : vMap._fnGetFloor_(
+            ( body_w_px - w_px ) / nMap._2_ + nMap._d5_
+          )
+        });
+      }
+      topSmap._body_w_px_   = body_w_px;
+      topSmap._body_h_px_   = body_h_px;
+      topSmap._resize_toid_ = __undef;
+    }, nMap._200_ );
+    return __true;
   }
   // ==================== END EVENT HANDLERS ==========================
 
@@ -569,46 +597,46 @@ xhi._lb_ = (function ( $ ) {
 
   // =================== BEGIN PUBLIC METHODS =========================
   // BEGIN showSuccess
-  function showSuccess ( msg_text ) {
-    var content_html;
+  function showSuccess ( arg_str ) {
+    var
+      msg_str = __castStr( arg_str, __blank ),
+      content_html;
+
     initModule();
 
     content_html = __util._makeTmpltStr_({
       _input_str_  : topCmap._success_tmplt_,
-      _lookup_map_ : { _success_msg_ : msg_text }
+      _lookup_map_ : { _msg_str_ : msg_str }
     });
 
-    showIt({
-      content_html : content_html,
-      size_map     : { width : 400, height : 200 }
-    });
+    return showIt({ _content_html_ : content_html });
   }
   // END showSuccess
 
-  function showError ( error_list ) {
+  function showErrorList ( arg_row_list ) {
     var
-      rows_html = __blank,
-      error_count, i, error_map, error_html;
+      row_list   = __castList( arg_row_list, [] ),
+      row_count = row_list[ vMap._length_ ],
+      rows_html  = __blank,
+
+      idx, row_map, content_html;
 
     initModule();
-    error_count = error_list[ vMap._length_ ];
-    for ( i = __0; i < error_count; i++ ) {
-      error_map = error_list[ i ];
+    ROW: for ( idx = __0; idx < row_count; idx++ ) {
+      row_map = __castMap( row_list[ idx ] );
+      if ( ! row_map ) { continue ROW; }
       rows_html += __util._makeTmpltStr_({
         _input_str_  : topCmap._erow_tmplt_,
-        _lookup_map_ : error_map
+        _lookup_map_ : row_map
       });
     }
 
-    error_html = __util._makeTmpltStr_({
+    content_html = __util._makeTmpltStr_({
       _input_str_  : topCmap._error_tmplt_,
-      _lookup_map_ : { _rows_html_ : rows_html }
+      _lookup_map_ : { _rows_html_ : rows_html || 'unknown error' }
     });
 
-    showIt({
-      content_html : error_html,
-      size_map     : { width : 400, height : 300 }
-    });
+    return showIt({ _content_html_ : content_html });
   }
 
   return {
@@ -620,7 +648,7 @@ xhi._lb_ = (function ( $ ) {
     _hideIt_        : hideIt,
     _setCloseFn_    : setCloseFn,
     _showBusy_      : showBusy,
-    _showError_     : showError,
+    _showErrorList_ : showErrorList,
     _showIt_        : showIt,
     _showSuccess_   : showSuccess,
 
