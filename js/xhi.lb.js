@@ -52,7 +52,7 @@ xhi._lb_ = (function ( $ ) {
       _is_busy_      : __false,  // Is litebox in use?
       _lb_class_str_ : __blank,  // Caller specified class(es) of lb
       _mod_class_str_: __blank,  // Caller specified modifier class(es) of lb
-      _onclose_fn_   : __null    // Callback function on close
+      _onclose_fn_   : __undef   // Callback function on close
     },
 
     $Map = {},
@@ -115,7 +115,7 @@ xhi._lb_ = (function ( $ ) {
   // BEGIN DOM method /set$Map/
   function set$Map () {
     $Map = {
-      _$body_    : $( 'body'          ),
+      _$body_    : $( 'body'           ),
       _$litebox_ : $( '#xhi-_lb_'      ),
       _$mask_    : $( '#xhi-_lb_mask_' ),
       _$spin_    : $( '#xhi-_lb_spin_' )
@@ -138,8 +138,9 @@ xhi._lb_ = (function ( $ ) {
   // BEGIN DOM method /addLocalSpin/
   function addLocalSpin( arg_$box ) {
     var $box = __castJQ( arg_$box );
-    if ( ! $box ) { return; }
-    $box.html( topCmap._local_tmplt_ );
+    if ( $box ) {
+      $box.html( topCmap._local_tmplt_ );
+    }
   }
   // END DOM method /addLocalSpin/
 
@@ -148,6 +149,8 @@ xhi._lb_ = (function ( $ ) {
     var
       smap = this;
       topSmap._cleanup_toid_  = __undef;
+
+    /* istanbul ignore next */
     if ( ! smap ) { return; }
 
     $Map._$mask_[ vMap._removeAttr_ ]( vMap._style_ )[
@@ -175,7 +178,7 @@ xhi._lb_ = (function ( $ ) {
     topSmap._is_busy_       = __false;
 
     if ( smap._callback_fn_ ) {
-      smap._callback_fn_( $Map._$litebox_ );
+      smap._callback_fn_( $Map._$litebox_, $Map._$mask_ );
     }
   }
   // END DOM method /cleanUp/
@@ -215,11 +218,12 @@ xhi._lb_ = (function ( $ ) {
   // BEGIN DOM method /closeIt/
   // The difference between closeIt and hideIt is that close
   // fires the _onclose_fn_ callback, whereas hide does not
+  //
   function closeIt () {
     initModule();
     // Do not close litebox on falsey return from _onclose_fn_
     if ( topSmap._onclose_fn_ ) {
-      if ( topSmap._onclose_fn_( $Map._$content_ ) ) {
+      if ( topSmap._onclose_fn_( $Map._$litebox_, $Map._$mask_ ) ) {
         return hideIt();
       }
       return $Map._$litebox_;
@@ -230,7 +234,7 @@ xhi._lb_ = (function ( $ ) {
 
   // BEGIN method /setCloseFn/
   function setCloseFn ( fn_cb ) {
-    topSmap._onclose_fn_ = fn_cb || null;
+    topSmap._onclose_fn_ = __castFn( fn_cb );
   }
   // END method /setCloseFn/
 
@@ -282,6 +286,7 @@ xhi._lb_ = (function ( $ ) {
       do_mask   = smap._do_mask_,
       $litebox  = smap._$litebox_,
       $mask     = smap._$mask_,
+      onshow_fn = smap._onshow_fn_,
 
       margin_left_px, margin_top_px, css_map
       ;
@@ -301,6 +306,9 @@ xhi._lb_ = (function ( $ ) {
     if ( do_mask ) {
       $mask[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
         vMap._addClass_ ]( 'xhi-_x_active_' );
+    }
+    if ( onshow_fn ) {
+      onshow_fn( $litebox, $mask );
     }
   }
   // END DOM method /afterShow/
@@ -368,44 +376,46 @@ xhi._lb_ = (function ( $ ) {
   //   * _position_map_ - set this to override default positioning
   //     (mobile w x h stays 90%/90%)
   //   * Set is_overflow_y and is_overflow_x to override overflow defaults
-  //   * _onclose_fn_     : function to call on close if provided.
+  //   * _onclose_fn_     : function to call on close
   //     When provided, the function is fired on close, and if it returns
   //     a truthy value, the litebox is closed.  A FALSEY VALUES WILL
   //     retain the litebox.
-  //   * _title_html_     - title string
+  //   * _onshow_fn_      : function to after show is complete.
+  //      The $lite_box and $mask are provided as positional arguments
+  //      to this function.
+  //   * _title_html_     : title string
   //
   // Returns  : $litebox
   //
   function showIt ( arg_map ) {
     initModule();
     var
+      map = __castMap(  arg_map, {} ),
+
+      close_html    = __castStr(  map._close_html_,    __blank ),
+      content_html  = __castStr(  map._content_html_ )
+        || topCmap._spin_html_,
+      layout_key    = __castStr(  map._layout_key_ )   || '_top_',
+      lb_class_str  = __castStr(  map._lb_class_str_ ) || 'xhi-_lb_',
+      mod_class_str = __castStr(  map._mod_class_str_, __blank ),
+      title_html    = __castStr(  map._title_html_,    __blank ),
+
+      autoclose_ms  = __castInt(  map._autoclose_ms_ ),
+      position_map  = __castMap(  map._position_map_ ),
+
+      do_bclick     = __castBool( map._do_block_click_, __false ),
+      do_draggable  = __castBool( map._do_draggable_,    __true ),
+      do_mask       = __castBool( map._do_mask_,         __true ),
+      do_tclose     = __castBool( map._do_title_close_,  __true ),
+      onclose_fn    = __castFn(   map._onclose_fn_,      __null ),
+      onshow_fn     = __castFn(   map._onshow_fn_,       __null ),
+
       $litebox      = $Map._$litebox_,
       $mask         = $Map._$mask_,
-      input_map     = __castMap(  arg_map, {} ),
 
-      close_html    = __castStr(  input_map._close_html_,    __blank ),
-      content_html  = __castStr(  input_map._content_html_ )
-        || topCmap._spin_html_,
-      layout_key    = __castStr(  input_map._layout_key_ )   || '_top_',
-      lb_class_str  = __castStr(  input_map._lb_class_str_ ) || 'xhi-_lb_',
-      mod_class_str = __castStr(  input_map._mod_class_str_, __blank ),
-      title_html    = __castStr(  input_map._title_html_,    __blank ),
-
-      autoclose_ms  = __castInt(  input_map._autoclose_ms_ ),
-      position_map  = __castMap(  input_map._position_map_ ),
-
-      do_bclick     = __castBool( input_map._do_block_click_, __false ),
-      do_draggable  = __castBool( input_map._do_draggable_,    __true ),
-      do_mask       = __castBool( input_map._do_mask_,         __true ),
-      do_tclose     = __castBool( input_map._do_title_close_,  __true ),
-      onclose_fn    = __castFn(   input_map._onclose_fn_,      __null ),
-
-      do_sizing     = __true,
-
-      css_map,    inner_html,
-      $title,     $close,
-      $content,   param_map,
-      bound_fn
+      do_sizing,  css_map,    inner_html,
+      $title,     $close,     $content,
+      aftershow_smap,  aftershow_fn
       ;
 
     // Close previously open lightbox
@@ -456,6 +466,7 @@ xhi._lb_ = (function ( $ ) {
 
     // Configure mask tap
     if ( do_mask ) {
+      $mask[ vMap._addClass_ ]( 'xhi-_x_active_' );
       if ( do_bclick ) {
         $mask[ vMap._addClass_ ]( 'xhi-_lb_x_noclick_' );
         $mask[ vMap._off_ ]( vMap._utap_, closeIt );
@@ -466,17 +477,18 @@ xhi._lb_ = (function ( $ ) {
       }
     }
 
-    // Autoclose if requested
+    // Autoclose
     if ( autoclose_ms ) {
       topSmap._close_toid_ = __setTo( closeIt, autoclose_ms );
     }
 
     // Handle position map
     if ( position_map ) {
-      css_map   = position_map;
       do_sizing = __false;
+      css_map   = position_map;
     }
     else {
+      do_sizing = __true;
       css_map = { top : '-100%', left : '-100%' };
     }
     css_map.display = cssVmap._block_;
@@ -488,17 +500,15 @@ xhi._lb_ = (function ( $ ) {
     topSmap._mod_class_str_ = mod_class_str;
 
     // Show and (if requested) size litebox
-    param_map = {
+    aftershow_smap = {
       _$litebox_  : $litebox,
       _$mask_     : $mask,
       _do_mask_   : do_mask,
-      _do_sizing_ : do_sizing
+      _do_sizing_ : do_sizing,
+      _onshow_fn_ : onshow_fn
     };
-    bound_fn = afterShow[ vMap._bind_ ]( param_map );
-    if ( do_mask ) {
-      $mask[ vMap._addClass_ ]( 'xhi-_x_active_' );
-    }
-    $litebox[ vMap._css_ ]( css_map )[ vMap._show_ ]( bound_fn );
+    aftershow_fn = afterShow[ vMap._bind_ ]( aftershow_smap );
+    $litebox[ vMap._css_ ]( css_map )[ vMap._show_ ]( aftershow_fn );
 
     // Coordinate draggable if requested
     coordDraggable( $title, do_draggable );
@@ -549,8 +559,8 @@ xhi._lb_ = (function ( $ ) {
 
    topSmap._resize_toid_ = __setTo(function () {
     var
-      body_w_px  = $Map.$body[ cssKmap._width_ ](),
-      body_h_px  = $Map.$body[ cssKmap._height_ ](),
+      body_w_px  = $Map._$body_[ cssKmap._width_ ](),
+      body_h_px  = $Map._$body_[ cssKmap._height_ ](),
       $litebox, w_px, h_px
       ;
       if ( topSmap._is_masked_ ) {
