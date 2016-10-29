@@ -1,0 +1,687 @@
+#!/bin/bash
+
+## These checks are disabled as they cause trouble
+## set -e -u;
+
+## BEGIN function to echo to STDERR
+echose () { echo "$*" >&2; }
+## END function to echo to STDERR
+
+## BEGIN function to print usage
+usage () {
+  echose "
+NAME : ${APP_NAME}
+
+SYNOPSIS
+  ${APP_NAME} [ options ] <buildfile1> <buildfile2> ...
+";
+
+  [ "${SW_VERBOSE}" -lt 1 ] && echose "
+Employ the -v or --verbose switch to see more detailed help.
+";
+
+  [ "${SW_VERBOSE}" -gt 0 ] && echose "
+DESCRIPTION
+  ${APP_NAME} builds production-ready JavaScript files
+  from sources specified in buildfiles.
+
+  If the build file includes a javascript section, it creates
+  a two javascript files in the same directory as the build file.
+  The output files will have the same basename as the buildfile.
+  Therefore, '${APP_NAME} gallery.${APP_NAME}' will output
+  the files gallery-raw.js, gallery-min.js, and gallery-sp.js.
+
+  Options may be employed to change the output location, and to turn
+  compression off.
+
+EXAMPLES
+  (1) If the file gallery.${APP_NAME} looks like so:
+      ==============
+      source:js
+      js/gallery.js
+      ==============
+
+  Then running buildify with this configuration:
+
+      $ ${APP_NAME} ./gallery.${APP_NAME}
+
+  will result in the following files:
+
+      gallery-raw.js  # concatenated JS
+      gallery-min.js  # uglified JS
+      gallery-sp.js   # superpacked JS
+      gallery-sp.diag # superpack diagnostics
+
+
+  (2) If the file gallery.${APP_NAME} looks like so:
+      ==============
+      source:js
+      js/gallery.js
+      source:css
+      css/gallery.css
+      ==============
+
+  Then running buildify with this configuration:
+
+      ${APP_NAME} --nocompress ./gallery.${APP_NAME}
+
+  will result in the following files:
+
+      gallery-raw.js   # concatenated JS
+      gallery-raw.css  # concatenated CSS
+
+
+  (3) We can specify an alternate output directory.
+      If the file gallery.${APP_NAME} looks like so:
+      ==============
+      source:js
+      js/gallery.js
+      source:css
+      css/gallery.css
+      ==============
+
+  Then running buildify with this configuration:
+
+      ${APP_NAME} -o /stage ./gallery.${APP_NAME}
+
+  will result in the following files in the directory /stage:
+
+      gallery-raw.js  # concatenated JS
+      gallery-min.js  # uglified JS
+      gallery-sp.js   # superpacked JS
+      gallery-sp.diag # superpack diagnostics
+      gallery-raw.css # concatenated CSS
+      gallery-raw.css # minified CSS
+
+ARGUMENTS
+  buildfile1, buildfile2, ... (REQUIRED)
+    Build files to process.
+    Each build file lists source files to process. It may have up to
+    two sections delineated by a source-type header.
+    ${APP_NAME} EXPECTS ALL PATHS TO BE RELATIVE TO THE BUILDFILE PATH.
+       sourcetype:js   # for javascript files, and
+       # ... js files here ...
+       sourcetype:css # for css and source files
+       # ... css files here .... (relative to buildfile path)
+
+    Blank lines, comment lines, and trailing comments are ignored.
+
+OPTIONS
+  * -h | --help | --usage outputs this text and exit.
+
+  * -o <path> |--outputdir=<path> (OPTIONAL)
+    By default, ${APP_NAME} puts output files in the same directory
+    as the build file.  Use this option to override the default location.
+    <path> must be a writable directory.
+
+  * -n | --nocompress (OPTIONAL)
+    By default, ${APP_NAME} outputs minified named <name>-min.js
+    and <name>-min.css.  This option disables creating and writing these
+    files.
+
+  * -v | --verbose (OPTIONAL)
+    Be noisy when processing
+
+REQUIRED PATCH
+  Please adjust the first next_mangled function in
+  node_modules/uglify-js/lib/scope.js with this superior function to
+  allow superpack.pl to work optimally (~line 244):
+
+  AST_Scope.DEFMETHOD('next_mangled', function(options) {
+    var sym, name, m, n, j, i, ext = this.enclosed;
+    OUT: for ( j = 0; j < 1000; j++ ) {
+      m = base54(++this.cname);
+      n = '_' + m + '_';
+
+      if ( ! is_identifier( n ) ){ continue OUT; }
+
+      // https://github.com/mishoo/UglifyJS2/issues/242 -- do not
+      // shadow a name excepted from mangling.
+      //
+      if (options.except.indexOf( n ) >= 0) continue OUT;
+
+      // we must ensure that the mangled name does not shadow a name from
+      // some parent scope that is referenced in this or in inner scopes.
+      //
+      for ( i = ext.length; --i >= 0; ) {
+        sym = ext[i];
+        name = sym.mangled_name
+          || (sym.unmangleable(options) && sym.name);
+
+        if ( n === name ){ continue OUT; }
+      }
+      return n;
+     }
+     throw 'Cannot find unique key after 1000 iterations';
+  });
+
+SEE ALSO
+  * UglifyJS
+  * UglifyCSS
+
+AUTHOR and COPYRIGHT
+  Michael S. Mikowski (c) 2008-2016
+";
+
+  exit 1;
+}
+## END function to print usage
+
+PATH_FILE_CONCAT_LOG='';
+PATH_FILE_GLOBAL_LOG='';
+
+## BEGIN function to log output
+loggit () {
+  local IFS='';
+  STRING_LOG="$*";
+  if [ "${PATH_FILE_CONCAT_LOG}" != "" ]; then
+    echo "${STRING_LOG}" >> "${PATH_FILE_CONCAT_LOG}";
+  elif [ "${PATH_FILE_GLOBAL_LOG}" != "" ]; then
+    echo "${STRING_LOG}" >> "${PATH_FILE_GLOBAL_LOG}";
+  else
+    echose "${STRING_LOG}"
+  fi
+
+  if [ "${SW_VERBOSE}" -gt 0 ]; then echose "${STRING_LOG}"; fi
+  return 0;
+}
+## END function to log output
+
+## BEGIN function to clean up temp files
+clean_tmp_files () {
+  PATH_FILE_CONCAT_LOG='';
+  if [ -w "${PATH_DIR_TMP}" ]; then
+    if echo "${PATH_DIR_TMP}" | grep -q "${APP_NAME}"; then
+      SW_VERBOSE=1;
+      loggit "## Removing temporary directory ${PATH_DIR_TMP}";
+      rm -rf "${PATH_DIR_TMP}";
+    fi
+  fi
+}
+## END function to clean up temp files
+
+## BEGIN function to abort processing
+abort () {
+  SW_VERBOSE=1;
+  loggit "";
+  loggit "## See ${APP_NAME} -hv for detailed usage.";
+  loggit "## ! Processing ABORTED.";
+
+  clean_tmp_files;
+  # exit with error (bash shell standard)
+  exit 1;
+}
+## END function to abort processing
+
+## BEGIN MAIN
+  ## BEGIN get app path and name
+  PATH_APP_BIN=$( cd ${0%/*} && echo $PWD ); # abs path to this bin
+  if ( ! echo "${PATH}" |grep -q "${PATH_APP_BIN}" ); then
+    export PATH="${PATH}:${PATH_APP_BIN}";
+  fi
+  APP_NAME=$(basename $0); # this executable name
+
+  PATH_BASE=$(cd "$(git rev-parse --show-toplevel)" && pwd );
+  PATH_NM="${PATH_GIT_BASE}/node_modules";
+  PATH_NM_BIN="${PATH_NM}/.bin";
+
+  TIMESTAMP_START=$(date "+%Y-%m-%d %H:%M:%S");
+  TIMESTAMP_EXT=$(date "+%Y%m%d_%H%M%S");
+  ## END get app path and name
+
+  ## BEGIN get options
+  ## (see /usr/share/doc/util-linux/examples/getopt-parse.bash)
+  SW_HELP=0;
+  SW_NOCOMPRESS=0;
+  SW_VERBOSE=0;
+  TEMP=$(getopt -o hnvd:s:p:t: \
+    --long help,usage,nocompress,verbose,distdir:,stagedir:,proddir:,tmpltdir: \
+      -n "${APP_NAME}" -- "$@")
+
+  if [ $? != 0 ] ; then echose "Trouble processing command line."; abort; fi
+
+  # Note the quotes around $TEMP: they are essential!
+  eval set -- "${TEMP}"
+
+  while true; do
+    case "$1" in
+      -h|--help|--usage) SW_HELP=1; shift ;;
+      -n|--nocompress)   SW_NOCOMPRESS=1; shift ;;
+      -v|--verbose)      SW_VERBOSE=1; shift ;;
+      -d|--distdir)      PATH_DIR_DIST="$2"; shift 2 ;;
+      -s|--stagedir)     PATH_DIR_STAGE="$2" ; shift 2 ;;
+      -p|--proddir)      PATH_DIR_PROD="$2"  ; shift 2 ;;
+      -t|--tmpltdir)     PATH_DIR_TMPLT="$2" ; shift 2 ;;
+      --) shift ; break ;;
+      *) echose "Trouble processing command line."; abort ;;
+    esac
+  done
+
+  if [ ${SW_HELP} -gt 0 ]; then
+    usage;
+  fi
+  ## END get options (see /usr/share/doc/util-linux/examples/getopt-parse.bash)
+
+  ## BEGIN set global log to start
+  NAME_FILE_GLOBAL_LOG="${APP_NAME}.log";
+  PATH_FILE_GLOBAL_LOG="${PWD}/${NAME_FILE_GLOBAL_LOG}";
+  if ! echo -n > "${PATH_FILE_GLOBAL_LOG}"; then
+    SW_VERBOSE=1;
+    echose "Cannot create global log file '${PATH_FILE_GLOBAL_LOG}'";
+    abort;
+  fi
+  # put header in log file
+  loggit "## Global ${APP_NAME} log ${TIMESTAMP_START} ##";
+  ## END set global log to start
+
+  ## BEGIN set up temporary storage area
+  ## See http://www.linuxsecurity.com/content/view/115462/81/#mozTocId440182
+  PATH_DIR_TMP="${TMPDIR-/tmp}";
+  PATH_DIR_TMP="${PATH_DIR_TMP}/$$.${APP_NAME}.${TIMESTAMP_EXT}";
+  ( umask 077 && mkdir "${PATH_DIR_TMP}" ) || {
+    SW_VERBOSE=1;
+    loggit "## ! Could not create temporary directory";
+    abort;
+  }
+  ## END set up temporary storage area
+
+  ## BEGIN Find SuperPack
+  SP_EXE="${PATH_APP_BIN}/superpack.pl";
+  if [ -z "${SP_EXE}" ]; then
+    SW_VERBOSE=1;
+    loggit "## ! Unable to locate the SuperPack compressor.";
+    loggit " # See Michael Mikowski for original executable.";
+    abort;
+  fi
+  if ( ! perl -cw "${SP_EXE}" >/dev/null 2>&1 ); then
+    SW_VERBOSE=1;
+    loggit "## ! SuperPack is not valid perl.";
+    loggit " # Please install perl-List-MoreUtils perl-File-Slurp ";
+    loggit " # and perl-Getopt-Mixed.";
+    abort;
+  fi
+  ## END Find SUPERPACK
+
+  ## BEGIN Find UglifyJS
+  UGJS_EXE="${PATH_NM_BIN}/uglifyjs";
+  if [ -z "${UGJS_EXE}" ]; then
+    SW_VERBOSE=1;
+    loggit "## ! Unable to locate the UglifyJS Compressor.";
+    loggit " # Try cd ${PATH_BASE}; npm install uglifyjs@2.4 -D"
+    loggit " # IMPORTANT! Be sure to patch this as described";
+    loggit " # in the general help section!";
+    abort;
+  fi
+  ## END Find UglifyJS
+
+  ## BEGIN Find UglifyCSS
+  UGCSS_EXE="${PATH_NM_BIN}/uglifycss";
+  if [ -z "${UGCSS_EXE}" ]; then
+    SW_VERBOSE=1;
+    loggit "## ! Unable to locate the UglifyCSS Compressor.";
+    loggit " # Try cd ${PATH_BASE}; npm install uglifycss -D"
+    abort;
+  fi
+  ## END Find UglifyCSS
+
+  ## BEGIN validiate input files
+  BUILDFILE_LIST=();
+  COUNTBF=0;
+
+  for BUILDFILE in $@; do
+    if [ ! -f "${BUILDFILE}" ]; then
+      SW_VERBOSE=1;
+      loggit "## ! Build file, '${BUILDFILE}', is not a regular file.";
+      abort;
+    fi
+
+    if [ ! -r "${BUILDFILE}" ]; then
+      SW_VERBOSE=1;
+      loggit "## ! Build file, '${BUILDFILE}', is not readable.";
+      abort;
+    fi
+
+    BUILDFILE_LIST[${#BUILDFILE_LIST[*]}]="${BUILDFILE}"
+    loggit "  # Adding ${BUILDFILE} to process list"
+  done
+
+  if [ "${#BUILDFILE_LIST[*]}" = 0 ]; then
+    loggit "## ! No build file provided."
+    abort;
+  fi
+  ## END validiate input files
+
+
+  ## BEGIN process each buildfile in turn
+  for (( IDX_BF = 0; IDX_BF < ${#BUILDFILE_LIST[*]}; IDX_BF++ )); do
+    ## BEGIN get path of buildfile and determine output names
+    PATH_FILE_BF="${BUILDFILE_LIST[$IDX_BF]}";
+    FILENAME_BF=$( basename "${PATH_FILE_BF}" );
+    ROOTNAME_BF=$( echo "${FILENAME_BF}" |cut -f1 -d'.' );
+    PATH_DIR_BF=$( dirname "${PATH_FILE_BF}" );
+    PATH_DIR_BF=$( cd "${PATH_DIR_BF}" && echo "${PWD}" );
+
+    if [ -z "${ROOTNAME_BF}" ]; then
+      SW_VERBOSE=1;
+      loggit "## ! Root name of the build file is empty.  Please notify author.";
+      abort;
+    fi
+
+    loggit "## Buildify for '${PATH_FILE_BF}' on ${TIMESTAMP_START}";
+    ## END get path of buildfile and determine output names
+
+    ## BEGIN read build file and append sources to arrays
+    ARY_JS_FILES=();
+    ARY_CSS_FILES=();
+    SW_SOURCE_TYPE='';
+
+    while read LINE; do
+      # skip blank lines
+      echo "${LINE}" | grep -q '^\s*$' && continue;
+      # skip full-line comments
+      echo "${LINE}" | grep -q '^\s*#' && continue;
+
+      # strip end of line comments and indents
+      LINE=$(echo "${LINE}" | sed -e 's/#.*$//g' \
+        | sed -e 's/^\s\+//g' | sed -e 's/\s\+$//g' );
+
+      # get directives for paths
+      if echo "${LINE}" | grep -q '^distdir\s*:'; then
+        PATH_DIR_DIST=$( echo "${LINE}" |sed -e 's/distdir\s*:\s*//g' );
+        PATH_DIR_DIST="${PATH_DIR_BF}/${PATH_DIR_DIST}";
+        continue;
+      fi
+      if echo "${LINE}" | grep -q '^stagedir\s*:'; then
+        PATH_DIR_STAGE=$( echo "${LINE}" |sed -e 's/stagedir\s*:\s*//g' );
+        PATH_DIR_STAGE="${PATH_DIR_BF}/${PATH_DIR_STAGE}";
+        continue;
+      fi
+      if echo "${LINE}" | grep -q '^proddir\s*:'; then
+        PATH_DIR_PROD=$( echo "${LINE}" |sed -e 's/proddir\s*:\s*//g' );
+        PATH_DIR_PROD="${PATH_DIR_BF}/${PATH_DIR_PROD}";
+        continue;
+      fi
+      if echo "${LINE}" | grep -q '^tmpltdir\s*:'; then
+        PATH_DIR_TMPLT=$( echo "${LINE}" |sed -e 's/tmpltdir\s*:\s*//g' );
+        PATH_DIR_TMPLT="${PATH_DIR_BF}/${PATH_DIR_TMPLT}";
+        continue;
+      fi
+
+      # process section headers
+      if echo "${LINE}" | grep -q '^sourcetype\s*:'; then
+        SW_SOURCE_TYPE=$( echo "${LINE}" |sed -e 's/sourcetype\s*:\s*//g' );
+        loggit "## SOURCE TYPE ${SW_SOURCE_TYPE}";
+        continue;
+      fi
+
+      # skip anything if section type not yet specified
+      [ "${SW_SOURCE_TYPE}" == "" ] && continue;
+
+      # determine full path to source file and test
+      PATH_FILE_SRC="${PATH_DIR_BF}/${LINE}";
+
+      if [ ! -r "${PATH_FILE_SRC}" ]; then
+        SW_VERBOSE=1;
+        loggit "${SW_SOURCE_TYPE} file ${PATH_FILE_SRC} is not readable.";
+        loggit "Do you need to update your build file?";
+        loggit "X_${LINE}_X";
+        abort;
+      fi
+
+      EXT=$( echo ${LINE} |sed -e 's/^.*\.//' );
+
+      case "${SW_SOURCE_TYPE}" in
+        js)
+          if [ "${EXT}" != 'js' ]; then
+            SW_VERBOSE=1;
+            loggit "# Extension for js file ${LINE} must be 'js'";
+            abort;
+          fi
+
+          ARY_JS_FILES[${#ARY_JS_FILES[*]}]=${PATH_FILE_SRC};
+            loggit "  # Added file ${LINE} to javascript processing queue.";
+          ;;
+
+        css)
+          if [ "${EXT}" != 'css' ]; then
+            SW_VERBOSE=1;
+            loggit "# Extension for css file ${LINE} must be 'css'";
+            abort;
+          fi
+
+          ARY_CSS_FILES[${#ARY_CSS_FILES[*]}]=${PATH_FILE_SRC};
+          loggit "  # Added file ${LINE} to css processing queue.";
+          ;;
+        *) SW_VERBOSE=1;
+          loggit "Source type (${SW_SOURCE_TYPE}) not supported.";
+          abort;
+          ;;
+      esac
+    done < "${PATH_FILE_BF}"
+    ## END read build file and append sources to arrays
+
+    ## BEGIN validate stage dir and move global log there
+    if [ "${PATH_DIR_STAGE}" == "" ]; then
+      PATH_DIR_STAGE="${PATH_DIR_BF}";
+    else
+      mkdir -p "${PATH_DIR_STAGE}";
+    fi
+
+    if [ ! -d "${PATH_DIR_STAGE}" ]; then
+      SW_VERBOSE=1;
+      loggit "## ! Stage directory is not valid";
+      abort;
+    fi
+
+    # normalize path (get rid of ../../ constructs)
+    cd "${PATH_DIR_STAGE}";
+    PATH_DIR_STAGE=$(pwd);
+
+    if [ ! -w "${PATH_DIR_STAGE}" ]; then
+      SW_VERBOSE=1;
+      loggit "## ! Stage directory is not writable";
+      abort;
+    fi
+
+    if ! mv "${PATH_FILE_GLOBAL_LOG}" "${PATH_DIR_STAGE}"; then
+      SW_VERBOSE=1;
+      loggit "## ! Could not move global log to stage directory";
+      abort;
+    else
+      PATH_FILE_GLOBAL_LOG="${PATH_DIR_STAGE}/${NAME_FILE_GLOBAL_LOG}";
+    fi
+    ## END validate output dir if provided and move global log there
+
+    PATH_FILE_CONCAT_JS="${PATH_DIR_TMP}/$$.${ROOTNAME_BF}-src.js";
+    PATH_FILE_CONCAT_CSS="${PATH_DIR_TMP}/$$.${ROOTNAME_BF}-src.css";
+
+    PATH_FILE_STAGE_ROOT="${PATH_DIR_STAGE}/${ROOTNAME_BF}";
+    PATH_FILE_UGJS_LOG="${PATH_FILE_STAGE_ROOT}-ug_js.log";
+    PATH_FILE_SP_LOG="${PATH_FILE_STAGE_ROOT}-sp.log";
+    PATH_FILE_SP_DIAG="${PATH_FILE_STAGE_ROOT}-sp.diag";
+    PATH_FILE_UGCSS_LOG="${PATH_FILE_STAGE_ROOT}-ug_css.log";
+
+    PATH_FILE_OUT_JS="${PATH_FILE_STAGE_ROOT}-raw.js";
+    PATH_FILE_OUT_CSS="${PATH_FILE_STAGE_ROOT}-raw.css";
+    PATH_FILE_OUT_MIN_JS="${PATH_FILE_STAGE_ROOT}-min.js";
+    PATH_FILE_OUT_SP_JS="${PATH_FILE_STAGE_ROOT}-sp.js";
+    PATH_FILE_OUT_MIN_CSS="${PATH_FILE_STAGE_ROOT}-min.css";
+
+    PATH_FILE_CONCAT_LOG="${PATH_FILE_STAGE_ROOT}-raw.log";
+    if !  echo -n > "${PATH_FILE_CONCAT_LOG}"; then
+      SW_VERBOSE=1;
+      PATH_FILE_CONCAT_LOG='';
+      loggit "## ! Cannot create log file, '${PATH_FILE_CONCAT_LOG}'";
+      abort;
+    fi
+
+    ## BEGIN process javascript files
+    for (( i = 0; i < ${#ARY_JS_FILES[*]}; i++ ))
+    do
+      if [ ! -r "${PATH_FILE_CONCAT_JS}" ]; then
+        touch "${PATH_FILE_CONCAT_JS}";
+        if [ ! -r "${PATH_FILE_CONCAT_JS}" ]; then
+          SW_VERBOSE=1;
+          loggit "Cannot create concatenation file '${PATH_FILE_CONCAT_JS}'";
+          loggit "for Javascript processing."
+          abort;
+        fi
+        loggit '## Combining JS Source Files';
+      fi
+      cat "${ARY_JS_FILES[$i]}" >> "${PATH_FILE_CONCAT_JS}";
+      loggit "  # ${ARY_JS_FILES[$i]}";
+    done
+    ## END process javascript files
+
+    ## BEGIN compress javascript file if specified
+    if [ -r "${PATH_FILE_CONCAT_JS}" ] && [ ${SW_NOCOMPRESS} -eq 0 ]; then
+      loggit "## Uglify compressing '${PATH_FILE_CONCAT_JS}'";
+
+      ${UGJS_EXE} "${PATH_FILE_CONCAT_JS}" -mc \
+        1>  "${PATH_FILE_OUT_MIN_JS}" \
+        2>> "${PATH_FILE_UGJS_LOG}";
+      UGJS_EXIT_STATUS=$?;
+
+      if [ ${UGJS_EXIT_STATUS} == 0 ]; then
+        loggit "  # Compression successful.  Output is '${PATH_FILE_OUT_MIN_JS}'";
+        rm "${PATH_FILE_UGJS_LOG}";
+      else
+        SW_VERBOSE=1;
+        loggit "  # ! Compression of '${PATH_FILE_CONCAT_JS}' not successfull";
+        loggit "  # ! See '${PATH_FILE_UGJS_LOG}' for errors";
+        abort;
+      fi
+    fi
+    ## END compress javascript file if specified
+
+    ## BEGIN run superpack on this file if config found
+    if [ -r "${PATH_FILE_CONCAT_JS}" ] && [ ${SW_NOCOMPRESS} -eq 0 ]; then
+      ${SP_EXE} \
+        -i "${PATH_FILE_OUT_MIN_JS}" \
+        -o "${PATH_FILE_OUT_SP_JS}" \
+        -l "${PATH_FILE_SP_LOG}" \
+        > ${PATH_FILE_SP_DIAG} 2>&1
+
+      SP_EXIT_STATUS=$?;
+
+      if [ ${SP_EXIT_STATUS} == 0 ]; then
+        loggit "  # SuperPack successful.  Output is '${PATH_FILE_OUT_SP_JS}'";
+        # rm "${PATH_FILE_SP_LOG}";
+      else
+        SW_VERBOSE=1;
+        loggit "  # ! SuperPack of '${PATH_FILE_CONCAT_JS}' not successfull";
+        loggit "  # ! See '${PATH_FILE_SP_LOG}' for errors";
+        abort;
+      fi
+    fi
+    ## END run superpack on this file if config found
+
+    ## BEGIN process css files
+    for (( i = 0; i < ${#ARY_CSS_FILES[*]}; i++ ))
+    do
+      if [ ! -r "${PATH_FILE_CONCAT_CSS}" ]; then
+        touch "${PATH_FILE_CONCAT_CSS}";
+        if [ ! -r "${PATH_FILE_CONCAT_CSS}" ]; then
+          SW_VERBOSE=1;
+          loggit "## ! Cannot create concatenation file '${PATH_FILE_CONCAT_CSS}'";
+          loggit "  #  for CSS processing.";
+          abort;
+        fi
+        loggit '## Combining CSS Source Files';
+        loggit "  # Writing css concat file '${PATH_FILE_CONCAT_CSS}'";
+      fi
+      cat "${ARY_CSS_FILES[$i]}" >> "${PATH_FILE_CONCAT_CSS}";
+      loggit "  # ${ARY_CSS_FILES[$i]}";
+    done
+    ## END process css files
+
+    ## BEGIN compress css file if specified
+    if [ -r "${PATH_FILE_CONCAT_CSS}" ] && [ ${SW_NOCOMPRESS} -eq 0 ]; then
+      loggit "## UglifyCSS Compressing '${PATH_FILE_CONCAT_CSS}'";
+    
+      ${UGCSS_EXE} "${PATH_FILE_CONCAT_CSS}" \
+        1> "${PATH_FILE_OUT_MIN_CSS}" \
+        2>> "${PATH_FILE_UGCSS_LOG}";
+      UGCSS_EXIT_STATUS=$?;
+    
+      if [ ${UGCSS_EXIT_STATUS} == 0 ]; then
+        loggit "  # Compression successful.  Output is '${PATH_FILE_OUT_MIN_CSS}'";
+        rm "${PATH_FILE_UGCSS_LOG}";
+      else
+        SW_VERBOSE=1;
+        loggit "  # ! Compression of '${PATH_FILE_CONCAT_CSS}' not successfull";
+        loggit "  # ! See '${PATH_FILE_UGCSS_LOG}' for warnings";
+        abort;
+      fi
+    fi
+    ## END compress css file if specified
+
+    # revert to global log
+    PATH_FILE_CONCAT_LOG='';
+
+    ## BEGIN move over remaining files
+    for PAIR in \
+      "${PATH_FILE_CONCAT_JS}_XX_${PATH_FILE_OUT_JS}" \
+      "${PATH_FILE_CONCAT_CSS}_XX_${PATH_FILE_OUT_CSS}";
+    do
+      SRC=$(echo "${PAIR}" |gawk -F'_XX_' '{print $1}');
+      DST=$(echo "${PAIR}" |gawk -F'_XX_' '{print $2}');
+
+      if [ -r "${SRC}" ]; then
+        if ! mv "${SRC}" "${DST}"; then
+          SW_VERBOSE=1;
+          loggit "Could not move ${SRC} to ${DST}";
+          abort;
+        fi
+      fi
+    done
+    ## END move over remaining files
+  done
+  ## END process each buildfile in turn
+
+  mkdir -p "${PATH_DIR_DIST}";
+  cd "${PATH_DIR_DIST}";
+  PATH_DIR_DIST=$(pwd);
+
+  cd "${PATH_DIR_PROD}";
+  PATH_DIR_PROD=$(pwd);
+
+  cd "${PATH_DIR_TMPLT}";
+  PATH_DIR_TMPLT=$(pwd);
+
+  mkdir -p "${PATH_DIR_DIST}/js";
+  mkdir -p "${PATH_DIR_DIST}/img";
+  mkdir -p "${PATH_DIR_DIST}/font/vendor";
+  cp "${PATH_DIR_STAGE}/xhi-sp.js" "${PATH_DIR_DIST}/js/"
+
+  ## TODO Provide ability to copy media file to dist dist like so:
+  ## media:
+  ## cp "${PATH_DIR_PROD}/img/xhi-bkgd-001.jpg" "${PATH_DIR_DIST}/img/"
+
+  REPLACE_CMD=$(
+  node -e '
+    var fs = require( "fs" );
+    fs.readFile(
+      "../stage/xhi-sp.log",
+      "utf8",
+      function( error, json_str ) {
+        if ( error ) { return console.error( error ); }
+        log_map = JSON.parse( json_str );
+        console.log(
+          "xhi."
+          + log_map[ "_shell_" ]
+          + "."
+          + log_map[ "_initModule_" ]
+        );
+      }
+    );
+  '
+  );
+  sed -e "s/REPLACE_CMD/${REPLACE_CMD}/g" \
+  "${PATH_DIR_TMPLT}/index.html.tmplt" > "${PATH_DIR_DIST}/index.html"
+
+  clean_tmp_files;
+  TIMESTAMP_END=$(date "+%Y-%m-%d %H:%M:%S");
+  loggit "## ${APP_NAME} run complete on $TIMESTAMP_END ##";
+## END MAIN
+
