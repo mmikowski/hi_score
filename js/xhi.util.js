@@ -572,7 +572,7 @@ __NS._util_ = (function () {
   //
   function makeRadioHtml ( arg_map ) {
     var
-      map  = castMap(  arg_map, {} ),
+      map        = castMap(  arg_map, {} ),
       group_name = castStr(  map._group_name_ ),    // name=...
       match_str  = castStr(  map._match_str_  ),    // Selected val
       val_list   = castList( map._val_list_,  [] ), // Vals in order
@@ -915,7 +915,7 @@ __NS._util_ = (function () {
   // Example: str =
   function makeCommaNumStr ( arg_map ) {
     var
-      map       = castMap( arg_map, {} ),
+      map             = castMap( arg_map, {} ),
       input_num       = castNum( map._input_num_,       __0 ),
       round_limit_exp = castInt( map._round_limit_exp_, __3 ),
       round_unit_exp  = castInt( map._round_unit_exp_,  __3 ),
@@ -973,7 +973,7 @@ __NS._util_ = (function () {
   //
   function makeDateStr ( arg_map ) {
     var
-      map = castMap(  arg_map, {} ),
+      map       = castMap(  arg_map, {} ),
       do_time   = castBool( map._do_time_, __false ),
       date_ms   = castInt(  map._date_ms_, __undef ),
 
@@ -1023,6 +1023,72 @@ __NS._util_ = (function () {
   }
   // END Public method /makeDateStr/
 
+  // BEGIN Public method /makeDebounceFn/
+  // Purpose: Returns a function that will only fire after
+  //   delay_ms milliseconds of inactivity.
+  //
+  function makeDebounceFn ( arg_map ) {
+    var
+      map      = castMap(  arg_map, {} ),
+      fn       = castFn(   map._fn_ ),
+      delay_ms = castInt(  map._delay_ms_ ),
+      do_asap  = castBool( map._do_asap_, __false ),
+      ctx_data = map._ctx_data_ || this,
+      delay_toid
+      ;
+
+    if ( ! ( fn && delay_ms ) ) { return; }
+
+    return function () {
+      var arg_list = makeArgList( arguments );
+      if ( do_asap && ! delay_toid ) { fn.apply( ctx_data, arg_list ); }
+      clearTimeout( delay_toid );
+      delay_toid = __setTo( function() {
+        if ( ! do_asap ) { fn.apply( ctx_data, arg_list ); }
+        delay_toid = __undef;
+      }, delay_ms );
+    };
+  }
+  // END Public method /makeDebounceFn/
+
+  // BEGIN Public method /makeThrottleFn/
+  // Purpose: Returns a function that will only fire once per
+  //   delay_ms milliseconds.
+  //
+  function makeThrottleFn ( arg_map ) {
+    var
+      map      = castMap(  arg_map, {} ),
+      fn       = castFn(   map._fn_ ),
+      delay_ms = castInt(  map._delay_ms_, __0 ),
+      ctx_data = map._ctx_data_,
+      last_ms  = __0, delay_toid;
+
+    if ( ! ( fn && delay_ms ) ) { return; }
+
+    return function () {
+      var
+        arg_list = makeArgList( arguments ),
+        now_ms   = getNowMs(),
+        delta_ms = delay_ms - ( now_ms - last_ms )
+        ;
+
+      if ( delta_ms <= __0 ) {
+        if ( delay_toid ) { return; }
+        delay_toid = __undef;
+        fn.apply( ctx_data, arg_list );
+      }
+
+      delay_toid = __setTo(
+        function () {
+          fn.apply( ctx_data, arg_list );
+          delay_toid = __undef;
+        },
+        delta_ms
+      );
+    };
+  }
+  // END Public method /makeThrottleFn/
+
   // BEGIN Public method /makeEllipsisStr/
   // Purpose: Shorten a string to a maximum length and append ellipsis
   //   if it is exceeded.
@@ -1042,7 +1108,7 @@ __NS._util_ = (function () {
   //
   function makeEllipsisStr( arg_map ) {
     var
-      map     = castMap( arg_map, {} ),
+      map           = castMap( arg_map, {} ),
       scrub_str     = makeScrubStr( map._input_str_,  __false ),
       limit_int     = castInt(  map._char_limit_int_,     __0 ),
       do_word_break = castBool( map._do_word_break_,   __true ),
@@ -1242,7 +1308,7 @@ __NS._util_ = (function () {
   // into a single string
   function makeStrFromMap ( arg_map ) {
     var
-      map = castMap(  arg_map, {} ),
+      map       = castMap(  arg_map, {} ),
       prop_map  = castMap(  map._prop_map_, {} ),
       key_list  = castList( map._key_list_, [] ),
       delim_str = castStr( map._delim_str_, ' ' ),
@@ -1330,7 +1396,7 @@ __NS._util_ = (function () {
   //
   function makeSeriesMap( arg_map ) {
     var
-      map    = castMap( arg_map, {} ),
+      map          = castMap( arg_map, {} ),
       tz_offset_ms = castInt( map._tz_offset_ms_, __0 ),
       max_ms       = castInt( map._max_ms_ - tz_offset_ms, __0 ),
       min_ms       = castInt( map._min_ms_ - tz_offset_ms, __0 ),
@@ -1759,6 +1825,7 @@ __NS._util_ = (function () {
     _makeClockStr_    : makeClockStr,
     _makeCommaNumStr_ : makeCommaNumStr,
     _makeDateStr_     : makeDateStr,
+    _makeDebounceFn_  : makeDebounceFn,
     _makeEllipsisStr_ : makeEllipsisStr,
     _makeErrorObj_    : makeErrorObj,
     _makeGuidStr_     : makeGuidStr,
@@ -1772,6 +1839,7 @@ __NS._util_ = (function () {
     _makeSeenMap_     : makeSeenMap,
     _makeSeriesMap_   : makeSeriesMap,
     _makeStrFromMap_  : makeStrFromMap,
+    _makeThrottleFn_  : makeThrottleFn,
     _makeTmpltStr_    : makeTmpltStr,
     _makeUcFirstStr_  : makeUcFirstStr,
     _mergeMaps_       : mergeMaps,

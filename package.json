@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.5.10",
+  "version": "0.6.0",
   "description": "Are you ready to get off the framework-of-the-month treadmill and take control of your SPA? Hi_Score is here to help with an architecture guide, starter files, and best-in-class libraries.",
   "keywords": [
     "spa",
@@ -34,11 +34,18 @@
     "coveralls": "^2.11.14",
     "istanbul": "^0.4.5",
     "jquery": "3.1.1",
+    "jquery.event.dragscroll": "^0.9.3",
+    "jquery.event.gevent": "^1.1.6",
+    "jquery.event.ue": "^1.3.2",
+    "jquery.scrolli": "^1.0.0",
+    "jquery.urianchor": "^1.3.5",
     "jsdom": "^9.8.0",
     "jslint": "^0.9.6",
     "node-inspector": "^0.12.5",
     "nodeunit": "^0.9.1",
     "nodeunit-b": "^4.0.0",
+    "powercss": "^1.3.5",
+    "taffydb": "^2.7.3",
     "uglifycss": "0.0.25",
     "uglifyjs": "^2.4.10"
   },

@@ -60,17 +60,17 @@ can't, the return a fallback value. They are available in xhi.util.js.
 Let's see them in action:
 
 ```js
-function getTimeList( arg_map ) {
-  var
-    map      = __castMap( arg_map, {} ),
-    end_ms   = __castInt( map._end_ms_   ),
-    start_ms = __castInt( map._start_ms_ )
-    ;
+  function getTimeList( arg_map ) {
+    var
+      map      = __castMap( arg_map, {} ),
+      end_ms   = __castInt( map._end_ms_   ),
+      start_ms = __castInt( map._start_ms_ )
+      ;
 
-  if ( ! ( end_ms && start_ms ) ) { return []; }
+    if ( ! ( end_ms && start_ms ) ) { return []; }
 
-  // ... continue logic here
-}
+    // ... continue logic here
+  }
 ```
 
 This self-documenting functional code replaces the dead-weight that is JSDoc
@@ -100,10 +100,33 @@ and OpenSans. Check out the `font` directory for details.
 Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
 sympathy.
 
-## Testing
-### Regression tests
-Regression tests have been added for the xhi libraries, focusing
-presently on the utilities. You can run the tests at any time like so:
+## Install
+As of 0.6.0, this repository no longer directly holds dependent libraries but
+instead copies them from their npm repositories locations instead.  It is a
+single step process:
+
+```bash
+  $ cd hi_score
+  $ npm install
+```
+
+After installation one can open the index.html file with a browser to view the
+rudimentary sample application.
+
+## Update
+One may update all the npm libraries and the `package.json` file with `npm
+update -D`.  If we want these changes to propagate, we must run `npm install`
+ again to update the vendor libraries, and update the `index.html` file to
+ point to the updated versions.  This last step we expect to automate in the
+ near future.
+
+## Test
+Regression tests for the xhi libraries currently cover the root namespace
+(`xhi.js`), the utilities (`xhi.util.js`), browser utilities (`xhi.utilb.js`)
+and litebox (`xhi.lb.js`).  The sample applicaiton will include data and model
+tests as well.
+
+### Run the tests
 
 ```bash
   $ cd hi_score
@@ -111,7 +134,7 @@ presently on the utilities. You can run the tests at any time like so:
   $ npm test
 ```
 
-### Inspecting coverage
+### Inspect the coverage
 We recommend you inspect your coverage submitting to GitHub. To
 do so simply run the npm `cover` script, as shown below.
 
@@ -120,7 +143,8 @@ do so simply run the npm `cover` script, as shown below.
   $ npm run cover
   $ google-chrome coverage/lcov-report/index.html
 ```
-### Coverage using coveralls.io
+
+### Use coveralls.io
 After you commit you should submit your coverage report to
 coveralls.io. Here are the steps:
 
@@ -129,6 +153,7 @@ coveralls.io. Here are the steps:
   $ npm install
   $ npm run covera
 ```
+
 And then point your browser to the `hi_score` [coverage page][10]
 to confirm the results have been recorded.
 
@@ -175,10 +200,10 @@ file with this information to the `.gitignore` file.
 ```bash
   $ cd hi_score
   $ cat .coveralls.yaml >> .gitignore
-  $ cat 'repo_token: ---------your-token-here---------` > .coveralls.yaml
+  $ cat 'repo_token: ---------your-token-here---------' > .coveralls.yaml
 ```
 
-Running `npm covera` publishes to coveralls.io as shown above. The detailed
+Run `npm covera` to send a report to coveralls.io. The detailed
 command is as follows:
 
 ```bash
@@ -217,34 +242,33 @@ development:
   $ git commit -a
 ```
 
-## Additional notes
-### `cast` use cases
-#### Use case 1
+## Notes
+### Cast Use Case 1
 Guarantee our returned value is always the desired type by providing
 an appropriate default value:
 
 ```js
-map  = __castMap(  map.details, {} );
-list = __castList( map.list,    [] );
-str  = __castStr(  map.descr,   '' );
-int  = __castInt(  map.count,    0 );
+  map  = __castMap(  map.details, {} );
+  list = __castList( map.list,    [] );
+  str  = __castStr(  map.descr,   '' );
+  int  = __castInt(  map.count,    0 );
 ```
 
 This is useful when our default values are sane and we want our routines to be
 "bullet-proof". It is especially useful during function initialization to
 ensure an argument map is indeed a map.
 
-#### Use case 2
+### Cast Use Case 2
 Guarantee our returned value is either the desired type *or*
 `undefined`. In these cases, we typically adjust our code flow to avoid
 unusable values.
 
 ```js
-int = __castInt( map.count );
-if ( int === undefined ) { return; } // Cannot coerce into integer
+  int = __castInt( map.count );
+  if ( int === undefined ) { return; } // Cannot coerce into integer
 
-str = castStr( map.ding );
-if ( str === undefined ) { return; } // Cannot coerce into a string
+  str = castStr( map.ding );
+  if ( str === undefined ) { return; } // Cannot coerce into a string
 ```
 
 ## Release Notes
@@ -286,14 +310,20 @@ MIT
   - Delete `_setCmap_` as it was redunant with `_mergeMaps_`.
 
 ### Version 0.4.x
-- (x) Replac `jscoverage` with much more complete and recent `istanbul` for code coverage
-- (x) Added `cast` routines and write up their use
-- (x) Consolidate utilities to increase coverate
+- (x) Replace `jscoverage` with much more complete and recent `istanbul`
+- (x) Added `cast` routines and detail their use
+- (x) Consolidate utilities to increase coverage
 - (x) Update lite-box using `cast` methods
 
-### Version 0.5.x (current)
+### Version 0.5.x
 - (x) Add `jsdom` to expand testing to modules that use jQuery
 - (x) Continue regression test expansion
+- (x) Rationalize libraries
+- (x) Add lite-box regression tests
+
+### Version 0.6.x (current)
+- (x) Remove vendor code from repo and auto-copy on install
+- (x) Add native utils `makeThrottleFn` and `makeDebounceFn`
 - More sophisticated sample application
 
 ## Similar Projects

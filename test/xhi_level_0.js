@@ -18,7 +18,7 @@
 var
   __ns    = 'xhi',
   libDir  = '../js/',
-  nuFn    = function () { console.log( __ns + this , arguments ); },
+  nuFn    = function () { console.log( __ns + '.' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
     done      : nuFn.bind( 'done'      ),
@@ -241,7 +241,7 @@ function castStr ( test_obj ) {
   test_obj.done();
 }
 
-function clearMap( test_obj ) {
+function clearMap ( test_obj ) {
   //noinspection JSUnusedGlobalSymbols
   var
     proto = { callback_fn : function () { return 1; } },
@@ -293,7 +293,7 @@ function clearMap( test_obj ) {
   test_obj.done();
 }
 
-function cloneData( test_obj ) {
+function cloneData ( test_obj ) {
   var
     assert_list = [
       __1, -694567, __blank, __0, __null, __undef, 5.062e12,
@@ -725,7 +725,7 @@ function getTzOffsetMs ( test_obj ) {
   test_obj.done();
 }
 
-function getVarType( test_obj ) {
+function getVarType ( test_obj ) {
   var
     // this is a hack to get around jslint warnings
     ob = Boolean, oa = Array, os = String,
@@ -838,7 +838,7 @@ function makeArgList ( test_obj ) {
     ],
 
     assert_count = assert_list.length,
-    get_args_fn  = function () {
+    make_list_fn  = function () {
       return __util._makeArgList_( arguments );
     },
 
@@ -848,7 +848,7 @@ function makeArgList ( test_obj ) {
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list  = assert_list[ idx ];
-    solve_list   = get_args_fn.apply( __undef, expect_list );
+    solve_list   = make_list_fn.apply( __undef, expect_list );
     msg_str    = __Str( idx ) + '. '
       + JSON.stringify( solve_list ) + ' <===> '
       + JSON.stringify( expect_list );
@@ -935,7 +935,7 @@ function makeCommaNumStr ( test_obj ) {
   test_obj.done();
 }
 
-function makeDateStr( test_obj ) {
+function makeDateStr ( test_obj ) {
   var
     date_obj     = new Date(),
     assert_list  = [
@@ -986,7 +986,103 @@ function makeDateStr( test_obj ) {
   test_obj.done();
 }
 
-function makeEllipsisStr( test_obj ) {
+function makeDebounce01Fn ( test_obj ) {
+  var
+    test_idx  = 0,
+    run_fn = function () { test_idx++; },
+    curry_fn;
+
+  test_obj.expect( 2 );
+  curry_fn = __util._makeDebounceFn_();
+
+  test_obj.ok( curry_fn === __undef );
+
+  curry_fn = __util._makeDebounceFn_({
+    _fn_ : run_fn,
+    _do_asap_  : __true,
+    _delay_ms_ : 10
+  });
+  curry_fn();
+  curry_fn();
+  curry_fn();
+  test_obj.ok( test_idx === 1, '0. test_idx === 1' );
+  setTimeout( test_obj.done, 15 );
+}
+
+function makeDebounce02Fn ( test_obj ) {
+  var
+    test_idx  = 0,
+    run_fn = function () { test_idx++; },
+    curry_fn;
+
+  curry_fn = __util._makeDebounceFn_({
+    _fn_ : run_fn,
+    _do_asap_  : __false,
+    _delay_ms_ : 10
+  });
+  test_obj.expect( 2 );
+  curry_fn();
+  curry_fn();
+  curry_fn();
+  curry_fn();
+  curry_fn();
+  test_obj.ok( test_idx === 0, 'test_idx === 0' );
+  setTimeout( function () {
+    test_obj.ok( test_idx === 1, 'test_idx === 1' );
+    test_obj.done();
+  }, 15 );
+}
+
+function __run03Fn () { this.foo = 'bar'; }
+function makeDebounce03Fn ( test_obj ) {
+  var
+    ctx_map = { str : 'hi there' },
+    curry_fn;
+
+  curry_fn = __util._makeDebounceFn_({
+    _fn_       : __run03Fn,
+    _ctx_data_ : ctx_map,
+    _do_asap_  : __true,
+    _delay_ms_ : 10
+  });
+
+  test_obj.expect( 1 );
+  curry_fn();
+  curry_fn();
+  curry_fn();
+  test_obj.deepEqual( ctx_map, { foo : 'bar', str : 'hi there' } );
+  setTimeout( test_obj.done, 15 );
+}
+
+function __run04Fn () {
+  this._list_ = __util._makeArgList_( arguments );
+}
+
+function makeDebounce04Fn ( test_obj ) {
+  var ctx_map = {}, curry_fn;
+
+  curry_fn = __util._makeDebounceFn_({
+    _fn_       : __run04Fn,
+    _ctx_data_ : ctx_map,
+    _do_asap_  : __false,
+    _delay_ms_ : 10
+  });
+
+  test_obj.expect( 2 );
+  curry_fn( 1, 2, 3);
+  curry_fn();
+  curry_fn( __null );
+  curry_fn( 'barney fife' );
+  curry_fn( 'wilma' );
+  test_obj.ok( ctx_map._list_ === __undef, '_list_ === __undef' );
+  setTimeout( function () {
+    var msg_str = JSON.stringify( ctx_map._list_ ) + ' <===> [ wilma ]';
+    test_obj.deepEqual( ctx_map._list_, [ 'wilma' ], msg_str );
+    test_obj.done();
+  }, 20 );
+}
+
+function makeEllipsisStr ( test_obj ) {
   var
     str0 = 'Georgey', //7
     str1 = 'Hee haw and the boys', // 20
@@ -1157,7 +1253,7 @@ function makeErrorObj ( test_obj ) {
   test_obj.done();
 }
 
-function makeGuidStr( test_obj ) {
+function makeGuidStr ( test_obj ) {
   var
     seen_map     = {},
     assert_count = 100,
@@ -1176,7 +1272,7 @@ function makeGuidStr( test_obj ) {
 
   test_obj.done();
 }
-function makeMapUtilObj( test_obj ) {
+function makeMapUtilObj ( test_obj ) {
   var
     map_util_obj = __util._makeMapUtilObj_(),
     arg_list   = [ [ 'cows', 'donkeys', 'sheep' ] ],
@@ -1274,7 +1370,7 @@ function makeOptionHtml ( test_obj ) {
   test_obj.done();
 }
 
-function makePadNumStr( test_obj ) {
+function makePadNumStr ( test_obj ) {
   var
     assert_list  = [
       [ [ __undef       ], __blank ],
@@ -1811,7 +1907,7 @@ function makeSeriesMap ( test_obj ) {
   test_obj.done();
 }
 
-function makeStrFromMap( test_obj ) {
+function makeStrFromMap ( test_obj ) {
   var
     prop01_map = {
       _name_ : 'fred', _state_code_: 'LA', _country_code_ : 'US'
@@ -1905,6 +2001,28 @@ function makeStrFromMap( test_obj ) {
     test_obj.ok( solve_str === expect_str, msg_str );
   }
   test_obj.done();
+}
+
+function makeThrottle01Fn ( test_obj ) {
+  var idx = __0, curry_fn;
+
+  test_obj.expect( 3 );
+  curry_fn = __util._makeThrottleFn_();
+
+  test_obj.ok( curry_fn === __undef );
+
+  curry_fn = __util._makeThrottleFn_({
+    _fn_       : function () { idx++; },
+    _do_asap_  : __false,
+    _delay_ms_ : 10
+  });
+  curry_fn(); curry_fn(); curry_fn();
+  curry_fn(); curry_fn(); curry_fn();
+  test_obj.ok( idx === __1, 'idx === 1 not ' + idx );
+  setTimeout( function () {
+    test_obj.ok( idx === __2, 'idx === 2 not ' + idx );
+    test_obj.done();
+  }, 15 );
 }
 
 function makeTmpltStr ( test_obj ) {
@@ -2601,7 +2719,7 @@ function onResize ( test_obj ) {
   test_obj.done();
 }
 
-function __showErrorListCb( $lite_box ) {
+function __showErrorListCb ( $lite_box ) {
   var
     smap       = this,
     test_obj   = smap._test_obj_,
@@ -2723,7 +2841,7 @@ function showErrorList ( test_obj ) {
   }
 }
 
-function __showSuccessCb( $lite_box ) {
+function __showSuccessCb ( $lite_box ) {
   var
     smap       = this,
     test_obj   = smap._test_obj_,
@@ -2868,6 +2986,10 @@ module.exports = {
   _makeClockStr_    : makeClockStr,
   _makeCommaNumStr_ : makeCommaNumStr,
   _makeDateStr_     : makeDateStr,
+  _makeDebounce01Fn_: makeDebounce01Fn,
+  _makeDebounce02Fn_: makeDebounce02Fn,
+  _makeDebounce03Fn_: makeDebounce03Fn,
+  _makeDebounce04Fn_: makeDebounce04Fn,
   _makeEllipsisStr_ : makeEllipsisStr,
   _makeErrorObj_    : makeErrorObj,
   _makeGuidStr_     : makeGuidStr,
@@ -2880,6 +3002,7 @@ module.exports = {
   _makeSeenMap_     : makeSeenMap,
   _makeSeriesMap_   : makeSeriesMap,
   _makeStrFromMap_  : makeStrFromMap,
+  _makeThrottle01Fn_: makeThrottle01Fn,
   _makeTmpltStr_    : makeTmpltStr,
   _makeUcFirstStr_  : makeUcFirstStr,
   _mergeMaps_       : mergeMaps,
