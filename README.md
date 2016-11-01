@@ -19,10 +19,9 @@ but thought we'd aim higher.
 ## Code Style
 We use the code style presented in the book book
 **Single Page Web Applications - JavaScript end-to-end** found on
-[Manning][8] or [Amazon][9]. The cheat sheet is [here][a].
-All our libraries pass JSLint. All object keys have an underscore
-prefix and suffix like `_this_` which makes them easy targets for
-compression.
+[Manning][8] or [Amazon][9]. The [full code standard][a] and the
+[cheat-sheet][b] are available online. The architecture is illustrated in the
+cheat sheet.
 
 ## The Goal
 Provide an architecture guide, starter files, and best-in-class libraries
@@ -45,10 +44,13 @@ Key attributes:
 ## Who needs TypeScript or Closure?
 These frameworks are incredibly complicated mechanisms to provide a level of
 type-safety to JS. But do you really need cede control of you JS project to
-these monsters to get most of the same benefit?  The answer is
-**absolutely not**. In my experience, one can solve almost all JS
-type-casting issues in two simple steps: 1. name your variables for type,
-and 2. use `cast` methods to ensure type.
+these large DSLs to get most of the same benefit?  The answer is
+**absolutely not**. One can solve most JS type-casting issues in two simple steps:
+
+1. Name your variables for type.
+2. Use `cast` methods to ensure type.
+
+Let's see how this can be accomplished.
 
 ### 1. Name your variable for type
 See this [reference cheat sheet][a]. This is far easier and transportable
@@ -62,7 +64,7 @@ Let's see them in action:
 ```js
   function getTimeList( arg_map ) {
     var
-      map      = __castMap( arg_map, {} ),
+      map      = __castMap( arg_map,    {} ),
       end_ms   = __castInt( map._end_ms_   ),
       start_ms = __castInt( map._start_ms_ )
       ;
@@ -73,9 +75,9 @@ Let's see them in action:
   }
 ```
 
-This self-documenting functional code replaces the dead-weight that is JSDoc
-and overwrought frameworks with a tiny fraction of the effort. See `cast*`
-use cases below for more discussion.
+This self-documenting code replaces the verbose JSDoc that is only useful
+when combined with complex transpilers. See **Cast Use Cases** below
+for more detail.
 
 ## Status
 I am currently updating the libraries. They are not complete.
@@ -242,33 +244,56 @@ development:
   $ git commit -a
 ```
 
-## Notes
-### Cast Use Case 1
-Guarantee our returned value is always the desired type by providing
-an appropriate default value:
+## Cast use cases
+### Guarantee a type
+There are many instances where we want to ensure a value is a
+desired type.  If the provided value is not of the type, we either want to
+*convert* it to the correct type if possible, or *use a sensible default*.
+Our `cast` methods provide this as shown below:
 
 ```js
-  map  = __castMap(  map.details, {} );
-  list = __castList( map.list,    [] );
-  str  = __castStr(  map.descr,   '' );
-  int  = __castInt(  map.count,    0 );
+function makeCleanFn( arg_map ) {
+  var
+    map  = __castMap(  arg_map,       {} ),
+
+    fn   = __castInt(  map._fn_,    null ),
+    int  = __castInt(  map._count_,    0 ),
+    list = __castList( map._list_,    [] ),
+    str  = __castStr(  map._descr_,   '' )
+    ;
+  // Add code here...
+}
 ```
 
-This is useful when our default values are sane and we want our routines to be
-"bullet-proof". It is especially useful during function initialization to
-ensure an argument map is indeed a map.
-
-### Cast Use Case 2
-Guarantee our returned value is either the desired type *or*
-`undefined`. In these cases, we typically adjust our code flow to avoid
-unusable values.
+### Ensure an acceptable value
+Sometimes we need certain values for a function to proceed properly.
+The function argument, for example, may need to exist.  We can adjust the code
+accordingly:
 
 ```js
-  int = __castInt( map.count );
-  if ( int === undefined ) { return; } // Cannot coerce into integer
+function makeCleanFn( arg_map ) {
+  var
+    map  = __castMap(  arg_map,     {} ),
 
-  str = castStr( map.ding );
-  if ( str === undefined ) { return; } // Cannot coerce into a string
+    int  = __castInt(  map._count_,  0 ),
+    str  = __castStr(  map._descr_, '' ),
+
+    list = __castList( map._list_ ),
+    fn   = __castInt(  map._fn_   )
+    ;
+
+  // Bail if needed values are not provided
+  if ( ! ( list && fn ) ) {
+    console.warn( '_fn_ and _list_ are required' );
+    return false;
+  }
+
+  // Add code here...
+}
+
+When we omit the alternate value to a `cast` routine `undefined` is returned
+if the value cannot be coerced into the desired type.
+
 ```
 
 ## Release Notes
@@ -324,6 +349,7 @@ MIT
 ### Version 0.6.x (current)
 - (x) Remove vendor code from repo and auto-copy on install
 - (x) Add native utils `makeThrottleFn` and `makeDebounceFn`
+- (x) Add links to updated code style guides
 - More sophisticated sample application
 
 ## Similar Projects
@@ -331,7 +357,8 @@ MIT
 
 ## End
 
-[a]:https://github.com/mmikowski/spa/raw/master/cheat-sheet.pdf
+[a]:https://github.com/mmikowski/spa/raw/master/js-cheat-sheet-2016.pdf
+[b]:https://github.com/mmikowski/spa/raw/master/js-code-std-2016.pdf
 [0]:http://jquery.org
 [1]:http://powercss.org
 [2]:https://www.npmjs.com/package/jquery.urianchor
@@ -346,4 +373,5 @@ MIT
 [11]:http://www.vapidspace.com/coding/2014/01/31/code-coverage-metrics-with-nodeunit/
 [12]:http://absurdjs.com/
 [13]:http://www.responsivejs.com/
+
 
