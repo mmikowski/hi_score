@@ -44,11 +44,11 @@ Key attributes:
 ## Who needs TypeScript or Closure?
 These frameworks are incredibly complicated mechanisms to provide a level of
 type-safety to JS. But do you really need cede control of you JS project to
-these large DSLs to get most of the same benefit?  The answer is
+these frameworks to get similar results?  The answer is
 **absolutely not**. One can solve most JS type-casting issues in two simple steps:
 
 - Name your variables for type, and
-- Use `cast` methods to ensure type.
+- Use `cast` methods to enforce type.
 
 Let's see how this can be accomplished.
 
@@ -56,8 +56,7 @@ Let's see how this can be accomplished.
 It's easy to name variables for type by adding a 2-4 character suffix.
 See the [reference cheat sheet][b] or read [full code standard][a].  This
 embeds your intentions *in the code* which is much more durable than using
-comments to explain a variables.  There's a nice section in the full code
-standard which illustrates this point.
+comments to explain variables.
 
 ### 2. Use `cast` methods to ensure type
 These methods coerce the provided value into the requested type. If they
@@ -86,9 +85,9 @@ are made.  Here's an example.
   }
 ```
 
-The `cast` methods just work immediately and are self documenting. 
-Compare this with other solutions that require a transpile step.
-See **Cast Use Cases** below for more detail.
+The `cast` methods just work and are self documenting. Compare this with JSDoc
+solutions that require a DSL and transpile step. See **Cast Use Cases** below
+for more examples.
 
 ## Third-pary libraries
 All third-party libraries are in `vendor` directories and retain
@@ -104,7 +103,9 @@ following JS libraries:
 - [jQuery Plugin: debounce][6] Debounce (throttling)
 
 We also include webfonts. We have a modified version of Font-Awesome 4.5
-and OpenSans. Check out the `font` directory for details.
+and OpenSans. Check out the `font` directory for details. We plan to soon copy
+these files on installation from remote repositories similar to how we
+handle JavaScript vendor libraries as of 0.6.0.
 
 ## Compatibility
 Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
