@@ -47,21 +47,31 @@ type-safety to JS. But do you really need cede control of you JS project to
 these large DSLs to get most of the same benefit?  The answer is
 **absolutely not**. One can solve most JS type-casting issues in two simple steps:
 
-1. Name your variables for type.
-2. Use `cast` methods to ensure type.
+- Name your variables for type, and
+- Use `cast` methods to ensure type.
 
 Let's see how this can be accomplished.
 
-### 1. Name your variable for type
-See this [reference cheat sheet][a]. This is far easier and transportable
-than JSDoc or some vast compiler framework.
+### 1. Name your variables for type
+It's easy to name variables for type by adding a 2-4 character suffix.
+See the [reference cheat sheet][b] or read [full code standard][a].  This
+embeds your intentions *in the code* which is much more durable than using
+comments to explain a variables.  There's a nice section in the full code
+standard which illustrates this point.
 
 ### 2. Use `cast` methods to ensure type
 These methods coerce the provided value into the requested type. If they
-can't, the return a fallback value. They are available in xhi.util.js.
-Let's see them in action:
+can't, the return a fallback value. They are available in `xhi.util.js` and
+are typically most useful at the top of functions where argument assignments
+are made.  Here's an example.
 
 ```js
+  var
+    __util    = xhi._util_,
+    __castInt = __util._castInt_,
+    __castMap = __util._castMap_
+    ;
+  
   function getTimeList( arg_map ) {
     var
       map      = __castMap( arg_map,    {} ),
@@ -69,18 +79,16 @@ Let's see them in action:
       start_ms = __castInt( map._start_ms_ )
       ;
 
+    // Return empy array if time range is not provided
     if ( ! ( end_ms && start_ms ) ) { return []; }
 
     // ... continue logic here
   }
 ```
 
-This self-documenting code replaces the verbose JSDoc that is only useful
-when combined with complex transpilers. See **Cast Use Cases** below
-for more detail.
-
-## Status
-I am currently updating the libraries. They are not complete.
+The `cast` methods just work immediately and are self documenting. 
+Compare this with other solutions that require a transpile step.
+See **Cast Use Cases** below for more detail.
 
 ## Third-pary libraries
 All third-party libraries are in `vendor` directories and retain
