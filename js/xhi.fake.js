@@ -18,7 +18,7 @@ xhi.fake = (function () {
   //noinspection MagicNumberJS
   var
     __logObj = xhi._util_._getLogObj_(),
-    __logIt  = __logObj._logIt_
+    __logMsg  = __logObj._logMsg_
     ;
   // ================== END MODULE SCOPE VARIABLES =====================
 
@@ -30,11 +30,11 @@ xhi.fake = (function () {
 
   // ====================== BEGIN PUBLIC METHODS =======================
   function fetchExampleMap () {
-    __logIt( '_warn_', '_place_mock_fetch_here_' );
+    __logMsg( '_warn_', '_place_mock_fetch_here_' );
   }
 
   function configModule () {
-    __logIt( '_warn_', '_place_mock_config_here_' );
+    __logMsg( '_warn_', '_place_mock_config_here_' );
   }
   // ======================= END PUBLIC METHODS ========================
   return {

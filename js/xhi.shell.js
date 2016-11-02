@@ -24,7 +24,7 @@ xhi._shell_ = (function ( $ ) {
     __blank = vMap._blank_,
 
     __logObj = xhi._util_._getLogObj_(),
-    __logIt  = __logObj._logIt_,
+    __logMsg  = __logObj._logMsg_,
 
     topCmap = {
       _main_tmplt_ : '<h1>Hello world</h1>'
@@ -55,7 +55,7 @@ xhi._shell_ = (function ( $ ) {
     $top_box[ vMap._html_ ]( topCmap._main_tmplt_ );
 
     set$Map( $top_box );
-    __logIt( '_info_',
+    __logMsg( '_info_',
       '__0 === ' + __0,
       '__1 === ' + __1,
       '__blank === ' + __blank,

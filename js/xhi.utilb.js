@@ -30,7 +30,6 @@ __NS._utilb_ = (function ( $ ) {
     __blank  = vMap._blank_,
     __false  = vMap._false_,
     __true   = vMap._true_,
-    __undef  = vMap._undef_,
 
     __0      = nMap._0_,
     __util   = __NS._util_,
@@ -42,6 +41,11 @@ __NS._utilb_ = (function ( $ ) {
     __castNum  = __util._castNum_,
     __castMap  = __util._castMap_,
     __castStr  = __util._castStr_,
+
+    topCmap = {
+      _textarea_min_ht_px_ : 30,
+      _textarea_max_ht_px_ : 400
+    },
 
     onBufferReady
     ;
@@ -146,6 +150,7 @@ __NS._utilb_ = (function ( $ ) {
           $input     = $( this ),
           field_name = $input[ vMap._attr_ ]( 'name' )
           ;
+
         if ( ! field_name ) { return; }
         if ( $input.is( 'input:checkbox' ) ) {
           form_map[ field_name ] = $input.is(':checked');
@@ -224,20 +229,29 @@ __NS._utilb_ = (function ( $ ) {
 
 
   // BEGIN Public method /resizeTextarea/
-  // Example:
-  //   $foo.on( 'keyup', function () { resizeTextarea( $foo, 25 ); } );
-  // Returns:
-  //   * true: V
+  // Summary   : is_done = resizeTextarea( $textarea, 800 );
+  // Purpose   : Adjust the size of a textarea to a maximum height
+  //   to fit the text content
+  // Arguments : (positional)
+  //   0: (req) jQuery collection that is the text area
+  //   1: (opt) The maximum allowed height in pixels
+  // Settings  :
+  //   * topCmap._textarea_max_ht_px_ (default max allowed height)
+  //   * topCmap._textarea_min_ht_px_
+  // Returns   : boolean
+  //   * true  - resize request processed
+  //   * false - not processed ( invalid $textarea )
   //
   function resizeTextarea ( arg_$textarea, arg_max_ht_px ) {
     var
       $textarea = __castJQ( arg_$textarea ),
-      max_ht_px = __castInt( arg_max_ht_px, 400 ),
+      max_ht_px = __castInt( arg_max_ht_px, topCmap._textarea_max_ht_px_ ),
+      min_ht_px = topCmap._textarea_min_ht_px_,
 
       scroll_ht_px, outer_ht_px, solve_ht_px
       ;
 
-    if ( $textarea === __undef ) { return __false; }
+    if ( ! $textarea ) { return __false; }
 
     scroll_ht_px  = $textarea[ vMap._prop_ ]( vMap._scrollHeight_ );
     outer_ht_px   = $textarea[ vMap._outerHeight_]();
@@ -248,7 +262,7 @@ __NS._utilb_ = (function ( $ ) {
     else { return __true; }
 
     if ( solve_ht_px > max_ht_px ) { solve_ht_px = max_ht_px; }
-    if ( solve_ht_px < 30 ) { solve_ht_px = 30; }
+    if ( solve_ht_px < min_ht_px ) { solve_ht_px = min_ht_px; }
 
     $textarea[ vMap._css_ ]( cssKmap._height_, solve_ht_px );
     return __true;

@@ -25,7 +25,7 @@ xhi._css_ = (function () {
     __undef  = vMap._undef_,
     __Number = vMap._Number_,
     __logObj = xhi._util_._getLogObj_(),
-    __logIt  = __logObj._logIt_,
+    __logMsg  = __logObj._logMsg_,
 
     topSmap = {
       _is_ready_  : __false,
@@ -49,7 +49,7 @@ xhi._css_ = (function () {
   // END public method /getThemeCount/
 
   // BEGIN public method /getThemeMixinMap/
-  function getThemeMixinMap( arg_idx ) {
+  function getThemeMixinMap () {
     var
       theme_map_list = xhi._css_base_._themeMapList_,
       theme_idx      = topSmap._theme_idx_;
@@ -125,7 +125,7 @@ xhi._css_ = (function () {
         theme_map = JSON[ vMap._parse_ ]( theme_json );
       }
       catch ( error ) {
-        __logIt( '_error_', '_cannot_parse_local_theme_json_', error );
+        __logMsg( '_error_', '_cannot_parse_local_theme_json_', error );
       }
     }
 

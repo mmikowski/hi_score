@@ -390,7 +390,7 @@ __NS._util_ = (function () {
     return {
       _setLogLevel_ : setLogLevel,
       _getLogLevel_ : getLogLevel,
-      _logIt_       : logIt
+      _logMsg_      : logIt
     };
   }());
   // END define logObj singleton
@@ -637,7 +637,7 @@ __NS._util_ = (function () {
     KEY: for ( idx = __0; idx < key_count; idx++ ) {
       key = key_list[ idx ];
       if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
-        logObj._logIt_(
+        logObj._logMsg_(
           '_warn_', '_key_not_supported_:|' + __Str( key ) + '|'
         );
         continue KEY;
@@ -787,7 +787,7 @@ __NS._util_ = (function () {
       ;
 
     if ( key_count > __100 ) {
-      logObj._logIt_( '_warn_', '_maximum_recursion_limit_' );
+      logObj._logMsg_( '_warn_', '_maximum_recursion_limit_' );
       return __undef;
     }
 

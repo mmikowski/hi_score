@@ -25,7 +25,7 @@ xhi._data_ = (function ( $ ) {
     __blank = vMap._blank_,
 
     __logObj = xhi._util_._getLogObj_(),
-    __logIt  = __logObj._logIt_,
+    __logMsg  = __logObj._logMsg_,
 
     topCmap = {},
     topSmap = {},
@@ -50,7 +50,7 @@ xhi._data_ = (function ( $ ) {
     // and then set jQuery colection cache
     //
     set$Map( $top_box );
-    __logIt( '_info_',
+    __logMsg( '_info_', $,
       '__0 === ' + __0,
       '__1 === ' + __1,
       '__blank === ' + __blank,

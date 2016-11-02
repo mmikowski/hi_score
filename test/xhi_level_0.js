@@ -124,9 +124,9 @@ function setLogLevel ( test_obj ) {
     test_obj.ok( solve_str === expect_str, msg_str );
     test_obj.ok( log_obj._getLogLevel_() === expect_str, msg_str );
   }
-  log_obj._logIt_( 'bodus', '_this_should_default_to_error_' );
-  test_obj.ok( log_obj._logIt_( 'bodus' ) === __false, 'no log on 1 arg' );
-  test_obj.ok( log_obj._logIt_() === __false, 'no log on 0 arg' );
+  log_obj._logMsg_( 'bodus', '_this_should_default_to_error_' );
+  test_obj.ok( log_obj._logMsg_( 'bodus' ) === __false, 'no log on 1 arg' );
+  test_obj.ok( log_obj._logMsg_() === __false, 'no log on 0 arg' );
 
   test_obj.done();
 }
@@ -2424,15 +2424,12 @@ function fillForm ( test_obj ) {
       + '<textarea name="attr2"></textarea></form>',
     form_02_html = '<form><input type="checkbox" name="attr1"/>'
       + '<input type="checkbox" name="attr2" checked="checked"/></form>',
-    // $body    = $('body'),
     $form_01 = $( form_01_html ),
     $form_02 = $( form_02_html ),
     solve_str, solve_bool
     ;
 
   test_obj.expect( 11 );
-  // $body.append( $form_01 );
-  // $body.append( $form_02 );
 
   test_obj.ok( __utilb._fillForm_(         ) === __false, 'a. no form false' );
   test_obj.ok( __utilb._fillForm_( __undef ) === __false, 'b. bad form false' );
@@ -2579,8 +2576,7 @@ function resizeTextarea ( test_obj ) {
 
   test_obj.expect( assert_count * __2  + __2 );
 
-  test_obj.ok( __utilb._resizeTextarea_() === __false, '0. No args returns'
-    + ' false' );
+  test_obj.ok( __utilb._resizeTextarea_() === __false, '0. No args returns false' );
   test_obj.ok( __utilb._resizeTextarea_( $form_01 ) === __true,
     '1. valid form returns true' );
 
@@ -2615,41 +2611,41 @@ function resizeTextarea ( test_obj ) {
 // ===== LiteBox (LB)
 liteBoxMap = {
   _outer01_tmplt_ : __blank
-    + '<div id="xhi-_lb_" style="display: block; top: 50%; '
+    + '<div id="' + __ns + '-_lb_" style="display: block; top: 50%; '
       + 'left: 50%; margin-top: 0px; margin-left: 0px;" '
-      + 'class="xhi-_lb_ xhi-_x_active_"><div class="xhi-_lb_title_" '
+      + 'class="' + __ns + '-_lb_ ' + __ns + '-_x_active_"><div class="' + __ns + '-_lb_title_" '
       + 'style="display: block;">{_title_}</div>'
-      + '<div class="xhi-_lb_close_"></div>'
-      + '<div class="xhi-_lb_content_">{_content_html_}</div>'
+      + '<div class="' + __ns + '-_lb_close_"></div>'
+      + '<div class="' + __ns + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _outer02_tmplt_ : __blank
-    + '<div id="xhi-_lb_" class="xhi-_lb_ xhi-_x_active_" '
+    + '<div id="' + __ns + '-_lb_" class="' + __ns + '-_lb_ ' + __ns + '-_x_active_" '
       + 'style="display: block; top: 50%; left: 50%; '
       + 'margin-top: 0px; margin-left: 0px;"><div '
-      + 'class="xhi-_lb_title_" style="display: block;">{_title_}</div>'
-      + '<div class="xhi-_lb_close_"></div>'
-      + '<div class="xhi-_lb_content_">{_content_html_}</div>'
+      + 'class="' + __ns + '-_lb_title_" style="display: block;">{_title_}</div>'
+      + '<div class="' + __ns + '-_lb_close_"></div>'
+      + '<div class="' + __ns + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _spin_html_     : __blank
-    + '<div class="xhi-_lb_mask_ xhi-_x_local_ xhi-_x_active_"></div>'
-    + '<div class="xhi-_lb_spin_ xhi-_x_local_ xhi-_x_active_">'
+    + '<div class="' + __ns + '-_lb_mask_ ' + __ns + '-_x_local_ ' + __ns + '-_x_active_"></div>'
+    + '<div class="' + __ns + '-_lb_spin_ ' + __ns + '-_x_local_ ' + __ns + '-_x_active_">'
     + '\uf021</div>',
   _error_tmplt_   : __blank
-    + '<div class="xhi-_lb_error_">'
+    + '<div class="' + __ns + '-_lb_error_">'
       + '<h1>Error</h1>'
-      + '<div class="xhi-_lb_error_list_">'
+      + '<div class="' + __ns + '-_lb_error_list_">'
       + '{_rows_html_}'
       + '</div>'
     + '</div>',
   _erow_tmplt_    : __blank
-    + '<div class="xhi-_lb_error_row_">'
-      + '<div class="xhi-_lb_error_row_code_">{_code_}</div>'
-      + '<div class="xhi-_lb_error_row_name_">{_name_}</div>'
-      + '<div class="xhi-_lb_error_row_descr_">{_descr_}</div>'
+    + '<div class="' + __ns + '-_lb_error_row_">'
+      + '<div class="' + __ns + '-_lb_error_row_code_">{_code_}</div>'
+      + '<div class="' + __ns + '-_lb_error_row_name_">{_name_}</div>'
+      + '<div class="' + __ns + '-_lb_error_row_descr_">{_descr_}</div>'
     + '</div>',
   _success_tmplt_ : __blank
-    + '<div class="xhi-_lb_success_">'
-      + '<div class="xhi-_lb_success_title_">{_msg_str_}</div>'
+    + '<div class="' + __ns + '-_lb_success_">'
+      + '<div class="' + __ns + '-_lb_success_title_">{_msg_str_}</div>'
     + '</div>'
 };
 
@@ -2707,18 +2703,6 @@ function addLocalSpin ( test_obj ) {
   test_obj.done();
 }
 
-function onResize ( test_obj ) {
-  test_obj.expect( 2 );
-  var ret_bool;
-  ret_bool = __lb._onResize_();
-  test_obj.ok( ret_bool === __true, '0. First call should return true' );
-  ret_bool = __lb._onResize_();
-  test_obj.ok( ret_bool === __false,
-    '1. Second call should return false as the resize is already scheduled'
-  );
-  test_obj.done();
-}
-
 function __showErrorListCb ( $lite_box ) {
   var
     smap       = this,
@@ -2769,10 +2753,10 @@ function showErrorList ( test_obj ) {
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : content00_html }
     }),
-    blank3_html = '<div id="xhi-_lb_" class="" style="display: none;">'
-      + '<div class="xhi-_lb_title_"></div>'
-      + '<div class="xhi-_lb_close_"></div>'
-      + '<div class="xhi-_lb_content_"></div></div>',
+    blank3_html = '<div id="' + __ns + '-_lb_" class="" style="display: none;">'
+      + '<div class="' + __ns + '-_lb_title_"></div>'
+      + '<div class="' + __ns + '-_lb_close_"></div>'
+      + '<div class="' + __ns + '-_lb_content_"></div></div>',
     solve01_1_html = __util._makeTmpltStr_({
       _input_str_ : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : content01_html }
@@ -2803,7 +2787,7 @@ function showErrorList ( test_obj ) {
 
     assert_count = assert_list.length,
     show_fn      = __lb._showErrorList_,
-    hide_fn      = __lb._hideIt_,
+    hide_fn      = __lb._hideLb_,
 
     idx,       expect_list, arg_list,
     solve_$lb, expect1_str, expect2_str, expect3_str,
@@ -2841,6 +2825,111 @@ function showErrorList ( test_obj ) {
   }
 }
 
+function __showLbCb ( $lite_box ) {
+  var
+    smap       = this,
+    test_obj   = smap._test_obj_,
+
+    solve_str  = $lite_box[ __0 ].outerHTML,
+
+    msg_str =  'CALLBACK ' + __Str( smap._test_idx_ ) + ': '
+      + 'arg_list: '       + JSON.stringify( smap._arg_list_ )
+      + '\n solve_str: '   + solve_str
+      + '\n expect1_str: ' + smap._expect1_str_
+      + '\n expect2_str: ' + smap._expect2_str_
+    ;
+
+  test_obj.ok( ( solve_str === smap._expect1_str_
+    || solve_str === smap._expect2_str_ ), msg_str
+  );
+  if ( smap._do_done_ ) { test_obj.done(); }
+  return smap._test_idx_  > __1 ? __true : __false;
+}
+
+function showLb ( test_obj ) {
+  var
+    blank_a_html   = __util._makeTmpltStr_({
+      _input_str_  : liteBoxMap._outer01_tmplt_,
+      _lookup_map_ : { _content_html_ : __blank }
+    }),
+    blank_b_html   = __util._makeTmpltStr_({
+      _input_str_  : liteBoxMap._outer02_tmplt_,
+      _lookup_map_ : { _content_html_ : __blank }
+    }),
+    t00_a_html   = __util._makeTmpltStr_({
+      _input_str_  : liteBoxMap._outer01_tmplt_,
+      _lookup_map_ : { _content_html_ : 'hello world' }
+    }),
+    t00_b_html   = __util._makeTmpltStr_({
+      _input_str_  : liteBoxMap._outer02_tmplt_,
+      _lookup_map_ : { _content_html_ : 'hello world' }
+    }),
+    assert_list = [
+      // arg_list, expect1_html, expect2_html
+      [ [{}], blank_a_html, blank_b_html ],
+      [ [{}], blank_a_html, blank_b_html ],
+      [ [{ _content_html_ : 'hello world', _autoclose_ms_ : 20 } ],
+        t00_a_html, t00_b_html ],
+      [ [{ _content_html_ : 'hello world' } ], t00_a_html, t00_b_html ]
+    ],
+
+    assert_count = assert_list.length,
+    show_fn      = __lb._showLb_,
+    close_fn     = __lb._closeLb_,
+
+    idx,       expect_list, arg_list,
+    solve_$lb, expect_a_str, expect_b_str,
+    solve_str, msg_str, check_fn
+    ;
+
+  test_obj.expect( assert_count * __2 - __1 );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_a_str = expect_list[ __1 ];
+    expect_b_str = expect_list[ __2 ];
+    solve_$lb    = show_fn.apply( window, arg_list );
+    solve_str    = solve_$lb[__0 ].outerHTML;
+    msg_str      = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
+      + '\n expect_a_str: ' + expect_a_str
+      + '\n expect_b_str: ' + expect_b_str;
+
+    if ( idx === __0 ) { check_fn = __undef; }
+    else {
+      check_fn = __showLbCb.bind({
+        _arg_list_    : arg_list,
+        _do_done_     : idx === assert_count - __1,
+        _expect1_str_ : expect_a_str,
+        _expect2_str_ : expect_b_str,
+        _msg_str_     : msg_str,
+        _test_idx_    : idx,
+        _test_obj_    : test_obj
+      });
+    }
+    __lb._setCloseFn_( check_fn );
+    test_obj.ok(
+      ( solve_str === expect_a_str || solve_str === expect_b_str ),
+      msg_str
+    );
+    close_fn();
+  }
+}
+
+function handleResize ( test_obj ) {
+  test_obj.expect( 2 );
+  var ret_bool;
+
+  ret_bool = __lb._handleResize_();
+  test_obj.ok( ret_bool === __false, '0. empty call should return false' );
+
+  test_obj.ok( ret_bool === __false,
+    '1. Second call should return false as the resize is already scheduled'
+  );
+  test_obj.done();
+}
+
 function __showSuccessCb ( $lite_box ) {
   var
     smap       = this,
@@ -2848,17 +2937,18 @@ function __showSuccessCb ( $lite_box ) {
 
     solve_str  = $lite_box[ __0 ].outerHTML,
 
-    msg_str    = 'CALLBACK ' + __Str( smap._test_idx_ ) + ': '
+    msg_str =  'CALLBACK ' + __Str( smap._test_idx_ ) + ': '
       + 'arg_list: '       + JSON.stringify( smap._arg_list_ )
       + '\n solve_str: '   + solve_str
       + '\n expect1_str: ' + smap._expect1_str_
       + '\n expect2_str: ' + smap._expect2_str_
-      ;
+    ;
 
   test_obj.ok( ( solve_str === smap._expect1_str_
     || solve_str === smap._expect2_str_ ), msg_str
   );
   if ( smap._do_done_ ) { test_obj.done(); }
+  return smap._test_idx_  > __1 ? __true : __false;
 }
 
 function showSuccess ( test_obj ) {
@@ -2914,7 +3004,7 @@ function showSuccess ( test_obj ) {
 
     assert_count = assert_list.length,
     show_fn      = __lb._showSuccess_,
-    close_fn     = __lb._closeIt_,
+    close_fn     = __lb._closeLb_,
 
     idx,       expect_list, arg_list,
     solve_$lb, expect1_str, expect2_str,
@@ -2961,7 +3051,7 @@ function showSuccess ( test_obj ) {
 // 1. Add the test you would like to run:
 // 2. Run node <this_file>
 // 3. Inspect the output
-// setStructData( mockTestObj );
+handleResize( mockTestObj );
 
 module.exports = {
   // Util
@@ -3018,10 +3108,10 @@ module.exports = {
   _resizeTextarea_  : resizeTextarea,
 
   // LiteBox (lb)
-  _addLocalSpin_    : addLocalSpin,
-  _onResize_        : onResize,
-  _showErrorList_   : showErrorList,
-  _showSuccess_     : showSuccess
-
+  _addLocalSpin_  : addLocalSpin,
+  _showErrorList_ : showErrorList,
+  _showLb_        : showLb,
+  _handleResize_  : handleResize,
+  _showSuccess_   : showSuccess
 };
 

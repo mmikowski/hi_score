@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -u
+
+ROOT_DIR=$(git rev-parse --show-toplevel);
+PANDOC=$(which pandoc);
+
+if [ -z "${PANDOC}" ]; then
+  echo "Please install pandoc to use this utility";
+  exit 1;
+fi
+cd "${ROOT_DIR}";
+
+find -type f -name "*.md" \
+  | grep -v 'node_modules' \
+  | grep -v 'uglifyjs' \
+  | while read FILE; do
+
+  DIR=$(dirname "${FILE}");
+  BASENAME=$(basename -s.md "${FILE}");
+  if [ "${BASENAME}" = "README" ]; then
+    BASENAME="index";
+  fi
+  echo "Generating ${DIR}/${BASENAME}.html from ${FILE}"
+
+  "${PANDOC}" "${FILE}" \
+  -f markdown_github \
+  -so "${DIR}/${BASENAME}.html" \
+  -H "${ROOT_DIR}/cfg/md-github.style";
+done
+
