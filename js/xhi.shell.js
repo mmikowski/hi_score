@@ -12,18 +12,23 @@
 */
 /*global jQuery, xhi */
 
-xhi._shell_ = (function ( $ ) {
+var __ns = 'xhi', __NS;
+/* istanbul ignore next */
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
+
+__NS._shell_ = (function ( $ ) {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   var
-    vMap    = xhi._vMap_,
-    nMap    = xhi._nMap_,
+    vMap    = __NS._vMap_,
+    nMap    = __NS._nMap_,
 
     __0     = nMap._0_,
     __1     = nMap._1_,
     __blank = vMap._blank_,
 
-    __logObj = xhi._util_._getLogObj_(),
+    __logObj = __NS._util_._getLogObj_(),
     __logMsg  = __logObj._logMsg_,
 
     topCmap = {
@@ -47,7 +52,7 @@ xhi._shell_ = (function ( $ ) {
 
     // Set styles
     //
-    xhi._css_._initModule_();
+    __NS._css_._initModule_();
 
     // Initial DOM content using methods above
     // and then set jQuery colection cache

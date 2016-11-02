@@ -230,28 +230,29 @@ If you want to help out, like all npm modules this is hosted on GitHub.
 Any improvements or suggestions are welcome, especially when presented
 with a pull request :).
 
-If you want to contribute first fork the repository. Then set it up for
-development:
+If you want to contribute first fork the repository. Then install the
+development libs and the commit hook:
 
 ```bash
   $ cd hi_score
-  $ # Install development libs
   $ npm install
-  $ # Install commit hook
-  $ cd .git/hooks
-  $ ln -s ../../bin/git-hook_pre-commit pre-commit
-  $ cd ../../
-
-  $ # The following should run successfully
-  $ npm test
-  $ npm run cover
-
-  $ # you will need to set the .coveralls.yml token for this:
-  $ npm run covera
-
-  $ # You should see regression tests run
-  $ git commit -a
 ```
+
+You can make sure it is working correctly like so:
+
+```bash
+  $ npm run cover
+```
+
+This should povide a nice HTML coverage report in 
+`hi_score/coverage/lcov-report/index.html`.  There may be some prerequisite
+libraries required. Generally the installation scripts should guide you
+through these.
+
+As of 0.6.6 we have isolating the namespace prefix (`xhi`) to the first few
+lines all modules and have made them all node-friendly.  The result is 
+highly portable and merge-able code. Merging updates to a **hi_score**-based
+project is fast, easy, and very hard to screw up :)
 
 ## Cast use cases
 ### Guarantee a type

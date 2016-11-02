@@ -12,13 +12,18 @@
 */
 /*global xhi, pcss */
 
-xhi._css_lb_ = (function () {
+var __ns = 'xhi', __NS;
+/* istanbul ignore next */
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
+
+__NS._css_lb_ = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   var
     topCmap =  {
       _selector_list_ : [
-        { _selector_str_ : '.xhi-_lb_',
+        { _selector_str_ : '.' + __ns + '-_lb_',
           _rule_map_ : {
             _z_index_       : [ '36' ],
             _position_      : '_absolute_',
@@ -34,13 +39,13 @@ xhi._css_lb_ = (function () {
             _transition_    : [ 'opacity .5s ease' ]
           }
         },
-        {_selector_str_ : '.xhi-_lb_.xhi-_x_local_',
+        {_selector_str_ : '.' + __ns + '-_lb_.' + __ns + '-_x_local_',
           _rule_map_ : { _position_ : '_absolute_' }
         },
-        { _selector_str_ : '.xhi-_lb_.xhi-_x_active_',
+        { _selector_str_ : '.' + __ns + '-_lb_.' + __ns + '-_x_active_',
           _rule_map_ : { _opacity_    : '_1_' }
         },
-        { _selector_str_ : '.xhi-_lb_mask_',
+        { _selector_str_ : '.' + __ns + '-_lb_mask_',
           _rule_map_ : {
             _z_index_  : [ '35' ],
             _position_ : '_absolute_',
@@ -56,23 +61,23 @@ xhi._css_lb_ = (function () {
             _transition_ : [ 'opacity .5s ease' ]
           }
         },
-        { _selector_str_ : '.xhi-_lb_mask_.xhi-_x_local_',
+        { _selector_str_ : '.' + __ns + '-_lb_mask_.' + __ns + '-_x_local_',
           _rule_map_     : {
             _z_index_    : '_1_',
             _transition_ : '_none_',
             _cursor_     : '_default_'
           }
         },
-        { _selector_str_ : '.xhi-_lb_mask_.xhi-_x_noclick_',
+        { _selector_str_ : '.' + __ns + '-_lb_mask_.' + __ns + '-_x_noclick_',
           _rule_map_     : { _cursor_ : [ 'wait' ] }
         },
-        { _selector_str_ : '.xhi-_lb_mask_.xhi-_x_active_',
+        { _selector_str_ : '.' + __ns + '-_lb_mask_.' + __ns + '-_x_active_',
           _rule_map_ : { _opacity_    : [ '.65' ] }
         },
-        { _selector_str_ : '.xhi-_lb_content_',
+        { _selector_str_ : '.' + __ns + '-_lb_content_',
           _rule_map_ : { _position_ : '_relative_' }
         },
-        { _selector_str_ : '.xhi-_lb_close_',
+        { _selector_str_ : '.' + __ns + '-_lb_close_',
           _rule_map_ : {
             _z_index_    : '_1_',
             _position_   : '_absolute_',
@@ -87,7 +92,7 @@ xhi._css_lb_ = (function () {
         { _selector_str_ : '@keyframes spinReverse {'
         + '100%{transform:rotate(-360deg);}}'
         },
-        { _selector_str_ : '.xhi-_lb_spin_',
+        { _selector_str_ : '.' + __ns + '-_lb_spin_',
           _rule_map_     : {
             _z_index_     : ['50'],
             _position_    : '_fixed_',
@@ -106,15 +111,15 @@ xhi._css_lb_ = (function () {
             _animation_   : ['spinIt 1s linear infinite']
           }
         },
-        { _selector_str_ : '.xhi-_lb_spin_.xhi-_x_reverse_',
+        { _selector_str_ : '.' + __ns + '-_lb_spin_.' + __ns + '-_x_reverse_',
           _rule_map_     : {
             _animation_ : [ 'spinReverse 1s linear infinite' ]
           }
         },
-        { _selector_str_ : '.xhi-_lb_spin_.xhi-_x_active_',
+        { _selector_str_ : '.' + __ns + '-_lb_spin_.' + __ns + '-_x_active_',
           _rule_map_     : { _display_ : '_block_' }
         },
-        { _selector_str_ : '.xhi-_lb_spin_.xhi-_x_local_',
+        { _selector_str_ : '.' + __ns + '-_lb_spin_.' + __ns + '-_x_local_',
           _rule_map_     : {
             _z_index_    : '_1_',
             _position_   : '_absolute_',

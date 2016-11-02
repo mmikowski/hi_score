@@ -12,12 +12,17 @@
 */
 /*global xhi */
 
-xhi.fake = (function () {
+var __ns = 'xhi', __NS;
+/* istanbul ignore next */
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
+
+__NS.fake = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   //noinspection MagicNumberJS
   var
-    __logObj = xhi._util_._getLogObj_(),
+    __logObj = __NS._util_._getLogObj_(),
     __logMsg  = __logObj._logMsg_
     ;
   // ================== END MODULE SCOPE VARIABLES =====================

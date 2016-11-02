@@ -12,19 +12,24 @@
 */
 /*global jQuery, pcss, xhi */
 
-xhi._css_ = (function () {
+var __ns = 'xhi', __NS;
+/* istanbul ignore next */
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
+
+__NS._css_ = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   var
-    nMap = xhi._nMap_,
-    vMap = xhi._vMap_,
+    nMap = __NS._nMap_,
+    vMap = __NS._vMap_,
 
     __0      = nMap._0_,
     __false  = vMap._false_,
     __true   = vMap._true_,
     __undef  = vMap._undef_,
     __Number = vMap._Number_,
-    __logObj = xhi._util_._getLogObj_(),
+    __logObj = __NS._util_._getLogObj_(),
     __logMsg  = __logObj._logMsg_,
 
     topSmap = {
@@ -43,7 +48,7 @@ xhi._css_ = (function () {
   // BEGIN public method /getThemeCount/
   function getThemeCount () {
     var
-      theme_map_list = xhi._css_base_._themeMapList_;
+      theme_map_list = __NS._css_base_._themeMapList_;
     return theme_map_list[ vMap._length_ ];
   }
   // END public method /getThemeCount/
@@ -51,7 +56,7 @@ xhi._css_ = (function () {
   // BEGIN public method /getThemeMixinMap/
   function getThemeMixinMap () {
     var
-      theme_map_list = xhi._css_base_._themeMapList_,
+      theme_map_list = __NS._css_base_._themeMapList_,
       theme_idx      = topSmap._theme_idx_;
     return theme_map_list[ theme_idx ];
   }
@@ -60,7 +65,7 @@ xhi._css_ = (function () {
   // BEGIN public method /setThemeIdx/
   function setThemeIdx( arg_idx ) {
     var
-      theme_map_list = xhi._css_base_._themeMapList_,
+      theme_map_list = __NS._css_base_._themeMapList_,
       theme_idx      = topSmap._theme_idx_,
       theme_count    = theme_map_list[ vMap._length_ ],
       idx            = Number( arg_idx ),
@@ -90,32 +95,32 @@ xhi._css_ = (function () {
   // BEGIN public method /initModule/
   function initModule ( arg_idx ) {
     var
-      local_key = 'xhi-_theme_map_',
+      local_key = __ns + '-_theme_map_',
       theme_idx = __Number( arg_idx ) || __0,
 
       theme_json, theme_map_list, theme_map;
 
     if ( topSmap._is_ready_ === __true ) { return; }
 
-    pcss._initModule_({ _style_el_prefix_ : 'xhi' });
-    pcss._setGlobalMixinMap_({ _mixin_map_: xhi._css_base_._globalMixinMap_ });
+    pcss._initModule_({ _style_el_prefix_ : __ns });
+    pcss._setGlobalMixinMap_({ _mixin_map_: __NS._css_base_._globalMixinMap_ });
 
     pcss._setVsheet_({
       _vsheet_id_     : '_base_',
       _mode_str_      : '_add_',
-      _selector_list_ : xhi._css_base_._selectorList_
+      _selector_list_ : __NS._css_base_._selectorList_
     });
 
     pcss._setVsheet_({
      _vsheet_id_     : '_lb_',
      _mode_str_      : '_add_',
-     _selector_list_ : xhi._css_lb_._selectorList_
+     _selector_list_ : __NS._css_lb_._selectorList_
     });
 
     pcss._setVsheet_({
       _vsheet_id_     : '_shell_',
       _mode_str_      : '_add_',
-      _selector_list_ : xhi._css_shell_._selectorList_
+      _selector_list_ : __NS._css_shell_._selectorList_
     });
 
     // Begin use local theme map if available
@@ -129,7 +134,7 @@ xhi._css_ = (function () {
       }
     }
 
-    theme_map_list = xhi._css_base_._themeMapList_;
+    theme_map_list = __NS._css_base_._themeMapList_;
     if ( ! theme_map ) {
       theme_map = theme_map_list[ theme_idx ];
       if ( ! theme_map ) {

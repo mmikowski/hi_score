@@ -12,7 +12,12 @@
 */
 /*global jQuery, pcss, xhi */
 
-xhi._css_base_ = (function () {
+var __ns = 'xhi', __NS;
+/* istanbul ignore next */
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
+
+__NS._css_base_ = (function () {
   // ================= BEGIN MODULE SCOPE VARIABLES ====================
   'use strict';
   var topCmap = {
@@ -38,7 +43,7 @@ xhi._css_base_ = (function () {
       _shdw_08_ : [['_rgba_shdw_03_', ['0 0 .75rem .375rem']]],
       _shdw_09_ : [['_rgba_shdw_09_', ['0 0 1rem .5rem']]],
 
-      _font_family_awesome_ : 'xhi-fa-4-5-mod,sans-serif',
+      _font_family_awesome_ : __ns + '-fa-4-5-mod,sans-serif',
       _font_family_sans_    : 'OpenSans,sans-serif',
       _font_family_mono_    : 'courier,fixed,monospace',
       _font_size_           : '16px',
@@ -100,7 +105,7 @@ xhi._css_base_ = (function () {
         _hex_txt_xlt_        : '#77848f',
 
         // The top-left logo image path.
-        _logo_url_           : 'url(app/img/xhi-logo-black.png)',
+        _logo_url_           : 'url(app/img/' + __ns + '-logo-black.png)',
 
         // Shadows colors are listed from near to far. Near shadows that
         // use rgba_shdw_00, for example, will be smaller but more distinct.
@@ -202,26 +207,26 @@ xhi._css_base_ = (function () {
           _cursor_        : '_pointer_'
         }
       },
-      { _selector_str_ : 'button.xhi-_x_lh_',
+      { _selector_str_ : 'button.' + __ns + '-_x_lh_',
         _rule_map_ : {
           _float_        : '_left_',
           _margin_left_  : '_0_'
         }
       },
-      { _selector_str_ : 'button.xhi-_x_rh_',
+      { _selector_str_ : 'button.' + __ns + '-_x_rh_',
         _rule_map_ : {
           _float_        : '_right_',
           _margin_right_ : '_0_'
         }
       },
-      { _selector_str_ : 'button.xhi-_x_alt_',
+      { _selector_str_ : 'button.' + __ns + '-_x_alt_',
         _rule_map_ : {
           _background_  : '_hex_area_',
           _color_       : '_hex_link_',
           _text_shadow_ : '_none_'
         }
       },
-      { _selector_str_ : 'button.xhi-_x_disable_, button.xhi-_x_disable_:hover',
+      { _selector_str_ : 'button.' + __ns + '-_x_disable_, button.' + __ns + '-_x_disable_:hover',
         _rule_map_ : {
           _background_   : '_hex_area_mid_',
           _color_        : '_hex_txt_xlt_',
@@ -229,7 +234,7 @@ xhi._css_base_ = (function () {
           _border_color_ : '_hex_txt_xlt_'
         }
       },
-      { _selector_str_ : 'div.xhi-_x_fill_abs_',
+      { _selector_str_ : 'div.' + __ns + '-_x_fill_abs_',
         _rule_map_ : {
           _position_  : '_absolute_',
           _margin_    : '_0_',
@@ -259,8 +264,8 @@ xhi._css_base_ = (function () {
         }
       },
 
-      /* BEGIN .xhi-_x_*_ selectors */
-      { _selector_str_ : '.xhi-_x_noselect_',
+      /* BEGIN __ns-_x_*_ selectors */
+      { _selector_str_ : '.' + __ns + '-_x_noselect_',
         _rule_map_     : {
           __webkit_user_select_ : '_none_',
           __moz_user_select_    : '_none_',
@@ -268,32 +273,32 @@ xhi._css_base_ = (function () {
           _user_select_         : '_none_'
         }
       },
-      { _selector_str_ : '.xhi-_x_fa_',
+      { _selector_str_ : '.' + __ns + '-_x_fa_',
         _rule_map_     : {_font_family_ : '_font_family_awesome_'}
       },
-      { _selector_str_ : '.xhi-_x_link_,.xhi-_x_link_inv_',
+      { _selector_str_ : '.' + __ns + '-_x_link_,.' + __ns + '-_x_link_inv_',
         _rule_map_     : {
           _color_  : '_hex_link_',
           _cursor_ : '_pointer_'
         }
       },
-      { _selector_str_ : '.xhi-_x_link_:hover',
+      { _selector_str_ : '.' + __ns + '-_x_link_:hover',
         _rule_map_     : {
           _text_decoration_ : '_underline_',
           _color_           : '_hex_link_dk_'
         }
       },
-      { _selector_str_ : '.xhi-_x_link_inv_:hover',
+      { _selector_str_ : '.' + __ns + '-_x_link_inv_:hover',
         _rule_map_     : {
           _text_decoration_ : '_underline_',
           _color_           : '_hex_link_lt_'
         }
       },
-      { _selector_str_ : '.xhi-_x_bold_',
+      { _selector_str_ : '.' + __ns + '-_x_bold_',
         _rule_map_     : {_font_weight_ : '_800_'}
       },
 
-      { _selector_str_ : '.xhi-_x_clearfloat_',
+      { _selector_str_ : '.' + __ns + '-_x_clearfloat_',
         _rule_map_     : {
           _visibility_ : [['_hidden_', '_important_']],
           _float_      : [['_none_', '_important_']],
@@ -301,7 +306,7 @@ xhi._css_base_ = (function () {
           _clear_      : [['_both_', '_important_']]
         }
       },
-      { _selector_str_ : '.xhi-_x_tab_',
+      { _selector_str_ : '.' + __ns + '-_x_tab_',
         _rule_map_     : {
           _position_        : '_relative_',
           _height_          : '_3rem_',
@@ -314,7 +319,7 @@ xhi._css_base_ = (function () {
           _list_style_type_ : '_none_'
         }
       },
-      { _selector_str_ : '.xhi-_x_tab_>li',
+      { _selector_str_ : '.' + __ns + '-_x_tab_>li',
         _rule_map_ : {
           _float_       : '_left_',
           _width_       : '_50p_',
@@ -323,20 +328,20 @@ xhi._css_base_ = (function () {
           _cursor_      : '_pointer_'
         }
       },
-      { _selector_str_ : '.xhi-_x_tab_>li:hover',
+      { _selector_str_ : '.' + __ns + '-_x_tab_>li:hover',
         _rule_map_ : {
           _color_       : '_hex_area_hover_',
           _background_  : '_hex_area_mid_'
         }
       },
-      { _selector_str_ : '.xhi-_x_tab_>li.xhi-_x_active_',
+      { _selector_str_ : '.' + __ns + '-_x_tab_>li.' + __ns + '-_x_active_',
         _rule_map_     : {
           _color_      : '_hex_link_',
           _background_ : '_hex_area_',
           _cursor_     : '_default_'
         }
       },
-      { _selector_str_ : '.xhi-_x_tbox_>li',
+      { _selector_str_ : '.' + __ns + '-_x_tbox_>li',
         _rule_map_     : {
           _display_    : '_none_',
           _padding_    : [[ '_d5rem_', '_d5rem_','_0_','_d5rem_' ]],
@@ -345,13 +350,13 @@ xhi._css_base_ = (function () {
           _cursor_      : '_default_'
         }
       },
-      { _selector_str_ : '.xhi-_x_tbox_>li.xhi-_x_active_',
+      { _selector_str_ : '.' + __ns + '-_x_tbox_>li.' + __ns + '-_x_active_',
         _rule_map_     : { _display_ : '_block_' }
       },
-      { _selector_str_ : '.xhi-_x_tbox_list_',
+      { _selector_str_ : '.' + __ns + '-_x_tbox_list_',
         _rule_map_     : { _list_style_type_ : '_none_' }
       },
-      { _selector_str_ : '.xhi-_x_tbox_list_>li',
+      { _selector_str_ : '.' + __ns + '-_x_tbox_list_>li',
         _rule_map_     : {
           _position_      : '_relative_',
           _margin_bottom_ : '_d5rem_',
@@ -364,20 +369,20 @@ xhi._css_base_ = (function () {
           _cursor_        : '_pointer_'
         }
       },
-      { _selector_str_ : '.xhi-_x_tbox_list_>li.xhi-_x_active_',
+      { _selector_str_ : '.' + __ns + '-_x_tbox_list_>li.' + __ns + '-_x_active_',
         _rule_map_     : {
           _background_   : '_hex_area_',
           _color_        : '_hex_txt_dk_'
         }
       },
-      { _selector_str_ : '.xhi-_x_tbox_list_>li:hover',
+      { _selector_str_ : '.' + __ns + '-_x_tbox_list_>li:hover',
         _rule_map_     : {
           _background_   : '_hex_area_',
           _color_        : '_hex_txt_dk_',
           _border_color_ : '_hex_txt_alt_'
         }
       },
-      { _selector_str_ : '.xhi-_x_list_title_',
+      { _selector_str_ : '.' + __ns + '-_x_list_title_',
         _rule_map_ : {
           _line_height_    : '_1d25rem_',
           _font_size_      : '_1d125rem_',
@@ -387,7 +392,7 @@ xhi._css_base_ = (function () {
           _word_break_     : '_break_word_'
         }
       },
-      { _selector_str_ : '.xhi-_x_list_float_text_',
+      { _selector_str_ : '.' + __ns + '-_x_list_float_text_',
         _rule_map_ : {
           _float_          : '_right_',
           _margin_left_    : '_d5rem_',
@@ -399,7 +404,7 @@ xhi._css_base_ = (function () {
         }
       }
     ]
-    /* END .xhi-_x_*_ selectors */
+    /* END __ns-_x_*_ selectors */
   };
   // ================== END MODULE SCOPE VARIABLES =====================
 

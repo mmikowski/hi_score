@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "description": "Are you ready to get off the framework-of-the-month treadmill and take control of your SPA? Hi_Score is here to help with an architecture guide, starter files, and best-in-class libraries.",
   "keywords": [
     "spa",
@@ -17,8 +17,7 @@
     "install": "bin/install.sh",
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js",
     "cover": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
-    "covera": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
-    "prepublish" : "npm run covera"
+    "covera": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",

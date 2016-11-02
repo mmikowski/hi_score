@@ -87,34 +87,42 @@ getVrs () {
 
   # ==== vendors/js
   vrs=$(getVrs jquery);
-  cp "${MODS_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js"
+  cp "${MODS_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js";
 
   vrs=$(getVrs jquery.event.dragscroll);
   cp "${MODS_DIR}/jquery.event.dragscroll/jquery.event.dragscroll.js" \
-    "jquery.event.dragscroll-${vrs}.js"
+    "jquery.event.dragscroll-${vrs}.js";
 
   vrs=$(getVrs jquery.event.gevent);
   cp "${MODS_DIR}/jquery.event.gevent/jquery.event.gevent.js" \
-    "jquery.event.gevent-${vrs}.js"
+    "jquery.event.gevent-${vrs}.js";
 
   vrs=$(getVrs jquery.event.ue);
   cp "${MODS_DIR}/jquery.event.ue/jquery.event.ue.js" \
-    "jquery.event.ue-${vrs}.js"
+    "jquery.event.ue-${vrs}.js";
 
   vrs=$(getVrs jquery.scrolli);
   cp "${MODS_DIR}/jquery.scrolli/dist/jquery.scrolli.js" \
-    "jquery.scrolli-${vrs}.js"
+    "jquery.scrolli-${vrs}.js";
 
   vrs=$(getVrs jquery.urianchor);
   cp "${MODS_DIR}/jquery.urianchor/jquery.uriAnchor.js" \
-    "jquery.urianchor-${vrs}.js"
+    "jquery.urianchor-${vrs}.js";
 
   vrs=$(getVrs powercss);
   cp "${MODS_DIR}/powercss/dist/pcss.js" "pcss-${vrs}.js"
   cp "${MODS_DIR}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
 
   vrs=$(getVrs taffydb);
-  cp "${MODS_DIR}/taffydb/taffy.js" "taffy-${vrs}.js"
+  cp "${MODS_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
+
+  PC_PATH="${BASE_DIR}/.git/hooks/pre-commit";
+  if [ -r "${PC_PATH}" ]; then
+    mv "${PC_PATH}" "${PC_PATH}.$$";
+  fi
+
+  cd "${BASE_DIR}/.git/hooks";
+  ln -s "../../bin/git-hook_pre-commit" "./pre-commit";
 
   exit 0;
 ## END main
