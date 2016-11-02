@@ -107,6 +107,7 @@ __NS._utilb_ = (function ( $ ) {
       input_str, data_type, solve_data
       ;
 
+    /* istanbul ignore next */
     if ( ! $elem ) { return; }
 
     input_str = $elem[ vMap._val_ ]()[ vMap._trim_ ]();

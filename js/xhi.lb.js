@@ -229,20 +229,22 @@ __NS._lb_ = (function ( $ ) {
       topSmap._close_toid_ = __undef;
     }
 
-    clean_smap = {
-      _callback_fn_   : callback_fn,
-      _lb_class_str_  : topSmap._lb_class_str_,
-      _mod_class_str_ : topSmap._mod_class_str_
-    };
+    if ( topSmap._is_busy_ === __true ) {
+      clean_smap = {
+        _callback_fn_   : callback_fn,
+        _lb_class_str_  : topSmap._lb_class_str_,
+        _mod_class_str_ : topSmap._mod_class_str_
+      };
 
-    topSmap._lb_class_str_ = __blank;
-    topSmap._is_masked_    = __false;
-    $Map._$litebox_[ vMap._removeClass_ ]( active_class );
-    $Map._$mask_[    vMap._removeClass_ ]( active_class );
+      topSmap._lb_class_str_ = __blank;
+      topSmap._is_masked_    = __false;
+      $Map._$litebox_[ vMap._removeClass_ ]( active_class );
+      $Map._$mask_[ vMap._removeClass_ ]( active_class );
 
-    clean_fn = cleanUp[ vMap._bind_ ]( clean_smap );
-    topSmap._cleanup_fn_   = clean_fn;
-    topSmap._cleanup_toid_ = __setTo( clean_fn, topCmap._trans_ms_ );
+      clean_fn               = cleanUp[ vMap._bind_ ]( clean_smap );
+      topSmap._cleanup_fn_   = clean_fn;
+      topSmap._cleanup_toid_ = __setTo( clean_fn, topCmap._trans_ms_ );
+    }
     return $Map._$litebox_;
   }
   // END DOM method /hideLb/
@@ -274,6 +276,7 @@ __NS._lb_ = (function ( $ ) {
   function showBusy ( /*busy_str*/ ) {
     var active_class = topCmap._active_class_;
     initModule();
+    hideLb();
 
     $Map._$mask_[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
       vMap._addClass_ ]( active_class );
@@ -286,30 +289,6 @@ __NS._lb_ = (function ( $ ) {
     // )
   }
   // END method /showBusy/
-
-  // BEGIN method /hideBusy/
-  function hideBusy () {
-    var
-      $mask = $Map._$mask_,
-      $spin = $Map._$spin_,
-      active_class = topCmap._active_class_
-      ;
-
-    if ( ! $mask ) { return __false; }
-
-    $mask[ vMap._removeClass_ ]( active_class );
-    $spin[ vMap._removeClass_ ]( active_class );
-    topSmap._is_masked_ = __false;
-
-    __setTo(
-      function () {
-        $mask[ vMap._removeAttr_ ]( vMap._style_ )[
-          vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
-      },
-      topCmap._trans_ms_
-    );
-  }
-  // END method /hideBusy/
 
   // BEGIN DOM method /afterShow/
   // Purpose: Finishes presentation of litebox after it is shown
@@ -709,7 +688,6 @@ __NS._lb_ = (function ( $ ) {
     _addLocalSpin_  : addLocalSpin,
     _closeLb_       : closeLb,
     _handleResize_  : handleResize,
-    _hideBusy_      : hideBusy,
     _hideLb_        : hideLb,
     _setCloseFn_    : setCloseFn,
     _showBusy_      : showBusy,
