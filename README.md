@@ -10,7 +10,7 @@ in the new *hotness*. Some of us have spent far more time learning
 intricate framework DSLs than the JavaScript we need. Are we ready to get
 off that treadmill?
 
-[Do we really want an SPA framework?][7] If not, then `hi_score`
+[Do we really want an SPA framework?][7] If not, then **hi_score**
 is here to help. Our intention is to provide an ever improving set of
 best-in-class libraries that we control, instead of having a framework
 that controls us. We thought of calling it `low-score` or `under-dash`
@@ -41,16 +41,16 @@ Key attributes:
 - Commit-hook enforce quality code (JSLint and regression test)
 - A fast, one-touch build system
 
-## Who needs TypeScript or Closure?
-These frameworks are incredibly complicated mechanisms to provide a level of
-type-safety to JS. But do you really need cede control of you JS project to
-these frameworks to get similar results?  The answer is
-**absolutely not**. One can solve most JS type-casting issues in two simple steps:
+## Type safety
+We don't need cede control of our application to complex frameworks like
+TypeScript or Closure to ensure type safety.  Instead, we can solve most JS
+type issues in **two** simple steps that will actually accelerate development
+and enhance collaboration.
 
 - Name your variables for type, and
 - Use `cast` methods to enforce type.
 
-Let's see how this can be accomplished.
+Let's review each step.
 
 ### 1. Name your variables for type
 It's easy to name variables for type by adding a 2-4 character suffix.
@@ -59,10 +59,11 @@ embeds your intentions *in the code* which is much more durable than using
 comments to explain variables.
 
 ### 2. Use `cast` methods to ensure type
-These methods coerce the provided value into the requested type. If they
-can't, the return a fallback value. They are available in `xhi.util.js` and
-are typically most useful at the top of functions where argument assignments
-are made.  Here's an example.
+The `cast` methods are simple, self-documenting functions found in the base
+utilities library (`xhi.util.js`). They convert a provided argument into the
+requested type using standard JS rules. If this is not possible, they return
+the alternate value which by default is `undefined`. They are typically used
+at the top of functions where arguments are processed.
 
 ```js
   var
@@ -70,7 +71,7 @@ are made.  Here's an example.
     __castInt = __util._castInt_,
     __castMap = __util._castMap_
     ;
-  
+
   function getTimeList( arg_map ) {
     var
       map      = __castMap( arg_map,    {} ),
@@ -85,9 +86,9 @@ are made.  Here's an example.
   }
 ```
 
-The `cast` methods just work and are self documenting. Compare this with JSDoc
-solutions that require a DSL and transpile step. See **Cast Use Cases** below
-for more examples.
+Compare this with solutions that use `JSDoc` like TypeScript or
+Closure. Both introduce a transpile step to make the comments userful and add
+an additional layer of complexity to provide similar benefits.
 
 ## Third-pary libraries
 All third-party libraries are in `vendor` directories and retain
@@ -244,13 +245,13 @@ You can make sure it is working correctly like so:
   $ npm run cover
 ```
 
-This should povide a nice HTML coverage report in 
+This should povide a nice HTML coverage report in
 `hi_score/coverage/lcov-report/index.html`.  There may be some prerequisite
 libraries required. Generally the installation scripts should guide you
 through these.
 
 As of 0.6.6 we have isolating the namespace prefix (`xhi`) to the first few
-lines all modules and have made them all node-friendly.  The result is 
+lines all modules and have made them all node-friendly.  The result is
 highly portable and merge-able code. Merging updates to a **hi_score**-based
 project is fast, easy, and very hard to screw up :)
 
@@ -281,7 +282,7 @@ The function argument, for example, may need to exist.  We can adjust the code
 accordingly:
 
 ```js
-function makeCleanFn( arg_map ) {
+function makeCleanFn(  arg_map ) {
   var
     map  = __castMap(  arg_map,     {} ),
 
@@ -292,7 +293,7 @@ function makeCleanFn( arg_map ) {
     fn   = __castInt(  map._fn_   )
     ;
 
-  // Bail if needed values are not provided
+  // Bail if required values are not provided
   if ( ! ( list && fn ) ) {
     console.warn( '_fn_ and _list_ are required' );
     return false;
@@ -300,11 +301,11 @@ function makeCleanFn( arg_map ) {
 
   // Add code here...
 }
-
-When we omit the alternate value to a `cast` routine `undefined` is returned
-if the value cannot be coerced into the desired type.
-
 ```
+
+The default alternate value for all `cast` methods is always `undefined`.
+Here we use this feature to ensure that require arguments are provided.
+
 
 ## Release Notes
 ### Copyright (c)
