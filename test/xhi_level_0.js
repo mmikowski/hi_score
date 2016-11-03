@@ -3051,7 +3051,7 @@ function showSuccess ( test_obj ) {
 // 1. Add the test you would like to run:
 // 2. Run node <this_file>
 // 3. Inspect the output
-handleResize( mockTestObj );
+// handleResize( mockTestObj );
 
 module.exports = {
   // Util
