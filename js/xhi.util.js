@@ -341,7 +341,7 @@ __NS._util_ = (function () {
     function getLogLevel () { return levelKey; }
 
     // This follows syslog level conventions
-    function logIt () {
+    function logMsg () {
       var
         arg_list  = makeArgList( arguments ),
         level_key = castStr( arg_list[ __0 ], __blank ),
@@ -390,7 +390,7 @@ __NS._util_ = (function () {
     return {
       _setLogLevel_ : setLogLevel,
       _getLogLevel_ : getLogLevel,
-      _logMsg_      : logIt
+      _logMsg_      : logMsg
     };
   }());
   // END define logObj singleton
