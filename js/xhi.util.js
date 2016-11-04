@@ -1061,7 +1061,8 @@ __NS._util_ = (function () {
       fn       = castFn(   map._fn_ ),
       delay_ms = castInt(  map._delay_ms_, __0 ),
       ctx_data = map._ctx_data_,
-      last_ms  = __0, delay_toid;
+      last_ms  = __0,
+      delay_toid;
 
     if ( ! ( fn && delay_ms ) ) { return; }
 
