@@ -5,25 +5,27 @@
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
-   devel : true,  indent : 2,      maxerr : 50,
-  newcap : true,   nomen : true, plusplus : true,
-  regexp : true,  sloppy : true,     vars : false,
-   white : true,    todo : true,  unparam : true
+  devel  : true, indent  : 2,    maxerr   : 50,
+  newcap : true, nomen   : true, plusplus : true,
+  regexp : true, sloppy  : true, vars     : false,
+  white  : true, todo    : true, unparam  : true
 */
-/*global jQuery, xhi*/
+/*global jQuery */
 
-var __ns = 'xhi', __NS;
+var __NS;
 /* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
+try          { __NS = global.xhi; }
+catch ( e1 ) { __NS = window.xhi; }
 
-__NS._util_ = (function () {
+// == BEGIN MODULE _makeUtil_ =========================================
+__NS._makeUtil_ = function ( aMap ) {
+  // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
-  // ================= BEGIN MODULE SCOPE VARIABLES ===================
   //noinspection MagicNumberJS
   var
-    vMap      = __NS._vMap_,
-    nMap      = __NS._nMap_,
+    aKey   = aMap._aKey_,
+    vMap   = aMap._vMap_,
+    nMap   = aMap._nMap_,
 
     __j2str   = vMap._JSON_[ vMap._stringify_],
     __jparse  = vMap._JSON_[ vMap._parse_ ],
@@ -62,9 +64,9 @@ __NS._util_ = (function () {
     getDirname,   logObj,  makeGuidStr,
     makeTmpltStr
     ;
-  // ================== END MODULE SCOPE VARIABLES ====================
+  // == END MODULE SCOPE VARIABLES ====================================
 
-  // ===================== BEGIN PRIVATE METHODS ======================
+  // == BEGIN PRIVATE METHODS =========================================
   // BEGIN Public prereq method /getVarType/
   // Returns '_Function_', '_Object_', '_Array_',
   // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
@@ -284,9 +286,9 @@ __NS._util_ = (function () {
     return interm_str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
   }
   // END Public prereq method /makeScrubStr/
-  // ====================== END PRIVATE METHODS =======================
+  // == END PRIVATE METHODS ===========================================
 
-  // ===================== BEGIN UTILITY METHODS ======================
+  // == BEGIN UTILITY METHODS =========================================
   // BEGIN define logObj singleton
   logObj = (function () {
     var
@@ -394,9 +396,9 @@ __NS._util_ = (function () {
     };
   }());
   // END define logObj singleton
-  // ====================== END UTILITY METHODS =======================
+  // == END UTILITY METHODS ===========================================
 
-  // ===================== BEGIN PREREQ METHODS =======================
+  // == BEGIN PREREQ METHODS ==========================================
   // BEGIN Public prereq method /clearMap/
   function clearMap ( arg_map ) {
     var
@@ -647,9 +649,9 @@ __NS._util_ = (function () {
     return base_map;
   }
   // END Public prereq method /mergeMaps/
-  // ====================== END PREREQ METHODS ========================
+  // == END PREREQ METHODS ============================================
 
-  // ===================== BEGIN PUBLIC METHODS =======================
+  // == BEGIN PUBLIC METHODS ==========================================
   // BEGIN utilities /getBasename/ and /getDirname/
   // Purpose   : Returns the last bit of a path
   // Example   : getBasename('/Common/demo99/192.168.11_97_demo1')
@@ -857,7 +859,7 @@ __NS._util_ = (function () {
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
-  //       tz_offset_ms = __NS._util_._getTzOffsetMs_(),
+  //       tz_offset_ms = aMap._util_._getTzOffsetMs_(),
   //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
   function makeClockStr ( arg_time_ms, arg_show_idx ) {
@@ -1162,7 +1164,7 @@ __NS._util_ = (function () {
       data = arg_data || __undef,
       error_obj = new Error();
 
-    error_obj.name        = __ns + ':' + name;
+    error_obj.name        = aKey + ':' + name;
     error_obj.description = msg;
     error_obj.data        = data;
     return error_obj;
@@ -1721,7 +1723,7 @@ __NS._util_ = (function () {
     return is_good;
   }
   // END Public method /setStructData/
-  // ======================= END PUBLIC METHODS =======================
+  // == END PUBLIC METHODS ============================================
 
   // BEGIN initialize module
   function initModule ()  {
@@ -1795,7 +1797,7 @@ __NS._util_ = (function () {
   initModule();
   // END initialize module
 
-  return {
+  aMap._util_ = {
     _castBool_        : castBool,
     _castFn_          : castFn,
     _castInt_         : castInt,
@@ -1849,4 +1851,6 @@ __NS._util_ = (function () {
     _rmListVal_       : rmListVal,
     _setStructData_   : setStructData
   };
-}());
+};
+// == END MODULE _makeUtil_ ===========================================
+

@@ -1,29 +1,32 @@
 /**
  *    xhi.css_lb.js
- *    Litebox classes for JS-driven CSS using PowerCSS
+ *    Litebox manager CSS classes using PowerCSS
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint        browser : true, continue : true,
-  devel : true,  indent : 2,      maxerr : 50,
-  newcap : true,  nomen : true, plusplus : true,
-  regexp : true, sloppy : true,     vars : false,
-  white : true,    todo : true,  unparam : true
+/*jslint         browser : true, continue : true,
+  devel  : true, indent  : 2,    maxerr   : 50,
+  newcap : true, nomen   : true, plusplus : true,
+  regexp : true, sloppy  : true, vars     : false,
+  white  : true, todo    : true, unparam  : true
 */
-/*global xhi, pcss */
+/*global pcss */
 
-var __ns = 'xhi', __NS;
+var __NS;
 /* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
+try          { __NS = global.xhi; }
+catch ( e1 ) { __NS = window.xhi; }
 
-__NS._css_lb_ = (function () {
-  // ================= BEGIN MODULE SCOPE VARIABLES ====================
+// == BEGIN MODULE _makeCssLb_ =========================================
+__NS._makeCssLb_ = function ( aMap ) {
+  // == BEGIN MODULE SCOPE VARIABLES ===================================
+  //noinspection MagicNumberJS
   'use strict';
   var
+    aKey    = aMap._aKey_,
     topCmap =  {
       _selector_list_ : [
-        { _selector_str_ : '.' + __ns + '-_lb_',
+        { _selector_str_ : '.' + aKey + '-_lb_',
           _rule_map_ : {
             _z_index_       : [ '36' ],
             _position_      : '_absolute_',
@@ -39,13 +42,13 @@ __NS._css_lb_ = (function () {
             _transition_    : [ 'opacity .5s ease' ]
           }
         },
-        {_selector_str_ : '.' + __ns + '-_lb_.' + __ns + '-_x_local_',
+        {_selector_str_ : '.' + aKey + '-_lb_.' + aKey + '-_x_local_',
           _rule_map_ : { _position_ : '_absolute_' }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_.' + __ns + '-_x_active_',
+        { _selector_str_ : '.' + aKey + '-_lb_.' + aKey + '-_x_active_',
           _rule_map_ : { _opacity_    : '_1_' }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_mask_',
+        { _selector_str_ : '.' + aKey + '-_lb_mask_',
           _rule_map_ : {
             _z_index_  : [ '35' ],
             _position_ : '_absolute_',
@@ -61,23 +64,23 @@ __NS._css_lb_ = (function () {
             _transition_ : [ 'opacity .5s ease' ]
           }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_mask_.' + __ns + '-_x_local_',
+        { _selector_str_ : '.' + aKey + '-_lb_mask_.' + aKey + '-_x_local_',
           _rule_map_     : {
             _z_index_    : '_1_',
             _transition_ : '_none_',
             _cursor_     : '_default_'
           }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_mask_.' + __ns + '-_x_noclick_',
+        { _selector_str_ : '.' + aKey + '-_lb_mask_.' + aKey + '-_x_noclick_',
           _rule_map_     : { _cursor_ : [ 'wait' ] }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_mask_.' + __ns + '-_x_active_',
+        { _selector_str_ : '.' + aKey + '-_lb_mask_.' + aKey + '-_x_active_',
           _rule_map_ : { _opacity_    : [ '.65' ] }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_content_',
+        { _selector_str_ : '.' + aKey + '-_lb_content_',
           _rule_map_ : { _position_ : '_relative_' }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_close_',
+        { _selector_str_ : '.' + aKey + '-_lb_close_',
           _rule_map_ : {
             _z_index_    : '_1_',
             _position_   : '_absolute_',
@@ -92,7 +95,7 @@ __NS._css_lb_ = (function () {
         { _selector_str_ : '@keyframes spinReverse {'
         + '100%{transform:rotate(-360deg);}}'
         },
-        { _selector_str_ : '.' + __ns + '-_lb_spin_',
+        { _selector_str_ : '.' + aKey + '-_lb_spin_',
           _rule_map_     : {
             _z_index_     : ['50'],
             _position_    : '_fixed_',
@@ -111,15 +114,15 @@ __NS._css_lb_ = (function () {
             _animation_   : ['spinIt 1s linear infinite']
           }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_spin_.' + __ns + '-_x_reverse_',
+        { _selector_str_ : '.' + aKey + '-_lb_spin_.' + aKey + '-_x_reverse_',
           _rule_map_     : {
             _animation_ : [ 'spinReverse 1s linear infinite' ]
           }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_spin_.' + __ns + '-_x_active_',
+        { _selector_str_ : '.' + aKey + '-_lb_spin_.' + aKey + '-_x_active_',
           _rule_map_     : { _display_ : '_block_' }
         },
-        { _selector_str_ : '.' + __ns + '-_lb_spin_.' + __ns + '-_x_local_',
+        { _selector_str_ : '.' + aKey + '-_lb_spin_.' + aKey + '-_x_local_',
           _rule_map_     : {
             _z_index_    : '_1_',
             _position_   : '_absolute_',
@@ -127,11 +130,12 @@ __NS._css_lb_ = (function () {
           }
         }
       ]
-    }
-    ;
-  // ================== END MODULE SCOPE VARIABLES =====================
+    };
+  // == END MODULE SCOPE VARIABLES =====================================
 
-  // ====================== BEGIN PUBLIC METHODS =======================
-  return { _selectorList_ : topCmap._selector_list_ };
-  // ======================= END PUBLIC METHODS ========================
-}());
+  // == BEGIN PUBLIC METHODS ===========================================
+  aMap._css_lb_ = { _selectorList_ : topCmap._selector_list_ };
+  // == END PUBLIC METHODS =============================================
+};
+// == END MODULE _makeCssLb_ ===========================================
+

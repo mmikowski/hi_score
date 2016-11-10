@@ -5,25 +5,29 @@
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
-   devel : true,  indent : 2,      maxerr : 50,
-  newcap : true,   nomen : true, plusplus : true,
-  regexp : true,  sloppy : true,     vars : false,
-   white : true,    todo : true,  unparam : true
+  devel  : true, indent  : 2,    maxerr   : 50,
+  newcap : true, nomen   : true, plusplus : true,
+  regexp : true, sloppy  : true, vars     : false,
+  white  : true, todo    : true, unparam  : true
 */
-/*global pcss, jQuery, xhi */
+/*global pcss, $ */
 
-var __ns = 'xhi', __NS;
+var __NS;
 /* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
+try          { __NS = global.xhi; }
+catch ( e1 ) { __NS = window.xhi; }
 
-__NS._lb_ = (function ( $ ) {
-  // ================= BEGIN MODULE SCOPE VARIABLES ===================
+// == BEGIN MODULE _makeLb_ ===========================================
+__NS._makeLb_ = function ( aMap ) {
   'use strict';
+  // == BEGIN MODULE SCOPE VARIABLES ==================================
   //noinspection MagicNumberJS
   var
-    vMap    = __NS._vMap_,
-    nMap    = __NS._nMap_,
+    aKey    = aMap._aKey_,
+    vMap    = aMap._vMap_,
+    nMap    = aMap._nMap_,
+    __util  = aMap._util_,
+
     cssKmap = pcss._cfg_._cssKeyMap_,
     cssVmap = pcss._cfg_._cssValMap_,
 
@@ -39,7 +43,6 @@ __NS._lb_ = (function ( $ ) {
     __setTo   = vMap._fnSetTimeout_,
     __clearTo = vMap._fnClearTimeout_,
 
-    __util     = __NS._util_,
     __castBool = __util._castBool_,
     __castFn   = __util._castFn_,
     __castJQ   = __util._castJQ_,
@@ -57,8 +60,8 @@ __NS._lb_ = (function ( $ ) {
       _is_ready_     : __false,  // Has DOM been initialized?
       _is_busy_      : __false,  // Is litebox in use?
       _lb_class_str_ : __blank,  // Caller specified class(es) of lb
-      _local_html_   : __undef,  // Cached local spin html with __ns
-      _main_html_    : __undef,  // Cached main html with __ns
+      _local_html_   : __undef,  // Cached local spin html with aKey
+      _main_html_    : __undef,  // Cached main html with aKey
       _mod_class_str_: __blank,  // Caller specified modifier class(es) of lb
       _onclose_fn_   : __undef   // Callback function on close
     },
@@ -67,7 +70,7 @@ __NS._lb_ = (function ( $ ) {
 
     topCmap = {
       _trans_ms_ : 350, // transition time
-      _active_class_ : __ns + '-_x_active_',
+      _active_class_ : aKey + '-_x_active_',
       _main_tmplt_ : __blank
         + '<div id="{_ns_}-_lb_mask_" class="{_ns_}-_lb_mask_"></div>'
         + '<div id="{_ns_}-_lb_spin_" class="{_ns_}-_lb_spin_">'
@@ -114,19 +117,19 @@ __NS._lb_ = (function ( $ ) {
 
     coordDraggable
     ;
-  // ================== END MODULE SCOPE VARIABLES ====================
+  // == END MODULE SCOPE VARIABLES ====================================
 
-  // ===================== BEGIN UTILITY METHODS ======================
-  // ====================== END UTILITY METHODS =======================
+  // == BEGIN UTILITY METHODS =========================================
+  // == END UTILITY METHODS ===========================================
 
-  // ======================= BEGIN DOM METHODS ========================
+  // == BEGIN DOM METHODS =============================================
   // BEGIN DOM method /set$Map/
   function set$Map () {
     $Map = {
       _$body_    : $( 'body' ),
-      _$litebox_ : $( '#' + __ns + '-_lb_'      ),
-      _$mask_    : $( '#' + __ns + '-_lb_mask_' ),
-      _$spin_    : $( '#' + __ns + '-_lb_spin_' )
+      _$litebox_ : $( '#' + aKey + '-_lb_'      ),
+      _$mask_    : $( '#' + aKey + '-_lb_mask_' ),
+      _$spin_    : $( '#' + aKey + '-_lb_spin_' )
     };
   }
   // END DOM method /set$Map/
@@ -142,7 +145,7 @@ __NS._lb_ = (function ( $ ) {
     if ( ! main_html ) {
       main_html = __tmplt({
         _input_str_  : topCmap._main_tmplt_,
-        _lookup_map_ : { _ns_ : __ns }
+        _lookup_map_ : { _ns_ : aKey }
       });
       topSmap._main_html_ = main_html;
     }
@@ -166,7 +169,7 @@ __NS._lb_ = (function ( $ ) {
     if ( ! local_html ) {
       local_html = __tmplt({
         _input_str_  : topCmap._local_tmplt_,
-        _lookup_map_ :  { _ns_ : __ns }
+        _lookup_map_ :  { _ns_ : aKey }
       });
       topSmap._local_html_ = local_html;
     }
@@ -331,13 +334,13 @@ __NS._lb_ = (function ( $ ) {
   // BEGIN method /showLb/
   // Purpose  : Show a litebox of content.
   // Examples :
-  //  __NS._lb_._showLb_({
+  //  aMap._lb_._showLb_({
   //    _layout_key_   : '_top_',
   //    _title_html_   : 'My title',
   //    _content_html_ : 'Content here',
   //  });
   //
-  //  __NS._lb_._showLb_({
+  //  aMap._lb_._showLb_({
   //    _layout_key_   : '_top_',
   //    _title_html_   : 'My title',
   //    _content_html_ : 'Content here',
@@ -410,7 +413,7 @@ __NS._lb_ = (function ( $ ) {
       close_html    = __castStr(  map._close_html_,    __blank ),
       content_html  = __castStr(  map._content_html_,  __blank ),
       layout_key    = __castStr(  map._layout_key_ )   || '_top_',
-      lb_class_str  = __castStr(  map._lb_class_str_ ) || __ns + '-_lb_',
+      lb_class_str  = __castStr(  map._lb_class_str_ ) || aKey + '-_lb_',
       mod_class_str = __castStr(  map._mod_class_str_, __blank ),
       title_html    = __castStr(  map._title_html_,    __blank ),
 
@@ -448,22 +451,22 @@ __NS._lb_ = (function ( $ ) {
       _lookup_map_ : {
         _close_html_   : close_html,
         _content_html_ : content_html,
-        _ns_           : __ns,
+        _ns_           : aKey,
         _title_html_   : title_html
       }
     });
     $litebox.html( inner_html );
 
     // Cache jQuery collections
-    $close   = $litebox[ vMap._find_ ]( '.' + __ns + '-_lb_close_'   );
-    $content = $litebox[ vMap._find_ ]( '.' + __ns + '-_lb_content_' );
-    $title   = $litebox[ vMap._find_ ]( '.' + __ns + '-_lb_title_'   );
+    $close   = $litebox[ vMap._find_ ]( '.' + aKey + '-_lb_close_'   );
+    $content = $litebox[ vMap._find_ ]( '.' + aKey + '-_lb_content_' );
+    $title   = $litebox[ vMap._find_ ]( '.' + aKey + '-_lb_title_'   );
 
     $Map._$close_   = $close;
     $Map._$content_ = $content;
     $Map._$title_   = $title;
 
-    $content.find( '.' + __ns + '-_lb_spin_' )[
+    $content.find( '.' + aKey + '-_lb_spin_' )[
       vMap._addClass_ ]( active_class );
 
     // Store close button function
@@ -485,11 +488,11 @@ __NS._lb_ = (function ( $ ) {
     if ( do_mask ) {
       $mask[ vMap._addClass_ ]( active_class );
       if ( do_bclick ) {
-        $mask[ vMap._addClass_ ]( __ns + '-_lb_x_noclick_' );
+        $mask[ vMap._addClass_ ]( aKey + '-_lb_x_noclick_' );
         $mask[ vMap._off_ ]( vMap._utap_, closeLb );
       }
       else {
-        $mask.removeClass( __ns + '-_lb_x_noclick_' )[
+        $mask.removeClass( aKey + '-_lb_x_noclick_' )[
           vMap._on_ ]( vMap._utap_, closeLb );
       }
     }
@@ -510,7 +513,7 @@ __NS._lb_ = (function ( $ ) {
     }
     css_map.display = cssVmap._block_;
 
-    // Set specified class (or __ns + '-_lb_' default)
+    // Set specified class (or aKey + '-_lb_' default)
     $litebox[ vMap._addClass_ ]( lb_class_str  );
     $litebox[ vMap._addClass_ ]( mod_class_str );
     topSmap._lb_class_str_  = lb_class_str;
@@ -535,9 +538,9 @@ __NS._lb_ = (function ( $ ) {
   }
   // END method /showLb/
 
-  // ======================== END DOM METHODS =========================
+  // == END DOM METHODS ===============================================
 
-  // =================== BEGIN EVENT HANDLERS =========================
+  // == BEGIN EVENT HANDLERS ==========================================
   // The event handlers are impossible to test well without a browser.
   // Skipped in coverage.
   /* istanbul ignore next */
@@ -608,9 +611,9 @@ __NS._lb_ = (function ( $ ) {
     topSmap._resize_toid_ = __undef;
     return __true;
   }
-  // ==================== END EVENT HANDLERS ==========================
+  // == END EVENT HANDLERS ============================================
 
-  // ======================= BEGIN COORDINATORS ========================
+  // == BEGIN COORDINATORS =============================================
   // These methods are here because they tie DOM methods to handlers.
   // We must assign these functions to variables that are declared earlier
   // so that static analysis does not fail.
@@ -628,9 +631,9 @@ __NS._lb_ = (function ( $ ) {
     }
   }
   coordDraggable = coordDraggable0;
-  // ======================== END COORDINATORS =========================
+  // == END COORDINATORS ===============================================
 
-  // =================== BEGIN PUBLIC METHODS =========================
+  // == BEGIN PUBLIC METHODS ==========================================
   // BEGIN showSuccess
   function showSuccess ( arg_str ) {
     var
@@ -643,7 +646,7 @@ __NS._lb_ = (function ( $ ) {
       _input_str_  : topCmap._success_tmplt_,
       _lookup_map_ : {
         _msg_str_ : msg_str,
-        _ns_      : __ns
+        _ns_      : aKey
       }
     });
 
@@ -665,7 +668,7 @@ __NS._lb_ = (function ( $ ) {
 
       if ( ! row_map ) { continue ROW; }
       lookup_map      = __util._cloneData_( row_map );
-      lookup_map._ns_ = __ns;
+      lookup_map._ns_ = aKey;
 
       rows_html += __tmplt({
         _input_str_  : topCmap._erow_tmplt_,
@@ -676,7 +679,7 @@ __NS._lb_ = (function ( $ ) {
     content_html = __tmplt({
       _input_str_  : topCmap._error_tmplt_,
       _lookup_map_ : {
-        _ns_        : __ns,
+        _ns_        : aKey,
         _rows_html_ : rows_html || 'unknown error'
       }
     });
@@ -684,7 +687,7 @@ __NS._lb_ = (function ( $ ) {
     return showLb({ _content_html_ : content_html });
   }
 
-  return {
+  aMap._lb_ = {
     _addLocalSpin_  : addLocalSpin,
     _closeLb_       : closeLb,
     _handleResize_  : handleResize,
@@ -697,6 +700,7 @@ __NS._lb_ = (function ( $ ) {
 
     _initModule_    : initModule
   };
-  // ==================== END PUBLIC METHODS ==========================
-}( jQuery ));
-// END __NS.lb.js
+  // == END PUBLIC METHODS ============================================
+};
+// == END MODULE _makeLb_ =============================================
+

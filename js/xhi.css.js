@@ -4,51 +4,55 @@
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint       browser : true, continue : true,
-  devel : true, indent : 2,      maxerr : 50,
- newcap : true,  nomen : true, plusplus : true,
- regexp : true, sloppy : true,     vars : false,
-  white : true,   todo : true,  unparam : true
+/*jslint         browser : true, continue : true,
+  devel  : true, indent  : 2,    maxerr   : 50,
+  newcap : true, nomen   : true, plusplus : true,
+  regexp : true, sloppy  : true, vars     : false,
+  white  : true, todo    : true, unparam  : true
 */
-/*global jQuery, pcss, xhi */
+/*global pcss */
 
-var __ns = 'xhi', __NS;
+var __NS;
 /* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
+try          { __NS = global.xhi; }
+catch ( e1 ) { __NS = window.xhi; }
 
-__NS._css_ = (function () {
-  // ================= BEGIN MODULE SCOPE VARIABLES ====================
+// == BEGIN MODULE _makeCss_ ===========================================
+__NS._makeCss_ = function ( aMap ) {
+  // == BEGIN MODULE SCOPE VARIABLES ===================================
+  //noinspection MagicNumberJS
   'use strict';
   var
-    nMap = __NS._nMap_,
-    vMap = __NS._vMap_,
+    aKey   = aMap._aKey_,
+    nMap   = aMap._nMap_,
+    vMap   = aMap._vMap_,
+    __util = aMap._util_,
 
     __0      = nMap._0_,
     __false  = vMap._false_,
     __true   = vMap._true_,
     __undef  = vMap._undef_,
     __Number = vMap._Number_,
-    __logObj = __NS._util_._getLogObj_(),
-    __logMsg  = __logObj._logMsg_,
+    __logObj = __util._getLogObj_(),
+    __logMsg = __logObj._logMsg_,
 
     topSmap = {
       _is_ready_  : __false,
       _theme_idx_ : __0
     };
-  // ================== END MODULE SCOPE VARIABLES =====================
+  // == END MODULE SCOPE VARIABLES =====================================
 
-  // ===================== BEGIN UTILITY METHODS =======================
-  // ====================== END UTILITY METHODS ========================
+  // == BEGIN UTILITY METHODS ==========================================
+  // == END UTILITY METHODS ============================================
 
-  // ======================= BEGIN DOM METHODS =========================
-  // ======================== END DOM METHODS ==========================
+  // == BEGIN DOM METHODS ==============================================
+  // == END DOM METHODS ================================================
 
-  // ====================== BEGIN PUBLIC METHODS =======================
+  // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN public method /getThemeCount/
   function getThemeCount () {
     var
-      theme_map_list = __NS._css_base_._themeMapList_;
+      theme_map_list = aMap._css_base_._themeMapList_;
     return theme_map_list[ vMap._length_ ];
   }
   // END public method /getThemeCount/
@@ -56,7 +60,7 @@ __NS._css_ = (function () {
   // BEGIN public method /getThemeMixinMap/
   function getThemeMixinMap () {
     var
-      theme_map_list = __NS._css_base_._themeMapList_,
+      theme_map_list = aMap._css_base_._themeMapList_,
       theme_idx      = topSmap._theme_idx_;
     return theme_map_list[ theme_idx ];
   }
@@ -65,7 +69,7 @@ __NS._css_ = (function () {
   // BEGIN public method /setThemeIdx/
   function setThemeIdx( arg_idx ) {
     var
-      theme_map_list = __NS._css_base_._themeMapList_,
+      theme_map_list = aMap._css_base_._themeMapList_,
       theme_idx      = topSmap._theme_idx_,
       theme_count    = theme_map_list[ vMap._length_ ],
       idx            = Number( arg_idx ),
@@ -95,32 +99,32 @@ __NS._css_ = (function () {
   // BEGIN public method /initModule/
   function initModule ( arg_idx ) {
     var
-      local_key = __ns + '-_theme_map_',
+      local_key = aKey + '-_theme_map_',
       theme_idx = __Number( arg_idx ) || __0,
 
       theme_json, theme_map_list, theme_map;
 
     if ( topSmap._is_ready_ === __true ) { return; }
 
-    pcss._initModule_({ _style_el_prefix_ : __ns });
-    pcss._setGlobalMixinMap_({ _mixin_map_: __NS._css_base_._globalMixinMap_ });
+    pcss._initModule_({ _style_el_prefix_ : aKey });
+    pcss._setGlobalMixinMap_({ _mixin_map_: aMap._css_base_._globalMixinMap_ });
 
     pcss._setVsheet_({
       _vsheet_id_     : '_base_',
       _mode_str_      : '_add_',
-      _selector_list_ : __NS._css_base_._selectorList_
+      _selector_list_ : aMap._css_base_._selectorList_
     });
 
     pcss._setVsheet_({
      _vsheet_id_     : '_lb_',
      _mode_str_      : '_add_',
-     _selector_list_ : __NS._css_lb_._selectorList_
+     _selector_list_ : aMap._css_lb_._selectorList_
     });
 
     pcss._setVsheet_({
       _vsheet_id_     : '_shell_',
       _mode_str_      : '_add_',
-      _selector_list_ : __NS._css_shell_._selectorList_
+      _selector_list_ : aMap._css_shell_._selectorList_
     });
 
     // Begin use local theme map if available
@@ -134,7 +138,7 @@ __NS._css_ = (function () {
       }
     }
 
-    theme_map_list = __NS._css_base_._themeMapList_;
+    theme_map_list = aMap._css_base_._themeMapList_;
     if ( ! theme_map ) {
       theme_map = theme_map_list[ theme_idx ];
       if ( ! theme_map ) {
@@ -154,7 +158,7 @@ __NS._css_ = (function () {
   }
   // END public method /initModule/
 
-  return {
+  aMap._makeCss_ = {
     _getCssKeyMap_     : pcss._getCssKeyMap_,
     _getCssValMap_     : pcss._getCssValMap_,
     _getThemeCount_    : getThemeCount,
@@ -163,5 +167,7 @@ __NS._css_ = (function () {
 
     _initModule_       : initModule
   };
-  // ======================= END PUBLIC METHODS ========================
-}());
+  // == END PUBLIC METHODS =============================================
+};
+// == END MODULE _makeCss_ =============================================
+
