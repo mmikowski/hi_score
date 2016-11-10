@@ -1,6 +1,7 @@
 #!/bin/bash
-# Wipe and re-copy vendor libs to the js/vendor and css/vendor directories
-# using the current version from package.json.
+# 1. Wipe and re-copy vendor libs to the js/vendor and css/vendor directories
+#    using the current version from package.json.
+# 2. Install the commit hook if git is detected.
 #
 # TODO:
 # 1. Use the same configuration file as buildify / superpack
@@ -11,21 +12,27 @@
 set -u;
 
 ## BEGIN Layout variables ==================================================
+GIT_EXE=$( which git );
 LINK_PATH=$( readlink -f -- "${0}" );
 BIN_PATH=$(  cd "${LINK_PATH%/*}" && echo "${PWD}" );
-# BASE_DIR=$(  dirname "${BIN_PATH}" );
-BASE_DIR=$( cd "$(git rev-parse --show-toplevel)" && pwd );
-
-PKG_FILE=$( find "${BASE_DIR}" -type f -wholename '*/package.json'  );
+GIT_DIR=$( cd "$(git rev-parse --show-toplevel)" && pwd );
+NPM_DIR=$(  dirname "${BIN_PATH}" );
+APP_DIR="${NPM_DIR}";
+PKG_FILE=$( find "${NPM_DIR}" -type f -wholename '*/package.json'  );
 PKG_DIR=$(  dirname "${PKG_FILE}"  );
-MODS_DIR=$( find "${BASE_DIR}" -type d |grep '/node_modules$' |grep -v '/node_modules/');
+MODS_DIR=$( find "${NPM_DIR}" -type d \
+  |grep '/node_modules$' |grep -v '/node_modules/');
 JSLINT_EXE="${MODS_DIR}/.bin/jslint";
 NU_EXE="${MODS_DIR}/.bin/nodeunit";
 VRS_STR="";
+if [ -x "${GIT_EXE}" ]; then 
+  GIT_DIR=$( cd "$(git rev-parse --show-toplevel)" && pwd );
+fi
 ## END Layout variables ====================================================
 
+## BEGIN setVersStr() - Read package.json and parse ========================
 setVrsStr () {
-  pushd "${BASE_DIR}/bin" > /dev/null;
+  pushd "${NPM_DIR}/bin" > /dev/null;
   VRS_STR=$(
     node -e '
       var fs = require( "fs" );
@@ -57,7 +64,9 @@ setVrsStr () {
   );
   popd > /dev/null;
 }
+##   END setVersStr() ======================================================
 
+## BEGIN getVrs() - Look up version for requested package ==================
 getVrs () {
   local IFS='';
   MATCH="$*";
@@ -70,22 +79,31 @@ getVrs () {
     fi;
   done
 }
+##   END getVrs() ==========================================================
 
-## BEGIN main
-  cd "${BASE_DIR}";
+## BEGIN main - Copy vendor assets and add commit hook =====================
+
+  # === remove old dirs
+  pushd "${APP_DIR}" > /dev/null;
   if [ -r "js/vendor" ]; then
-    mv "js/vendor" "js/vendor.$$";
+    rm -rf "js/vendor";
   fi;
   if [ -r "css/vendor" ]; then
-    mv "css/vendor" "css/vendor.$$";
+    rm -rf "css/vendor";
   fi;
 
+  PC_PATH="${GIT_DIR}/.git/hooks/pre-commit";
+  if [ -L "${PC_PATH}" ]; then
+    rm -f "${PC_PATH}";
+  fi
+    
   mkdir -p "js/vendor";
   mkdir -p "css/vendor";
-
-  cd "${BASE_DIR}/js/vendor";
+  popd > /dev/null;
 
   # ==== vendors/js
+  pushd "${APP_DIR}/js/vendor";
+
   vrs=$(getVrs jquery);
   cp "${MODS_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js";
 
@@ -115,15 +133,25 @@ getVrs () {
 
   vrs=$(getVrs taffydb);
   cp "${MODS_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
+  popd > /dev/null;
 
-  PC_PATH="${BASE_DIR}/.git/hooks/pre-commit";
-  if [ -r "${PC_PATH}" ]; then
-    mv "${PC_PATH}" "${PC_PATH}.$$";
+
+
+  # ==== vendors/css
+  pushd "${APP_DIR}/css/vendor" > /dev/null;
+  popd > /dev/null;
+
+  # ==== add git commit hook if git is found
+  if [ -w "${GIT_DIR}" ]; then
+    PC_PATH="${GIT_DIR}/.git/hooks/pre-commit";
+    if [ -L "${PC_PATH}" ]; then
+      rm -f "${PC_PATH}";
+    fi
+
+    pushd "${GIT_DIR}/.git/hooks" > /dev/null;
+    ln -s "../../bin/git-hook_pre-commit" "./pre-commit";
+    popd > /dev/null;
   fi
-
-  cd "${BASE_DIR}/.git/hooks";
-  ln -s "../../bin/git-hook_pre-commit" "./pre-commit";
-
-  exit 0;
-## END main
+##   END main ==============================================================
+exit 0;
 
