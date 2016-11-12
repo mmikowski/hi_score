@@ -385,7 +385,7 @@ __NS._makeCssShell_ = function ( aMap ) {
   // == END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  aMap._shell_ = { _selectorList_ : topCmap._selector_list_ };
+  aMap._css_shell_ = { _selectorList_ : topCmap._selector_list_ };
   // == END PUBLIC METHODS =============================================
 };
 // == END MODULE _makeCssShell_ ========================================

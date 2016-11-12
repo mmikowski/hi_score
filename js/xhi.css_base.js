@@ -413,7 +413,7 @@ __NS._makeCssBase_ = function ( aMap ) {
   // == END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  aMap._css_ = {
+  aMap._css_base_ = {
     _globalMixinMap_ : topCmap._global_mixin_map_,
     _selectorList_   : topCmap._selector_list_,
     _themeMapList_   : topCmap._theme_map_list_

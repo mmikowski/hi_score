@@ -158,7 +158,7 @@ __NS._makeCss_ = function ( aMap ) {
   }
   // END public method /initModule/
 
-  aMap._makeCss_ = {
+  aMap._css_ = {
     _getCssKeyMap_     : pcss._getCssKeyMap_,
     _getCssValMap_     : pcss._getCssValMap_,
     _getThemeCount_    : getThemeCount,

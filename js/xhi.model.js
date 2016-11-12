@@ -23,14 +23,15 @@ __NS._makeModel_ = function ( aMap ) {
   'use strict';
   var
     aKey    = aMap._aKey_,
-    vMap    = __NS._vMap_,
-    nMap    = __NS._nMap_,
+    vMap    = aMap._vMap_,
+    nMap    = aMap._nMap_,
+    __util  = aMap._util_,
 
     __0     = nMap._0_,
     __1     = nMap._1_,
     __blank = vMap._blank_,
 
-    __logObj = __NS._util_._getLogObj_(),
+    __logObj = __util._getLogObj_(),
     __logMsg  = __logObj._logMsg_,
 
     topCmap = {},
