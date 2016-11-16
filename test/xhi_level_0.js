@@ -2619,9 +2619,10 @@ liteBoxMap = {
   _outer01_tmplt_ : __blank
     + '<div id="' + aKey + '-_lb_" style="display: block; top: 50%; '
       + 'left: 50%; margin-top: 0px; margin-left: 0px;" '
-      + 'class="' + aKey + '-_lb_ ' + aKey + '-_x_active_"><div class="' + aKey + '-_lb_title_" '
+      + 'class="' + aKey + '-_lb_ ' + aKey + '-_x_active_"><div class="'
+      + aKey + '-_lb_title_" '
       + 'style="display: block;">{_title_}</div>'
-      + '<div class="' + aKey + '-_lb_close_"></div>'
+      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
       + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _outer02_tmplt_ : __blank
@@ -2629,7 +2630,7 @@ liteBoxMap = {
       + 'style="display: block; top: 50%; left: 50%; '
       + 'margin-top: 0px; margin-left: 0px;"><div '
       + 'class="' + aKey + '-_lb_title_" style="display: block;">{_title_}</div>'
-      + '<div class="' + aKey + '-_lb_close_"></div>'
+      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
       + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _spin_html_     : __blank
@@ -2870,13 +2871,38 @@ function showLb ( test_obj ) {
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : 'hello world' }
     }),
+    t01_a_html   = __util._makeTmpltStr_({
+      _input_str_  : liteBoxMap._outer01_tmplt_,
+      _lookup_map_ : {
+        _content_html_ : 'mello world',
+        _close_html_   : 'x',
+        _close_block_  : ' style="display: block;"'
+      }
+    }),
+    t01_b_html   = __util._makeTmpltStr_({
+      _input_str_  : liteBoxMap._outer02_tmplt_,
+      _lookup_map_ : {
+        _content_html_ : 'mello world',
+        _close_html_   : 'x',
+        _close_block_  : ' style="display: block;"'
+      }
+    }),
     assert_list = [
       // arg_list, expect1_html, expect2_html
       [ [{}], blank_a_html, blank_b_html ],
       [ [{}], blank_a_html, blank_b_html ],
       [ [{ _content_html_ : 'hello world', _autoclose_ms_ : 20 } ],
         t00_a_html, t00_b_html ],
-      [ [{ _content_html_ : 'hello world' } ], t00_a_html, t00_b_html ]
+      [ [{ _content_html_ : 'hello world' } ], t00_a_html, t00_b_html ],
+      [ [{ _content_html_ : 'hello world', _do_block_click_ : true } ],
+        t00_a_html, t00_b_html ],
+      [ [{ _close_html_   : 'x',
+           _content_html_ : 'mello world',
+           _onclose_fn_   : __showLbCb,
+           _position_map_ : { top : '50%', left : '50%',
+             'margin-top' : 0, 'margin-left' :  0
+           }
+        } ], t01_a_html, t01_b_html ]
     ],
 
     assert_count = assert_list.length,
@@ -2933,6 +2959,30 @@ function handleResize ( test_obj ) {
   test_obj.ok( ret_bool === __false,
     '1. Second call should return false as the resize is already scheduled'
   );
+  test_obj.done();
+}
+
+function showBusy ( test_obj ) {
+  var
+    show_fn  = __lb._showBusy_,
+    mask_id  = '#' + aKey + '-_lb_mask_' ,
+    $mask    = $( mask_id ),
+    off_html = '<div id="test-_lb_mask_" class="test-_lb_mask_" '
+      + 'style="display: block;"></div>',
+    on_html  = '<div id="test-_lb_mask_" class="test-_lb_mask_ '
+      + 'test-_x_active_" style="display: block;"></div>',
+    outer_html;
+
+  test_obj.expect( 2 );
+
+  __lb._hideLb_();
+
+  outer_html = $mask[0].outerHTML;
+  test_obj.ok( outer_html === off_html, '1. Mask is missing active class' );
+  show_fn();
+
+  outer_html = $mask[0].outerHTML;
+  test_obj.ok( outer_html === on_html, '2. Mask contains active class' );
   test_obj.done();
 }
 
@@ -3118,6 +3168,7 @@ module.exports = {
   _showErrorList_ : showErrorList,
   _showLb_        : showLb,
   _handleResize_  : handleResize,
+  _showBusy_      : showBusy,
   _showSuccess_   : showSuccess
 };
 
