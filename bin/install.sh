@@ -16,21 +16,36 @@ GIT_EXE=$(   which git );
 LINK_PATH=$( readlink -f -- "${0}" );
 BIN_PATH=$(  cd "${LINK_PATH%/*}" && echo "${PWD}" );
 NPM_DIR=$(   dirname "${BIN_PATH}" );
+
 APP_DIR="${NPM_DIR}";
 PKG_FILE=$( find "${NPM_DIR}" -type f -wholename '*/package.json'  );
-PKG_DIR=$(  dirname "${PKG_FILE}"  );
-MOD_DIR=$( cd "${NPM_DIR}/.." && echo "${PWD}" );
-# MOD_DIR=$( find "${NPM_DIR}" -type d \
-#  |grep '/node_modules$' |grep -v '/node_modules/');
-JSLINT_EXE="${MOD_DIR}/.bin/jslint";
-NU_EXE="${MOD_DIR}/.bin/nodeunit";
-VRS_STR="";
+PKG_DIR=$(  dirname "${PKG_FILE}" );
+
+GIT_DIR="";
 if [ -x "${GIT_EXE}" ]; then 
   TOP_DIR=$(git rev-parse --show-toplevel);
   if [ ! -z "${TOP_DIR}" ]; then
     GIT_DIR=$( cd "${TOP_DIR}" && pwd );
   fi
 fi
+
+MOD_DIR=$( find "${NPM_DIR}" -type d \
+  |grep '/node_modules$' |grep -v '/node_modules/');
+if [ -z "${MOD_DIR}" ]; then 
+  MOD_DIR=$( find "${NPM_DIR}/.." -type d \
+    | grep '/node_modules$' |grep -v '/node_modules/' \
+    | head -n1
+  );
+fi
+
+if [ -z "${MOD_DIR}" ]; then
+  echo "Installation error";
+  exit 0;
+fi
+
+JSLINT_EXE="${MOD_DIR}/.bin/jslint";
+NU_EXE="${MOD_DIR}/.bin/nodeunit";
+VRS_STR="";
 ## END Layout variables ====================================================
 
 ## BEGIN setVersStr() - Read package.json and parse ========================
@@ -50,7 +65,7 @@ setVrsStr () {
             key_count, idx;
           if ( error ) { return console.error( error ); }
           pkg_map = JSON.parse( json_str );
-          dev_map = pkg_map.devDependencies;
+          dev_map = pkg_map.dependencies;
           if ( dev_map ) {
             key_list  = Object.keys( dev_map );
             key_count = key_list.length;
@@ -138,7 +153,7 @@ getVrs () {
   popd > /dev/null;
 
   # ==== add git commit hook if git is found
-  if [ -w "${GIT_DIR}" ]; then
+  if [ ! -z "${GIT_DIR}" ]; then
     PC_PATH="${GIT_DIR}/.git/hooks/pre-commit";
     if [ -L "${PC_PATH}" ]; then
       rm -f "${PC_PATH}";
