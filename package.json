@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.6.15",
+  "version": "0.6.17",
   "description": "Are you ready to get off the framework-of-the-month treadmill and take control of your SPA? Hi_Score is here to help with an architecture guide, starter files, and best-in-class libraries.",
   "keywords": [
     "spa",
@@ -14,7 +14,7 @@
   ],
   "main": "hi_score",
   "scripts": {
-    "install": "bin/install.sh",
+    "prep-libs": "bin/prep-libs.sh",
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js",
     "cover": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
     "covera": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
@@ -29,7 +29,8 @@
     "url": "https://github.com/mmikowski/hi_score/issues"
   },
   "homepage": "https://github.com/mmikowski/hi_score",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "coveralls": "^2.11.14",
     "istanbul": "^0.4.5",
     "jquery": "3.1.1",
@@ -47,7 +48,6 @@
     "uglifycss": "0.0.25",
     "uglifyjs": "^2.4.10"
   },
-  "devDependencies": {},
   "maintainers": [
     "Michael S. Mikowski <mike.mikowski@gmail.com>"
   ]

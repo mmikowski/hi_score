@@ -11,7 +11,9 @@
 
 set -u;
 
+echo "prep-libs: start"
 ## BEGIN Layout variables ==================================================
+echo "prep-libs: start layout_variables";
 ORIG_DIR=$(  pwd );
 GIT_EXE=$(   which git );
 LINK_PATH=$( readlink -f -- "${0}" );
@@ -39,18 +41,20 @@ cd "${NPM_DIR}";
 while [ -z "${MOD_DIR}" ]; do
   PWD=$(pwd);
   if [ "${PWD}" = "/" ]; then
-    GG="__x";
+    MOD_DIR="__x";
   else
     cd ..;
-    GG=$(pwd |grep 'node_modules$');
+    MOD_DIR=$(pwd |grep 'node_modules$');
   fi;
 done
 
 if [ -z "${MOD_DIR}" ] || [ "${MOD_DIR}" = "__x" ]; then
-  echo "Installation error";
-  exit 0;
+  echo "prep-libs: FAIL: Could not find node_modules dir in path.";
+  exit 1;
 fi
 VRS_STR="";
+
+echo "prep-libs: success layout_variables"
 ## END Layout variables ====================================================
 
 ## BEGIN setVersStr() - Read package.json and parse ========================
@@ -70,7 +74,7 @@ setVrsStr () {
             key_count, idx;
           if ( error ) { return console.error( error ); }
           pkg_map = JSON.parse( json_str );
-          dev_map = pkg_map.dependencies;
+          dev_map = pkg_map.devDependencies;
           if ( dev_map ) {
             key_list  = Object.keys( dev_map );
             key_count = key_list.length;
@@ -105,8 +109,10 @@ getVrs () {
 ##   END getVrs() ==========================================================
 
 ## BEGIN main - Copy vendor assets and add commit hook =====================
+echo "prep-libs: start main";
 
   # === remove old dirs
+  echo "prep-libs: start main.remove_old_dirs";
   cd "${APP_DIR}";
   if [ -r "js/vendor" ]; then
     rm -rf "js/vendor";
@@ -117,8 +123,10 @@ getVrs () {
  
   mkdir -p "js/vendor";
   mkdir -p "css/vendor";
+  echo "prep-libs: success main.remove_old_dirs";
 
   # ==== vendors/js
+  echo "prep-libs: start main.copy_vendor_libs";
   cd "${APP_DIR}/js/vendor";
 
   vrs=$(getVrs jquery);
@@ -151,8 +159,10 @@ getVrs () {
   vrs=$(getVrs taffydb);
   cp "${MOD_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
 
+
   # ==== vendors/css
   cd "${APP_DIR}/css/vendor";
+  echo "prep-libs: success main.copy_vendor_libs";
 
   # ==== add git commit hook if git is found
   if [ ! -z "${GIT_DIR}" ]; then
@@ -162,8 +172,11 @@ getVrs () {
     fi
 
     cd "${GIT_DIR}/.git/hooks" \
-      && ln -s "../../bin/git-hook_pre-commit" "./pre-commit";
+      && ln -s "../../bin/git-hook_pre-commit" "./pre-commit" \
+      && echo "prep-libs: success install commit_hook";
   fi
+
+  echo "prep-libs: success main";
 ##   END main ==============================================================
 exit 0;
 
