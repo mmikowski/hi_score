@@ -12,6 +12,7 @@
 set -u;
 
 ## BEGIN Layout variables ==================================================
+ORIG_DIR=$(  pwd );
 GIT_EXE=$(   which git );
 LINK_PATH=$( readlink -f -- "${0}" );
 BIN_PATH=$(  cd "${LINK_PATH%/*}" && echo "${PWD}" );
@@ -29,22 +30,26 @@ if [ -x "${GIT_EXE}" ]; then
   fi
 fi
 
-MOD_DIR=$( find "${NPM_DIR}" -type d \
-  |grep '/node_modules$' |grep -v '/node_modules/');
-if [ -z "${MOD_DIR}" ]; then 
-  MOD_DIR=$( find "${NPM_DIR}/.." -type d \
-    | grep '/node_modules$' |grep -v '/node_modules/' \
-    | head -n1
-  );
+MOD_DIR="${NPM_DIR}/node_modules";
+if [ ! -r "${MOD_DIR}" ] || [ -z "${MOD_DIR}" ]; then
+  MOD_DIR="";
 fi
 
-if [ -z "${MOD_DIR}" ]; then
+cd "${NPM_DIR}";
+while [ -z "${MOD_DIR}" ]; do
+  PWD=$(pwd);
+  if [ "${PWD}" = "/" ]; then
+    GG="__x";
+  else
+    cd ..;
+    GG=$(pwd |grep 'node_modules$');
+  fi;
+done
+
+if [ -z "${MOD_DIR}" ] || [ "${MOD_DIR}" = "__x" ]; then
   echo "Installation error";
   exit 0;
 fi
-
-JSLINT_EXE="${MOD_DIR}/.bin/jslint";
-NU_EXE="${MOD_DIR}/.bin/nodeunit";
 VRS_STR="";
 ## END Layout variables ====================================================
 
@@ -102,7 +107,7 @@ getVrs () {
 ## BEGIN main - Copy vendor assets and add commit hook =====================
 
   # === remove old dirs
-  pushd "${APP_DIR}" > /dev/null;
+  cd "${APP_DIR}";
   if [ -r "js/vendor" ]; then
     rm -rf "js/vendor";
   fi;
@@ -112,10 +117,9 @@ getVrs () {
  
   mkdir -p "js/vendor";
   mkdir -p "css/vendor";
-  popd > /dev/null;
 
   # ==== vendors/js
-  pushd "${APP_DIR}/js/vendor";
+  cd "${APP_DIR}/js/vendor";
 
   vrs=$(getVrs jquery);
   cp "${MOD_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js";
@@ -146,11 +150,9 @@ getVrs () {
 
   vrs=$(getVrs taffydb);
   cp "${MOD_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
-  popd > /dev/null;
 
   # ==== vendors/css
-  pushd "${APP_DIR}/css/vendor" > /dev/null;
-  popd > /dev/null;
+  cd "${APP_DIR}/css/vendor";
 
   # ==== add git commit hook if git is found
   if [ ! -z "${GIT_DIR}" ]; then
@@ -159,9 +161,8 @@ getVrs () {
       rm -f "${PC_PATH}";
     fi
 
-    pushd "${GIT_DIR}/.git/hooks" > /dev/null;
-    ln -s "../../bin/git-hook_pre-commit" "./pre-commit";
-    popd > /dev/null;
+    cd "${GIT_DIR}/.git/hooks" \
+      && ln -s "../../bin/git-hook_pre-commit" "./pre-commit";
   fi
 ##   END main ==============================================================
 exit 0;
