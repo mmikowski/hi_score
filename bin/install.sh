@@ -15,18 +15,21 @@ set -u;
 GIT_EXE=$( which git );
 LINK_PATH=$( readlink -f -- "${0}" );
 BIN_PATH=$(  cd "${LINK_PATH%/*}" && echo "${PWD}" );
-GIT_DIR=$( cd "$(git rev-parse --show-toplevel)" && pwd );
-NPM_DIR=$(  dirname "${BIN_PATH}" );
+NPM_DIR=$(   dirname "${BIN_PATH}" );
 APP_DIR="${NPM_DIR}";
 PKG_FILE=$( find "${NPM_DIR}" -type f -wholename '*/package.json'  );
 PKG_DIR=$(  dirname "${PKG_FILE}"  );
-MODS_DIR=$( find "${NPM_DIR}" -type d \
-  |grep '/node_modules$' |grep -v '/node_modules/');
+MOD_DIR=$( cd "${NPM_DIR}/.."; pwd );
+# MOD_DIR=$( find "${NPM_DIR}" -type d \
+#  |grep '/node_modules$' |grep -v '/node_modules/');
 JSLINT_EXE="${MODS_DIR}/.bin/jslint";
 NU_EXE="${MODS_DIR}/.bin/nodeunit";
 VRS_STR="";
 if [ -x "${GIT_EXE}" ]; then 
-  GIT_DIR=$( cd "$(git rev-parse --show-toplevel)" && pwd );
+  TOP_DIR=$(git rev-parse --show-toplevel);
+  if [ ! -z "${TOP_DIR}" ]; then
+    GIT_DIR=$( cd "${TOP_DIR}" && pwd );
+  fi
 fi
 ## END Layout variables ====================================================
 
@@ -91,12 +94,7 @@ getVrs () {
   if [ -r "css/vendor" ]; then
     rm -rf "css/vendor";
   fi;
-
-  PC_PATH="${GIT_DIR}/.git/hooks/pre-commit";
-  if [ -L "${PC_PATH}" ]; then
-    rm -f "${PC_PATH}";
-  fi
-    
+ 
   mkdir -p "js/vendor";
   mkdir -p "css/vendor";
   popd > /dev/null;
@@ -134,8 +132,6 @@ getVrs () {
   vrs=$(getVrs taffydb);
   cp "${MODS_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
   popd > /dev/null;
-
-
 
   # ==== vendors/css
   pushd "${APP_DIR}/css/vendor" > /dev/null;
