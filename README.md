@@ -114,12 +114,12 @@ sympathy.
 
 ## Prepare libraries
 As of 0.6.0, this repository no longer directly holds dependent libraries but
-instead copies them from their npm repositories locations instead.  It is a
-single step process:
+instead copies them from their npm repositories locations instead:
 
 ```bash
   $ cd hi_score
-  $ npm prep-libs
+  $ npm install
+  $ npm run prep-libs
 ```
 
 After preparation one can open the `index.html` file with a browser to view the
@@ -127,7 +127,7 @@ rudimentary sample application.
 
 ## Update
 One may update all the npm libraries and the `package.json` file with `npm
-update -D`.  If we want these changes to propagate, we must run `npm prep-libs`
+update -D`.  If we want these changes to propagate, we must run `npm run prep-libs`
  again to update the vendor libraries, and update the `index.html` file to
  point to the updated versions.  This last step we expect to automate in the
  near future.
@@ -142,6 +142,7 @@ tests as well.
 
 ```bash
   $ cd hi_score
+  $ npm install
   $ npm prep-libs
   $ npm test
 ```
@@ -162,6 +163,7 @@ coveralls.io. Here are the steps:
 
 ```bash
   $ cd hi_score
+  $ npm install
   $ npm prep-libs
   $ npm run covera
 ```
@@ -237,6 +239,7 @@ development libs and the commit hook:
 
 ```bash
   $ cd hi_score
+  $ npm install
   $ npm prep-libs
 ```
 
