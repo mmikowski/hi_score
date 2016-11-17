@@ -234,6 +234,6 @@ var xhi = (function () {
 
 // ================== BEGIN BROWSER AND NODE SUPPORT ===================
 /* istanbul ignore next */
-try { module.exports = { xhi : xhi }; }
+try { module.exports = xhi; }
 catch ( ignore ) {}
 // =================== END BROWSER AND NODE SUPPORT ====================

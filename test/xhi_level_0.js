@@ -16,9 +16,11 @@
 'use strict';
 //noinspection JSUnusedLocalSymbols
 var
-  __ns    = 'xhi',
-  libDir  = '../js/',
-  nuFn    = function () { console.log( __ns + '.' + this , arguments ); },
+  __ns        = 'xhi',
+  aKey        = 'xhi',
+  libDir      = '../js/',
+  libPrefix   = libDir + __ns + '.',
+  nuFn        = function () { console.log( aKey + '.' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
     done      : nuFn.bind( 'done'      ),
@@ -31,7 +33,7 @@ var
   winRef   = docRef.defaultView,
   jQuery   = require( 'jquery' )( winRef ),
 
-  __NS, nMap, vMap, __Str, __blank, __false,
+  aMap, nMap, vMap, __Str, __blank, __false,
   __null, __true, __undef, __util, __utilb, __lb,
   __n1, __0, __1, __2, __3, __4,
   liteBoxMap
@@ -45,18 +47,18 @@ global.$        = jQuery;
 global.pcss = require( libDir + 'vendor/pcss-1.3.5.js' ).pcss;
 require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
 
-global[ __ns ]  = require( libDir + __ns + '.js' )[ __ns ];
-require( libDir + __ns + '.util.js'  );
-require( libDir + __ns + '.utilb.js' );
-require( libDir + __ns + '.lb.js' );
+global[ __ns ] = require( libPrefix + 'js' );
+require( libPrefix + 'util.js'  );
+require( libPrefix + 'utilb.js' );
+require( libPrefix + 'lb.js'    );
 
-__NS    = global[ __ns ];
-vMap    = __NS._vMap_;
-nMap    = __NS._nMap_;
+aMap    = global[ __ns ];
+vMap    = aMap._vMap_;
+nMap    = aMap._nMap_;
 
-__util  = __NS._util_;
-__utilb = __NS._utilb_;
-__lb    = __NS._lb_;
+__util  = aMap._util_;
+__utilb = aMap._utilb_;
+__lb    = aMap._lb_;
 
 __blank = vMap._blank_;
 __false = vMap._false_;
@@ -1196,7 +1198,7 @@ function makeEllipsisStr ( test_obj ) {
 function makeErrorObj ( test_obj ) {
   var
     key_list     = [ 'name', 'description', 'data' ],
-    default_list = [ __ns + ':error', __blank, __undef ],
+    default_list = [ aKey + ':error', __blank, __undef ],
     assert_list = [
       // [ arg_list, expect_list ]
       [ [], default_list ],
@@ -1210,13 +1212,13 @@ function makeErrorObj ( test_obj ) {
       [ [ __null, __0, __undef ], default_list ],
       [ [ __undef, __null, __null ], default_list ],
       [ [ '' ], default_list ],
-      [ [ '_bad_data_' ], [ __ns + ':_bad_data_', __blank, __undef ] ],
-      [ [ __1 ], [ __ns + ':1', __blank, __undef ] ],
+      [ [ '_bad_data_' ], [ aKey + ':_bad_data_', __blank, __undef ] ],
+      [ [ __1 ], [ aKey + ':1', __blank, __undef ] ],
       [ [ '_bad_data_', '_the_list_is_missing_' ],
-        [ __ns + ':_bad_data_', '_the_list_is_missing_', __undef ]
+        [ aKey + ':_bad_data_', '_the_list_is_missing_', __undef ]
       ],
       [ [ '_bad_data_', '_the_list_is_missing_', { is : __true } ],
-        [ __ns + ':_bad_data_', '_the_list_is_missing_', { is : __true } ]
+        [ aKey + ':_bad_data_', '_the_list_is_missing_', { is : __true } ]
       ]
     ],
 
@@ -2611,42 +2613,42 @@ function resizeTextarea ( test_obj ) {
 // ===== LiteBox (LB)
 liteBoxMap = {
   _outer01_tmplt_ : __blank
-    + '<div id="' + __ns + '-_lb_" style="display: block; top: 50%; '
+    + '<div id="' + aKey + '-_lb_" style="display: block; top: 50%; '
       + 'left: 50%; margin-top: 0px; margin-left: 0px;" '
-      + 'class="' + __ns + '-_lb_ ' + __ns + '-_x_active_"><div class="'
-      + __ns + '-_lb_title_" '
+      + 'class="' + aKey + '-_lb_ ' + aKey + '-_x_active_"><div class="'
+      + aKey + '-_lb_title_" '
       + 'style="display: block;">{_title_}</div>'
-      + '<div class="' + __ns + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
-      + '<div class="' + __ns + '-_lb_content_">{_content_html_}</div>'
+      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
+      + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _outer02_tmplt_ : __blank
-    + '<div id="' + __ns + '-_lb_" class="' + __ns + '-_lb_ ' + __ns + '-_x_active_" '
+    + '<div id="' + aKey + '-_lb_" class="' + aKey + '-_lb_ ' + aKey + '-_x_active_" '
       + 'style="display: block; top: 50%; left: 50%; '
       + 'margin-top: 0px; margin-left: 0px;"><div '
-      + 'class="' + __ns + '-_lb_title_" style="display: block;">{_title_}</div>'
-      + '<div class="' + __ns + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
-      + '<div class="' + __ns + '-_lb_content_">{_content_html_}</div>'
+      + 'class="' + aKey + '-_lb_title_" style="display: block;">{_title_}</div>'
+      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
+      + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _spin_html_     : __blank
-    + '<div class="' + __ns + '-_lb_mask_ ' + __ns + '-_x_local_ ' + __ns + '-_x_active_"></div>'
-    + '<div class="' + __ns + '-_lb_spin_ ' + __ns + '-_x_local_ ' + __ns + '-_x_active_">'
+    + '<div class="' + aKey + '-_lb_mask_ ' + aKey + '-_x_local_ ' + aKey + '-_x_active_"></div>'
+    + '<div class="' + aKey + '-_lb_spin_ ' + aKey + '-_x_local_ ' + aKey + '-_x_active_">'
     + '\uf021</div>',
   _error_tmplt_   : __blank
-    + '<div class="' + __ns + '-_lb_error_">'
+    + '<div class="' + aKey + '-_lb_error_">'
       + '<h1>Error</h1>'
-      + '<div class="' + __ns + '-_lb_error_list_">'
+      + '<div class="' + aKey + '-_lb_error_list_">'
       + '{_rows_html_}'
       + '</div>'
     + '</div>',
   _erow_tmplt_    : __blank
-    + '<div class="' + __ns + '-_lb_error_row_">'
-      + '<div class="' + __ns + '-_lb_error_row_code_">{_code_}</div>'
-      + '<div class="' + __ns + '-_lb_error_row_name_">{_name_}</div>'
-      + '<div class="' + __ns + '-_lb_error_row_descr_">{_descr_}</div>'
+    + '<div class="' + aKey + '-_lb_error_row_">'
+      + '<div class="' + aKey + '-_lb_error_row_code_">{_code_}</div>'
+      + '<div class="' + aKey + '-_lb_error_row_name_">{_name_}</div>'
+      + '<div class="' + aKey + '-_lb_error_row_descr_">{_descr_}</div>'
     + '</div>',
   _success_tmplt_ : __blank
-    + '<div class="' + __ns + '-_lb_success_">'
-      + '<div class="' + __ns + '-_lb_success_title_">{_msg_str_}</div>'
+    + '<div class="' + aKey + '-_lb_success_">'
+      + '<div class="' + aKey + '-_lb_success_title_">{_msg_str_}</div>'
     + '</div>'
 };
 
@@ -2754,10 +2756,10 @@ function showErrorList ( test_obj ) {
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : content00_html }
     }),
-    blank3_html = '<div id="' + __ns + '-_lb_" class="" style="display: none;">'
-      + '<div class="' + __ns + '-_lb_title_"></div>'
-      + '<div class="' + __ns + '-_lb_close_"></div>'
-      + '<div class="' + __ns + '-_lb_content_"></div></div>',
+    blank3_html = '<div id="' + aKey + '-_lb_" class="" style="display: none;">'
+      + '<div class="' + aKey + '-_lb_title_"></div>'
+      + '<div class="' + aKey + '-_lb_close_"></div>'
+      + '<div class="' + aKey + '-_lb_content_"></div></div>',
     solve01_1_html = __util._makeTmpltStr_({
       _input_str_ : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : content01_html }
@@ -2958,25 +2960,28 @@ function handleResize ( test_obj ) {
 
 function showBusy ( test_obj ) {
   var
-    show_fn  = __lb._showBusy_,
-    mask_id  = '#' + __ns + '-_lb_mask_' ,
+    mask_id  = '#' + aKey + '-_lb_mask_' ,
     $mask    = $( mask_id ),
-    off_html = '<div id="' + __ns + '-_lb_mask_" class="' + __ns + '-_lb_mask_" '
+    off_html = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_" '
       + 'style="display: block;"></div>',
-    on_html  = '<div id="' + __ns + '-_lb_mask_" class="' + __ns + '-_lb_mask_ '
-      + __ns + '-_x_active_" style="display: block;"></div>',
+    on_html  = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_ '
+      + aKey + '-_x_active_" style="display: block;"></div>',
     outer_html;
 
-  test_obj.expect( 2 );
+  test_obj.expect( 3 );
 
   __lb._hideLb_();
-
   outer_html = $mask[0].outerHTML;
-  test_obj.ok( outer_html === off_html, '1. Mask is missing active class ' );
-  show_fn();
+  test_obj.ok( outer_html === off_html, '1. Mask has no active class' );
 
+  __lb._showBusy_();
   outer_html = $mask[0].outerHTML;
-  test_obj.ok( outer_html === on_html, '2. Mask contains active class' );
+  test_obj.ok( outer_html === on_html,  '2. Mask contains active class' );
+
+  __lb._hideLb_();
+  outer_html = $mask[0].outerHTML;
+  test_obj.ok( outer_html === off_html, '3. Mask has no active class' );
+
   test_obj.done();
 }
 
