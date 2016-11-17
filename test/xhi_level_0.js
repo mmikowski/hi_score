@@ -2964,25 +2964,28 @@ function handleResize ( test_obj ) {
 
 function showBusy ( test_obj ) {
   var
-    show_fn  = __lb._showBusy_,
     mask_id  = '#' + aKey + '-_lb_mask_' ,
     $mask    = $( mask_id ),
-    off_html = '<div id="test-_lb_mask_" class="test-_lb_mask_" '
+    off_html = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_" '
       + 'style="display: block;"></div>',
-    on_html  = '<div id="test-_lb_mask_" class="test-_lb_mask_ '
-      + 'test-_x_active_" style="display: block;"></div>',
+    on_html  = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_ '
+      + aKey + '-_x_active_" style="display: block;"></div>',
     outer_html;
 
-  test_obj.expect( 2 );
+  test_obj.expect( 3 );
 
   __lb._hideLb_();
-
   outer_html = $mask[0].outerHTML;
-  test_obj.ok( outer_html === off_html, '1. Mask is missing active class' );
-  show_fn();
+  test_obj.ok( outer_html === off_html, '1. Mask has no active class' );
 
+  __lb._showBusy_();
   outer_html = $mask[0].outerHTML;
   test_obj.ok( outer_html === on_html, '2. Mask contains active class' );
+
+  __lb._hideLb_();
+  outer_html = $mask[0].outerHTML;
+  test_obj.ok( outer_html === off_html, '5. Mask has no active class' );
+
   test_obj.done();
 }
 
