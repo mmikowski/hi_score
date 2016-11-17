@@ -12,18 +12,18 @@
 set -u;
 
 ## BEGIN Layout variables ==================================================
-GIT_EXE=$( which git );
+GIT_EXE=$(   which git );
 LINK_PATH=$( readlink -f -- "${0}" );
 BIN_PATH=$(  cd "${LINK_PATH%/*}" && echo "${PWD}" );
 NPM_DIR=$(   dirname "${BIN_PATH}" );
 APP_DIR="${NPM_DIR}";
 PKG_FILE=$( find "${NPM_DIR}" -type f -wholename '*/package.json'  );
 PKG_DIR=$(  dirname "${PKG_FILE}"  );
-MOD_DIR=$( cd "${NPM_DIR}/.."; pwd );
+MOD_DIR=$( cd "${NPM_DIR}/.." && echo "${PWD}" );
 # MOD_DIR=$( find "${NPM_DIR}" -type d \
 #  |grep '/node_modules$' |grep -v '/node_modules/');
-JSLINT_EXE="${MODS_DIR}/.bin/jslint";
-NU_EXE="${MODS_DIR}/.bin/nodeunit";
+JSLINT_EXE="${MOD_DIR}/.bin/jslint";
+NU_EXE="${MOD_DIR}/.bin/nodeunit";
 VRS_STR="";
 if [ -x "${GIT_EXE}" ]; then 
   TOP_DIR=$(git rev-parse --show-toplevel);
@@ -103,34 +103,34 @@ getVrs () {
   pushd "${APP_DIR}/js/vendor";
 
   vrs=$(getVrs jquery);
-  cp "${MODS_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js";
+  cp "${MOD_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js";
 
   vrs=$(getVrs jquery.event.dragscroll);
-  cp "${MODS_DIR}/jquery.event.dragscroll/jquery.event.dragscroll.js" \
+  cp "${MOD_DIR}/jquery.event.dragscroll/jquery.event.dragscroll.js" \
     "jquery.event.dragscroll-${vrs}.js";
 
   vrs=$(getVrs jquery.event.gevent);
-  cp "${MODS_DIR}/jquery.event.gevent/jquery.event.gevent.js" \
+  cp "${MOD_DIR}/jquery.event.gevent/jquery.event.gevent.js" \
     "jquery.event.gevent-${vrs}.js";
 
   vrs=$(getVrs jquery.event.ue);
-  cp "${MODS_DIR}/jquery.event.ue/jquery.event.ue.js" \
+  cp "${MOD_DIR}/jquery.event.ue/jquery.event.ue.js" \
     "jquery.event.ue-${vrs}.js";
 
   vrs=$(getVrs jquery.scrolli);
-  cp "${MODS_DIR}/jquery.scrolli/dist/jquery.scrolli.js" \
+  cp "${MOD_DIR}/jquery.scrolli/dist/jquery.scrolli.js" \
     "jquery.scrolli-${vrs}.js";
 
   vrs=$(getVrs jquery.urianchor);
-  cp "${MODS_DIR}/jquery.urianchor/jquery.uriAnchor.js" \
+  cp "${MOD_DIR}/jquery.urianchor/jquery.uriAnchor.js" \
     "jquery.urianchor-${vrs}.js";
 
   vrs=$(getVrs powercss);
-  cp "${MODS_DIR}/powercss/dist/pcss.js" "pcss-${vrs}.js"
-  cp "${MODS_DIR}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
+  cp "${MOD_DIR}/powercss/dist/pcss.js" "pcss-${vrs}.js"
+  cp "${MOD_DIR}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
 
   vrs=$(getVrs taffydb);
-  cp "${MODS_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
+  cp "${MOD_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
   popd > /dev/null;
 
   # ==== vendors/css
