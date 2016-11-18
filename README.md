@@ -18,7 +18,7 @@ that controls us. We thought of calling it `low-score` or `under-dash`
 but thought we'd aim higher.
 
 ## Code Style
-We use the code style presented in the
+We use the code style presented in
 [Single Page Web Applications - JavaScript end-to-end][8] (see reviews on  [Amazon][9]).
 The [full code standard][a] and the [cheat-sheet][b] are available online.
 The architecture is illustrated in the cheat sheet.

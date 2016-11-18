@@ -16,9 +16,10 @@
 'use strict';
 //noinspection JSUnusedLocalSymbols
 var
+  __ns        = 'xhi',
   aKey        = 'test',
   libDir      = '../js/',
-  libPrefix   = libDir + 'xhi.',
+  libPrefix   = libDir + __ns + '.',
   nuFn        = function () { console.log( aKey + '.' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
@@ -46,13 +47,13 @@ global.$        = jQuery;
 global.pcss = require( libDir + 'vendor/pcss-1.3.5.js' ).pcss;
 require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
 
-global.xhi = require( libPrefix + 'js' );
+global[ __ns ] = require( libPrefix + 'js' );
 require( libPrefix + 'util.js'  );
 require( libPrefix + 'utilb.js' );
 require( libPrefix + 'lb.js'    );
 
-global[ aKey ] = xhi._makeRoot_( aKey );
-aMap = global[ aKey ];
+aMap = xhi._makeRoot_( aKey );
+global[ aKey ] = aMap;
 
 xhi._makeUtil_(  aMap );
 xhi._makeUtilb_( aMap );
