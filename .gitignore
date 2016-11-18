@@ -7,3 +7,5 @@ coverage
 js-cov
 .coveralls.yml
 js/vendor
+css/vendor
+font/vendor

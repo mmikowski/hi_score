@@ -12,10 +12,10 @@
 */
 /*global $ */
 
-var __NS;
+var __ns = 'xhi', __NS;
 /* istanbul ignore next */
-try          { __NS = global.xhi; }
-catch ( e1 ) { __NS = window.xhi; }
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
 
 // == BEGIN MODULE _makeData_ =========================================
 __NS._makeData_ = function ( aMap ) {

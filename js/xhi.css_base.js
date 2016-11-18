@@ -12,10 +12,10 @@
 */
 /*global pcss */
 
-var __NS;
+var __ns = 'xhi', __NS;
 /* istanbul ignore next */
-try          { __NS = global.xhi; }
-catch ( e1 ) { __NS = window.xhi; }
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
 
 // == BEGIN MODULE _makeCssBase_ =======================================
 __NS._makeCssBase_ = function ( aMap ) {
@@ -47,7 +47,7 @@ __NS._makeCssBase_ = function ( aMap ) {
         _shdw_08_ : [['_rgba_shdw_03_', ['0 0 .75rem .375rem']]],
         _shdw_09_ : [['_rgba_shdw_09_', ['0 0 1rem .5rem']]],
 
-        _font_family_awesome_ : aKey + '-fa-4-5-mod,sans-serif',
+        _font_family_awesome_ : 'FontAwesome',
         _font_family_sans_    : 'OpenSans,sans-serif',
         _font_family_mono_    : 'courier,fixed,monospace',
         _font_size_           : '16px',

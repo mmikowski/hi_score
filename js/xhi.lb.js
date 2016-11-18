@@ -12,10 +12,10 @@
 */
 /*global pcss, $ */
 
-var __NS;
+var __ns = 'xhi', __NS;
 /* istanbul ignore next */
-try          { __NS = global.xhi; }
-catch ( e1 ) { __NS = window.xhi; }
+try          { __NS = global[ __ns ]; }
+catch ( e1 ) { __NS = window[ __ns ]; }
 
 // == BEGIN MODULE _makeLb_ ===========================================
 __NS._makeLb_ = function ( aMap ) {
