@@ -17,7 +17,7 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE _makeCssShell_ ======================================
+// == BEGIN MODULE __NS._css_shell_ ====================================
 __NS._css_shell_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   //noinspection MagicNumberJS
@@ -389,4 +389,4 @@ __NS._css_shell_ = (function () {
   return { _selectorList_ : topCmap._selector_list_ };
   // == END PUBLIC METHODS =============================================
 }());
-// == END MODULE _makeCssShell_ ========================================
+// == END MODULE __NS._css_shell_ ======================================

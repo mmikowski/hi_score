@@ -12,7 +12,7 @@
 */
 /*global xhi:true */
 
-// == BEGIN MODULE _xhi_ ==========================================
+// == BEGIN MODULE __NS ================================================
 var xhi = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
@@ -229,7 +229,7 @@ var xhi = (function () {
   };
   // == END PUBLIC METHODS =============================================
 }());
-// == END MODULE _makeRoot_ ============================================
+// == END MODULE __NS ==================================================
 
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */

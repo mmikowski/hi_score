@@ -17,8 +17,10 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
+
+// == BEGIN MODULE __NS._css_ ==========================================
 __NS._css_ = (function () {
-  // ================= BEGIN MODULE SCOPE VARIABLES ====================
+  // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
     aMap   = __NS,

@@ -17,7 +17,7 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE _makeData_ =========================================
+// == BEGIN MODULE __NS._data_ ========================================
 __NS._data_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
@@ -63,5 +63,5 @@ __NS._data_ = (function () {
   return { _initModule_ : initModule };
   // == END PUBLIC METHODS =============================================
 }());
-// == END MODULE _makeData_ ============================================
+// == END MODULE __NS._data_ ==========================================
 
