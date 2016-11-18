@@ -116,16 +116,21 @@ echo "prep-libs: start main";
   cd "${APP_DIR}";
   if [ -r "js/vendor" ]; then
     rm -rf "js/vendor";
-  fi;
+  fi
   if [ -r "css/vendor" ]; then
     rm -rf "css/vendor";
-  fi;
+  fi
+  if [ -r "font/vendor" ]; then
+    rm -rf "font/vendor";
+  fi
  
   mkdir -p "js/vendor";
   mkdir -p "css/vendor";
+  mkdir -p "font/vendor";
+
   echo "prep-libs: success main.remove_old_dirs";
 
-  # ==== vendors/js
+  # ==== js/vendor
   echo "prep-libs: start main.copy_vendor_libs";
   cd "${APP_DIR}/js/vendor";
 
@@ -160,8 +165,20 @@ echo "prep-libs: start main";
   cp "${MOD_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
 
 
-  # ==== vendors/css
+  # ==== css/vendor
   cd "${APP_DIR}/css/vendor";
+  vrs=$(getVrs font-awesome);
+  cp "${MOD_DIR}/font-awesome/css/font-awesome.css" "font-awesome-${vrs}.css";
+
+  # ==== font/vendor
+  cd "${APP_DIR}/font/vendor";
+
+  vrs=$(getVrs font-awesome);
+  cp -a "${MOD_DIR}/font-awesome/fonts" "font-awesome-${vrs}";
+
+  vrs=$(getVrs open-sans-fontface);
+  cp -a "${MOD_DIR}/open-sans-fontface/fonts" "open-sans-fontface-${vrs}";
+
   echo "prep-libs: success main.copy_vendor_libs";
 
   # ==== add git commit hook if git is found

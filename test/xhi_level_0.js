@@ -17,7 +17,7 @@
 //noinspection JSUnusedLocalSymbols
 var
   __ns        = 'xhi',
-  aKey        = 'xhi',
+  aKey        = __ns,
   libDir      = '../js/',
   libPrefix   = libDir + __ns + '.',
   nuFn        = function () { console.log( aKey + '.' + this , arguments ); },

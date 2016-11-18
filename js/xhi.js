@@ -5,23 +5,22 @@
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
-   devel : true,  indent : 2,      maxerr : 50,
-  newcap : true,   nomen : true, plusplus : true,
-  regexp : true,  sloppy : true,     vars : false,
-   white : true,    todo : true,  unparam : true
+  devel  : true, indent  : 2,    maxerr   : 50,
+  newcap : true, nomen   : true, plusplus : true,
+  regexp : true, sloppy  : true, vars     : false,
+  white  : true, todo    : true, unparam  : true
 */
 /*global xhi:true */
 
+// == BEGIN MODULE _xhi_ ==========================================
 var xhi = (function () {
-  // ================= BEGIN MODULE SCOPE VARIABLES ====================
+  // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   //noinspection MagicNumberJS
   var
     __Object  = Object,
     __Math    = Math,
     vMap = {
-      // __Array  = Array,
-      // __Date   = Date,
       _100p_            : '100%',
       _Date_            : Date,
       _Array_           : Array,
@@ -220,20 +219,20 @@ var xhi = (function () {
       _3000_   : 3000,
       _4000_   : 4000,
       _5000_   : 5000
-    }
-    ;
-  // ================== END MODULE SCOPE VARIABLES =====================
+    };
+  // == END MODULE SCOPE VARIABLES =====================================
 
-  // ====================== BEGIN PUBLIC METHODS =======================
+  // == BEGIN PUBLIC METHODS ===========================================
   return {
     _nMap_    : nMap,
     _vMap_    : vMap
   };
-  // ======================= END PUBLIC METHODS ========================
+  // == END PUBLIC METHODS =============================================
 }());
+// == END MODULE _makeRoot_ ============================================
 
-// ================== BEGIN BROWSER AND NODE SUPPORT ===================
+// == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */
 try { module.exports = xhi; }
 catch ( ignore ) {}
-// =================== END BROWSER AND NODE SUPPORT ====================
+// == END BROWSER AND NODE SUPPORT =====================================

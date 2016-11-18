@@ -1,8 +1,20 @@
 @font-face {
   font-family: OpenSans;
-  src : url('../font/vendor/OpenSans.eot');
-  src : url('../font/vendor/OpenSans.eot?#iefix') format('embedded-opentype'),
-        url('../font/vendor/OpenSans.svg') format('svg'),
-        url('../font/vendor/OpenSans.woff') format('woff'),
-        url('../font/vendor/OpenSans.ttf') format('truetype');
+  src : url('../font/vendor/open-sans-fontface-1.4.0/Regular/OpenSans-Regular.eot');
+  src : url('../font/vendor/open-sans-fontface-1.4.0/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+        url('../font/vendor/open-sans-fontface-1.4.0/Regular/OpenSans-Regular.svg' ) format('svg'),
+        url('../font/vendor/open-sans-fontface-1.4.0/Regular/OpenSans-Regular.woff') format('woff'),
+        url('../font/vendor/open-sans-fontface-1.4.0/Regular/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.eot?v=4.7.0');
+  src: url('../font/vendor/font-awesome-4.7.0/ /fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),
+       url('../font/vendor/font-awesome-4.7.0/ontawesome-webfont.woff2?v=4.7.0') format('woff2'),
+       url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.woff?v=4.7.0') format('woff'),
+       url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.ttf?v=4.7.0') format('truetype'),
+       url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }

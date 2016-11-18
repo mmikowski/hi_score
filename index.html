@@ -18,8 +18,8 @@
   <!-- TODO link href="img/favicon.png" rel="shortcut icon" -->
 
   <!-- stylesheets -->
-  <link rel="stylesheet" href="css/xhi-fa-4-5-mod.css">
   <link rel="stylesheet" href="css/xhi-fonts.css">
+  <link rel="stylesheet" href="css/font-awesome-4.7.0-mod.css">
 
   <!-- scripts -->
   <script src="js/vendor/taffy-2.7.3.js"></script>
@@ -44,8 +44,9 @@
   <script src="js/xhi.shell.js"></script>
   <script>
     $(function () {
-      xhi._shell_._initModule_( $('body') );
-    }());
+      var $body = $('body');
+      xhi._shell_._initModule_( $body );
+    });
   </script>
 </head>
 <body></body>

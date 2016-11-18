@@ -1,28 +1,33 @@
 /**
  *    xhi.utilb.js
- *    Utilities which require a browser and jQuery
+ *    Utilities which require a browser and jQuery ($)
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
-   devel : true,  indent : 2,      maxerr : 50,
-  newcap : true,   nomen : true, plusplus : true,
-  regexp : true,  sloppy : true,     vars : false,
-   white : true,    todo : true,  unparam : true
+  devel  : true, indent  : 2,    maxerr   : 50,
+  newcap : true, nomen   : true, plusplus : true,
+  regexp : true, sloppy  : true, vars     : false,
+  white  : true, todo    : true, unparam  : true
 */
-/*global jQuery, pcss, xhi */
+/*global pcss, $ */
 
 var __ns = 'xhi', __NS;
 /* istanbul ignore next */
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-__NS._utilb_ = (function ( $ ) {
+// == BEGIN MODULE _makeUtilb_ ========================================
+__NS._utilb_ = (function () {
   'use strict';
-  // ================= BEGIN MODULE SCOPE VARIABLES ===================
+  // == BEGIN MODULE SCOPE VARIABLES ==================================
+  //noinspection MagicNumberJS
   var
-    nMap     = __NS._nMap_,
-    vMap     = __NS._vMap_,
+    aMap     = __NS, // aKey = __ns,
+    nMap     = aMap._nMap_,
+    vMap     = aMap._vMap_,
+    __util   = aMap._util_,
+
     cssKmap  = pcss._cfg_._cssKeyMap_,
     cssVmap  = pcss._cfg_._cssValMap_,
 
@@ -32,7 +37,6 @@ __NS._utilb_ = (function ( $ ) {
     __true   = vMap._true_,
 
     __0      = nMap._0_,
-    __util   = __NS._util_,
 
     // Add as needed __castBool, __castList, __castObj,  __getVarType
     __castJQ   = __util._castJQ_,
@@ -50,12 +54,12 @@ __NS._utilb_ = (function ( $ ) {
     onBufferReady
     ;
 
-  // ================== END MODULE SCOPE VARIABLES ====================
+  // == END MODULE SCOPE VARIABLES ====================================
 
-  // ===================== BEGIN UTILITY METHODS ======================
-  // ====================== END UTILITY METHODS =======================
+  // == BEGIN UTILITY METHODS =========================================
+  // == END UTILITY METHODS ===========================================
 
-  // ===================== BEGIN PUBLIC METHODS =======================
+  // == BEGIN PUBLIC METHODS ==========================================
   // BEGIN Public method /decodeHtml/
   // Decodes HTML entities in a browser-friendly way
   // See http://stackoverflow.com/questions/1912501/\
@@ -277,5 +281,7 @@ __NS._utilb_ = (function ( $ ) {
     _onBufferReady_  : onBufferReady,
     _resizeTextarea_ : resizeTextarea
   };
-  // ======================= END PUBLIC METHODS =======================
-}( jQuery ));
+  // == END PUBLIC METHODS ============================================
+}());
+// == END MODULE _makeUtilb_ ==========================================
+
