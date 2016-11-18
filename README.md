@@ -112,22 +112,22 @@ handle JavaScript vendor libraries as of 0.6.0.
 Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
 sympathy.
 
-## Install
+## Prepare libraries
 As of 0.6.0, this repository no longer directly holds dependent libraries but
-instead copies them from their npm repositories locations instead.  It is a
-single step process:
+instead copies them from their npm repositories locations instead:
 
 ```bash
   $ cd hi_score
   $ npm install
+  $ npm run prep-libs
 ```
 
-After installation one can open the index.html file with a browser to view the
+After preparation one can open the `index.html` file with a browser to view the
 rudimentary sample application.
 
 ## Update
 One may update all the npm libraries and the `package.json` file with `npm
-update -D`.  If we want these changes to propagate, we must run `npm install`
+update -D`.  If we want these changes to propagate, we must run `npm run prep-libs`
  again to update the vendor libraries, and update the `index.html` file to
  point to the updated versions.  This last step we expect to automate in the
  near future.
@@ -143,6 +143,7 @@ tests as well.
 ```bash
   $ cd hi_score
   $ npm install
+  $ npm prep-libs
   $ npm test
 ```
 
@@ -163,6 +164,7 @@ coveralls.io. Here are the steps:
 ```bash
   $ cd hi_score
   $ npm install
+  $ npm prep-libs
   $ npm run covera
 ```
 
@@ -170,7 +172,8 @@ And then point your browser to the `hi_score` [coverage page][10]
 to confirm the results have been recorded.
 
 ### Coverage reference
-Below are the steps I used to get coverage working.
+Below are the steps we used to get coverage working. **You do not have to
+do this.**  We've kept it here for reference only!
 Many thanks to Elliot Stokes who's [blog post][11] provided most of the
 information.
 
@@ -231,12 +234,13 @@ If you want to help out, like all npm modules this is hosted on GitHub.
 Any improvements or suggestions are welcome, especially when presented
 with a pull request :).
 
-If you want to contribute first fork the repository. Then install the
+If you want to contribute first fork the repository. Then prepare the
 development libs and the commit hook:
 
 ```bash
   $ cd hi_score
   $ npm install
+  $ npm prep-libs
 ```
 
 You can make sure it is working correctly like so:
@@ -361,6 +365,7 @@ MIT
 - (x) Remove vendor code from repo and auto-copy on install
 - (x) Add native utils `makeThrottleFn` and `makeDebounceFn`
 - (x) Add links to updated code style guides
+- (x) Replace `install` script with `prep-libs` (v0.6.17+)
 - More sophisticated sample application
 
 ## Similar Projects

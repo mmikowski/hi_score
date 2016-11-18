@@ -16,9 +16,10 @@
 'use strict';
 //noinspection JSUnusedLocalSymbols
 var
-  aKey    = 'test',
-  libDir  = '../js/',
-  nuFn    = function () { console.log( aKey + '.' + this , arguments ); },
+  aKey        = 'test',
+  libDir      = '../js/',
+  libPrefix   = libDir + 'xhi.',
+  nuFn        = function () { console.log( aKey + '.' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
     done      : nuFn.bind( 'done'      ),
@@ -45,10 +46,10 @@ global.$        = jQuery;
 global.pcss = require( libDir + 'vendor/pcss-1.3.5.js' ).pcss;
 require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
 
-global.xhi = require( libDir + 'xhi.js' );
-require( libDir + 'xhi.util.js'  );
-require( libDir + 'xhi.utilb.js' );
-require( libDir + 'xhi.lb.js'    );
+global.xhi = require( libPrefix + 'js' );
+require( libPrefix + 'util.js'  );
+require( libPrefix + 'utilb.js' );
+require( libPrefix + 'lb.js'    );
 
 global[ aKey ] = xhi._makeRoot_( aKey );
 aMap = global[ aKey ];
@@ -2980,11 +2981,11 @@ function showBusy ( test_obj ) {
 
   __lb._showBusy_();
   outer_html = $mask[0].outerHTML;
-  test_obj.ok( outer_html === on_html, '2. Mask contains active class' );
+  test_obj.ok( outer_html === on_html,  '2. Mask contains active class' );
 
   __lb._hideLb_();
   outer_html = $mask[0].outerHTML;
-  test_obj.ok( outer_html === off_html, '5. Mask has no active class' );
+  test_obj.ok( outer_html === off_html, '3. Mask has no active class' );
 
   test_obj.done();
 }
