@@ -17,7 +17,7 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE _makeUtil_ =========================================
+// == BEGIN MODULE __NS._makeUtil_ ====================================
 __NS._makeUtil_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
@@ -1852,5 +1852,4 @@ __NS._makeUtil_ = function ( aMap ) {
     _setStructData_   : setStructData
   };
 };
-// == END MODULE _makeUtil_ ===========================================
-
+// == END MODULE __NS._makeUtil_ ======================================

@@ -13,7 +13,7 @@
 /*global xhi:true */
 
 var xhi = {};
-// == BEGIN MODULE _makeRoot_ ==========================================
+// == BEGIN MODULE __NS._makeRoot_ =====================================
 xhi._makeRoot_ = function ( aKey ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
@@ -231,7 +231,7 @@ xhi._makeRoot_ = function ( aKey ) {
   };
   // == END PUBLIC METHODS =============================================
 };
-// == END MODULE _makeRoot_ ============================================
+// == END MODULE __NS._makeRoot_ =======================================
 
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */

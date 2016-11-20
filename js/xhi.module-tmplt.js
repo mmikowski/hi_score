@@ -17,7 +17,7 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE _makeTmplt_ =========================================
+// == BEGIN MODULE __NS._makeTmplt_ ====================================
 __NS._makeTmplt_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
@@ -73,5 +73,5 @@ __NS._makeTmplt_ = function ( aMap ) {
   aMap._makeTmplt_ = { _initModule_ : initModule };
   // == END PUBLIC METHODS =============================================
 };
-// == END MODULE _makeTmplt_ ===========================================
+// == END MODULE __NS._makeTmplt_ ======================================
 

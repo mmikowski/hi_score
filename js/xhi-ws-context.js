@@ -2,6 +2,7 @@
  *    xhi-ws-context.js
  *    This file is used by WebStorm to resolve propoerties from AJAX.
  *    It is also useful as a reference.
+ *    It should *NOT* be included in production code.
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */

@@ -17,7 +17,7 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE _makeCssBase_ =======================================
+// == BEGIN MODULE __NS._makeCssBase_ ==================================
 __NS._makeCssBase_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ===================================
@@ -420,4 +420,4 @@ __NS._makeCssBase_ = function ( aMap ) {
   };
   // == END PUBLIC METHODS =============================================
 };
-// == END MODULE _makeCssBase_ =========================================
+// == END MODULE __NS._makeCssBase_ ====================================
