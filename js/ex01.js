@@ -25,5 +25,13 @@ $(function () {
   xhi._makeLb_(       aMap );
   xhi._makeShell_(    aMap );
   aMap._shell_._initModule_( $('body') );
-  console.warn( aMap );
+  aMap._lb_._showLb_({
+    _title_html_ : 'Example Application',
+    _content_html_ :
+      '<p>The applicaiton appears to be properly installed!</p>'
+      + '<p>Here are the aMap methods: <br>'
+      + Object.keys( aMap ).join(', ')
+      + '</p>'
+      + '<p>Grab this lightbox by the title bar to drag</p>'
+  });
 });
