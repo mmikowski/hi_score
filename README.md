@@ -179,8 +179,8 @@ file with this information to the `.gitignore` file.
 
 ```bash
   $ cd hi_score
-  $ cat .coveralls.yaml >> .gitignore
-  $ cat 'repo_token: ---------your-token-here---------' > .coveralls.yaml
+  $ cat .coveralls.yml >> .gitignore
+  $ cat 'repo_token: ---------your-token-here---------' > .coveralls.yml
 ```
 
 Run `npm covera` to send a report to coveralls.io. The detailed
