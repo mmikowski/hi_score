@@ -17,7 +17,6 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-
 // == BEGIN MODULE __NS._css_ ==========================================
 __NS._css_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
@@ -170,5 +169,5 @@ __NS._css_ = (function () {
   };
   // == END PUBLIC METHODS =============================================
 }());
-// == END MODULE _makeCss_ =============================================
+// == END MODULE __NS._css_ =============================================
 

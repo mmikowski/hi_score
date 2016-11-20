@@ -357,28 +357,33 @@ __NS._lb_ = (function () {
   //  });
   //
   // Defaults :
-  //   * Layout: (_layout_key_ : '_top_' )
-  //     +-- litebox -----+---------+
-  //     | _title_        | _close_ |
-  //     +----------------+---------+
-  //     | _content_                |
-  //     +--------------------------+
+  //   * _layout_key_ : '_top_'
+  //
+  //     +-- litebox -----+--------------+
+  //     | _title_html_   | _close_html_ |
+  //     +----------------+--------------+
+  //     | _content_html_                |
+  //     +-------------------------------+
   //   * Position: center/center
   //   * Size: 50% width and natural height, max-height 50%
   //     (mobile: w x h is 90%/90%)
   //   * Overflow-y: auto; overflow-x hidden
   //
   // Options:
-  //   * Layout:  ( _layout_key_ : '_all_' )
-  //     +-- litebox -----+---------+
-  //     | _content_                |
-  //     +--------------------------+
-  //   * Layout:  ( _layout_key_ : '_btm_' )
-  //     +-- litebox -----+---------+
-  //     | _content_                |
-  //     +--------------------------+
-  //     | _title_        | _close_ |
-  //     +----------------+---------+
+  //   * _layout_key_ : '_all_'
+  //
+  //     +-- litebox --------------------+
+  //     | _content_html_                |
+  //     +-------------------------------+
+  //
+  //   * _layout_key_ : '_btm_'
+  //
+  //     +-- litebox -----+--------------+
+  //     | _content_html_                |
+  //     +-------------------------------+
+  //     | _title_html_   | _close_html_ |
+  //     +----------------+--------------+
+  //
   //   * _autoclose_ms_ : cancels the window after a i seconds
   //   * _content_html_ - Primary content.  If not initially provided, will
   //       show a 50% height loading graphic.
@@ -555,6 +560,7 @@ __NS._lb_ = (function () {
 
     offset_map[ cssKmap._right_  ] = __blank;
     offset_map[ cssKmap._bottom_ ] = __blank;
+    offset_map[ cssKmap._margin_ ] = __0;
     $Map._$litebox_[ vMap._css_ ]( offset_map );
   }
 

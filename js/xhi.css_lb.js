@@ -78,7 +78,16 @@ __NS._css_lb_ = (function () {
           _rule_map_ : { _opacity_    : [ '.65' ] }
         },
         { _selector_str_ : '.' + aKey + '-_lb_content_',
-          _rule_map_ : { _position_ : '_relative_' }
+          _rule_map_ : {
+            _position_ : '_relative_',
+            _padding_    : '_1rem_',
+          }
+        },
+        { _selector_str_ : '.' + aKey + '-_lb_content_ p',
+          _rule_map_ : { _margin_bottom_ : '_1rem_' }
+        },
+        { _selector_str_ : '.' + aKey + '-_lb_content_ p:last-child',
+          _rule_map_ : { _margin_bottom_ : '0' }
         },
         { _selector_str_ : '.' + aKey + '-_lb_close_',
           _rule_map_ : {
@@ -87,6 +96,15 @@ __NS._css_lb_ = (function () {
             _top_        : '_0_',
             _right_      : '_0_',
             _cursor_     : '_pointer_'
+          }
+        },
+        { _selector_str_ : '.' + aKey + '-_lb_title_',
+          _rule_map_ : {
+            _position_ : '_relative_',
+            _padding_    : [[ '_d25rem_', '_1rem_' ]],
+            _font_size_  : '_1d5rem_',
+            _background_ : '_hex_area_mid_',
+            _cursor_     : '_move_'
           }
         },
         { _selector_str_ : '@keyframes spinIt {'

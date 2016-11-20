@@ -75,6 +75,15 @@ __NS._shell_ = (function () {
     );
 
     // Bind shell event handlers (taps, drags, long-press, etc)
+    aMap._lb_._showLb_({
+      _title_html_ : 'Example Application',
+      _content_html_ :
+        '<p>The applicaiton appears to be properly installed!</p>'
+        + '<p>Here are the aMap methods: <br>'
+        + Object.keys( aMap ).join(', ')
+        + '</p>'
+        + '<p>Grab this lightbox by the title bar to drag</p>'
+    });
   }
 
   return { _initModule_ : initModule };
