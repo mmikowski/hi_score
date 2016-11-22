@@ -67,7 +67,7 @@ __NS._util_ = (function () {
     ;
   // == END MODULE SCOPE VARIABLES ====================================
 
-  // == BEGIN PRIVATE METHODS =========================================
+  // == BEGIN PREREQ METHODS ==========================================
   // BEGIN Public prereq method /getVarType/
   // Returns '_Function_', '_Object_', '_Array_',
   // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
@@ -118,7 +118,7 @@ __NS._util_ = (function () {
   // Purpose   : Returns a boolean.  If the value is not a
   //   true boolean, returns the alternate value.
   //
-  function castBool( data, alt_data ) {
+  function castBool ( data, alt_data ) {
     if ( arguments[ __length ] >= __2 ) {
       if ( data === __true || data === __false ) { return data; }
       return alt_data;
@@ -231,6 +231,46 @@ __NS._util_ = (function () {
       ? __Str( data ) : alt_data;
   }
   // END Public prereq method /castStr/
+  //
+  // BEGIN Public prereq method /cloneData/
+  // Purpose: Deep clones non-recursive data structures fastest
+  //
+  function cloneData ( data ) {
+    if ( data === __undef ) { return data; }
+    return __jparse( __j2str( data ) );
+  }
+  // END Public prereq method /cloneData/
+
+  // BEGIN Public prereq method /getNowMs/
+  // Purpose: Returns the current timestamp in milliseconds
+  //   The Date.now() method is 3x faster than the +new Date()
+  //   in NodeJS, and I have confirmed this provides almost the
+  //   the same performance in that env as a raw Date.now() call.
+  //
+  getNowMs = (function () {
+    var return_fn;
+    /* istanbul ignore else */
+    if ( __Date[ vMap._hasOwnProp_ ]( vMap._now_ ) ) {
+      return_fn = function () { return __Date[ vMap._now_ ](); };
+    }
+    else {
+      return_fn = function () { return +new __Date(); };
+    }
+    return return_fn;
+  }());
+  // END Public prereq method /getNowMs/
+
+  // BEGIN Public prereq method /getNumSign/
+  // Purpose : Provided an argument, will attempt to convert it into
+  //   a number.  If it is a negative number, a -1 will be returned.
+  //   In all other cases, a positive 1 is returned.
+  //
+  function getNumSign ( n ) {
+    var num = __Num( n );
+    return ( ! isNaN( num ) && num < __0 )
+      ? __n1 : __1;
+  }
+  // END Public prereq method /getNumSign/
 
   // BEGIN private method /getTzDateObj/
   // Purpose   : Returns a date object singleton for use by Tz methods
@@ -242,16 +282,6 @@ __NS._util_ = (function () {
     return topSmap._date_obj_;
   }
   // END private method /getTzDateObj/
-
-  // BEGIN Public prereq method /makeUcFirstStr/
-  function makeUcFirstStr ( arg_str ) {
-    var
-      str    = castStr( arg_str, __blank ),
-      uc_str = str.charAt( __0 ).toUpperCase()
-      ;
-    return uc_str + str[ vMap._substr_ ]( __1 );
-  }
-  // END Public prereq method /makeUcFirstStr/
 
   // BEGIN Public prereq method /makeArgList/
   // Converts provided argument object into a real array
@@ -274,6 +304,53 @@ __NS._util_ = (function () {
   }
   // END Public prereq method /makeArgList/
 
+  // BEGIN Public prereq method /makePadNumStr/
+  // Example: makePadNumStr( 25, 3 ) return '025';
+  //
+  function makePadNumStr( arg_num, arg_count ) {
+    var
+      num   = castNum( arg_num,   __undef ),
+      count = castInt( arg_count, __undef ),
+
+      sign_int, num_str, zero_count;
+
+    if ( num === __undef ) { return __blank; }
+    if ( ! ( count && count >= __0 ) ) {
+      return __Str( num ).trim();
+    }
+
+    sign_int = getNumSign( num );
+    num_str  = __Str( vMap._fnGetAbs_( num ) );
+    zero_count = count - num_str[ __length ]
+      - ( sign_int === __n1 ? __1 : __0 );
+
+    while ( zero_count > __0 ) {
+      num_str = '0' + num_str;
+      zero_count--;
+    }
+    if ( sign_int === __n1 ) {
+      num_str = '-' + num_str;
+    }
+    return num_str;
+  }
+  // END Public prereq method /makePadNumStr/
+
+  // BEGIN Public prereq method /makeRxObj/
+  // Purpose   : Create a regular expression object
+  // Example   : makeRxObj( '\s*hello\s*', 'i' );
+  function makeRxObj ( arg_pattern_str, arg_option_str ) {
+    var
+      pattern_str = castStr( arg_pattern_str, __blank ),
+      option_str  = castStr( arg_option_str,  __blank )
+      ;
+
+    if ( option_str ) {
+      return new RegExp( pattern_str, option_str );
+    }
+    return new RegExp( pattern_str );
+  }
+  // END Public prereq method /makeRxObj/
+
   // BEGIN Public prereq method /makeScrubStr/
   function makeScrubStr ( arg_str, arg_do_space ) {
     var
@@ -287,9 +364,19 @@ __NS._util_ = (function () {
     return interm_str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
   }
   // END Public prereq method /makeScrubStr/
-  // == END PRIVATE METHODS ===========================================
 
-  // == BEGIN UTILITY METHODS =========================================
+  // BEGIN Public prereq method /makeUcFirstStr/
+  function makeUcFirstStr ( arg_str ) {
+    var
+      str    = castStr( arg_str, __blank ),
+      uc_str = str.charAt( __0 ).toUpperCase()
+      ;
+    return uc_str + str[ vMap._substr_ ]( __1 );
+  }
+  // END Public prereq method /makeUcFirstStr/
+  // == END PREREQ METHODS ============================================
+
+  // == BEGIN UTILITY OBJECTS =========================================
   // BEGIN define logObj singleton
   logObj = (function () {
     var
@@ -399,8 +486,8 @@ __NS._util_ = (function () {
   // END define logObj singleton
   // == END UTILITY METHODS ===========================================
 
-  // == BEGIN PREREQ METHODS ==========================================
-  // BEGIN Public prereq method /clearMap/
+  // == BEGIN PUBLIC METHODS ==========================================
+  // BEGIN Public method /clearMap/
   function clearMap ( arg_map ) {
     var
       map = castMap( arg_map ),
@@ -420,36 +507,27 @@ __NS._util_ = (function () {
     }
     return map;
   }
-  // END Public prereq method /clearMap/
-
-  // BEGIN Public prereq method /cloneData/
-  // Purpose: Deep clones non-recursive data structures fastest
-  //
-  function cloneData ( data ) {
-    if ( data === __undef ) { return data; }
-    return __jparse( __j2str( data ) );
-  }
-  // END Public prereq method /cloneData/
+  // END Public method /clearMap/
 
   // BEGIN Public method /encodeHtml/
   // Purpose : This is single pass encoder for html entities and handles
   //   an arbitrary number of characters to encode.
   // Examples:
   //   | str = encodeHtml( "<h1>'Help me!'</h1> she said" );
-  //   | console.log( str );
+  //   | __logMsg( 'info', str );
   //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; she said.'
   //
   //   | str = encodeHtml( "<h1>'Help me!'</h1> & fast!", false );
-  //   | console.log( str );
+  //   | __logMsg( 'info', str );
   //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; &amp; fast!'
   //
   //   | str = encodeHtml( "<h1>'Help me!'</h1> & fast!", true );
-  //   | console.log( str );
+  //   | __logMsg( 'info', str );
   //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; & fast!'
   //
-  // Arguments (positional)
-  //   0 - arg_str (req) : The HTML string to encode
-  //   1 - arg_do_exclude_amp (opt, default = false ) : Exclude ampersands
+  // Arguments ( positional )
+  //   0 : arg_str (req) - The HTML string to encode
+  //   1 : arg_do_exclude_amp (opt, default = false ) : Exclude ampersands
   //       from encoding.
   //
   function encodeHtml ( arg_str, arg_do_exclude_amp ) {
@@ -472,194 +550,13 @@ __NS._util_ = (function () {
   }
   // END Public method /encodeHtml/
 
-  // BEGIN Public prereq method /getNumSign/
-  // Purpose : Provided an argument, will attempt to convert it into
-  //   a number.  If it is a negative number, a -1 will be returned.
-  //   In all other cases, a positive 1 is returned.
-  //
-  function getNumSign ( n ) {
-    var num = __Num( n );
-    return ( ! isNaN( num ) && num < __0 )
-      ? __n1 : __1;
-  }
-  // END Public prereq method /getNumSign/
-
-  // BEGIN Public prereq method /getNowMs/
-  // Purpose: Returns the current timestamp in milliseconds
-  //   The Date.now() method is 3x faster than the +new Date()
-  //   in NodeJS, and I have confirmed this provides almost the
-  //   the same performance in that env as a raw Date.now() call.
-  //
-  getNowMs = (function () {
-    var return_fn;
-    /* istanbul ignore else */
-    if ( __Date[ vMap._hasOwnProp_ ]( vMap._now_ ) ) {
-      return_fn = function () { return __Date[ vMap._now_ ](); };
-    }
-    else {
-      return_fn = function () { return +new __Date(); };
-    }
-    return return_fn;
-  }());
-  // END Public prereq method /getNowMs/
-
-  // BEGIN Public method /makeOptionHtml/
-  // Arguments :
-  //    * _select_list_ : (opt) List of values to be of selected
-  //      This is useful for multi-select fields.
-  //    * _title_map_   : (opt) val_x_title map
-  //    * _val_list_    : (opt) List of values to process
-  // Output    :
-  //    * List of options as used in a select statement
-  function makeOptionHtml ( arg_map ) {
-    var
-      map         = castMap(  arg_map, {} ),
-      label_map   = castMap(  map._label_map_,   {} ),
-      select_list = castList( map._select_list_, [] ),
-      val_list    = castList( map._val_list_,    [] ),
-      val_count   = val_list[ __length ],
-      html_str    = __blank,
-
-      idx, val_data, val_str, label_str
-      ;
-
-    OPTION: for ( idx = __0; idx < val_count; idx++ ) {
-      val_data = val_list[ idx ];
-      val_str  = castStr( val_data, __blank );
-      if ( val_str === __blank ) { continue OPTION; }
-      label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
-
-      html_str += '<option value="' + val_str + '"';
-      if ( select_list[ vMap._indexOf_ ]( val_data ) !== __n1 ) {
-        html_str += ' selected="selected"';
-      }
-      html_str += '>' + label_str + '</option>';
-    }
-    return html_str;
-  }
-  // END Public method /makeOptionHtml/
-
-  // BEGIN Public prereq method /makePadNumStr/
-  // Example: makePadNumStr( 25, 3 ) return '025';
-  //
-  function makePadNumStr( arg_num, arg_count ) {
-    var
-      num   = castNum( arg_num,   __undef ),
-      count = castInt( arg_count, __undef ),
-
-      sign_int, num_str, zero_count;
-
-    if ( num === __undef ) { return __blank; }
-    if ( ! ( count && count >= __0 ) ) {
-      return __Str( num ).trim();
-    }
-
-    sign_int = getNumSign( num );
-    num_str  = __Str( vMap._fnGetAbs_( num ) );
-    zero_count = count - num_str[ __length ]
-      - ( sign_int === __n1 ? __1 : __0 );
-
-    while ( zero_count > __0 ) {
-      num_str = '0' + num_str;
-      zero_count--;
-    }
-    if ( sign_int === __n1 ) {
-      num_str = '-' + num_str;
-    }
-    return num_str;
-  }
-  // END Public method /makePadNumStr/
-
-  // BEGIN Public method /makeRadioHtml/
-  // Purpose: make a an array of checkboxes from a list
-  //
-  function makeRadioHtml ( arg_map ) {
-    var
-      map        = castMap(  arg_map, {} ),
-      group_name = castStr(  map._group_name_ ),    // name=...
-      match_str  = castStr(  map._match_str_  ),    // Selected val
-      val_list   = castList( map._val_list_,  [] ), // Vals in order
-      label_map  = castMap(  map._label_map_, {} ), // Labels
-
-      val_count  = val_list[ __length ],
-      html_str   = __blank,
-
-      idx, val_str, label_str
-      ;
-
-    RADIO: for ( idx = __0; idx < val_count; idx++ ) {
-      val_str   = castStr( val_list[ idx ], __blank );
-      if ( val_str === __blank ) { continue RADIO; }
-
-      label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
-
-      html_str
-        += '<label>'
-          + '<input type="radio" name="' + group_name
-          + '" value="' + val_str + '"'
-          ;
-       if ( val_str === match_str ) { html_str += ' checked="checked"'; }
-       html_str += '/>' + label_str + '</label>';
-    }
-    return html_str;
-  }
-  // END Public method /makeRadioHtml/
-
-  // BEGIN Public method /makeRxObj/
-  // Purpose   : Create a regular expression object
-  // Example   : makeRxObj( '\s*hello\s*', 'i' );
-  function makeRxObj ( arg_pattern_str, arg_option_str ) {
-    var
-      pattern_str = castStr( arg_pattern_str, __blank ),
-      option_str  = castStr( arg_option_str,  __blank )
-      ;
-
-    if ( option_str ) {
-      return new RegExp( pattern_str, option_str );
-    }
-    return new RegExp( pattern_str );
-  }
-  // END Public method /makeRxObj/
-
-  // BEGIN Public prereq method /mergeMaps/
-  // Purpose : Merge properties of extend_map into base_map
-  //
-  function mergeMaps( arg_base_map, arg_extend_map, arg_attr_list ) {
-    var
-      base_map   = castMap(  arg_base_map,   {} ),
-      extend_map = castMap(  arg_extend_map, {} ),
-      attr_list  = castList( arg_attr_list ),
-
-      clone_map  = cloneData( extend_map ),
-      key_list   = __keys( clone_map ),
-      key_count  = key_list[ __length ],
-
-      idx, key
-      ;
-
-    KEY: for ( idx = __0; idx < key_count; idx++ ) {
-      key = key_list[ idx ];
-      if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
-        logObj._logMsg_(
-          '_warn_', '_key_not_supported_:|' + __Str( key ) + '|'
-        );
-        continue KEY;
-      }
-      base_map[ key ] = clone_map[ key ];
-    }
-    return base_map;
-  }
-  // END Public prereq method /mergeMaps/
-  // == END PREREQ METHODS ============================================
-
-  // == BEGIN PUBLIC METHODS ==========================================
   // BEGIN utilities /getBasename/ and /getDirname/
   // Purpose   : Returns the last bit of a path
   // Example   : getBasename('/Common/demo99/192.168.11_97_demo1')
   //             returns '192.168.11.97_demo1'
-  // Arguments : (positional)
-  //   1 - (required) Path string
-  //   2 - (optional) Delimeter string (default is /)
+  // Arguments : ( positional )
+  //   0 - (required) Path string
+  //   1 - (optional) Delimeter string (default is /)
   //
   function getBaseDirname( arg_path_str, arg_delim_str ) {
     var
@@ -850,7 +747,7 @@ __NS._util_ = (function () {
   // BEGIN Public method /makeClockStr/
   // Purpose   : Create HH:MM:SS time string from UTC time integer in ms
   // Example   : clock_str = makeClockStr( 1465621376000 ); // '05:02:56'
-  // Arguments : (positional)
+  // Arguments : ( positional )
   //   0 - int (required) time_ms  UTC time in milliseconds
   //   1 - int (optional) show_idx Precision.
   //     0 === show HH:MM:SS << default
@@ -1056,7 +953,8 @@ __NS._util_ = (function () {
 
   // BEGIN Public method /makeThrottleFn/
   // Purpose: Returns a function that will only fire once per
-  //   delay_ms milliseconds.
+  //   delay_ms milliseconds.  It fires immediately on first
+  //   call.
   //
   function makeThrottleFn ( arg_map ) {
     var
@@ -1077,15 +975,21 @@ __NS._util_ = (function () {
         ;
 
       if ( delta_ms <= __0 ) {
-        if ( delay_toid ) { return; }
-        delay_toid = __undef;
+        if ( delay_toid ) {
+          clearTimeout( delay_toid );
+        }
         fn.apply( ctx_data, arg_list );
+        delay_toid = __undef;
+        last_ms    = now_ms;
+        return;
       }
 
+      if ( delay_toid ) { return; }
       delay_toid = __setTo(
         function () {
           fn.apply( ctx_data, arg_list );
           delay_toid = __undef;
+          last_ms    = now_ms;
         },
         delta_ms
       );
@@ -1265,11 +1169,47 @@ __NS._util_ = (function () {
   }
   // END Public method /makeMapUtilObj/
 
+  // BEGIN Public method /makeOptionHtml/
+  // Arguments : ( named )
+  //    * _select_list_ : (opt) List of values to be of selected
+  //      This is useful for multi-select fields.
+  //    * _title_map_   : (opt) val_x_title map
+  //    * _val_list_    : (opt) List of values to process
+  // Output    :
+  //    * List of options as used in a select statement
+  function makeOptionHtml ( arg_map ) {
+    var
+      map         = castMap(  arg_map, {} ),
+      label_map   = castMap(  map._label_map_,   {} ),
+      select_list = castList( map._select_list_, [] ),
+      val_list    = castList( map._val_list_,    [] ),
+      val_count   = val_list[ __length ],
+      html_str    = __blank,
+
+      idx, val_data, val_str, label_str
+      ;
+
+    OPTION: for ( idx = __0; idx < val_count; idx++ ) {
+      val_data = val_list[ idx ];
+      val_str  = castStr( val_data, __blank );
+      if ( val_str === __blank ) { continue OPTION; }
+      label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
+
+      html_str += '<option value="' + val_str + '"';
+      if ( select_list[ vMap._indexOf_ ]( val_data ) !== __n1 ) {
+        html_str += ' selected="selected"';
+      }
+      html_str += '>' + label_str + '</option>';
+    }
+    return html_str;
+  }
+  // END Public method /makeOptionHtml/
+
   // BEGIN Public method /makePctStr/
   // Purpose   : Convert a decimal ratio into a readable % string
   // Example   :
   //   my_pct = makePctStr( 0.529863, 1 );
-  // Arguments : (positional)
+  // Arguments : ( positional )
   //   0 : (required) A ratio, usually less than 1.
   //   1 : (optional) Number of decimal points to return.
   //       Default value is 0.
@@ -1284,6 +1224,67 @@ __NS._util_ = (function () {
     return ( ratio * __100 )[ vMap._toFixed_ ]( dcount ) + '%';
   }
   // END Public method /makePctStr/
+
+  // BEGIN Public method /makeRadioHtml/
+  // Purpose: make an array of checkboxes from a list
+  //
+  function makeRadioHtml ( arg_map ) {
+    var
+      map        = castMap(  arg_map, {} ),
+      group_name = castStr(  map._group_name_ ),    // name=...
+      match_str  = castStr(  map._match_str_  ),    // Selected val
+      val_list   = castList( map._val_list_,  [] ), // Vals in order
+      label_map  = castMap(  map._label_map_, {} ), // Labels
+
+      val_count  = val_list[ __length ],
+      html_str   = __blank,
+
+      idx, val_str, label_str
+      ;
+
+    RADIO: for ( idx = __0; idx < val_count; idx++ ) {
+      val_str   = castStr( val_list[ idx ], __blank );
+      if ( val_str === __blank ) { continue RADIO; }
+
+      label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
+
+      html_str
+        += '<label>'
+          + '<input type="radio" name="' + group_name
+          + '" value="' + val_str + '"'
+          ;
+       if ( val_str === match_str ) { html_str += ' checked="checked"'; }
+       html_str += '/>' + label_str + '</label>';
+    }
+    return html_str;
+  }
+  // END Public method /makeRadioHtml/
+
+  // BEGIN Public method /makeReplaceFn/
+  // Purpose   : Returns a high-performance function that
+  //   replaces a single symbol with a predefined value.
+  // Example   :
+  //   fn = makeReplaceFn( 'x', 'fred' );
+  //   __logMsg( 'info', fn('you do not know {_x_}.') );
+  //   // Prints 'you do not know fred.'
+  // Arguments : ( positional )
+  //  0 - search_str : A string to use to search.  It is wrapped
+  //    in '{_<search_str>_}'
+  //  1 - value_str : Replacement value
+  //
+  function makeReplaceFn ( arg_search_str, arg_value_str ) {
+    var
+      search_str = castStr( arg_search_str, __blank ),
+      value_str  = castStr( arg_value_str,  __blank ),
+      search_rx  = makeRxObj( '{_' + search_str + '_}', 'g' )
+      ;
+
+    return function ( arg_tmplt ) {
+      var tmplt = castStr( arg_tmplt, __blank );
+      return tmplt[ vMap._replace_ ]( search_rx, value_str );
+    };
+  }
+  // END Public method /makeReplaceFn/
 
   // BEGIN Public method /makeSeenMap/
   // Purpose: Convert arg_key_list into a map with each key assigned
@@ -1528,19 +1529,38 @@ __NS._util_ = (function () {
   // END Public function /makeSeriesMap/
 
   // BEGIN Public method /makeTmpltStr/
+  // Purpose   : Replace symbols in a template surrounded by braces
+  //   '{}' with the symbol provided in the lookup map.
+  // Example   :
+  //  out_str = makeTmpltStr({
+  //    _input_str_  : '{_name_} says "{_saying_}"',
+  //    _lookup_map_ : { _name_ : 'Fred', _saying_ : 'hello!' }
+  //  });
+  //  // out_str is 'Fred says hello!'
+  //
+  // Arguments : ( named )
+  //   _input_str_  : A string template like so:
+  //      'This person name {_p1_} said to the other person {_p2_}'
+  //   _lookup_map_ : A map of values to replace, like so:
+  //      { _p1_ : 'fred', _p2_ : 'barney' }
+  // Throws    : none
+  // Returns
+  //   The filled-out template string
+  //
   makeTmpltStr = (function () {
     //noinspection JSUnusedLocalSymbols
     function lookupFn ( match_str, lookup_name ) {
       var
-        lookup_map  = this,
-        return_data = lookup_name && lookup_map
+        return_data  = this, // lookup_map
+        lookup_list  = lookup_name.split( '.' ),
+        lookup_count = lookup_list.length,
+        idx, key_name
         ;
-      lookup_name[ vMap._split_ ]( '.' )[ vMap._forEach_ ](
-        function ( key_name ) {
-          return_data = ( return_data && return_data[ key_name ] )
-            || __blank;
-        }
-      );
+
+      for ( idx = 0; idx < lookup_count; idx++ ) {
+        key_name = lookup_list[ idx ];
+        return_data = ( return_data && return_data[ key_name ] );
+      }
       return castStr( return_data, __blank );
     }
 
@@ -1558,18 +1578,48 @@ __NS._util_ = (function () {
   }());
   // END Public method /makeTmpltStr/
 
+  // BEGIN Public method /mergeMaps/
+  // Purpose : Merge properties of extend_map into base_map
+  //
+  function mergeMaps( arg_base_map, arg_extend_map, arg_attr_list ) {
+    var
+      base_map   = castMap(  arg_base_map,   {} ),
+      extend_map = castMap(  arg_extend_map, {} ),
+      attr_list  = castList( arg_attr_list ),
+
+      clone_map  = cloneData( extend_map ),
+      key_list   = __keys( clone_map ),
+      key_count  = key_list[ __length ],
+
+      idx, key
+      ;
+
+    KEY: for ( idx = __0; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
+        logObj._logMsg_(
+          '_warn_', '_key_not_supported_:|' + __Str( key ) + '|'
+        );
+        continue KEY;
+      }
+      base_map[ key ] = clone_map[ key ];
+    }
+    return base_map;
+  }
+  // END Public method /mergeMaps/
+
   // BEGIN Public method /pollFunction/
   // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
   //   either <arg_count> number of times or until the function
   //   returns __false, whichever comes first.
-  // Arguments
-  //   arg_fn    : function to poll, return false to stop polling
-  //   arg_ms    : time between function invocation
-  //   arg_count : (optional) Maximum number of times to run the function.
+  // Arguments ( positional )
+  //   0 : fn        : function to poll, return false to stop polling
+  //   1 : ms        : time between function invocation
+  //   2 : count     : (optional) Maximum number of times to run the function.
+  //   3 : finish_fn : (optional) function to invoke at completion
   // Returns
   //   __true  : polling started
   //   __false : polling declined
-  //
   //
   function pollFunction ( arg_fn, arg_ms, arg_count, arg_finish_fn ) {
     var
@@ -1646,25 +1696,15 @@ __NS._util_ = (function () {
   //             base structure.  It must be null which means "next
   //             available array item" or an integer.
   //
-  // Arguments :
-  //   * base_struct - An array or map to add a value
-  //   * path_list   - A list of map or array keys in order of depth
-  //   * val_data    - A data value to set
+  // Arguments : ( positional )
+  //   0 : base_struct - An array or map to add a value
+  //   1 : path_list   - A list of map or array keys in order of depth
+  //   2 : val_data    - A data value to set
   // Returns   :
   //   * Success - __true
   //   * Failure - __false
   // Cautions  : The key list limit is set to __100. If this
-  //   is met, a warning is logged and __undef returned.
-  // BEGIN Public method /setStructData/
-  // Purpose   : Set a deep map attribute value
-  // Example   : _setStructData_( {}, [ 'foo','bar' ], 'hello' );
-  // Arguments :
-  //   * base_map  - A map to add a value
-  //   * path_list - A list of keys in order of depth
-  //   * val_data  - Value to set for the path
-  // Returns   :
-  //   * Success - Updated object
-  //   * Failure - undefined
+  //   is met, a warning is logged and __undef returned
   //
   function setStructData ( arg_base_struct, arg_path_list, val_data ) {
     var
@@ -1799,6 +1839,8 @@ __NS._util_ = (function () {
   // END initialize module
 
   return {
+    _getVarType_      : getVarType,
+
     _castBool_        : castBool,
     _castFn_          : castFn,
     _castInt_         : castInt,
@@ -1808,9 +1850,16 @@ __NS._util_ = (function () {
     _castNum_         : castNum,
     _castObj_         : castObj,
     _castStr_         : castStr,
+    _cloneData_       : cloneData,
+    _getNowMs_        : getNowMs,
+    _getNumSign_      : getNumSign,
+    _makeArgList_     : makeArgList,
+    _makePadNumStr_   : makePadNumStr,
+    _makeRxObj_       : makeRxObj,
+    _makeScrubStr_    : makeScrubStr,
+    _makeUcFirstStr_  : makeUcFirstStr,
 
     _clearMap_        : clearMap,
-    _cloneData_       : cloneData,
     _encodeHtml_      : encodeHtml,
     _getBasename_     : getBasename,
     _getDirname_      : getDirname,
@@ -1819,13 +1868,9 @@ __NS._util_ = (function () {
     _getListDiff_     : getListDiff,
     _getListValCount_ : getListValCount,
     _getLogObj_       : getLogObj,
-    _getNowMs_        : getNowMs,
-    _getNumSign_      : getNumSign,
     _getStructData_   : getStructData,
     _getTzCode_       : getTzCode,
     _getTzOffsetMs_   : getTzOffsetMs,
-    _getVarType_      : getVarType,
-    _makeArgList_     : makeArgList,
     _makeClockStr_    : makeClockStr,
     _makeCommaNumStr_ : makeCommaNumStr,
     _makeDateStr_     : makeDateStr,
@@ -1835,17 +1880,14 @@ __NS._util_ = (function () {
     _makeGuidStr_     : makeGuidStr,
     _makeMapUtilObj_  : makeMapUtilObj,
     _makeOptionHtml_  : makeOptionHtml,
-    _makePadNumStr_   : makePadNumStr,
     _makePctStr_      : makePctStr,
     _makeRadioHtml_   : makeRadioHtml,
-    _makeRxObj_       : makeRxObj,
-    _makeScrubStr_    : makeScrubStr,
+    _makeReplaceFn_   : makeReplaceFn,
     _makeSeenMap_     : makeSeenMap,
     _makeSeriesMap_   : makeSeriesMap,
     _makeStrFromMap_  : makeStrFromMap,
     _makeThrottleFn_  : makeThrottleFn,
     _makeTmpltStr_    : makeTmpltStr,
-    _makeUcFirstStr_  : makeUcFirstStr,
     _mergeMaps_       : mergeMaps,
     _pollFunction_    : pollFunction,
     _pushUniqListVal_ : pushUniqListVal,
