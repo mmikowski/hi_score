@@ -20,7 +20,6 @@ catch ( e1 ) { __NS = window[ __ns ]; }
 // == BEGIN MODULE __NS._makeCss_ ======================================
 __NS._makeCss_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
-  //noinspection MagicNumberJS
   'use strict';
   var
     aKey   = aMap._aKey_,

@@ -20,13 +20,15 @@ catch ( e1 ) { __NS = window[ __ns ]; }
 // == BEGIN MODULE __NS._makeCssLb_ ====================================
 __NS._makeCssLb_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
-  //noinspection MagicNumberJS
   'use strict';
   var
     aKey    = aMap._aKey_,
+    __util  = aMap._util_,
+    __p     = __util._makeReplaceFn_( 'p', aKey ),
+
     topCmap =  {
       _selector_list_ : [
-        { _selector_str_ : '.' + aKey + '-_lb_',
+        { _selector_str_ : __p('.{_p_}-_lb_'),
           _rule_map_ : {
             _z_index_       : [ '36' ],
             _position_      : '_absolute_',
@@ -42,13 +44,13 @@ __NS._makeCssLb_ = function ( aMap ) {
             _transition_    : [ 'opacity .5s ease' ]
           }
         },
-        {_selector_str_ : '.' + aKey + '-_lb_.' + aKey + '-_x_local_',
+        {_selector_str_ : __p('.{_p_}-_lb_.{_p_}-_x_local_'),
           _rule_map_ : { _position_ : '_absolute_' }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_.' + aKey + '-_x_active_',
+        { _selector_str_ : __p('.{_p_}-_lb_.{_p_}-_x_active_'),
           _rule_map_ : { _opacity_    : '_1_' }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_mask_',
+        { _selector_str_ : __p('.{_p_}-_lb_mask_'),
           _rule_map_ : {
             _z_index_  : [ '35' ],
             _position_ : '_absolute_',
@@ -64,32 +66,32 @@ __NS._makeCssLb_ = function ( aMap ) {
             _transition_ : [ 'opacity .5s ease' ]
           }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_mask_.' + aKey + '-_x_local_',
+        { _selector_str_ : __p('.{_p_}-_lb_mask_.{_p_}-_x_local_'),
           _rule_map_     : {
             _z_index_    : '_1_',
             _transition_ : '_none_',
             _cursor_     : '_default_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_mask_.' + aKey + '-_x_noclick_',
+        { _selector_str_ : __p('.{_p_}-_lb_mask_.{_p_}-_x_noclick_'),
           _rule_map_     : { _cursor_ : [ 'wait' ] }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_mask_.' + aKey + '-_x_active_',
+        { _selector_str_ : __p('.{_p_}-_lb_mask_.{_p_}-_x_active_'),
           _rule_map_ : { _opacity_    : [ '.65' ] }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_content_',
+        { _selector_str_ : __p('.{_p_}-_lb_content_'),
           _rule_map_ : {
             _position_ : '_relative_',
             _padding_    : '_1rem_',
           }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_content_ p',
+        { _selector_str_ : __p('.{_p_}-_lb_content_ p'),
           _rule_map_ : { _margin_bottom_ : '_1rem_' }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_content_ p:last-child',
+        { _selector_str_ : __p('.{_p_}-_lb_content_ p:last-child'),
           _rule_map_ : { _margin_bottom_ : '0' }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_close_',
+        { _selector_str_ : __p('.{_p_}-_lb_close_'),
           _rule_map_ : {
             _z_index_    : '_1_',
             _position_   : '_absolute_',
@@ -98,7 +100,7 @@ __NS._makeCssLb_ = function ( aMap ) {
             _cursor_     : '_pointer_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_title_',
+        { _selector_str_ : __p('.{_p_}-_lb_title_'),
           _rule_map_ : {
             _position_ : '_relative_',
             _padding_    : [[ '_d25rem_', '_1rem_' ]],
@@ -108,12 +110,12 @@ __NS._makeCssLb_ = function ( aMap ) {
           }
         },
         { _selector_str_ : '@keyframes spinIt {'
-          + '100%{transform:rotate(360deg);}}'
+            + '100%{transform:rotate(360deg);}}'
         },
         { _selector_str_ : '@keyframes spinReverse {'
-        + '100%{transform:rotate(-360deg);}}'
+            + '100%{transform:rotate(-360deg);}}'
         },
-        { _selector_str_ : '.' + aKey + '-_lb_spin_',
+        { _selector_str_ : __p('.{_p_}-_lb_spin_'),
           _rule_map_     : {
             _z_index_     : ['50'],
             _position_    : '_fixed_',
@@ -132,15 +134,15 @@ __NS._makeCssLb_ = function ( aMap ) {
             _animation_   : ['spinIt 1s linear infinite']
           }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_spin_.' + aKey + '-_x_reverse_',
+        { _selector_str_ : __p('.{_p_}-_lb_spin_.{_p_}-_x_reverse_'),
           _rule_map_     : {
             _animation_ : [ 'spinReverse 1s linear infinite' ]
           }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_spin_.' + aKey + '-_x_active_',
+        { _selector_str_ : __p('.{_p_}-_lb_spin_.{_p_}-_x_active_'),
           _rule_map_     : { _display_ : '_block_' }
         },
-        { _selector_str_ : '.' + aKey + '-_lb_spin_.' + aKey + '-_x_local_',
+        { _selector_str_ : __p('.{_p_}-_lb_spin_.{_p_}-_x_local_'),
           _rule_map_     : {
             _z_index_    : '_1_',
             _position_   : '_absolute_',
