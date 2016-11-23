@@ -24,6 +24,7 @@ __NS._shell_ = (function () {
   var
     aKey    = __ns,
     aMap    = __NS,
+
     vMap    = aMap._vMap_,
     nMap    = aMap._nMap_,
     __util  = aMap._util_,

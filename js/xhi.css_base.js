@@ -23,7 +23,12 @@ __NS._css_base_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   //noinspection MagicNumberJS
   var
-    aKey    = __ns, // aMap    = __NS
+    aMap    = __NS,
+    aKey    = __ns,
+
+    __util  = aMap._util_,
+    __p     = __util._makeReplaceFn_( 'p', aKey ),
+
     topCmap = {
       _global_mixin_map_ : {
         _spc_em_00_ : '.375rem',  // 06px intra-group
@@ -109,10 +114,11 @@ __NS._css_base_ = (function () {
           _hex_txt_xlt_        : '#77848f',
 
           // The top-left logo image path.
-          _logo_url_           : 'url(app/img/' + aKey + '-logo-black.png)',
+          _logo_url_           : __p('url(app/img/{_p_}-logo-white.png)'),
 
           // Shadows colors are listed from near to far. Near shadows that
-          // use rgba_shdw_00, for example, will be smaller but more distinct.
+          // use rgba_shdw_00, for example, will be smaller but more
+          // distinct.
           _rgba_shdw_00_     : 'rgba(192,222,255,.500)',
           _rgba_shdw_01_     : 'rgba(192,222,255,.450)',
           _rgba_shdw_02_     : 'rgba(192,222,255,.405)',
@@ -211,26 +217,27 @@ __NS._css_base_ = (function () {
             _cursor_        : '_pointer_'
           }
         },
-        { _selector_str_ : 'button.' + aKey + '-_x_lh_',
+        { _selector_str_ : __p('button.{_p_}-_x_lh_'),
           _rule_map_ : {
             _float_        : '_left_',
             _margin_left_  : '_0_'
           }
         },
-        { _selector_str_ : 'button.' + aKey + '-_x_rh_',
+        { _selector_str_ : __p('button.{_p_}-_x_rh_'),
           _rule_map_ : {
             _float_        : '_right_',
             _margin_right_ : '_0_'
           }
         },
-        { _selector_str_ : 'button.' + aKey + '-_x_alt_',
+        { _selector_str_ : __p('button.{_p_}-_x_alt_'),
           _rule_map_ : {
             _background_  : '_hex_area_',
             _color_       : '_hex_link_',
             _text_shadow_ : '_none_'
           }
         },
-        { _selector_str_ : 'button.' + aKey + '-_x_disable_, button.' + aKey + '-_x_disable_:hover',
+        { _selector_str_ : __p('button.{_p_}-_x_disable_,'
+            + 'button.{_p_}-_x_disable_:hover'),
           _rule_map_ : {
             _background_   : '_hex_area_mid_',
             _color_        : '_hex_txt_xlt_',
@@ -238,7 +245,7 @@ __NS._css_base_ = (function () {
             _border_color_ : '_hex_txt_xlt_'
           }
         },
-        { _selector_str_ : 'div.' + aKey + '-_x_fill_abs_',
+        { _selector_str_ : __p('div.{_p_}-_x_fill_abs_'),
           _rule_map_ : {
             _position_  : '_absolute_',
             _margin_    : '_0_',
@@ -268,8 +275,8 @@ __NS._css_base_ = (function () {
           }
         },
 
-        /* BEGIN aKey-_x_*_ selectors */
-        { _selector_str_ : '.' + aKey + '-_x_noselect_',
+        /* BEGIN {_p_}-_x_*_ selectors */
+        { _selector_str_ : __p('.{_p_}-_x_noselect_'),
           _rule_map_     : {
             __webkit_user_select_ : '_none_',
             __moz_user_select_    : '_none_',
@@ -277,32 +284,29 @@ __NS._css_base_ = (function () {
             _user_select_         : '_none_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_fa_',
-          _rule_map_     : {_font_family_ : '_font_family_awesome_'}
-        },
-        { _selector_str_ : '.' + aKey + '-_x_link_,.' + aKey + '-_x_link_inv_',
+        { _selector_str_ : __p('.{_p_}-_x_link_,.{_p_}-_x_link_inv_'),
           _rule_map_     : {
             _color_  : '_hex_link_',
             _cursor_ : '_pointer_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_link_:hover',
+        { _selector_str_ : __p('.{_p_}-_x_link_:hover'),
           _rule_map_     : {
             _text_decoration_ : '_underline_',
             _color_           : '_hex_link_dk_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_link_inv_:hover',
+        { _selector_str_ : __p('.{_p_}-_x_link_inv_:hover'),
           _rule_map_     : {
             _text_decoration_ : '_underline_',
             _color_           : '_hex_link_lt_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_bold_',
+        { _selector_str_ : __p('.{_p_}-_x_bold_'),
           _rule_map_     : {_font_weight_ : '_800_'}
         },
 
-        { _selector_str_ : '.' + aKey + '-_x_clearfloat_',
+        { _selector_str_ : __p('.{_p_}-_x_clearfloat_'),
           _rule_map_     : {
             _visibility_ : [['_hidden_', '_important_']],
             _float_      : [['_none_', '_important_']],
@@ -310,7 +314,7 @@ __NS._css_base_ = (function () {
             _clear_      : [['_both_', '_important_']]
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tab_',
+        { _selector_str_ : __p('.{_p_}-_x_tab_'),
           _rule_map_     : {
             _position_        : '_relative_',
             _height_          : '_3rem_',
@@ -323,7 +327,7 @@ __NS._css_base_ = (function () {
             _list_style_type_ : '_none_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tab_>li',
+        { _selector_str_ : __p('.{_p_}-_x_tab_>li'),
           _rule_map_ : {
             _float_       : '_left_',
             _width_       : '_50p_',
@@ -332,20 +336,20 @@ __NS._css_base_ = (function () {
             _cursor_      : '_pointer_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tab_>li:hover',
+        { _selector_str_ : __p('.{_p_}-_x_tab_>li:hover'),
           _rule_map_ : {
             _color_       : '_hex_area_hover_',
             _background_  : '_hex_area_mid_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tab_>li.' + aKey + '-_x_active_',
+        { _selector_str_ : __p('.{_p_}-_x_tab_>li.{_p_}-_x_active_'),
           _rule_map_     : {
             _color_      : '_hex_link_',
             _background_ : '_hex_area_',
             _cursor_     : '_default_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tbox_>li',
+        { _selector_str_ : __p('.{_p_}-_x_tbox_>li'),
           _rule_map_     : {
             _display_    : '_none_',
             _padding_    : [[ '_d5rem_', '_d5rem_','_0_','_d5rem_' ]],
@@ -354,13 +358,13 @@ __NS._css_base_ = (function () {
             _cursor_      : '_default_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tbox_>li.' + aKey + '-_x_active_',
+        { _selector_str_ : __p('.{_p_}-_x_tbox_>li.{_p_}-_x_active_'),
           _rule_map_     : { _display_ : '_block_' }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tbox_list_',
+        { _selector_str_ : __p('.{_p_}-_x_tbox_list_'),
           _rule_map_     : { _list_style_type_ : '_none_' }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tbox_list_>li',
+        { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li'),
           _rule_map_     : {
             _position_      : '_relative_',
             _margin_bottom_ : '_d5rem_',
@@ -373,20 +377,20 @@ __NS._css_base_ = (function () {
             _cursor_        : '_pointer_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tbox_list_>li.' + aKey + '-_x_active_',
+        { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li.{_p_}-_x_active_'),
           _rule_map_     : {
             _background_   : '_hex_area_',
             _color_        : '_hex_txt_dk_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_tbox_list_>li:hover',
+        { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li:hover'),
           _rule_map_     : {
             _background_   : '_hex_area_',
             _color_        : '_hex_txt_dk_',
             _border_color_ : '_hex_txt_alt_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_list_title_',
+        { _selector_str_ : __p('.{_p_}-_x_list_title_'),
           _rule_map_ : {
             _line_height_    : '_1d25rem_',
             _font_size_      : '_1d125rem_',
@@ -396,7 +400,7 @@ __NS._css_base_ = (function () {
             _word_break_     : '_break_word_'
           }
         },
-        { _selector_str_ : '.' + aKey + '-_x_list_float_text_',
+        { _selector_str_ : __p('.{_p_}-_x_list_float_text_'),
           _rule_map_ : {
             _float_          : '_right_',
             _margin_left_    : '_d5rem_',
@@ -408,7 +412,7 @@ __NS._css_base_ = (function () {
           }
         }
       ]
-      /* END aKey-_x_*_ selectors */
+      /* END {_p_}-_x_*_ selectors */
     };
   // == END MODULE SCOPE VARIABLES =====================================
 
