@@ -2437,6 +2437,86 @@ function setStructData ( test_obj ) {
   test_obj.done();
 }
 
+function shuffleList ( test_obj ) {
+  var
+    assert_list = [
+      // arg_list, expect_data
+      [ [],                     __false ],
+      [ [ __undef ],            __false ],
+      [ [ 'fred' ],             __false ],
+      [ [ __null ],             __false ],
+      [ [ { a: 1 } ],           __false ],
+      [ [ [ 1,2,3,4 ] ],        __true  ],
+      [ [ [ {} ] ],             __true  ],
+      [ [ [ [] ] ],             __true  ],
+      [ [ [ __null ] ],         __true  ],
+      [ [ [ __null, {} ] ],     __true  ],
+
+    ],
+
+    assert_count  = assert_list.length,
+    expect_count  = assert_count,
+    shuffle_fn    = __util._shuffleList_,
+    test_idx      = __0,
+
+    idx,         expect_list, arg_list,
+    expect_bool, orig_list,   clone_list,
+    solve_bool,  msg_str,     pass_bool,
+    jdx,         clone_json
+    ;
+
+
+  // Every shuffled list gets an extra test
+  assert_list.filter(
+    function ( list ) { if ( list[ __1 ] ) { expect_count++; } }
+  );
+  test_obj.expect( expect_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_list[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_bool  = expect_list[ __1 ];
+    orig_list    = arg_list[ __0 ];
+    clone_list   = __util._cloneData_( orig_list );
+    solve_bool   = shuffle_fn.apply( __undef, arg_list );
+
+    msg_str = __Str( test_idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_bool: '
+      + __Str( solve_bool )
+      + '\n expect_bool: ' + __Str( expect_bool );
+
+    test_obj.ok( solve_bool === expect_bool, msg_str );
+    test_idx++;
+
+    // Begin extra test to ensure sort
+    if ( solve_bool ) {
+      clone_json = JSON.stringify( clone_list );
+      if ( clone_list.length < 2 ) {
+        msg_str = __Str( test_idx ) + '. orig_list = shuffle list';
+        test_obj.ok( clone_json === JSON.stringify( orig_list ), msg_str );
+        test_idx++;
+      }
+      else {
+        // longer lists should always (eventually) be shuffled
+        pass_bool  = __false;
+        INR: for ( jdx = __0; jdx < 100; jdx++ ) {
+          if ( clone_json !== JSON.stringify( orig_list ) ) {
+            pass_bool = __true;
+            break INR;
+          }
+          shuffle_fn( orig_list );
+        }
+        msg_str = __Str( test_idx ) + '. orig_list != shuffle list '
+          + 'after ' + __Str( jdx ) + ' shuffles.';
+        test_obj.ok( pass_bool, msg_str );
+        test_idx++;
+      }
+    }
+    // END extra test to ensure sort
+  }
+  test_obj.done();
+}
+
 // ===== UTILB
 function decodeHtml ( test_obj ) {
   var
@@ -2940,7 +3020,13 @@ function showLb ( test_obj ) {
       [ [{ _content_html_ : 'hello world', _autoclose_ms_ : 20 } ],
         t00_a_html, t00_b_html ],
       [ [{ _content_html_ : 'hello world' } ], t00_a_html, t00_b_html ],
-      [ [{ _content_html_ : 'hello world', _do_block_click_ : true } ],
+      [ [{ _content_html_ : 'hello world', _do_block_click_ : __true } ],
+        t00_a_html, t00_b_html ],
+      [ [{ _content_html_ : 'hello world',
+           _do_block_click_ : __true,
+           _do_draggable_   : __false,
+           _onshow_fn_      : function (){ console.info('ping'); }
+        }],
         t00_a_html, t00_b_html ],
       [ [{ _close_html_   : 'x',
            _content_html_ : 'mello world',
@@ -2996,7 +3082,7 @@ function showLb ( test_obj ) {
 }
 
 function handleResize ( test_obj ) {
-  test_obj.expect( 2 );
+  test_obj.expect( 4 );
   var ret_bool;
 
   ret_bool = __lb._handleResize_();
@@ -3005,6 +3091,15 @@ function handleResize ( test_obj ) {
   test_obj.ok( ret_bool === __false,
     '1. Second call should return false as the resize is already scheduled'
   );
+
+  ret_bool = __lb._handleResize_({ _body_w_px_ : 1024, _body_h_px_ : 768 });
+  test_obj.ok( ret_bool === __true, '2. Resize should work' );
+
+  __lb._showBusy_() ;
+
+  ret_bool = __lb._handleResize_({ _body_w_px_ : 1248, _body_h_px_ : 768 });
+  test_obj.ok( ret_bool === __true, '3. Resize should work' );
+
   test_obj.done();
 }
 
@@ -3206,6 +3301,7 @@ module.exports = {
   _pushUniqListVal_ : pushUniqListVal,
   _rmListVal_       : rmListVal,
   _setStructData_   : setStructData,
+  _shuffleList_     : shuffleList,
 
   // UtilB
   _decodeHtml_      : decodeHtml,

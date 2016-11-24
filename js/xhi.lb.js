@@ -51,6 +51,7 @@ __NS._lb_ = (function () {
     __castInt  = __util._castInt_,
     __castList = __util._castList_,
     __castMap  = __util._castMap_,
+    __castNum  = __util._castNum_,
     __castStr  = __util._castStr_,
     __tmplt    = __util._makeTmpltStr_,
 
@@ -590,9 +591,9 @@ __NS._lb_ = (function () {
   //
   function handleResize ( arg_map ) {
     var
-      map       = __castMap( arg_map, {} ),
-      body_h_px = map._body_h_px_,
-      body_w_px = map._body_w_px_,
+      map       = __castMap( arg_map,     {} ),
+      body_h_px = __castNum( map._body_h_px_ ),
+      body_w_px = __castNum( map._body_w_px_ ),
       $litebox  = $Map._$litebox_,
 
       h_px, w_px

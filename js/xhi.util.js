@@ -665,9 +665,8 @@ __NS._util_ = (function () {
 
   // BEGIN Public method /getStructData/
   // Purpose   : Get a deep structure attribute value
-  // Example   : _getStructData_( { foo : { bar : 1 }}, [ 'foo','bar' ] );
-  //             Returns '1'
-  // Example   : _getStructData_( [ { car : [ 'seats', 'tyres' ]
+  // Example   : _getStructData_({ foo : { bar : 'hi!' }}, ['foo','bar']);
+  //   Returns 'hi!'
   // Arguments :
   //   * base_struct - An array or map to add a value
   //   * path_list   - A list of map or array keys in order of depth
@@ -821,7 +820,7 @@ __NS._util_ = (function () {
       round_limit_exp = castInt( map._round_limit_exp_, __3 ),
       round_unit_exp  = castInt( map._round_unit_exp_,  __3 ),
       round_unit_str  = castStr( map._round_unit_str_,  'k' ),
-      round_dec_count = map._round_dec_count_  || __1,
+      round_dec_count = castInt( map._round_dec_count_, __1 ),
 
       round_limit_num = vMap._Math_.pow( __10, round_limit_exp  ),
       round_unit_num  = vMap._Math_.pow( __10, round_unit_exp   ),
@@ -834,9 +833,7 @@ __NS._util_ = (function () {
     if ( vMap._fnGetAbs_( input_num ) >= round_limit_num ) {
       solve_num    = input_num / round_unit_num;
       solve_suffix = round_unit_str;
-      solve_str    = round_dec_count
-        ? solve_num[ vMap._toFixed_]( round_dec_count )
-        : __Str( solve_num );
+      solve_str    = solve_num[ vMap._toFixed_]( round_dec_count );
     }
     else {
       solve_str = __Str( input_num );
@@ -976,9 +973,9 @@ __NS._util_ = (function () {
         ;
 
       if ( delta_ms <= __0 ) {
-        if ( delay_toid ) {
-          clearTimeout( delay_toid );
-        }
+        // A timeout id should never be defined except in race conditions
+        /* istanbul ignore next */
+        if ( delay_toid ) { clearTimeout( delay_toid ); }
         fn.apply( ctx_data, arg_list );
         delay_toid = __undef;
         last_ms    = now_ms;
@@ -1765,6 +1762,39 @@ __NS._util_ = (function () {
     return is_good;
   }
   // END Public method /setStructData/
+
+  // BEGIN public method /shuffleList/
+  // Purpose : Shuffle elements in an array
+  //
+  // Returns : boolean
+  //  * true  : Shuffle successful
+  //  * false : Shuffle not successful
+
+  function shuffleList ( arg_list ) {
+    var
+      list  = castList( arg_list ),
+
+      count,   n,        rnd_idx,
+      idx,     swap_data;
+
+    if ( ! list ) { return __false; }
+
+    count = list[ __length ];
+    // Count down from end of array + 1
+    for ( n = count; n > nMap._0_; n-- ) {
+      // randomly select from list ( will be between 0 and n - 1 )
+      rnd_idx = __floor( __random() * n );
+      idx = n - __1;
+
+      // swap values ( idx may === rnd_idx )
+      swap_data       = list[ idx ];
+      list[ idx ]     = list[ rnd_idx ];
+      list[ rnd_idx ] = swap_data;
+    }
+    // End count down...
+    return __true;
+  }
+  // END public method /shuffleList/
   // == END PUBLIC METHODS ============================================
 
   // BEGIN initialize module
@@ -1893,7 +1923,8 @@ __NS._util_ = (function () {
     _pollFunction_    : pollFunction,
     _pushUniqListVal_ : pushUniqListVal,
     _rmListVal_       : rmListVal,
-    _setStructData_   : setStructData
+    _setStructData_   : setStructData,
+    _shuffleList_     : shuffleList
   };
 }());
 // == END MODULE __NS._util_ ==========================================

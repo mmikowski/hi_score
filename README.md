@@ -34,7 +34,7 @@ The sample applicaiton will eventually be the application shown on the
 
 - Testable
 - Compressible
-- Sensible typing
+- Type safety [with typecasting][14]
 - Flexible
 - Modern
 - Universal Fractal MVC
@@ -42,18 +42,48 @@ The sample applicaiton will eventually be the application shown on the
 - Stable
 - Commit-hook enforce quality code (JSLint and regression test)
 - A fast, one-touch build system
+- Consistent naming and style
 
 As of 0.6.6 we have isolating the namespace prefix (`xhi`) to the first few
 lines all modules and have made them all node-friendly. The result is
 highly portable and merge-able code. Merging updates to a **hi\_score**-based
-project should now much faster and easier.
+project be fast and easy!
 
-## Compatibility
+## Browser compatibility
 Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
 sympathy but not our support. Sorry.
 
-# Steps to develop
-## Quick start
+
+# Development environment
+## Linux
+We deploy on Linux so this is our baseline.  As long as you have core
+development libs, git, npm, and node installed on your distro, things 
+should just work. The minimum on Ubuntu Server 16.10 is probably this:
+
+```bash
+  sudo apt-get install build-essential openssh-server git pandoc
+  curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+```
+
+See [this guide][15] for NodeJS package installation on other Linux
+distros. Here is a more [general guide][16] for (k)Ubuntu.
+
+## Mac
+At the very least you'll need Bash 4+ and GNU Core utilities installed
+along with NodeJS, Git, PanDoc, and SSH.  This [guide][17] should help.
+
+## Windows
+This make work with the new Ubuntu subsystem on Windows 10.
+
+## Virtual Machines
+Since the deployment target is Ubuntu 16.10 Server, one could simply 
+spin-up an AWS or Virtual Box image running the same for development.
+This is probably the best solution for those not already developing
+with Linux.
+
+# Development
+## Installation
 The following will install `hi\_score` and all vendor assets and then copy
 them to web deployment libraries:
 
@@ -83,7 +113,7 @@ prep-libs` again to update the vendor libraries, and update the `index.html` fil
 to point to the updated versions. This last step we expect to automate in the
 near future.
 
-## Use coveralls.io
+## Coveralls.io
 If you create a fork you may submit your coverage report to
 coveralls.io. Here are the steps:
 
@@ -104,7 +134,7 @@ add the npm package here and then update the `bin/prep-libs.sh` script
 to copy the asset to the correct `vendor/` directory: `js/vendor/`,
 `css/vendor', `font/vendor`, or `img/vendor`.
 
-## JavaScript vendor assets
+## JavaScript
 We include the following JavaScript assets. Client libraries are copied to the
 `js/vendor` directory with their current version number appended to their
 name.
@@ -131,10 +161,6 @@ do not currently copy any vendor CSS assets.
 ## Fonts
 As of 0.6.20, we use the open-sans-webfont package to populate the `font/vendor`
 directory during the `prep-libs` stage.
-
-# Other documentation
-See this [blog post] which describes the type-saftey features and techniques
-available with [hi\_score][14]
 
 # Coverage reference
 Below are the steps we used to get coverage working. **You do not have to
@@ -278,5 +304,5 @@ MIT
 [12]:http://absurdjs.com/
 [13]:http://www.responsivejs.com/
 [14]:http://mmikowski.github.io/type-casts/
-
-
+[15]:https://nodejs.org/en/download/package-manager/
+[16]:https://docs.google.com/spreadsheets/d/1kLIYKYRsan_nvqGSZF-xJNxMkivH7uNdd6F-xY0hAUM/edit#gid=598969125
