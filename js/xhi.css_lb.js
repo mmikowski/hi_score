@@ -34,6 +34,7 @@ __NS._makeCssLb_ = function ( aMap ) {
             _position_      : '_absolute_',
             _display_       : '_block_',
             _opacity_       : '_0_',
+            _width_         : '_50p_',
             _border_        : [[ '_d25rem_', '_solid_','_hex_area_hover_' ]],
             _border_radius_ : '_d5rem_',
             _box_shadow_    : '_shdw_02_',
@@ -89,7 +90,7 @@ __NS._makeCssLb_ = function ( aMap ) {
           _rule_map_ : { _margin_bottom_ : '_1rem_' }
         },
         { _selector_str_ : __p('.{_p_}-_lb_content_ p:last-child'),
-          _rule_map_ : { _margin_bottom_ : '0' }
+          _rule_map_ : { _margin_bottom_ : '_0_' }
         },
         { _selector_str_ : __p('.{_p_}-_lb_close_'),
           _rule_map_ : {
