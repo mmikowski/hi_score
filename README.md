@@ -11,7 +11,7 @@ in the new *hotness*. Some of us have spent far more time learning
 intricate framework DSLs than the JavaScript we need. Are we ready to get
 off that treadmill?
 
-[Do we really want an SPA framework?][7] If not, then **hi_score**
+[Do we really want an SPA framework?][7] If not, then **hi\_score**
 is here to help. Our intention is to provide an ever improving set of
 best-in-class libraries that we control, instead of having a framework
 that controls us. We thought of calling it `low-score` or `under-dash`
@@ -19,7 +19,8 @@ but decided to aim higher.
 
 ## Code Style
 We use the code style presented in
-[Single Page Web Applications - JavaScript end-to-end][8] (see reviews on  [Amazon][9]).
+[Single Page Web Applications - JavaScript end-to-end][8]
+(see reviews on [Amazon][9]).
 The [full code standard][a] and the [cheat-sheet][b] are available online.
 The architecture is illustrated in the cheat sheet.
 
@@ -103,41 +104,34 @@ After preparation one can open the `index.html` file with a browser to view the
 sample application, or `coverage/lcov-report/index.html` to check out code
 coverage for the core libraries.
 
-## Test
-Regression tests for the xhi libraries currently cover the root namespace
+## Regression Test
+Tests for the xhi libraries currently cover the root namespace
 (`xhi.js`), the utilities (`xhi.util.js`), browser utilities (`xhi.utilb.js`)
 and litebox (`xhi.lb.js`). We plan to include tests for the example application
 data and model in future updates.
 
-## Code coverage reports
-We use Istanbul for code coverage, and it does an excellent job.  We had to switch
-to nodeunit + JSDOM to get accurate coverage reports but have had no other trouble.
-Local coverage reports are found in `coverage/lcov-report/index.html`.
+## Code coverage
+We use Istanbul for code coverage, and it does an excellent job.  We had to
+switch to nodeunit + JSDOM to get accurate coverage reports but have had no
+other trouble. Local coverage reports are found in
+`coverage/lcov-report/index.html`.
 
-If you create a fork you may submit your coverage report to
-coveralls.io. However, you will need to point coveralls to your
-own coveralls page in the .coveralls.yml file and then run the covera script:
-
-```bash
-  $ cd hi_score
-  $ npm run covera
-```
-
-The report page should look similar to the [master branch site][10].
+If you create a fork you can create a coveralls report as shown in the [master
+ branch site][10]. Please see `COVERALLS.md` which details this installation.
 
 ## Updates
-One may update all the npm libraries, npm assets, and the `package.json` file with
-`npm update -D`. If we want these changes to propagate, we must run `npm run
-prep-libs` again to update the vendor libraries, and update the `index.html` file
-to point to the updated versions. We expect to automate in the last step in future
-updates.
+One may update all the npm libraries, npm assets, and the `package.json` file
+with `npm update -D`. If we want these changes to propagate, we must run 
+`npm run prep-libs` again to update the vendor libraries, and update the 
+`index.html` file to point to the updated versions. We expect to automate 
+the last step in future updates.
 
 # Vendor assets
 All vendor assets are listed in the `devDependencies` map in the
 `package.json` file.  If you want to add a vendor asset, the best method is to
 add the npm package there and then update the `bin/prep-libs.sh` script
-to copy the asset to the correct `vendor/` directory: `js/vendor/`,
-`css/vendor', `font/vendor`, or `img/vendor`.
+to copy the asset to the correct directory: `js/vendor/`,
+`css/vendor`, `font/vendor`, or `img/vendor`.
 
 ## JavaScript
 We include the following JavaScript assets:
@@ -149,9 +143,10 @@ We include the following JavaScript assets:
 - [jQuery Plugin: event.ue][4] Touch and desktop gestures
 - [jQuery Plugin: event.dragscroll][5] Inertia scroll
 - [jQuery Plugin: debounce][6] Debounce (throttling)
-- nodeunit
-- jsdom
-- istanbul
+- [nodeunit][18] Unit testing
+- [istanbul][19] Code coverage
+- [jsdom][20] DOM mock for testing
+
 
 Client libraries are copied to the
 `js/vendor` directory with their current version number appended to their
@@ -218,64 +213,6 @@ MIT
 # Similar Projects
 [absurd.js][12], [responsive.js][13]
 
-# Coverage reference
-Below are the steps we used to get coverage working. **You do not have to
-do this.**  We've kept it here for reference only!
-Many thanks to Elliot Stokes who's [blog post][11] provided most of the
-information.
-
-## 1. Install istanbul
-
-```bash
-  $ cd hi_score
-  $ npm install istanbul --save-dev
-```
-
-## 2. Configure git to ignore coverage directory
-
-```bash
-  $ cd hi_score
-  $ cat 'coverage' >> .gitignore
-```
-
-## 3. Run the coverage tool
-
-```bash
-  $ cd hi_score
-  $ node_modules/.bin/istanbul cover \
-  $  node_modules/.bin/nodeunit test/xhi_level_0.js
-```
-
-The local report is found in `coverage/lcov-report/index.html`.
-The local lcov data is found in `coverage/lcov.info`.
-
-## 4. Integrate to coveralls.io
-
-Sign in to `https://coveralls.io` using your GitHub account. Add the desired
-repo by selecting from the list of shown at `https://coveralls.io/repos/new`.
-Once you've added a repo, you may then get the token from the detail page,
-as shown in `https://coveralls.io/github/mmikowski/hi\_score` at the TR.
-Place this token in the `.coveralls.yaml` file. This is **your** token. As I
-understand it, this should always be kept private, so we add the configuration
-file with this information to the `.gitignore` file.
-
-```bash
-  $ cd hi_score
-  $ cat .coveralls.yml >> .gitignore
-  $ cat 'repo_token: ---------your-token-here---------' > .coveralls.yml
-```
-
-Run `npm covera` to send a report to coveralls.io. The detailed
-command is as follows:
-
-```bash
-  $ cd hi_score
-  $ npm install coveralls
-  $ node_modules/.bin/istanbul cover -x '**/vendor/**' \
-  $  node_modules/.bin/nodeunit test/xhi_level_0.js \
-  $  && cat coverage/lcov.info | node_modules/.bin/coveralls
-```
-
 # End
 
 [a]:https://github.com/mmikowski/spa/raw/master/js-code-std-2016.pdf
@@ -298,3 +235,7 @@ command is as follows:
 [15]:https://nodejs.org/en/download/package-manager/
 [16]:https://docs.google.com/spreadsheets/d/1kLIYKYRsan_nvqGSZF-xJNxMkivH7uNdd6F-xY0hAUM/edit#gid=598969125
 [17]:https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
+[18]:https://www.npmjs.com/package/nodeunit
+[19]:https://www.npmjs.com/package/istanbul
+[20]:https://www.npmjs.com/package/jsdom
+
