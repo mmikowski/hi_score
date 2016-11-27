@@ -287,8 +287,8 @@ MIT
 
 # End
 
-[a]:https://github.com/mmikowski/spa/raw/master/js-cheat-sheet-2016.pdf
-[b]:https://github.com/mmikowski/spa/raw/master/js-code-std-2016.pdf
+[a]:https://github.com/mmikowski/spa/raw/master/js-code-std-2016.pdf
+[b]:https://github.com/mmikowski/spa/raw/master/js-cheat-sheet-2016.pdf
 [0]:http://jquery.org
 [1]:http://powercss.org
 [2]:https://www.npmjs.com/package/jquery.urianchor
