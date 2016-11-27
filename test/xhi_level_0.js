@@ -3025,7 +3025,7 @@ function showLb ( test_obj ) {
       [ [{ _content_html_ : 'hello world',
            _do_block_click_ : __true,
            _do_draggable_   : __false,
-           _onshow_fn_      : function (){ console.info('ping'); }
+           _onshow_fn_      : function () { return 'ping'; }
         }],
         t00_a_html, t00_b_html ],
       [ [{ _close_html_   : 'x',
