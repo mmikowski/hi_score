@@ -15,7 +15,7 @@ off that treadmill?
 is here to help. Our intention is to provide an ever improving set of
 best-in-class libraries that we control, instead of having a framework
 that controls us. We thought of calling it `low-score` or `under-dash`
-but thought we'd aim higher.
+but decided to aim higher.
 
 ## Code Style
 We use the code style presented in
@@ -28,7 +28,7 @@ Provide an SPA template that not only includes a sample applicaiton, but also
 downloads and sets up best-in-class libraries, assets, and architecture.
 This environment will progress as technology and support evolve.
 The sample applicaiton will eventually be the application shown on the
-`hi\_score` website.
+**hi\_score** website.
 
 ## Key attributes:
 
@@ -46,13 +46,11 @@ The sample applicaiton will eventually be the application shown on the
 
 As of 0.6.6 we have isolating the namespace prefix (`xhi`) to the first few
 lines all modules and have made them all node-friendly. The result is
-highly portable and merge-able code. Merging updates to a **hi\_score**-based
-project be fast and easy!
+highly portable and merge-able code.
 
 ## Browser compatibility
 Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
-sympathy but not our support. Sorry.
-
+sympathy.
 
 # Development environment
 ## Linux
@@ -70,11 +68,16 @@ See [this guide][15] for NodeJS package installation on other Linux
 distros. Here is a more [general guide][16] for (k)Ubuntu.
 
 ## Mac
-At the very least you'll need Bash 4+ and GNU Core utilities installed
-along with NodeJS, Git, PanDoc, and SSH.  This [guide][17] should help.
+We recommend using a virtual machine as detailed below.  However you 
+may get **hi_score** to run natively on Mac. At the very least you'll
+need Bash 4+ and GNU Core utilities installed along with NodeJS, Git,
+PanDoc, and SSH.  This [guide][17] should help with installation of 
+the GNU Core utilities.
 
 ## Windows
-This make work with the new Ubuntu subsystem on Windows 10.
+We recommend using a virtual machine as detailed below.  Installation
+*may* work with the new Ubuntu subsystem on Windows 10, but we haven't
+tested and wouldn't bet on it :)
 
 ## Virtual Machines
 Since the deployment target is Ubuntu 16.10 Server, one could simply 
@@ -84,16 +87,16 @@ with Linux.
 
 # Development
 ## Installation
-The following will install `hi\_score` and all vendor assets and then copy
+The following will install **hi_score** and all vendor assets and then copy
 them to web deployment libraries:
 
 ```bash
-  npm install hi_score;
-  cd node_modules/hi_score;
-  npm install;
-  npm run prep-libs;
-  npm test;
-  npm run cover;
+  npm install hi_score
+  cd node_modules/hi_score
+  npm install
+  npm run prep-libs
+  npm test
+  npm run cover
 ```
 
 After preparation one can open the `index.html` file with a browser to view the
@@ -103,41 +106,41 @@ coverage for the core libraries.
 ## Test
 Regression tests for the xhi libraries currently cover the root namespace
 (`xhi.js`), the utilities (`xhi.util.js`), browser utilities (`xhi.utilb.js`)
-and litebox (`xhi.lb.js`). The sample applicaiton will include data and model
-tests as well.
+and litebox (`xhi.lb.js`). We plan to include tests for the example application
+data and model in future updates.
+
+## Code coverage reports
+We use Istanbul for code coverage, and it does an excellent job.  We had to switch
+to nodeunit + JSDOM to get accurate coverage reports but have had no other trouble.
+Local coverage reports are found in `coverage/lcov-report/index.html`.
+
+If you create a fork you may submit your coverage report to
+coveralls.io. However, you will need to point coveralls to your
+own coveralls page in the .coveralls.yml file and then run the covera script:
+
+```bash
+  $ cd hi_score
+  $ npm run covera
+```
+
+The report page should look similar to the [master branch site][10].
 
 ## Updates
 One may update all the npm libraries, npm assets, and the `package.json` file with
 `npm update -D`. If we want these changes to propagate, we must run `npm run
 prep-libs` again to update the vendor libraries, and update the `index.html` file
-to point to the updated versions. This last step we expect to automate in the
-near future.
-
-## Coveralls.io
-If you create a fork you may submit your coverage report to
-coveralls.io. Here are the steps:
-
-```bash
-  $ cd hi_score
-  $ npm install
-  $ npm prep-libs
-  $ npm run covera
-```
-
-And then point your browser to the `hi_score` [coverage page][10]
-to confirm the results have been recorded.
+to point to the updated versions. We expect to automate in the last step in future
+updates.
 
 # Vendor assets
 All vendor assets are listed in the `devDependencies` map in the
 `package.json` file.  If you want to add a vendor asset, the best method is to
-add the npm package here and then update the `bin/prep-libs.sh` script
+add the npm package there and then update the `bin/prep-libs.sh` script
 to copy the asset to the correct `vendor/` directory: `js/vendor/`,
 `css/vendor', `font/vendor`, or `img/vendor`.
 
 ## JavaScript
-We include the following JavaScript assets. Client libraries are copied to the
-`js/vendor` directory with their current version number appended to their
-name.
+We include the following JavaScript assets:
 
 - [jQuery][0] DOM manipulation
 - [PowerCSS][1] JS-powered CSS
@@ -150,17 +153,70 @@ name.
 - jsdom
 - istanbul
 
-Not all libraries are copied to the `js/vendor` directory because
-they are not used by the client.  For example, nodeunit, jsdom, and istanbul
-are currently used for testing only and are not copied.
+Client libraries are copied to the
+`js/vendor` directory with their current version number appended to their
+name. Libraries used for development and testing are not copied. Examples 
+development libs include nodeunit, jsdom, istanbul, jslint, and coveralls.
 
 ## CSS
-We have prepared the `bin/prep-libs.sh` script to copy vendor CSS, but we
-do not currently copy any vendor CSS assets.
+CSS libraries are copied to the `css/vendor` directory with their current
+versuib number appended to their names.  We currently include
+the Font Awesome library.
 
 ## Fonts
-As of 0.6.20, we use the open-sans-webfont package to populate the `font/vendor`
-directory during the `prep-libs` stage.
+Font files are copied to the `font/vendor` directory with their current
+version number appended to their names.  We currently include
+the open-sans-webfont and Font Awesome files.
+
+# Contribute!
+Any improvements or suggestions are welcome, especially when presented
+with a pull request :).
+
+# Release Notes
+## Copyright (c)
+2016 Michael S. Mikowski (mike[dot]mikowski[at]gmail[dotcom])
+
+## License
+MIT
+
+## Version 0.0.x
+- (x) Initial preparation
+
+## Version 0.1.x
+- (x) Library updates
+
+## Version 0.2.x
+- (x) Regression and integration testing
+- (x) Rudimentary sample application
+
+## Version 0.3.x
+- (x) Add code coverage
+- (x) Replace `getDeepMapVal` and `setDeepMapVal` with much more powerful
+  and tested `getStructData` and `setStructData` which empowers you with
+  transversal and creation of arbitrary mixed list and map structures.
+- (x) Updates to `xhi._util_`
+
+## Version 0.4.x
+- (x) Replace `jscoverage` with much more complete and recent `istanbul`
+- (x) Added `cast` routines and detail their use
+- (x) Consolidate utilities to increase coverage
+- (x) Update lite-box using `cast` methods
+
+## Version 0.5.x
+- (x) Add `jsdom` to expand testing to modules that use jQuery
+- (x) Continue regression test expansion
+- (x) Rationalize libraries
+- (x) Add lite-box regression tests
+
+## Version 0.6.x (current)
+- (x) Remove vendor code from repo and auto-copy on install
+- (x) Add native utils `makeThrottleFn` and `makeDebounceFn`
+- (x) Add links to updated code style guides
+- (x) Replace `install` script with `prep-libs` (v0.6.17+)
+- More sophisticated sample application
+
+# Similar Projects
+[absurd.js][12], [responsive.js][13]
 
 # Coverage reference
 Below are the steps we used to get coverage working. **You do not have to
@@ -220,71 +276,6 @@ command is as follows:
   $  && cat coverage/lcov.info | node_modules/.bin/coveralls
 ```
 
-# Contribute!
-If you want to help out, like all npm modules this is hosted on GitHub.
-Any improvements or suggestions are welcome, especially when presented
-with a pull request :).
-
-# Release Notes
-## Copyright (c)
-2016 Michael S. Mikowski (mike[dot]mikowski[at]gmail[dotcom])
-
-## License
-MIT
-
-## Version 0.0.x
-- (x) Initial preparation
-
-## Version 0.1.x
-- (x) Library updates
-
-## Version 0.2.x
-- (x) Regression and integration testing
-- (x) Rudimentary sample application
-
-## Version 0.3.x
-- (x) Add code coverage
-- (x) Replace `getDeepMapVal` and `setDeepMapVal` with much more powerful
-  and tested `getStructData` and `setStructData` which empowers you with
-  transversal and creation of arbitrary mixed list and map structures.
-- (x) Updates to `xhi._util_`:
-  - Remove `xhi._util_makeListPlus_`  and replaced with
-    - getListValCount
-    - pushUniqueListVal
-    - rmListVal
-  - Change `_castBool_` behavior: it now returns the provided
-    value only if a true boolean, the alternate value is provided otherwise.
-  - Rename `_getLogUtilObj_` to `xhi._getLogObj_`.
-    Returns the log object singleton as before.
-  - Change `log_obj._setLogLevel_` behavior: it now returns log level
-    as set (was true or false).
-  - Add more resiliant argument handling.
-  - Move `_encodeHtml_` from `xhi._utilb_.js`.
-  - Add limited key map capability to `_mergeMaps_`.
-  - Delete `_setCmap_` as it was redunant with `_mergeMaps_`.
-
-## Version 0.4.x
-- (x) Replace `jscoverage` with much more complete and recent `istanbul`
-- (x) Added `cast` routines and detail their use
-- (x) Consolidate utilities to increase coverage
-- (x) Update lite-box using `cast` methods
-
-## Version 0.5.x
-- (x) Add `jsdom` to expand testing to modules that use jQuery
-- (x) Continue regression test expansion
-- (x) Rationalize libraries
-- (x) Add lite-box regression tests
-
-## Version 0.6.x (current)
-- (x) Remove vendor code from repo and auto-copy on install
-- (x) Add native utils `makeThrottleFn` and `makeDebounceFn`
-- (x) Add links to updated code style guides
-- (x) Replace `install` script with `prep-libs` (v0.6.17+)
-- More sophisticated sample application
-
-# Similar Projects
-[absurd.js][12], [responsive.js][13]
-
 # End
 
 [a]:https://github.com/mmikowski/spa/raw/master/js-code-std-2016.pdf
@@ -306,3 +297,4 @@ MIT
 [14]:http://mmikowski.github.io/type-casts/
 [15]:https://nodejs.org/en/download/package-manager/
 [16]:https://docs.google.com/spreadsheets/d/1kLIYKYRsan_nvqGSZF-xJNxMkivH7uNdd6F-xY0hAUM/edit#gid=598969125
+[17]:https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
