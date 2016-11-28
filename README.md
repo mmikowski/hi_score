@@ -122,9 +122,8 @@ same or lower precidence.  See the diagram below.
  >>>>=========-------------- DATA FLOW ------------------------>
 ```
 
-There are two details worthy of note in this diagram.  First, notice how we 
-use model events to communicate changes to the Shell and feature modules.  
-Second, we keep our feature modules isolated from each other.  This enhances 
+We use model events to communicate changes to the Shell and Feature modules,
+and we keep our feature modules isolated from each other. This enhances 
 portability and quality.
 
 ## Browser compatibility
