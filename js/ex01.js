@@ -13,24 +13,14 @@
 /*global $, xhi:true, ex01 */
 $(function () {
   'use strict';
-  var aMap = xhi._makeRoot_( 'ex01' );
-  xhi._makeUtil_(     aMap );
-  xhi._makeData_(     aMap );
-  xhi._makeModel_(    aMap );
-  xhi._makeUtilb_(    aMap );
-  xhi._makeCssBase_(  aMap );
-  xhi._makeCssLb_(    aMap );
-  xhi._makeCssShell_( aMap );
-  xhi._makeCss_(      aMap );
-  xhi._makeLb_(       aMap );
-  xhi._makeShell_(    aMap );
+  var aMap = xhi._makeApp_( 'ex01' );
   aMap._shell_._initModule_( $('body') );
   aMap._lb_._showLb_({
     _title_html_ : 'Example Application',
     _content_html_ :
-      '<p>The applicaiton appears to be properly installed!</p>'
-      + '<p>Here are the aMap methods: <br>'
-      + Object.keys( aMap ).join(', ')
+      '<p><strong>hi_score</strong> appears to be properly installed!</p>'
+      + '<p>The hi_score application map (aMap) attributes are as follows: <br>'
+      + Object.keys( aMap ).join('<br>')
       + '</p>'
       + '<p>Grab this lightbox by the title bar to drag</p>'
   });

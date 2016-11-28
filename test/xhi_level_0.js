@@ -19,7 +19,7 @@ var
   __ns        = 'xhi',
   aKey        = 'test',
   libDir      = '../js/',
-  libPrefix   = libDir + __ns + '.',
+  libPrefix   = libDir + __ns + '/',
   nuFn        = function () { console.log( aKey + '.' + this , arguments ); },
   mockTestObj = {
     deepEqual : nuFn.bind( 'deepEqual' ),
@@ -47,10 +47,10 @@ global.$        = jQuery;
 global.pcss = require( libDir + 'vendor/pcss-1.3.5.js' ).pcss;
 require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
 
-global[ __ns ] = require( libPrefix + 'js' );
-require( libPrefix + 'util.js'  );
-require( libPrefix + 'utilb.js' );
-require( libPrefix + 'lb.js'    );
+global[ __ns ] = require( libPrefix + '00.js' );
+require( libPrefix + '01.util.js'  );
+require( libPrefix + '04.utilb.js' );
+require( libPrefix + '06.lb.js'    );
 
 aMap = xhi._makeRoot_( aKey );
 global[ aKey ] = aMap;
