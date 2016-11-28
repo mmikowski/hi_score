@@ -34,9 +34,8 @@ as found in [Single Page Web Applications - JavaScript end-to-end][8].
       var aMap = xhi._makeApp_( 'ex01' );
       aMap._shell_._initModule_( $('body') );
       aMap._lb_._showLb_({
-        _title_html_ : 'Hello',
-        _content_html_ : '<p>Hello world!</p>'
-          + '<p>Grab this lightbox by the title bar to drag</p>'
+        _title_html_   : 'Hello World',
+        _content_html_ : '<p>Grab the title bar to drag.</p>'
       });
     });
     </script>

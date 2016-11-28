@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Get off the framework-of-the-month treadmill and take control of your SPA. Hi_Score assembles best-in-class libraries in a feature-module architecture as detailed in 'Single Page Web Applicaitons, JavaScript end-to-end'",
   "keywords": [
     "spa",
