@@ -17,19 +17,16 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._css_shell_ ====================================
-__NS._css_shell_ = (function () {
+// == BEGIN MODULE __NS._makeCssShell_ =================================
+__NS._makeCssShell_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
-    aMap    = __NS,
-    aKey    = __ns,
-
+    aKey    = aMap._aKey_,
     vMap    = aMap._vMap_,
     __util  = aMap._util_,
-
-    __blank = vMap._blank_,
     __p     = __util._makeReplaceFn_( 'p', aKey ),
+    __blank = vMap._blank_,
 
     topCmap = {
       _selector_list_ : [
@@ -389,7 +386,8 @@ __NS._css_shell_ = (function () {
   // == END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  return { _selectorList_ : topCmap._selector_list_ };
+  aMap._css_shell_ = { _selectorList_ : topCmap._selector_list_ };
   // == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS._css_shell_ ======================================
+};
+// == END MODULE __NS._makeCssShell_ ===================================
+

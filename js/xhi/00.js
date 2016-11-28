@@ -12,8 +12,9 @@
 */
 /*global xhi:true */
 
-// == BEGIN MODULE __NS ================================================
-var xhi = (function () {
+var xhi = {};
+// == BEGIN MODULE __NS._makeRoot_ =====================================
+xhi._makeRoot_ = function ( aKey ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   //noinspection MagicNumberJS
@@ -224,12 +225,13 @@ var xhi = (function () {
 
   // == BEGIN PUBLIC METHODS ===========================================
   return {
+    _aKey_    : aKey,
     _nMap_    : nMap,
     _vMap_    : vMap
   };
   // == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS ==================================================
+};
+// == END MODULE __NS._makeRoot_ =======================================
 
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */

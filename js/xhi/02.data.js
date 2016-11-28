@@ -1,6 +1,6 @@
 /**
- *    xhi.model.js
- *    Root model module, placeholder.
+ *    xhi.data.js
+ *    Data transmission module, placeholder
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -17,14 +17,13 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._model_ ========================================
-__NS._model_ = (function () {
-  // == BEGIN MODULE SCOPE VARIABLES ===================================
+// == BEGIN MODULE __NS._makeData_ ====================================
+__NS._makeData_ = function ( aMap ) {
+  // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
+  //noinspection MagicNumberJS
   var
-    aKey    = __ns,
-    aMap    = __NS,
-
+    aKey    = aMap._aKey_,
     vMap    = aMap._vMap_,
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
@@ -48,12 +47,10 @@ __NS._model_ = (function () {
   // == END EVENT HANDLERS =============================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  function initModule ( $top_box ) {
+  function initModule () {
 
-    // Initial DOM content using methods above
-    // and then set jQuery colection cache
-    //
-    __logMsg( '_info_', aKey, $,
+    __logMsg(
+      aKey, '_info_', $,
       '__0 === ' + __0,
       '__1 === ' + __1,
       '__blank === ' + __blank,
@@ -62,8 +59,8 @@ __NS._model_ = (function () {
     );
   }
 
-  return { _initModule_ : initModule };
+  aMap._data_ = { _initModule_ : initModule };
   // == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS._model_ ==========================================
+};
+// == END MODULE __NS._makeData_ =======================================
 

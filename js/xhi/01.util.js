@@ -17,15 +17,14 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._util_ ========================================
-__NS._util_ = (function () {
+// == BEGIN MODULE __NS._makeUtil_ ====================================
+__NS._makeUtil_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
+  // ================= BEGIN MODULE SCOPE VARIABLES ===================
   //noinspection MagicNumberJS
   var
-    aKey   = __ns,
-    aMap   = __NS,
-
+    aKey   = aMap._aKey_,
     vMap   = aMap._vMap_,
     nMap   = aMap._nMap_,
 
@@ -1869,7 +1868,7 @@ __NS._util_ = (function () {
   initModule();
   // END initialize module
 
-  return {
+  aMap._util_ = {
     _getVarType_      : getVarType,
 
     _castBool_        : castBool,
@@ -1926,6 +1925,5 @@ __NS._util_ = (function () {
     _setStructData_   : setStructData,
     _shuffleList_     : shuffleList
   };
-}());
-// == END MODULE __NS._util_ ==========================================
-
+};
+// == END MODULE __NS._makeUtil_ ======================================

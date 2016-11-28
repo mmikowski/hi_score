@@ -17,15 +17,13 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._lb_ ==========================================
-__NS._lb_ = (function () {
+// == BEGIN MODULE __NS._makeLb_ ======================================
+__NS._makeLb_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   //noinspection MagicNumberJS
   var
-    aKey    = __ns,
-    aMap    = __NS,
-
+    aKey    = aMap._aKey_,
     vMap    = aMap._vMap_,
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
@@ -696,7 +694,7 @@ __NS._lb_ = (function () {
     return showLb({ _content_html_ : content_html });
   }
 
-  return {
+  aMap._lb_ = {
     _addLocalSpin_  : addLocalSpin,
     _closeLb_       : closeLb,
     _handleResize_  : handleResize,
@@ -710,6 +708,6 @@ __NS._lb_ = (function () {
     _initModule_    : initModule
   };
   // == END PUBLIC METHODS ============================================
-}());
-// == END MODULE __NS._lb_ ============================================
+};
+// == END MODULE __NS._makeLb_ ========================================
 

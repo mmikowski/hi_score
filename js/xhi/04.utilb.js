@@ -17,13 +17,12 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._utilb_ =======================================
-__NS._utilb_ = (function () {
+// == BEGIN MODULE __NS._makeUtilb_ ===================================
+__NS._makeUtilb_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
-  //noinspection MagicNumberJS
   var
-    aMap     = __NS, // aKey = __ns,
+    // TODO: add when needed: aKey  = aMap._aKey_
     nMap     = aMap._nMap_,
     vMap     = aMap._vMap_,
     __util   = aMap._util_,
@@ -274,7 +273,7 @@ __NS._utilb_ = (function () {
   }
   // END Public method /resizeTextarea/
 
-  return {
+  aMap._utilb_ = {
     _decodeHtml_     : decodeHtml,
     _fillForm_       : fillForm,
     _getFormMap_     : getFormMap,
@@ -282,6 +281,6 @@ __NS._utilb_ = (function () {
     _resizeTextarea_ : resizeTextarea
   };
   // == END PUBLIC METHODS ============================================
-}());
-// == END MODULE __NS._utilb_ =========================================
+};
+// == END MODULE __NS._makeUtilb_ =====================================
 

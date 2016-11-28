@@ -17,15 +17,13 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._css_base_ ==================================
-__NS._css_base_ = (function () {
+// == BEGIN MODULE __NS._makeCssBase_ ==================================
+__NS._makeCssBase_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   //noinspection MagicNumberJS
   var
-    aMap    = __NS,
-    aKey    = __ns,
-
+    aKey    = aMap._aKey_,
     __util  = aMap._util_,
     __p     = __util._makeReplaceFn_( 'p', aKey ),
 
@@ -417,11 +415,11 @@ __NS._css_base_ = (function () {
   // == END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  return {
+  aMap._css_base_ = {
     _globalMixinMap_ : topCmap._global_mixin_map_,
     _selectorList_   : topCmap._selector_list_,
     _themeMapList_   : topCmap._theme_map_list_
   };
   // == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS._css_base_ =======================================
+};
+// == END MODULE __NS._makeCssBase_ ====================================

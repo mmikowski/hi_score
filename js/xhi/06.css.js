@@ -17,14 +17,12 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._css_ ==========================================
-__NS._css_ = (function () {
+// == BEGIN MODULE __NS._makeCss_ ======================================
+__NS._makeCss_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
-    aMap   = __NS,
-    aKey   = __ns,
-
+    aKey   = aMap._aKey_,
     nMap   = aMap._nMap_,
     vMap   = aMap._vMap_,
     __util = aMap._util_,
@@ -159,7 +157,7 @@ __NS._css_ = (function () {
   }
   // END public method /initModule/
 
-  return {
+  aMap._css_ = {
     _getCssKeyMap_     : pcss._getCssKeyMap_,
     _getCssValMap_     : pcss._getCssValMap_,
     _getThemeCount_    : getThemeCount,
@@ -169,6 +167,6 @@ __NS._css_ = (function () {
     _initModule_       : initModule
   };
   // == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS._css_ =============================================
+};
+// == END MODULE __NS._makeCss_ ========================================
 

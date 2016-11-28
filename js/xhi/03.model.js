@@ -1,6 +1,6 @@
 /**
- *    xhi.module-tmplt.js
- *    Feature module template
+ *    xhi.model.js
+ *    Root model module, placeholder.
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -17,41 +17,30 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._tmplt_ ========================================
-__NS._tmplt_ = (function () {
+// == BEGIN MODULE __NS._makeModel_ ====================================
+__NS._makeModel_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
-    aKey     = __ns,
-    aMap     = __NS,
+    aKey    = aMap._aKey_,
+    vMap    = aMap._vMap_,
+    nMap    = aMap._nMap_,
+    __util  = aMap._util_,
 
-    vMap     = aMap._vMap_,
-    nMap     = aMap._nMap_,
-    __util   = aMap._util_,
-
-    __0      = nMap._0_,
-    __1      = nMap._1_,
-    __blank  = vMap._blank_,
+    __0     = nMap._0_,
+    __1     = nMap._1_,
+    __blank = vMap._blank_,
 
     __logObj = __util._getLogObj_(),
-    __logMsg = __logObj._logMsg_,
+    __logMsg  = __logObj._logMsg_,
 
-    topCmap  = {},
-    topSmap  = {},
-
-    $Map
+    topCmap = {},
+    topSmap = {}
     ;
   // == END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN UTILITY METHODS ==========================================
   // == END UTILITY METHODS ============================================
-
-  // == BEGIN DOM METHODS ==============================================
-  // Cache jQuery collections here
-  function set$Map ( $top_box ) {
-    $Map = { _$top_box_ : $top_box };
-  }
-  // == END DOM METHODS ================================================
 
   // == BEGIN EVENT HANDLERS ===========================================
   // == END EVENT HANDLERS =============================================
@@ -62,20 +51,17 @@ __NS._tmplt_ = (function () {
     // Initial DOM content using methods above
     // and then set jQuery colection cache
     //
-    set$Map( $top_box );
-    __logMsg( '_info_', $,
+    __logMsg( '_info_', aKey, $,
       '__0 === ' + __0,
       '__1 === ' + __1,
       '__blank === ' + __blank,
       'Module config map === ', topCmap,
-      'Module state  map === ', topSmap,
-      '$Map:', $Map,
-      aKey, aMap
+      'Module state  map === ', topSmap
     );
   }
 
-  return { _initModule_ : initModule };
+  aMap._model_ = { _initModule_ : initModule };
   // == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS._tmplt_ ==========================================
+};
+// == END MODULE __NS._makeModel_ ======================================
 

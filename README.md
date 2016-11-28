@@ -4,6 +4,47 @@
 An SPA template using best-in-class libraries, assets, and architecture
 as found in [Single Page Web Applications - JavaScript end-to-end][8].
 
+## Hello World Example
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <script src="js/vendor/jquery-3.1.1.js"></script>
+    <script src="js/vendor/pcss-1.3.5.js"></script>
+    <script src="js/vendor/pcss.cfg-1.3.5.js"></script>
+    <script src="js/vendor/jquery.event.gevent-1.1.6.js"></script>
+    <script src="js/vendor/jquery.event.ue-1.3.2.js"></script>
+    
+    <script src="js/xhi/00.js"></script>
+    <script src="js/xhi/01.util.js"></script>
+    <script src="js/xhi/02.data.js"></script>
+    <script src="js/xhi/03.model.js"></script>
+    <script src="js/xhi/04.utilb.js"></script>
+    <script src="js/xhi/05.css_base.js"></script>
+    <script src="js/xhi/05.css_lb.js"></script>
+    <script src="js/xhi/05.css_shell.js"></script>
+    <script src="js/xhi/06.css.js"></script>
+    <script src="js/xhi/06.lb.js"></script>
+    <script src="js/xhi/07.shell.js"></script>
+    <script src="js/xhi/08.app.js"></script>
+
+    <script>
+    $(function () {
+      var aMap = xhi._makeApp_( 'ex01' );
+      aMap._shell_._initModule_( $('body') );
+      aMap._lb_._showLb_({
+        _title_html_ : 'Hello',
+        _content_html_ : '<p>Hello world!</p>'
+          + '<p>Grab this lightbox by the title bar to drag</p>'
+      });
+    });
+    </script>
+  </head>
+  <body></body>
+</html>
+```
+
 # Overview
 There it is again. The new *hot* SPA framework that makes our current
 one obsolete. Now we have to unlearn everything from the old and reinvest
@@ -12,42 +53,79 @@ intricate framework DSLs than the JavaScript we need. Are we ready to get
 off that treadmill?
 
 [Do we really want an SPA framework?][7] If not, then **hi\_score**
-is here to help. Our intention is to provide an ever improving set of
-best-in-class libraries that we control, instead of having a framework
+is here to help. We provide an ever improving set of
+best-in-class libraries that we manage instead of having a framework
 that controls us. We thought of calling it `low-score` or `under-dash`
 but decided to aim higher.
 
 ## Code Style
 We use the code style presented in
 [Single Page Web Applications - JavaScript end-to-end][8]
-(see reviews on [Amazon][9]).
-The [full code standard][a] and the [cheat-sheet][b] are available online.
-The architecture is illustrated in the cheat sheet.
+(see reviews on [Amazon][9]). The [quick reference][b] and the
+[full code standard][a] are available online. The architecture is
+illustrated in the quick reference.
 
 ## The Goal
 Provide an SPA template that not only includes a sample applicaiton, but also
 downloads and sets up best-in-class libraries, assets, and architecture.
 This environment will progress as technology and support evolve.
-The sample applicaiton will eventually be the application shown on the
-**hi\_score** website.
 
-## Key attributes:
+## Key attributes
+Attributes that have yet to be "turned on" are marked WIP:
 
+- A fast, one-touch build system (WIP)
+- Highly Compressible
 - Testable
-- Compressible
-- Type safety [with typecasting][14]
-- Flexible
-- Modern
-- Universal Fractal MVC
-- Tiny compared to most frameworks
-- Stable
 - Commit-hook enforce quality code (JSLint and regression test)
-- A fast, one-touch build system
-- Consistent naming and style
+- Flexible
+- Fractal MVC architecture
+- Type safety [with typecasting][14]
+- Best practice style
+- Stable (WIP)
 
-As of 0.6.6 we have isolating the namespace prefix (`xhi`) to the first few
-lines all modules and have made them all node-friendly. The result is
-highly portable and merge-able code.
+As of 0.7.0 we have adopted a constructor approach to create a
+**hi\_score**-based application. We have isolated the `xhi` libraries to
+the `js/xhi` directory, which leaves the `js` directory open for
+inclusion of the project libraries.  We have also adjusted the `xhi` file
+names to describe their include and call precidence.
+
+## Architecture 
+Are libraries are structured to facilitate loose coupling but strict call
+precidence. For example the `00.js` library must be loaded to the JavaScript
+environment before any other `xhi` code, and it may not call any library with
+a higher precidence number. The `08.app.js`, in comparison, must be loaded
+after all the `00-07` libraries, but it may call any library of the 
+same or lower precidence.  See the diagram below.
+
+```
+ <-------------------------- API CALLS ------------=========<<<<
+  +---------+    +----------+                       +----------+
+  | 02.data |    | 03.model |<----------------------|  Shell   | 
+  |  Data   |<-- |  Model   | ..... events .....))) | 07.shell |
+  |  Fetch  |    +----------+            .          +----------+
+  +---------+      |                     .                    |
+       |           |  +-------------+    .      +---------+   |
+       |-----------+--| 05.css_*    |    .      | 06.lb   |   |
+       |              | 06.css      |    ...))) | litebox |<--|
+       |              | feature css |    .      | feature |   |
+       v              +-------------+    .      +---------+   |
+  +---------+               |            .                    |
+  | 01.util |               v            .      +---------+   |
+  |  Utils  |<------ +----------+        .      | 06.*    |   |
+  +---------+        | Browser  |        ...))) | feature |<--+
+        |            |  Utils   |               | modules |
+        v            | 04.utilb |               +---------+
+  +-----------+      +----------+
+  |   00.js   |
+  | namespace |
+  +-----------+
+ >>>>=========-------------- DATA FLOW ------------------------>
+```
+
+There are two details worthy of note in this diagram.  First, notice how we 
+use model events to communicate changes to the Shell and feature modules.  
+Second, we keep our feature modules isolated from each other.  This enhances 
+portability and quality.
 
 ## Browser compatibility
 Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
@@ -56,7 +134,7 @@ sympathy.
 # Development environment
 ## Linux
 We deploy on Linux so this is our baseline.  As long as you have core
-development libs, git, npm, and node installed on your distro, things 
+development libs, git, npm, and node installed on your distro, things
 should just work. The minimum on Ubuntu Server 16.10 is probably this:
 
 ```bash
@@ -69,10 +147,10 @@ See [this guide][15] for NodeJS package installation on other Linux
 distros. Here is a more [general guide][16] for (k)Ubuntu.
 
 ## Mac
-We recommend using a virtual machine as detailed below.  However you 
+We recommend using a virtual machine as detailed below.  However you
 may get **hi_score** to run natively on Mac. At the very least you'll
 need Bash 4+ and GNU Core utilities installed along with NodeJS, Git,
-PanDoc, and SSH.  This [guide][17] should help with installation of 
+PanDoc, and SSH.  This [guide][17] should help with installation of
 the GNU Core utilities.
 
 ## Windows
@@ -81,7 +159,7 @@ We recommend using a virtual machine as detailed below.  Installation
 tested and wouldn't bet on it :)
 
 ## Virtual Machines
-Since the deployment target is Ubuntu 16.10 Server, one could simply 
+Since the deployment target is Ubuntu 16.10 Server, one could simply
 spin-up an AWS or Virtual Box image running the same for development.
 This is probably the best solution for those not already developing
 with Linux.
@@ -121,9 +199,9 @@ If you create a fork you can create a coveralls report as shown in the [master
 
 ## Updates
 One may update all the npm libraries, npm assets, and the `package.json` file
-with `npm update -D`. If we want these changes to propagate, we must run 
-`npm run prep-libs` again to update the vendor libraries, and update the 
-`index.html` file to point to the updated versions. We expect to automate 
+with `npm update -D`. If we want these changes to propagate, we must run
+`npm run prep-libs` again to update the vendor libraries, and update the
+`index.html` file to point to the updated versions. We expect to automate
 the last step in future updates.
 
 # Vendor assets
@@ -147,10 +225,9 @@ We include the following JavaScript assets:
 - [istanbul][19] Code coverage
 - [jsdom][20] DOM mock for testing
 
-
 Client libraries are copied to the
 `js/vendor` directory with their current version number appended to their
-name. Libraries used for development and testing are not copied. Examples 
+name. Libraries used for development and testing are not copied. Examples
 development libs include nodeunit, jsdom, istanbul, jslint, and coveralls.
 
 ## CSS
@@ -203,12 +280,18 @@ MIT
 - (x) Rationalize libraries
 - (x) Add lite-box regression tests
 
-## Version 0.6.x (current)
+## Version 0.6.x
 - (x) Remove vendor code from repo and auto-copy on install
 - (x) Add native utils `makeThrottleFn` and `makeDebounceFn`
 - (x) Add links to updated code style guides
 - (x) Replace `install` script with `prep-libs` (v0.6.17+)
-- More sophisticated sample application
+
+## Version 0.7.x (current)
+- (x) Move to consturctor approach to easily create multiple
+   concurrent namespaced apps using the common xhi core
+- (x) Update index page to illustrate
+- (x) Make example app less trivial
+- (x) Number code library level
 
 # Similar Projects
 [absurd.js][12], [responsive.js][13]

@@ -17,14 +17,13 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._fake_ ========================================
-__NS._fake_ = (function () {
+// == BEGIN MODULE __NS._makeFake_ ====================================
+__NS._fake_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   //noinspection MagicNumberJS
   var
-    aKey    = __ns,
-    aMap    = __NS,
+    aKey    = aMap._aKey_,
     vMap    = aMap._vMap_,
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
@@ -51,12 +50,11 @@ __NS._fake_ = (function () {
   function logInfo () {
     __logMsg( '_info_', aKey, vMap, nMap );
   }
-
-  return {
+  aMap._fake_ = {
     _logInfo_         : logInfo,
     _fetchExampleMap_ : fetchExampleMap,
     _configModule_    : configModule
   };
   // == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS._fake_ ===========================================
+};
+// == END MODULE __NS._makeFake_ ======================================

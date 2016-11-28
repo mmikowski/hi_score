@@ -1,6 +1,6 @@
-/*
- *    xhi.shell.js
- *    Shell module for xhi application
+/**
+ *    xhi.module-tmplt.js
+ *    Feature module template
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -17,56 +17,50 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._shell_ ========================================
-__NS._shell_ = (function () {
+// == BEGIN MODULE __NS._makeTmplt_ ====================================
+__NS._makeTmplt_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
-    aKey    = __ns,
-    aMap    = __NS,
+    vMap     = aMap._vMap_,
+    nMap     = aMap._nMap_,
+    __util   = aMap._util_,
 
-    vMap    = aMap._vMap_,
-    nMap    = aMap._nMap_,
-    __util  = aMap._util_,
-
-    __0     = nMap._0_,
-    __1     = nMap._1_,
-    __blank = vMap._blank_,
+    __0      = nMap._0_,
+    __1      = nMap._1_,
+    __blank  = vMap._blank_,
 
     __logObj = __util._getLogObj_(),
     __logMsg = __logObj._logMsg_,
 
-    topCmap = {
-      _main_tmplt_ : '<h1>Hello world from |'
-        + aKey + '| namespace</h1>'
-    },
-    topSmap = {},
+    topCmap  = {},
+    topSmap  = {},
 
     $Map
     ;
   // == END MODULE SCOPE VARIABLES =====================================
+
+  // == BEGIN UTILITY METHODS ==========================================
+  // == END UTILITY METHODS ============================================
+
   // == BEGIN DOM METHODS ==============================================
   // Cache jQuery collections here
   function set$Map ( $top_box ) {
     $Map = { _$top_box_ : $top_box };
   }
   // == END DOM METHODS ================================================
+
   // == BEGIN EVENT HANDLERS ===========================================
   // == END EVENT HANDLERS =============================================
+
   // == BEGIN PUBLIC METHODS ===========================================
   function initModule ( $top_box ) {
-
-    // Set styles
-    //
-    aMap._css_._initModule_();
 
     // Initial DOM content using methods above
     // and then set jQuery colection cache
     //
-    $top_box[ vMap._html_ ]( topCmap._main_tmplt_ );
-
     set$Map( $top_box );
-    __logMsg( '_info_',
+    __logMsg( '_info_', $,
       '__0 === ' + __0,
       '__1 === ' + __1,
       '__blank === ' + __blank,
@@ -74,20 +68,10 @@ __NS._shell_ = (function () {
       'Module state  map === ', topSmap,
       '$Map:', $Map
     );
-
-    // Bind shell event handlers (taps, drags, long-press, etc)
-    aMap._lb_._showLb_({
-      _title_html_ : 'Example Application',
-      _content_html_ :
-        '<p>The applicaiton appears to be properly installed!</p>'
-        + '<p>Here are the aMap methods: <br>'
-        + Object.keys( aMap ).join(', ')
-        + '</p>'
-        + '<p>Grab this lightbox by the title bar to drag</p>'
-    });
   }
 
-  return { _initModule_ : initModule };
-// == END PUBLIC METHODS =============================================
-}());
-// == END MODULE __NS._shell_ ==========================================
+  aMap._makeTmplt_ = { _initModule_ : initModule };
+  // == END PUBLIC METHODS =============================================
+};
+// == END MODULE __NS._makeTmplt_ ======================================
+

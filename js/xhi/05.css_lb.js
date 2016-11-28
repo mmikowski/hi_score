@@ -17,14 +17,12 @@ var __ns = 'xhi', __NS;
 try          { __NS = global[ __ns ]; }
 catch ( e1 ) { __NS = window[ __ns ]; }
 
-// == BEGIN MODULE __NS._css_lb_ =======================================
-__NS._css_lb_ = (function () {
+// == BEGIN MODULE __NS._makeCssLb_ ====================================
+__NS._makeCssLb_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
-    aMap    = __NS,
-    aKey    = __ns,
-
+    aKey    = aMap._aKey_,
     __util  = aMap._util_,
     __p     = __util._makeReplaceFn_( 'p', aKey ),
 
@@ -153,12 +151,12 @@ __NS._css_lb_ = (function () {
           }
         }
       ]
-    }
-    ;
-  // ================== END MODULE SCOPE VARIABLES =====================
+    };
+  // == END MODULE SCOPE VARIABLES =====================================
 
-  // ====================== BEGIN PUBLIC METHODS =======================
-  return { _selectorList_ : topCmap._selector_list_ };
-  // ======================= END PUBLIC METHODS ========================
-}());
-// == END MODULE __NS._css_lb_ =========================================
+  // == BEGIN PUBLIC METHODS ===========================================
+  aMap._css_lb_ = { _selectorList_ : topCmap._selector_list_ };
+  // == END PUBLIC METHODS =============================================
+};
+// == END MODULE __NS._makeCssLb_ ======================================
+
