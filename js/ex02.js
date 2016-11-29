@@ -10,12 +10,13 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global $, xhi:true, ex01 */
+/*global $, xhi:true, ex02 */
 $(function () {
   'use strict';
   var aMap = xhi._makeApp_( 'ex02' );
-  aMap._shell_._initModule_( $('body') );
-  aMap._lb_._showLb_({
+
+  ex02._shell_._initModule_( $('body') );
+  ex02._lb_._showLb_({
     _title_html_ : 'Example 02',
     _content_html_ :
       '<p><strong>hi_score</strong> appears to be properly installed!</p>'

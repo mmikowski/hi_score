@@ -1,9 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <title>hi_score overview</title>
   <!-- meta -->
-  <!-- see http://www.html5rocks.com/en/mobile/touch.html
-   prevents native zooming -->
   <meta name="viewport" content="width=device-width user-scalable=no
     initial-scale=1,maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,27 +24,35 @@
   li { margin-bottom: 1rem; }
   .main {
     max-width: 960px;
-    margin: 1rem auto;
+    margin: 2rem auto;
     background:#fff;
     box-shadow: 0 0 1rem 0 #000;
     border-radius: 1rem;
-    padding : 1rem;
+    padding : 0 2rem 1rem 2rem;
+    overflow: hidden;
+  }
+  h1 {
+    background : #844;
+    color  : #fff;
+    margin : 0 -2rem;
+    padding : 1rem 2rem;
+  }
   </style>
-  <!-- scripts -->
   </script>
 </head>
 <body>
 <div class="main">
   <h1>hi_score</h1>
-  <p>This is a demonstration page.  If you wish to read the documentation,
+  <p>Welcome to <code>hi_score</code>!</p>
+  <p>This is a demonstration page. If you wish to read the documentation,
   please see <a href="https://github.com/mmikowski/hi_score">the Github
   repository</a>.</p>
 
-  <p>Please click on the following links to open two similar web applications
-  in two additional tabs<p>
+  <p>Please ctrl-click on the following links to open two similar web applications
+  in two additional tabs:</p>
   <ul>
-    <li><a href="./ex01.html" target="blank">Example 01 (ex01)</a></li>
-    <li><a href="./ex02.html" target="blank">Example 01 (ex02)</a></li>
+    <li><a href="./ex01.html" target="blank">Example 1 (ex01)</a></li>
+    <li><a href="./ex02.html" target="blank">Example 2 (ex02)</a></li>
   </ul>
 
   <p>Both of the applications use the <b>xhi</b> libraries, yet they have
@@ -59,7 +66,7 @@
     We will see that that the namespace <code>ex01</code> contains our application
     code while <code>ex02</code> is undefined. If, however, we open the the
     <b>Example 02</b> tab and do the same, we will find that <code>ex01</code>
-    is undefined, and that <code>ex02</code> contains our applicaiton code.</li>
+    is undefined, and that <code>ex02</code> contains our application.</li>
 
     <li><b>CSS NameSpacing:</b>
     If we inspect the HTML entities in the <b>Example 01</b> tab we can see that

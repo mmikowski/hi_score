@@ -31,9 +31,10 @@ as found in [Single Page Web Applications - JavaScript end-to-end][8].
 
     <script>
     $(function () {
-      var aMap = xhi._makeApp_( 'ex01' );
-      aMap._shell_._initModule_( $('body') );
-      aMap._lb_._showLb_({
+      xhi._makeApp_( 'ex01' );
+
+      ex01._shell_._initModule_( $('body') );
+      ex01._lb_._showLb_({
         _title_html_   : 'Hello World',
         _content_html_ : '<p>Grab the title bar to drag.</p>'
       });

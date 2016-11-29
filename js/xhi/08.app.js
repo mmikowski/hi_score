@@ -12,10 +12,13 @@
 */
 /*global */
 
-var __ns = 'xhi', __NS;
+var __global, __NS;
+
 /* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
+try          { __global = global; }
+catch ( e1 ) { __global = window; }
+
+__NS = __global.xhi;
 
 __NS._makeApp_ = function ( app_key ) {
   'use strict';
@@ -30,5 +33,8 @@ __NS._makeApp_ = function ( app_key ) {
   __NS._makeCss_(      app_map );
   __NS._makeLb_(       app_map );
   __NS._makeShell_(    app_map );
+
+  // Assign to global namespace in Node or Browser
+  __global[ app_key ] = app_map;
   return app_map;
 };

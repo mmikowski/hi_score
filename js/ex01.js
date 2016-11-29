@@ -14,8 +14,9 @@
 $(function () {
   'use strict';
   var aMap = xhi._makeApp_( 'ex01' );
-  aMap._shell_._initModule_( $('body') );
-  aMap._lb_._showLb_({
+
+  ex01._shell_._initModule_( $('body') );
+  ex01._lb_._showLb_({
     _title_html_ : 'Example 01',
     _content_html_ :
       '<p><strong>hi_score</strong> appears to be properly installed!</p>'
