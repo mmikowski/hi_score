@@ -20,40 +20,53 @@
   <!-- stylesheets -->
   <link rel="stylesheet" href="css/xhi-fonts.css">
   <link rel="stylesheet" href="css/font-awesome-4.7.0-mod.css">
+  <style>
+  html { font-family: opensans; font-size: 16px; }
+  li { margin-bottom: 1rem; }
+  .main {
+    max-width: 960px;
+    margin: 1rem auto;
+    background:#fff;
+    box-shadow: 0 0 1rem 0 #000;
+    border-radius: 1rem;
+    padding : 1rem;
+  </style>
   <!-- scripts -->
   </script>
 </head>
 <body>
-<h1>hi_score</h1>
-<p>This is a demonstration page.  If you wish to read the documentation,
-please see <a href="https://github.com/mmikowski/hi_score">the Github
-repository</a>.</p>
+<div class="main">
+  <h1>hi_score</h1>
+  <p>This is a demonstration page.  If you wish to read the documentation,
+  please see <a href="https://github.com/mmikowski/hi_score">the Github
+  repository</a>.</p>
 
-<p>Please click on the following links to open two similar web applications
-in two additional tabs<p>
-<ul>
-  <li><a href="./ex01.html" target="blank">Example 01 (ex01)</a></li>
-  <li><a href="./ex02.html" target="blank">Example 01 (ex02)</a></li>
-</ul>
+  <p>Please click on the following links to open two similar web applications
+  in two additional tabs<p>
+  <ul>
+    <li><a href="./ex01.html" target="blank">Example 01 (ex01)</a></li>
+    <li><a href="./ex02.html" target="blank">Example 01 (ex02)</a></li>
+  </ul>
 
-<p>Both of the applications use the <b>xhi</b> libraries, yet they have
-their own namespaces. Let's open the JavaScript debugger and consider a
-few examples:</p>
+  <p>Both of the applications use the <b>xhi</b> libraries, yet they have
+  their own namespaces. Let's open the JavaScript debugger and consider a
+  few examples:</p>
 
-<ul>
-  <li><b>JavaScript NameSpacing:</b>
-  In the <b>Example 01</b> tab we can type <code>ex01</code> into the console
-  and press return. Then we can type in <code>ex02</code> and press return.
-  We will see that that the namespace <code>ex01</code> contains our application
-  code while <code>ex02</code> is undefined. If, however, we open the the
-  <b>Example 02</b> tab and do the same, we will find that <code>ex01</code>
-  is undefined, and that <code>ex02</code> contains our applicaiton code.<li>
-  <li><b>CSS NameSpacing:</b>
-  If we inspect the HTML entities in the <b>Example 01</b> tab we can see that
-  nearly all the classes the <code>ex01</code> prefix. However,
-  all the classes in the <b>Example 02</b> tab use the <code>ex02</code>
-  prefix.</li>
-</ul>
+  <ul>
+    <li><b>JavaScript NameSpacing:</b>
+    In the <b>Example 01</b> tab we can type <code>ex01</code> into the console
+    and press return. Then we can type in <code>ex02</code> and press return.
+    We will see that that the namespace <code>ex01</code> contains our application
+    code while <code>ex02</code> is undefined. If, however, we open the the
+    <b>Example 02</b> tab and do the same, we will find that <code>ex01</code>
+    is undefined, and that <code>ex02</code> contains our applicaiton code.</li>
 
+    <li><b>CSS NameSpacing:</b>
+    If we inspect the HTML entities in the <b>Example 01</b> tab we can see that
+    nearly all the classes the <code>ex01</code> prefix. However,
+    all the classes in the <b>Example 02</b> tab use the <code>ex02</code>
+    prefix.</li>
+  </ul>
+</div>
 </body>
 </html>

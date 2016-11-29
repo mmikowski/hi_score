@@ -16,12 +16,12 @@ $(function () {
   var aMap = xhi._makeApp_( 'ex02' );
   aMap._shell_._initModule_( $('body') );
   aMap._lb_._showLb_({
-    _title_html_ : 'Example Application',
+    _title_html_ : 'Example 02',
     _content_html_ :
       '<p><strong>hi_score</strong> appears to be properly installed!</p>'
       + '<p>The hi_score application map (aMap) attributes are as follows: <br>'
       + Object.keys( aMap ).join('<br>')
       + '</p>'
-      + '<p>Grab this lightbox by the title bar to drag</p>'
+      + '<p>Drag the title bar to move this lightbox.</p>'
   });
 });
