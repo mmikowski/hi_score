@@ -21,8 +21,6 @@ catch ( e1 ) { __NS = window[ __ns ]; }
 __NS._makeUtil_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
-  // ================= BEGIN MODULE SCOPE VARIABLES ===================
-  //noinspection MagicNumberJS
   var
     aKey   = aMap._aKey_,
     vMap   = aMap._vMap_,
