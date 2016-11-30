@@ -20,23 +20,42 @@
   <link rel="stylesheet" href="css/xhi-fonts.css">
   <link rel="stylesheet" href="css/font-awesome-4.7.0-mod.css">
   <style>
-  html { font-family: opensans; font-size: 16px; }
+  html {
+    font-family : opensans;
+    font-size   : 16px;
+    background  : #aaa;
+  }
+  body { margin : 0; padding : 0; }
+  p { margin-bottom: 0 0 1rem 0; }
   li { margin-bottom: 1rem; }
   .main {
-    max-width: 960px;
-    margin: 2rem auto;
-    background:#fff;
-    box-shadow: 0 0 1rem 0 #000;
-    border-radius: 1rem;
-    padding : 0 2rem 1rem 2rem;
-    overflow: hidden;
+    max-width  : 960px;
+    margin     : 2rem auto;
+    box-shadow : 0 0 1rem 0 #000;
+    padding    : 0 2rem 1rem 2rem;
+    border-radius : 1rem;
+    background : #fff;
+    overflow   : hidden;
   }
   h1 {
+    margin     : 0 -2rem 2rem -2rem;
+    padding    : 1rem 2rem;
     background : #844;
-    color  : #fff;
-    margin : 0 -2rem;
-    padding : 1rem 2rem;
+    color      : #fff;
   }
+  @media all and (max-width: 1080px) {
+    .main {
+      margin : 2rem;
+    }
+  }
+  @media all and (max-width: 650px) {
+    .main {
+      margin : 0;
+      box-shadow : none;
+      border-radius: 0;
+    }
+  }
+
   </style>
   </script>
 </head>
