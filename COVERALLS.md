@@ -16,7 +16,7 @@ The report page should look similar to the [master branch site][1].
 # Configuration
 Below are the steps we used to get coverage working. Many thanks to Elliot
 Stokes who's [blog post][2] provided most of the information.
-Most of this work is already integrated into **hi_score**.  If you want to 
+Most of this work is already integrated into **hi_score**. If you wish to 
 publish a coveralls report for your fork, look at step 4.
 
 ## 1. Install istanbul
