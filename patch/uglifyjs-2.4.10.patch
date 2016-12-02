@@ -1,0 +1,53 @@
+diff -Naur uglifyjs/lib/scope.js uglifyjs/lib/scope.js
+--- uglifyjs/lib/scope.js	2015-03-11 19:31:00.000000000 -0700
++++ uglifyjs/lib/scope.js	2016-12-01 21:59:56.747082703 -0800
+@@ -246,27 +246,34 @@
+     return symbol.thedef = def;
+ });
+ 
+-AST_Scope.DEFMETHOD("next_mangled", function(options){
+-    var ext = this.enclosed;
+-    out: while (true) {
+-        var m = base54(++this.cname);
+-        if (!is_identifier(m)) continue; // skip over "do"
++// BEGIN hi_scope patch line 249
++AST_Scope.DEFMETHOD( 'next_mangled', function( options ) {
++    var sym, name, m, n, j, i, ext = this.enclosed;
++    OUT: for ( j = 0; j < 1000; j++ ) {
++        m = base54( ++this.cname );
++        n = '_' + m + '_';
++
++        if ( ! is_identifier( n ) ) { continue OUT; }
+ 
+         // https://github.com/mishoo/UglifyJS2/issues/242 -- do not
+         // shadow a name excepted from mangling.
+-        if (options.except.indexOf(m) >= 0) continue;
++        //
++        if ( options.except.indexOf( n ) >= 0 ) { continue OUT; }
+ 
+-        // we must ensure that the mangled name does not shadow a name
+-        // from some parent scope that is referenced in this or in
+-        // inner scopes.
+-        for (var i = ext.length; --i >= 0;) {
+-            var sym = ext[i];
+-            var name = sym.mangled_name || (sym.unmangleable(options) && sym.name);
+-            if (m == name) continue out;
++        // we must ensure that the mangled name does not shadow a name from
++        // some parent scope that is referenced in this or in inner scopes.
++        //
++        for ( i = ext.length; --i >= 0; ) {
++            sym = ext[i];
++            name = sym.mangled_name
++                || ( sym.unmangleable(options) && sym.name );
++            if ( n === name ) { continue OUT; }
+         }
+-        return m;
+-    }
++        return n;
++     }
++     throw 'Cannot find unique key after 1000 iterations';
+ });
++// END hi_score patch line 276
+
+ AST_Function.DEFMETHOD("next_mangled", function(options, def){
+     // #179, #326
