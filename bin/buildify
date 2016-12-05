@@ -253,14 +253,14 @@ abort () {
       -s|--stagedir)     STAGE_DIR="$2";  shift 2 ;;
       -p|--proddir)      PROD_DIR="$2";   shift 2 ;;
       -t|--tmpltdir)     TMPLT_DIR="$2";  shift 2 ;;
-      --) shift ; break ;;
-      *) echose "Trouble processing command line."; abort ;;
+      --) shift; break ;;
+       *) VERBOSE_SW=1;
+          echose "Trouble processing command line.";
+          abort ;;
     esac
   done
 
-  if [ ${HELP_SW} -gt 0 ]; then
-    usage;
-  fi
+  if [ ${HELP_SW} -gt 0 ]; then usage; fi
   ## END get options (see /usr/share/doc/util-linux/examples/getopt-parse.bash)
 
   ## BEGIN set global log to start
@@ -340,6 +340,7 @@ abort () {
   done
 
   if [ "${#MANIFEST_LIST[*]}" = 0 ]; then
+    VERBOSE_SW=1;
     loggit "## ! No build file provided."
     abort;
   fi
