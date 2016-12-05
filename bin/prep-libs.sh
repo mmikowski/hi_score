@@ -12,21 +12,23 @@
 set -u;
 
   ## == BEGIN Layout variables ===============================================
+  APP_NAME=$( basename $0 );
   echo;
-  echo "start prep-libs";
+  echo "start ${APP_NAME}";
   echo "  > layout vars";
     GIT_EXE=$(   which git );
     PATCH_EXE=$( which patch );
 
-    LN_PATH=$( readlink -f -- "${0}" );
-    ORI_DIR=$( pwd );
+    APP_LINK=$( readlink -f -- "${0}" );
+    ORIG_DIR=$( pwd );
 
-    BIN_DIR=$( cd "${LN_PATH%/*}" && echo "${PWD}" );
+    BIN_DIR=$( cd "${APP_LINK%/*}" && echo "${PWD}" );
     NPM_DIR=$( dirname "${BIN_DIR}" );
 
     APP_DIR="${NPM_DIR}";
     GIT_DIR="";
     MOD_DIR="${NPM_DIR}/node_modules";
+
     PKG_FILE="${NPM_DIR}/package.json";
     UGLY_DIR="${MOD_DIR}/uglifyjs";
     SCOPE_FILE="${UGLY_DIR}/lib/scope.js";
@@ -190,7 +192,7 @@ set -u;
     else
       echo "  !  WARN: Could not install git hook.";
       echo "           Once you have checked in your code "
-      echo "           you may run 'npm run prep-libs' again "
+      echo "           you may run 'npm run ${APP_NAME}' again "
       echo "           to install the commit hook."
     fi
   # echo "  << main / add git hook"; 
@@ -210,9 +212,9 @@ set -u;
   # echo "  << main / patch uglifyjs";
   echo;
 
-  cd "${ORI_DIR}";
+  cd "${ORIG_DIR}";
   # echo "  <  main"
-  echo "end prep-libs";
+  echo "end ${APP_NAME}";
   echo;
 
   exit 0;
