@@ -284,14 +284,14 @@ abort () {
   ## END set up temporary storage area
 
   ## BEGIN Find SuperPack
-  SP_EXE="${BIN_DIR}/superpack.pl";
-  if [ -z "${SP_EXE}" ]; then
+  SUPERPACK_EXE="${BIN_DIR}/superpack.pl";
+  if [ -z "${SUPERPACK_EXE}" ]; then
     VERBOSE_SW=1;
     loggit "## ! Unable to locate the SuperPack compressor.";
     loggit " # See Michael Mikowski for original executable.";
     abort;
   fi
-  if ( ! perl -cw "${SP_EXE}" >/dev/null 2>&1 ); then
+  if ( ! perl -cw "${SUPERPACK_EXE}" >/dev/null 2>&1 ); then
     VERBOSE_SW=1;
     loggit "## ! SuperPack is not valid perl.";
     loggit " # Please install perl-List-MoreUtils perl-File-Slurp ";
@@ -491,16 +491,17 @@ abort () {
     CONCAT_CSS_FILE="${TMP_DIR}/$$.${MANIFEST_SHORTNAME}-src.css";
 
     STAGE_ROOT_NAME="${STAGE_DIR}/${MANIFEST_SHORTNAME}";
-    UGJS_LOG_FILE="${STAGE_ROOT_NAME}-ug_js.log";
-    SP_LOG_FILE="${STAGE_ROOT_NAME}-sp.log";
-    SP_DIAG_FILE="${STAGE_ROOT_NAME}-sp.diag";
-    UGCSS_LOG_FILE="${STAGE_ROOT_NAME}-ug_css.log";
 
-    JS_OUT_FILE="${STAGE_ROOT_NAME}-raw.js";
+    SUPERPACK_LOG_FILE="${STAGE_ROOT_NAME}-sp.log";
+    SUPERPACK_DIAG_FILE="${STAGE_ROOT_NAME}-sp.diag";
+    UGCSS_LOG_FILE="${STAGE_ROOT_NAME}-ug_css.log";
+    UGJS_LOG_FILE="${STAGE_ROOT_NAME}-ug_js.log";
+
     CSS_OUT_FILE="${STAGE_ROOT_NAME}-raw.css";
-    MIN_JS_OUT_FILE="${STAGE_ROOT_NAME}-min.js";
+    JS_OUT_FILE="${STAGE_ROOT_NAME}-raw.js";
+    UGCSS_OUT_FILE="${STAGE_ROOT_NAME}-min.css";
+    UGJS_OUT_FILE="${STAGE_ROOT_NAME}-min.js";
     SUPERPACK_OUT_FILE="${STAGE_ROOT_NAME}-sp.js";
-    MIN_CSS_OUT_FILE="${STAGE_ROOT_NAME}-min.css";
 
     LOG_FILE="${STAGE_ROOT_NAME}-raw.log";
     if !  echo -n > "${LOG_FILE}"; then
@@ -533,12 +534,12 @@ abort () {
       loggit "## Uglify compressing '${CONCAT_JS_FILE}'";
 
       ${UGJS_EXE} "${CONCAT_JS_FILE}" -mc \
-        1>  "${MIN_JS_OUT_FILE}" \
+        1>  "${UGJS_OUT_FILE}" \
         2>> "${UGJS_LOG_FILE}";
       UGJS_EXIT_STATUS=$?;
 
       if [ ${UGJS_EXIT_STATUS} == 0 ]; then
-        loggit "  # Compression successful.  Output is '${MIN_JS_OUT_FILE}'";
+        loggit "  # Compression successful.  Output is '${UGJS_OUT_FILE}'";
         rm "${UGJS_LOG_FILE}";
       else
         VERBOSE_SW=1;
@@ -551,21 +552,20 @@ abort () {
 
     ## BEGIN run superpack on this file if config found
     if [ -r "${CONCAT_JS_FILE}" ] && [ ${NOCOMPRESS_SW} -eq 0 ]; then
-      ${SP_EXE} \
-        -i "${MIN_JS_OUT_FILE}" \
+      ${SUPERPACK_EXE} \
+        -i "${UGJS_OUT_FILE}" \
         -o "${SUPERPACK_OUT_FILE}" \
-        -l "${SP_LOG_FILE}" \
-        > ${SP_DIAG_FILE} 2>&1
+        -l "${SUPERPACK_LOG_FILE}" \
+        > ${SUPERPACK_DIAG_FILE} 2>&1
 
-      SP_EXIT_STATUS=$?;
+      SUPERPACK_EXIT_STATUS=$?;
 
-      if [ ${SP_EXIT_STATUS} == 0 ]; then
+      if [ ${SUPERPACK_EXIT_STATUS} == 0 ]; then
         loggit "  # SuperPack successful.  Output is '${SUPERPACK_OUT_FILE}'";
-        # rm "${SP_LOG_FILE}";
       else
         VERBOSE_SW=1;
         loggit "  # ! SuperPack of '${CONCAT_JS_FILE}' not successfull";
-        loggit "  # ! See '${SP_LOG_FILE}' for errors";
+        loggit "  # ! See '${SUPERPACK_LOG_FILE}' for errors";
         abort;
       fi
     fi
@@ -595,12 +595,12 @@ abort () {
       loggit "## UglifyCSS Compressing '${CONCAT_CSS_FILE}'";
     
       ${UGCSS_EXE} "${CONCAT_CSS_FILE}" \
-        1> "${MIN_CSS_OUT_FILE}" \
+        1> "${UGCSS_OUT_FILE}" \
         2>> "${UGCSS_LOG_FILE}";
       UGCSS_EXIT_STATUS=$?;
     
       if [ ${UGCSS_EXIT_STATUS} == 0 ]; then
-        loggit "  # Compression successful.  Output is '${MIN_CSS_OUT_FILE}'";
+        loggit "  # Compression successful.  Output is '${UGCSS_OUT_FILE}'";
         rm "${UGCSS_LOG_FILE}";
       else
         VERBOSE_SW=1;
