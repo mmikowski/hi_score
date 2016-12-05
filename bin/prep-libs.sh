@@ -133,6 +133,11 @@ set -u;
 
   echo "  >> main / copy vendor libs"; 
     cd "${APP_DIR}/js/vendor";
+
+    vrs=$(getVrs powercss);
+    cp "${MOD_DIR}/powercss/dist/pcss.js" "pcss-${vrs}.js"
+    cp "${MOD_DIR}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
+
     vrs=$(getVrs jquery);
     cp "${MOD_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js";
 
@@ -155,10 +160,6 @@ set -u;
     vrs=$(getVrs jquery.urianchor);
     cp "${MOD_DIR}/jquery.urianchor/jquery.uriAnchor.js" \
       "jquery.urianchor-${vrs}.js";
-
-    vrs=$(getVrs powercss);
-    cp "${MOD_DIR}/powercss/dist/pcss.js" "pcss-${vrs}.js"
-    cp "${MOD_DIR}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
 
     vrs=$(getVrs taffydb);
     cp "${MOD_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
