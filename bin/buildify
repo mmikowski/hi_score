@@ -235,20 +235,24 @@ abort () {
     --long help,usage,nocompress,verbose,distdir:,stagedir:,proddir:,tmpltdir: \
       -n "${APP_NAME}" -- "$@")
 
-  if [ $? != 0 ] ; then echose "Trouble processing command line."; abort; fi
+  if [ $? != 0 ] ; then
+		VERBOSE_SW=1;
+    echose "Trouble processing command line.";
+    abort; 
+  fi
 
   # Note the quotes around $TEMP: they are essential!
   eval set -- "${TEMP}"
 
   while true; do
     case "$1" in
-      -h|--help|--usage) HELP_SW=1; shift ;;
+      -h|--help|--usage) HELP_SW=1;       shift ;;
       -n|--nocompress)   NOCOMPRESS_SW=1; shift ;;
-      -v|--verbose)      VERBOSE_SW=1; shift ;;
-      -d|--distdir)      DIST_DIR="$2"; shift 2 ;;
-      -s|--stagedir)     STAGE_DIR="$2" ; shift 2 ;;
-      -p|--proddir)      PROD_DIR="$2"  ; shift 2 ;;
-      -t|--tmpltdir)     TMPLT_DIR="$2" ; shift 2 ;;
+      -v|--verbose)      VERBOSE_SW=1;    shift ;;
+      -d|--distdir)      DIST_DIR="$2";   shift 2 ;;
+      -s|--stagedir)     STAGE_DIR="$2";  shift 2 ;;
+      -p|--proddir)      PROD_DIR="$2";   shift 2 ;;
+      -t|--tmpltdir)     TMPLT_DIR="$2";  shift 2 ;;
       --) shift ; break ;;
       *) echose "Trouble processing command line."; abort ;;
     esac
@@ -485,19 +489,19 @@ abort () {
     CONCAT_JS_FILE="${TMP_DIR}/$$.${MANIFEST_SHORTNAME}-src.js";
     CONCAT_CSS_FILE="${TMP_DIR}/$$.${MANIFEST_SHORTNAME}-src.css";
 
-    STAGE_FILE_ROOTNAME="${STAGE_DIR}/${MANIFEST_SHORTNAME}";
-    PATH_FILE_UGJS_LOG="${STAGE_FILE_ROOTNAME}-ug_js.log";
-    PATH_FILE_SP_LOG="${STAGE_FILE_ROOTNAME}-sp.log";
-    PATH_FILE_SP_DIAG="${STAGE_FILE_ROOTNAME}-sp.diag";
-    PATH_FILE_UGCSS_LOG="${STAGE_FILE_ROOTNAME}-ug_css.log";
+    STAGE_ROOT_NAME="${STAGE_DIR}/${MANIFEST_SHORTNAME}";
+    UGJS_LOG_FILE="${STAGE_ROOT_NAME}-ug_js.log";
+    SP_LOG_FILE="${STAGE_ROOT_NAME}-sp.log";
+    SP_DIAG_FILE="${STAGE_ROOT_NAME}-sp.diag";
+    UGCSS_LOG_FILE="${STAGE_ROOT_NAME}-ug_css.log";
 
-    OUT_JS_FILE="${STAGE_FILE_ROOTNAME}-raw.js";
-    OUT_CSS_FILE="${STAGE_FILE_ROOTNAME}-raw.css";
-    PATH_FILE_OUT_MIN_JS="${STAGE_FILE_ROOTNAME}-min.js";
-    PATH_FILE_OUT_SP_JS="${STAGE_FILE_ROOTNAME}-sp.js";
-    PATH_FILE_OUT_MIN_CSS="${STAGE_FILE_ROOTNAME}-min.css";
+    JS_OUT_FILE="${STAGE_ROOT_NAME}-raw.js";
+    CSS_OUT_FILE="${STAGE_ROOT_NAME}-raw.css";
+    MIN_JS_OUT_FILE="${STAGE_ROOT_NAME}-min.js";
+    SUPERPACK_OUT_FILE="${STAGE_ROOT_NAME}-sp.js";
+    MIN_CSS_OUT_FILE="${STAGE_ROOT_NAME}-min.css";
 
-    LOG_FILE="${STAGE_FILE_ROOTNAME}-raw.log";
+    LOG_FILE="${STAGE_ROOT_NAME}-raw.log";
     if !  echo -n > "${LOG_FILE}"; then
       VERBOSE_SW=1;
       LOG_FILE='';
@@ -528,17 +532,17 @@ abort () {
       loggit "## Uglify compressing '${CONCAT_JS_FILE}'";
 
       ${UGJS_EXE} "${CONCAT_JS_FILE}" -mc \
-        1>  "${PATH_FILE_OUT_MIN_JS}" \
-        2>> "${PATH_FILE_UGJS_LOG}";
+        1>  "${MIN_JS_OUT_FILE}" \
+        2>> "${UGJS_LOG_FILE}";
       UGJS_EXIT_STATUS=$?;
 
       if [ ${UGJS_EXIT_STATUS} == 0 ]; then
-        loggit "  # Compression successful.  Output is '${PATH_FILE_OUT_MIN_JS}'";
-        rm "${PATH_FILE_UGJS_LOG}";
+        loggit "  # Compression successful.  Output is '${MIN_JS_OUT_FILE}'";
+        rm "${UGJS_LOG_FILE}";
       else
         VERBOSE_SW=1;
         loggit "  # ! Compression of '${CONCAT_JS_FILE}' not successfull";
-        loggit "  # ! See '${PATH_FILE_UGJS_LOG}' for errors";
+        loggit "  # ! See '${UGJS_LOG_FILE}' for errors";
         abort;
       fi
     fi
@@ -547,20 +551,20 @@ abort () {
     ## BEGIN run superpack on this file if config found
     if [ -r "${CONCAT_JS_FILE}" ] && [ ${NOCOMPRESS_SW} -eq 0 ]; then
       ${SP_EXE} \
-        -i "${PATH_FILE_OUT_MIN_JS}" \
-        -o "${PATH_FILE_OUT_SP_JS}" \
-        -l "${PATH_FILE_SP_LOG}" \
-        > ${PATH_FILE_SP_DIAG} 2>&1
+        -i "${MIN_JS_OUT_FILE}" \
+        -o "${SUPERPACK_OUT_FILE}" \
+        -l "${SP_LOG_FILE}" \
+        > ${SP_DIAG_FILE} 2>&1
 
       SP_EXIT_STATUS=$?;
 
       if [ ${SP_EXIT_STATUS} == 0 ]; then
-        loggit "  # SuperPack successful.  Output is '${PATH_FILE_OUT_SP_JS}'";
-        # rm "${PATH_FILE_SP_LOG}";
+        loggit "  # SuperPack successful.  Output is '${SUPERPACK_OUT_FILE}'";
+        # rm "${SP_LOG_FILE}";
       else
         VERBOSE_SW=1;
         loggit "  # ! SuperPack of '${CONCAT_JS_FILE}' not successfull";
-        loggit "  # ! See '${PATH_FILE_SP_LOG}' for errors";
+        loggit "  # ! See '${SP_LOG_FILE}' for errors";
         abort;
       fi
     fi
@@ -590,17 +594,17 @@ abort () {
       loggit "## UglifyCSS Compressing '${CONCAT_CSS_FILE}'";
     
       ${UGCSS_EXE} "${CONCAT_CSS_FILE}" \
-        1> "${PATH_FILE_OUT_MIN_CSS}" \
-        2>> "${PATH_FILE_UGCSS_LOG}";
+        1> "${MIN_CSS_OUT_FILE}" \
+        2>> "${UGCSS_LOG_FILE}";
       UGCSS_EXIT_STATUS=$?;
     
       if [ ${UGCSS_EXIT_STATUS} == 0 ]; then
-        loggit "  # Compression successful.  Output is '${PATH_FILE_OUT_MIN_CSS}'";
-        rm "${PATH_FILE_UGCSS_LOG}";
+        loggit "  # Compression successful.  Output is '${MIN_CSS_OUT_FILE}'";
+        rm "${UGCSS_LOG_FILE}";
       else
         VERBOSE_SW=1;
         loggit "  # ! Compression of '${CONCAT_CSS_FILE}' not successfull";
-        loggit "  # ! See '${PATH_FILE_UGCSS_LOG}' for warnings";
+        loggit "  # ! See '${UGCSS_LOG_FILE}' for warnings";
         abort;
       fi
     fi
@@ -611,8 +615,8 @@ abort () {
 
     ## BEGIN move over remaining files
     for PAIR in \
-      "${CONCAT_JS_FILE}_XX_${OUT_JS_FILE}" \
-      "${CONCAT_CSS_FILE}_XX_${OUT_CSS_FILE}";
+      "${CONCAT_JS_FILE}_XX_${JS_OUT_FILE}" \
+      "${CONCAT_CSS_FILE}_XX_${CSS_OUT_FILE}";
     do
       SRC=$(echo "${PAIR}" |gawk -F'_XX_' '{print $1}');
       DST=$(echo "${PAIR}" |gawk -F'_XX_' '{print $2}');
