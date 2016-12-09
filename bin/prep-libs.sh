@@ -1,6 +1,16 @@
 #!/bin/bash
-# 1. Wipe and re-copy vendor libs to the js/vendor and css/vendor directories
-#    using the current version from package.json.
+
+## See style-guide
+## https://google.github.io/styleguide/shell.xml#Function_Names
+## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
+
+## Exit when encountering undeclared variables
+## The -e check ( exit when encountering a non-zero exit status )
+## As we do our own checking 
+set -u;
+
+# 1. Wipes and copy vendor libs to the js/vendor, css/vendor, and
+#    font/vendor directories using the current version from package.json.
 # 2. Install the commit hook if git is detected.
 #
 # TODO:
@@ -9,40 +19,39 @@
 #    (consider using sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html' )
 #
 
-set -u;
-
   ## == BEGIN Layout variables ===============================================
-  APP_NAME=$( basename $0 );
-  echo;
-  echo "start ${APP_NAME}";
+  _app_name=$( basename $0 );
+  _orig_dir=$( pwd );
+  echo "start ${_app_name}";
   echo "  > layout vars";
-    GIT_EXE=$(   which git );
-    PATCH_EXE=$( which patch );
 
-    APP_LINK=$( readlink -f -- "${0}" );
-    ORIG_DIR=$( pwd );
+    # app path and name
+    _app_link=$( readlink -f -- "${0}" );
+    _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
 
-    BIN_DIR=$( cd "${APP_LINK%/*}" && echo "${PWD}" );
-    NPM_DIR=$( dirname "${BIN_DIR}" );
+    # npm module paths
+    _npm_dir=$( dirname "${_bin_dir}" );
+    _mod_dir="${_npm_dir}/node_modules";
+    _app_dir="${_npm_dir}";
+    _pkg_file="${_npm_dir}/package.json";
+    _ugly_dir="${_mod_dir}/uglifyjs";
+    _scope_file="${_ugly_dir}/lib/scope.js";
 
-    APP_DIR="${NPM_DIR}";
-    GIT_DIR="";
-    MOD_DIR="${NPM_DIR}/node_modules";
+    _version_str="";
+    _patch_str="// BEGIN hi_scope patch line 249";
+    _patch_file="${_npm_dir}/patch/uglifyjs-2.4.10.patch";
 
-    PKG_FILE="${NPM_DIR}/package.json";
-    UGLY_DIR="${MOD_DIR}/uglifyjs";
-    SCOPE_FILE="${UGLY_DIR}/lib/scope.js";
+    # executables
+    _git_exe=$(   which git );
+    _patch_exe=$( which patch );
 
-    VRS_STR="";
-    PATCH_STR="// BEGIN hi_scope patch line 249";
-    PATCH_FILE="${NPM_DIR}/patch/uglifyjs-2.4.10.patch";
   # echo "  < layout vars";
   ## == END Layout variables =================================================
 
-  ## == BEGIN setVersStr() - Read package.json and parse =====================
-  setVrsStr () {
-    pushd "${NPM_DIR}/bin" > /dev/null;
-    VRS_STR=$(
+  ## == BEGIN _parse_version_file_fn () - Read package.json and parse ========
+  _parse_version_file_fn () {
+    pushd "${_npm_dir}/bin" > /dev/null;
+    _version_str=$(
       node -e '
         var fs = require( "fs" );
         fs.readFile(
@@ -73,49 +82,48 @@ set -u;
     );
     popd > /dev/null;
   }
-  ## == END setVersStr() =====================================================
+  ## == END _parse_version_file_fn () ========================================
 
-  ## == BEGIN getVrs() - Look up version for requested package ===============
-  getVrs () {
+  ## == BEGIN _get_version_fn() - Look up version for requested package ======
+  _get_version_fn () {
     local IFS='';
-    MATCH="$*";
-    if [ "${VRS_STR}" == "" ]; then setVrsStr; fi;
-    echo "${VRS_STR}" |sed -e 's/ /\n/g'| while read LINE; do
-      KEY=$(echo "${LINE}" |cut -f1 -d':' );
-      VAL=$(echo "${LINE}" |cut -f2 -d':' );
-      if [ "${KEY}" == "${MATCH}" ]; then
-        echo -e "${VAL}";
+    _match_str="$*";
+    if [ "${_version_str}" == "" ]; then _parse_version_file_fn; fi;
+    echo "${_version_str}" |sed -e 's/ /\n/g'| while read _line_str; do
+      _key=$(echo "${_line_str}" |cut -f1 -d':' );
+      _val=$(echo "${_line_str}" |cut -f2 -d':' );
+      if [ "${_key}" == "${_match_str}" ]; then
+        echo -e "${_val}";
       fi;
     done
   }
-  ## == END getVrs() =========================================================
+  ## == END _get_version_fn() ================================================
 
   ## == BEGIN main - Copy vendor assets and add commit hook ==================
   echo "  > main";
   echo "  >> main / verify env";
-    if [ -x "${GIT_EXE}" ]; then 
-      TOP_DIR=$(git rev-parse --show-toplevel);
-      if [ ! -z "${TOP_DIR}" ]; then
-        GIT_DIR=$( cd "${TOP_DIR}" && pwd );
+    if [ -x "${_git_exe}" ]; then 
+      _top_dir=$( ${_git_exe} rev-parse --show-toplevel );
+      if [ ! -z "${_top_dir}" ]; then
+        _git_dir=$( cd "${_top_dir}" && pwd );
       fi
     fi
 
-    if [ ! -x "${PATCH_EXE}" ]; then
+    if [ ! -x "${_patch_exe}" ]; then
       echo "  !! FAIL: Could not find patch executable."
       echo "       Please install patch."
       exit 1;
     fi
 
-    if [ ! -w "${SCOPE_FILE}" ]; then
-      echo "  !! FAIL: Cannot write to ${SSOPE_FILE}.";
+    if [ ! -w "${_scope_file}" ]; then
+      echo "  !! FAIL: Cannot write to ${_scope_file}.";
       echo "        Did you forget to run 'npm install' first?";
       exit 1;
     fi
   # echo "  << main / verify env";
   
-
   echo "  >> main / remove dirs";
-    cd "${APP_DIR}";
+    cd "${_app_dir}";
     if [ -r "js/vendor" ]; then
       rm -rf "js/vendor";
     fi
@@ -132,68 +140,68 @@ set -u;
   # echo "  << main / remove dirs";
 
   echo "  >> main / copy vendor libs"; 
-    cd "${APP_DIR}/js/vendor";
+    cd "${_app_dir}/js/vendor";
 
-    vrs=$(getVrs powercss);
-    cp "${MOD_DIR}/powercss/dist/pcss.js" "pcss-${vrs}.js"
-    cp "${MOD_DIR}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
+    vrs=$(_get_version_fn powercss);
+    cp "${_mod_dir}/powercss/dist/pcss.js" "pcss-${vrs}.js"
+    cp "${_mod_dir}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
 
-    vrs=$(getVrs jquery);
-    cp "${MOD_DIR}/jquery/dist/jquery.js" "jquery-${vrs}.js";
+    vrs=$(_get_version_fn jquery);
+    cp "${_mod_dir}/jquery/dist/jquery.js" "jquery-${vrs}.js";
 
-    vrs=$(getVrs jquery.event.dragscroll);
-    cp "${MOD_DIR}/jquery.event.dragscroll/jquery.event.dragscroll.js" \
+    vrs=$(_get_version_fn jquery.event.dragscroll);
+    cp "${_mod_dir}/jquery.event.dragscroll/jquery.event.dragscroll.js" \
       "jquery.event.dragscroll-${vrs}.js";
 
-    vrs=$(getVrs jquery.event.gevent);
-    cp "${MOD_DIR}/jquery.event.gevent/jquery.event.gevent.js" \
+    vrs=$(_get_version_fn jquery.event.gevent);
+    cp "${_mod_dir}/jquery.event.gevent/jquery.event.gevent.js" \
       "jquery.event.gevent-${vrs}.js";
 
-    vrs=$(getVrs jquery.event.ue);
-    cp "${MOD_DIR}/jquery.event.ue/jquery.event.ue.js" \
+    vrs=$(_get_version_fn jquery.event.ue);
+    cp "${_mod_dir}/jquery.event.ue/jquery.event.ue.js" \
       "jquery.event.ue-${vrs}.js";
 
-    vrs=$(getVrs jquery.scrolli);
-    cp "${MOD_DIR}/jquery.scrolli/dist/jquery.scrolli.js" \
+    vrs=$(_get_version_fn jquery.scrolli);
+    cp "${_mod_dir}/jquery.scrolli/dist/jquery.scrolli.js" \
       "jquery.scrolli-${vrs}.js";
 
-    vrs=$(getVrs jquery.urianchor);
-    cp "${MOD_DIR}/jquery.urianchor/jquery.uriAnchor.js" \
+    vrs=$(_get_version_fn jquery.urianchor);
+    cp "${_mod_dir}/jquery.urianchor/jquery.uriAnchor.js" \
       "jquery.urianchor-${vrs}.js";
 
-    vrs=$(getVrs taffydb);
-    cp "${MOD_DIR}/taffydb/taffy.js" "taffy-${vrs}.js";
+    vrs=$(_get_version_fn taffydb);
+    cp "${_mod_dir}/taffydb/taffy.js" "taffy-${vrs}.js";
 
     # ----
 
-    cd "${APP_DIR}/css/vendor";
-    vrs=$(getVrs font-awesome);
-    cp "${MOD_DIR}/font-awesome/css/font-awesome.css" "font-awesome-${vrs}.css";
+    cd "${_app_dir}/css/vendor";
+    vrs=$(_get_version_fn font-awesome);
+    cp "${_mod_dir}/font-awesome/css/font-awesome.css" "font-awesome-${vrs}.css";
 
     # ----
 
-    cd "${APP_DIR}/font/vendor";
-    vrs=$(getVrs font-awesome);
-    cp -a "${MOD_DIR}/font-awesome/fonts" "font-awesome-${vrs}";
+    cd "${_app_dir}/font/vendor";
+    vrs=$(_get_version_fn font-awesome);
+    cp -a "${_mod_dir}/font-awesome/fonts" "font-awesome-${vrs}";
 
-    vrs=$(getVrs open-sans-fontface);
-    cp -a "${MOD_DIR}/open-sans-fontface/fonts" "open-sans-fontface-${vrs}";
+    vrs=$(_get_version_fn open-sans-fontface);
+    cp -a "${_mod_dir}/open-sans-fontface/fonts" "open-sans-fontface-${vrs}";
   # echo "  << main / copy vendor libs"; 
 
   echo "  >> main / add git hook"; 
-    if [ ! -z "${GIT_DIR}" ]; then
-      PC_FILE="${GIT_DIR}/.git/hooks/pre-commit";
-      if [ -L "${PC_FILE}" ]; then
-        rm -f "${PC_FILE}";
+    if [ ! -z "${_git_dir}" ]; then
+      _precommit_file="${_git_dir}/.git/hooks/pre-commit";
+      if [ -L "${_precommit_file}" ]; then
+        rm -f "${_precommit_file}";
       fi
 
-      cd "${GIT_DIR}/.git/hooks" \
+      cd "${_git_dir}/.git/hooks" \
         && ln -s "../../bin/git-hook_pre-commit" "./pre-commit" \
         && echo "  ? INFO installed git hook.";
     else
       echo "  !  WARN: Could not install git hook.";
       echo "           Once you have checked in your code "
-      echo "           you may run 'npm run ${APP_NAME}' again "
+      echo "           you may run 'npm run ${_app_name}' again "
       echo "           to install the commit hook."
     fi
   # echo "  << main / add git hook"; 
@@ -203,19 +211,19 @@ set -u;
   # diff -Naur old_dir new_dir > file.patch
 
   echo "  >> main / patch uglifyjs";
-    if ( grep -q "${PATCH_STR}" "${SCOPE_FILE}" ); then
+    if ( grep -q "${_patch_str}" "${_scope_file}" ); then
       echo "  ? INFO: Uglify patch already applied.";
     else
-      cd "${MOD_DIR}";
-      "${PATCH_EXE}" -p0 < "${PATCH_FILE}";
-      echo "  ? INFO: ${PFX} Uglify patch applied";
+      cd "${_mod_dir}";
+      "${_patch_exe}" -p0 < "${_patch_file}";
+      echo "  ? INFO: Uglify patch applied";
     fi
   # echo "  << main / patch uglifyjs";
   echo;
 
-  cd "${ORIG_DIR}";
+  cd "${_orig_dir}";
   # echo "  <  main"
-  echo "end ${APP_NAME}";
+  echo "end ${_app_name}";
   echo;
 
   exit 0;

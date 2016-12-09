@@ -1,16 +1,20 @@
 #!/bin/bash
 
-# To deploy this script:
-# cd ../.git/hooks
-# ln -s ../../bin/git-hook_pre-commit pre-commit
-#
-# See http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
-# exit when encountering undeclared variables
+## See style-guide
+## https://google.github.io/styleguide/shell.xml#Function_Names
+## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
+
+## Exit when encountering undeclared variables
+## The -e check ( exit when encountering a non-zero exit status )
+## As we do our own checking 
 set -u;
 
-# exit when encountering a non-zero exit status
-# (disabled here as we do are own checking)
-# set -e;
+## To deploy this script:
+## cd ../.git/hooks
+## ln -s ../../bin/git-hook_pre-commit pre-commit
+## 
+
+## TODO: Update style per buildify and prep-libs.sh
 
 ## BEGIN Layout variables ==================================================
 NODE_EXE=$(which node);

@@ -1,7 +1,12 @@
 #!/bin/bash
 
-## These checks are disabled as they cause trouble
-## set -e -u;
+## See style-guide
+## https://google.github.io/styleguide/shell.xml#Function_Names
+## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
+
+## Exit when encountering undeclared variables
+## The -e check ( exit when encountering a non-zero exit status )
+## As we do our own checking 
 set -u;
 
 ## == BEGIN Layout variables ===============================================
@@ -10,7 +15,7 @@ set -u;
   echo "start ${_app_name}";
   echo "  > layout vars";
 
-    # get app path and name
+    # app path and name
     _app_link=$( readlink -f -- "${0}" );
     _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
 
