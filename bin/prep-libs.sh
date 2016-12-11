@@ -30,6 +30,7 @@ set -u;
     _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
 
     # npm module paths
+    _git_dir=''; # initialize
     _npm_dir=$( dirname "${_bin_dir}" );
     _mod_dir="${_npm_dir}/node_modules";
     _app_dir="${_npm_dir}";
@@ -103,7 +104,7 @@ set -u;
   echo "  > main";
   echo "  >> main / verify env";
     if [ -x "${_git_exe}" ]; then 
-      _top_dir=$( ${_git_exe} rev-parse --show-toplevel );
+      _top_dir=$( ${_git_exe} rev-parse --show-toplevel 2>/dev/null );
       if [ ! -z "${_top_dir}" ]; then
         _git_dir=$( cd "${_top_dir}" && pwd );
       fi
@@ -199,10 +200,8 @@ set -u;
         && ln -s "../../bin/git-hook_pre-commit" "./pre-commit" \
         && echo "  ? INFO installed git hook.";
     else
-      echo "  !  WARN: Could not install git hook.";
-      echo "           Once you have checked in your code "
-      echo "           you may run 'npm run ${_app_name}' again "
-      echo "           to install the commit hook."
+      echo "  ?  INFO : Git hook not installed."
+      echo "            Run 'npm run ${_app_name}' again once checked-in to git."
     fi
   # echo "  << main / add git hook"; 
 
