@@ -23,8 +23,6 @@ set -u;
     _npm_dir=$( dirname "${_bin_dir}" );
     _mod_dir="${_npm_dir}/node_modules";
     _mod_dir_bin="${_mod_dir}/.bin";
-    _ugjs_exe="${_mod_dir_bin}/uglifyjs";
-    _ugcss_exe="${_mod_dir_bin}/uglifycss";
 
     _top_log_name="${_app_name}.log";
     _top_log_file="${_npm_dir}/${_top_log_name}";
@@ -42,12 +40,17 @@ set -u;
     _dont_compress=0;
     _do_verbose=0;
 
+    # Execlutables
+    _pack_exe="${_bin_dir}/superpack.pl";
+    _ugjs_exe="${_mod_dir_bin}/uglifyjs";
+    _ugcss_exe="${_mod_dir_bin}/uglifycss";
+
     # temp dir 
     # See http://www.linuxsecurity.com/content/view/115462/81/#mozTocId440182
     _tmp_dir="${TMPDIR-/tmp}/$$.${_app_name}.${_ext_date}";
     ( umask 077 && mkdir "${_tmp_dir}" ) || {
       _do_verbose=1;
-      _log_fn "## ! Could not create temporary directory";
+      _log_fn "  ! Could not create temporary directory";
       _abort_fn;
     }
   # echo "  < layout vars";
@@ -195,7 +198,7 @@ AUTHOR and COPYRIGHT
 
 ## BEGIN function to log output
 _log_fn () {
-  local IFS='';
+  local IFS="";
   _msg_str="$*";
   if [ -w "${_top_log_file}" ]; then
     echo "${_msg_str}" >> "${_top_log_file}";
@@ -213,7 +216,7 @@ clean_tmp_files () {
   if [ -w "${_tmp_dir}" ]; then
     if echo "${_tmp_dir}" | grep -q "${_app_name}"; then
       _do_verbose=1;
-      _log_fn "## Removing temporary directory ${_tmp_dir}";
+      _log_fn "  > Removed temporary directory ${_tmp_dir}";
       rm -rf "${_tmp_dir}";
     fi
   fi
@@ -223,9 +226,9 @@ clean_tmp_files () {
 ## BEGIN function to abort processing
 _abort_fn () {
   _do_verbose=1;
-  _log_fn '';
-  _log_fn "## See ${_app_name} -hv for detailed usage.";
-  _log_fn "## ! Processing ABORTED.";
+  _log_fn "";
+  _log_fn "  > See ${_app_name} -hv for detailed usage.";
+  _log_fn "  ! Processing ABORTED.";
 
   clean_tmp_files;
   # exit with error (bash shell standard)
@@ -242,7 +245,7 @@ _abort_fn () {
 
   if [ $? != 0 ] ; then
 		_do_verbose=1;
-    _log_stderr_fn "Trouble processing command line.";
+    _log_stderr_fn "  ! Trouble processing command line.";
     _abort_fn; 
   fi
 
@@ -275,33 +278,31 @@ _abort_fn () {
     _abort_fn;
   fi
   # put header in log file
-  _log_fn "## Global ${_app_name} log ${_start_date_} ##";
+  _log_fn "  > Global ${_app_name} log ${_start_date_}";
   ## END set global log to start
 
   ## BEGIN Find SuperPack
-  _pack_exe="${_bin_dir}/superpack.pl";
-  if [ -z "${_pack_exe}" ]; then
+  if [ ! -x "${_pack_exe}" ]; then
     _do_verbose=1;
-    _log_fn "## ! Unable to locate the SuperPack compressor.";
-    _log_fn " # See Michael Mikowski for original executable.";
+    _log_fn "  ! Superpack (${_pack_exe}) is not excutable";
     _abort_fn;
   fi
   if ( ! perl -cw "${_pack_exe}" >/dev/null 2>&1 ); then
     _do_verbose=1;
-    _log_fn "## ! SuperPack is not valid perl.";
-    _log_fn " # Please install perl-List-MoreUtils perl-File-Slurp ";
-    _log_fn " # and perl-Getopt-Mixed.";
+    _log_fn "  ! SuperPack is not valid perl.";
+    _log_fn "  ! Please install perl-List-MoreUtils perl-File-Slurp ";
+    _log_fn "  ! and perl-Getopt-Mixed.";
     _abort_fn;
   fi
   ## END Find SUPERPACK
 
   ## BEGIN Find UglifyJS
-  if [ -z "${_ugjs_exe}" ]; then
+  if [ ! -x "${_ugjs_exe}" ]; then
     _do_verbose=1;
-    _log_fn "## ! Unable to locate the UglifyJS Compressor.";
-    _log_fn " # Try cd ${_npm_dir}; npm install uglifyjs@2.4.10 -D"
-    _log_fn " # IMPORTANT! Be sure to patch this as described";
-    _log_fn " # in the general help section!";
+    _log_fn "  ! UglifyJS (${_ugjs_exe}) is not executable.";
+    _log_fn "  ! Try cd ${_npm_dir}; npm install uglifyjs@2.4.10 -D"
+    _log_fn "  ! AND THEN ensure the patch is applied (see patch/)"
+    _log_fn "  ! as described by ${_app_name} -hv"
     _abort_fn;
   fi
   ## END Find UglifyJS
@@ -309,8 +310,8 @@ _abort_fn () {
   ## BEGIN Find UglifyCSS
   if [ -z "${_ugcss_exe}" ]; then
     _do_verbose=1;
-    _log_fn "## ! Unable to locate the UglifyCSS Compressor.";
-    _log_fn " # Try cd ${_npm_dir}; npm install uglifycss -D"
+    _log_fn "  ! UglifyCSS (${_ugcss_exe}) is not executable.";
+    _log_fn "  ! Try cd ${_npm_dir}; npm install uglifycss -D"
     _abort_fn;
   fi
   ## END Find UglifyCSS
@@ -320,23 +321,23 @@ _abort_fn () {
   for _manifest_file in $@; do
     if [ ! -f "${_manifest_file}" ]; then
       _do_verbose=1;
-      _log_fn "## ! manifest file '${_manifest_file}' is not a regular file.";
+      _log_fn "  ! manifest file '${_manifest_file}' is not a regular file.";
       _abort_fn;
     fi
 
     if [ ! -r "${_manifest_file}" ]; then
       _do_verbose=1;
-      _log_fn "## ! manifest file '${_manifest_file}' is not readable.";
+      _log_fn "  ! manifest file '${_manifest_file}' is not readable.";
       _abort_fn;
     fi
 
     _manifest_list[${#_manifest_list[*]}]="${_manifest_file}"
-    _log_fn "  # Adding ${_manifest_file} to process list"
+    _log_fn "  > Adding ${_manifest_file} to process list"
   done
 
   if [ "${#_manifest_list[*]}" = 0 ]; then
     _do_verbose=1;
-    _log_fn "## ! No build file provided."
+    _log_fn "  ! No build file provided."
     _abort_fn;
   fi
   ## END validiate input files
@@ -353,17 +354,17 @@ _abort_fn () {
 
     if [ -z "${_manifest_short_name}" ]; then
       _do_verbose=1;
-      _log_fn "## ! Root name of the build file is empty.  Please notify author.";
+      _log_fn "  ! Root name of the build file is empty.";
       _abort_fn;
     fi
 
-    _log_fn "## Buildify for '${_manifest_file}' on ${_start_date_}";
+    _log_fn "  > ${_app_name}  for ${_manifest_file} on ${_start_date_}";
     ## END get path of buildfile and determine output names
 
     ## BEGIN read build file and append sources to arrays
     _js_file_list=();
     _css_file_list=();
-    _source_type='';
+    _source_type="";
 
     while read _row_str; do
       # skip blank lines
@@ -400,50 +401,50 @@ _abort_fn () {
       # process section headers
       if echo "${_row_str}" | grep -q '^sourcetype\s*:'; then
         _source_type=$( echo "${_row_str}" |sed -e 's/sourcetype\s*:\s*//g' );
-        _log_fn "## SOURCE TYPE ${_source_type}";
+        _log_fn "  > Source type: ${_source_type}";
         continue;
       fi
 
       # skip anything if section type not yet specified
-      [ "${_source_type}" == '' ] && continue;
+      [ "${_source_type}" == "" ] && continue;
 
       # determine full path to source file and test
       _source_file="${_manifest_dir}/${_row_str}";
 
       if [ ! -r "${_source_file}" ]; then
         _do_verbose=1;
-        _log_fn "${_source_type} file ${_source_file} is not readable.";
-        _log_fn "Do you need to update your manifest file?";
-        _log_fn "X_${_row_str}_X";
+        _log_fn "  ! ${_source_type} file ${_source_file} is not readable.";
+        _log_fn "  ! Do you need to update your manifest file?";
+        _log_fn "  ! X_${_row_str}_X";
         _abort_fn;
       fi
 
-      EXT=$( echo ${_row_str} |sed -e 's/^.*\.//' );
+      _ext_str=$( echo ${_row_str} |sed -e 's/^.*\.//' );
 
       case "${_source_type}" in
         js)
-          if [ "${EXT}" != 'js' ]; then
+          if [ "${_ext_str}" != 'js' ]; then
             _do_verbose=1;
-            _log_fn "# Extension for js file ${_row_str} must be 'js'";
+            _log_fn "  > Extension for js file ${_row_str} must be 'js'";
             _abort_fn;
           fi
 
           _js_file_list[${#_js_file_list[*]}]=${_source_file};
-            _log_fn "  # Added file ${_row_str} to javascript processing queue.";
+            _log_fn "  > Added file ${_row_str} to javascript processing queue.";
           ;;
 
         css)
-          if [ "${EXT}" != 'css' ]; then
+          if [ "${_ext_str}" != 'css' ]; then
             _do_verbose=1;
-            _log_fn "# Extension for css file ${_row_str} must be 'css'";
+            _log_fn "  ! Extension for css file ${_row_str} must be 'css'";
             _abort_fn;
           fi
 
           _css_file_list[${#_css_file_list[*]}]=${_source_file};
-          _log_fn "  # Added file ${_row_str} to css processing queue.";
+          _log_fn "  > Added file ${_row_str} to css processing queue.";
           ;;
         *) _do_verbose=1;
-          _log_fn "Source type (${_source_type}) not supported.";
+          _log_fn "  ! Source type (${_source_type}) not supported.";
           _abort_fn;
           ;;
       esac
@@ -451,7 +452,7 @@ _abort_fn () {
     ## END read build file and append sources to arrays
 
     ## BEGIN validate stage dir and move global log there
-    if [ "${_stage_dir}" == '' ]; then
+    if [ "${_stage_dir}" == "" ]; then
       _stage_dir="${_manifest_dir}";
     else
       mkdir -p "${_stage_dir}";
@@ -459,7 +460,7 @@ _abort_fn () {
 
     if [ ! -d "${_stage_dir}" ]; then
       _do_verbose=1;
-      _log_fn "## ! Stage directory is not valid";
+      _log_fn "  ! Stage directory is not valid";
       _abort_fn;
     fi
 
@@ -469,42 +470,38 @@ _abort_fn () {
 
     if [ ! -w "${_stage_dir}" ]; then
       _do_verbose=1;
-      _log_fn "## ! Stage directory is not writable";
+      _log_fn "  ! Stage directory is not writable";
       _abort_fn;
     fi
 
     if ! mv "${_top_log_file}" "${_stage_dir}"; then
       _do_verbose=1;
-      _log_fn "## ! Could not move global log to stage directory";
+      _log_fn "  ! Could not move global log to stage directory";
       _abort_fn;
     else
       _top_log_file="${_stage_dir}/${_top_log_name}";
     fi
     ## END validate output dir if provided and move global log there
 
+    ## BEGIN determine paths
     _js_concat_file="${_tmp_dir}/$$.${_manifest_short_name}-src.js";
     _css_concat_file="${_tmp_dir}/$$.${_manifest_short_name}-src.css";
 
-    STAGE_ROOT_NAME="${_stage_dir}/${_manifest_short_name}";
+    _stage_base_name="${_stage_dir}/${_manifest_short_name}";
 
-    _pack_log_file="${STAGE_ROOT_NAME}-sp.log";
-    _pack_diag_file="${STAGE_ROOT_NAME}-sp.diag";
-    _ugcss_log_file="${STAGE_ROOT_NAME}-ug_css.log";
-    UGJS_LOG_FILE="${STAGE_ROOT_NAME}-ug_js.log";
+    _pack_log_file="${_stage_base_name}-sp.log";
+    _pack_diag_file="${_stage_base_name}-sp.diag";
+    _ugcss_log_file="${_stage_base_name}-ug_css.log";
+    _ugjs_log_file="${_stage_base_name}-ug_js.log";
 
-    _css_out_file="${STAGE_ROOT_NAME}-raw.css";
-    _js_out_file="${STAGE_ROOT_NAME}-raw.js";
-    ugcss_out_file="${STAGE_ROOT_NAME}-min.css";
-    _ugjs_out_file="${STAGE_ROOT_NAME}-min.js";
-    _pack_out_file="${STAGE_ROOT_NAME}-sp.js";
-
+    _css_out_file="${_stage_base_name}-raw.css";
+    _js_out_file="${_stage_base_name}-raw.js";
+    ugcss_out_file="${_stage_base_name}-min.css";
+    _ugjs_out_file="${_stage_base_name}-min.js";
+    _pack_out_file="${_stage_base_name}-sp.js";
     touch "${_pack_log_file}";
+    ## END determine paths
 
-    if [ ! -w "${_stage_dir}" ]; then
-      _do_verbose=1;
-      _log_fn "## ! Stage directory is not writable";
-      _abort_fn;
-    fi
 
     ## BEGIN process javascript files
     for (( i = 0; i < ${#_js_file_list[*]}; i++ ))
@@ -517,35 +514,35 @@ _abort_fn () {
           _log_fn "for Javascript processing."
           _abort_fn;
         fi
-        _log_fn '## Combining JS Source Files';
+        _log_fn "  > Combining JS Source Files";
       fi
       cat "${_js_file_list[$i]}" >> "${_js_concat_file}";
-      _log_fn "  # ${_js_file_list[$i]}";
+      _log_fn "  > ${_js_file_list[$i]}";
     done
     ## END process javascript files
 
     ## BEGIN compress javascript file if specified
     if [ -r "${_js_concat_file}" ] && [ ${_dont_compress} -eq 0 ]; then
-      _log_fn "## Uglify compressing '${_js_concat_file}'";
+      _log_fn "  > Uglify compressing '${_js_concat_file}'";
 
       ${_ugjs_exe} "${_js_concat_file}" -mc \
         1>  "${_ugjs_out_file}" \
-        2>> "${UGJS_LOG_FILE}";
-      UGJS_EXIT_STATUS=$?;
+        2>> "${_ugjs_log_file}";
+      _ugjs_exit_code=$?;
 
-      if [ ${UGJS_EXIT_STATUS} == 0 ]; then
-        _log_fn "  # Compression successful.  Output is '${_ugjs_out_file}'";
-        rm "${UGJS_LOG_FILE}";
+      if [ ${_ugjs_exit_code} == 0 ]; then
+        _log_fn "  > Compression successful.  Output is '${_ugjs_out_file}'";
+        rm "${_ugjs_log_file}";
       else
         _do_verbose=1;
-        _log_fn "  # ! Compression of '${_js_concat_file}' not successfull";
-        _log_fn "  # ! See '${UGJS_LOG_FILE}' for errors";
+        _log_fn "  ! Compression of '${_js_concat_file}' not successfull";
+        _log_fn "  ! See '${_ugjs_log_file}' for errors";
         _abort_fn;
       fi
     fi
     ## END compress javascript file if specified
 
-    ## BEGIN run superpack on this file if config found
+    ## BEGIN superpack javascript file if specified
     if [ -r "${_js_concat_file}" ] && [ ${_dont_compress} -eq 0 ]; then
       ${_pack_exe} \
         -i "${_ugjs_out_file}" \
@@ -555,15 +552,15 @@ _abort_fn () {
       _pack_exit_code=$?;
 
       if [ ${_pack_exit_code} == 0 ]; then
-        _log_fn "  # SuperPack successful.  Output is '${_pack_out_file}'";
+        _log_fn "  > SuperPack successful.  Output is '${_pack_out_file}'";
       else
         _do_verbose=1;
-        _log_fn "  # ! SuperPack of '${_js_concat_file}' not successfull";
-        _log_fn "  # ! See '${_pack_log_file}' for errors";
+        _log_fn "  ! SuperPack of '${_js_concat_file}' not successfull";
+        _log_fn "  ! See '${_pack_log_file}' for errors";
         _abort_fn;
       fi
     fi
-    ## END run superpack on this file if config found
+    ## END superpack javascript file if specified
 
     ## BEGIN process css files
     for (( i = 0; i < ${#_css_file_list[*]}; i++ ))
@@ -572,21 +569,21 @@ _abort_fn () {
         touch "${_css_concat_file}";
         if [ ! -r "${_css_concat_file}" ]; then
           _do_verbose=1;
-          _log_fn "## ! Cannot create concatenation file '${_css_concat_file}'";
-          _log_fn "  #  for CSS processing.";
+          _log_fn "  ! Cannot create concatenation file '${_css_concat_file}'";
+          _log_fn "  ! for CSS processing.";
           _abort_fn;
         fi
-        _log_fn '## Combining CSS Source Files';
-        _log_fn "  # Writing css concat file '${_css_concat_file}'";
+        _log_fn "  > Combining CSS Source Files";
+        _log_fn "  > Writing css concat file '${_css_concat_file}'";
       fi
       cat "${_css_file_list[$i]}" >> "${_css_concat_file}";
-      _log_fn "  # ${_css_file_list[$i]}";
+      _log_fn "  >> ${_css_file_list[$i]}";
     done
     ## END process css files
 
     ## BEGIN compress css file if specified
     if [ -r "${_css_concat_file}" ] && [ ${_dont_compress} -eq 0 ]; then
-      _log_fn "## UglifyCSS Compressing '${_css_concat_file}'";
+      _log_fn "  > UglifyCSS Compressing '${_css_concat_file}'";
     
       ${_ugcss_exe} "${_css_concat_file}" \
         1> "${ugcss_out_file}" \
@@ -594,12 +591,12 @@ _abort_fn () {
       _ugcss_exit_code=$?;
     
       if [ ${_ugcss_exit_code} == 0 ]; then
-        _log_fn "  # Compression successful.  Output is '${ugcss_out_file}'";
+        _log_fn "  > Compression successful.  Output is '${ugcss_out_file}'";
         rm "${_ugcss_log_file}";
       else
         _do_verbose=1;
-        _log_fn "  # ! Compression of '${_css_concat_file}' not successfull";
-        _log_fn "  # ! See '${_ugcss_log_file}' for warnings";
+        _log_fn "  ! Compression of '${_css_concat_file}' not successfull";
+        _log_fn "  ! See '${_ugcss_log_file}' for warnings";
         _abort_fn;
       fi
     fi
@@ -625,49 +622,25 @@ _abort_fn () {
   done
   ## END process each buildfile in turn
 
-  ## mkdir -p "${_dist_dir}";
-  ## cd "${_dist_dir}";
-  ## _dist_dir=$(pwd);
-  ##
-  ## cd "${_prod_dir}";
-  ## _prod_dir=$(pwd);
-  ##
-  ## cd "${_tmplt_dir}";
-  ## _tmplt_dir=$(pwd);
-  ##
-  ## mkdir -p "${_dist_dir}/js";
-  ## mkdir -p "${_dist_dir}/img";
-  ## mkdir -p "${_dist_dir}/font/vendor";
-  ## cp "${_stage_dir}/xhi-sp.js" "${_dist_dir}/js/"
+  ## BEGIN move files to dist directory
+  mkdir -p "${_dist_dir}" || _abort_fn;
+  cd "${_dist_dir}";
+  _dist_dir=$(pwd);
+
+  mkdir "${_dist_dir}/js";
+  mkdir "${_dist_dir}/img";
+  mkdir "${_dist_dir}/font";
+  mkdir "${_dist_dir}/font/vendor";
+
+  ## TODO copy app files to these directories like so
+  # cp "${_stage_dir}/" "${_dist_dir}/js/";
 
   ## TODO Provide ability to copy media file to dist dist like so:
   ## media:
   ## cp "${_prod_dir}/img/xhi-bkgd-001.jpg" "${_dist_dir}/img/"
 
-  ## REPLACE_CMD=$(
-  ## node -e '
-  ##   var fs = require( "fs" );
-  ##   fs.readFile(
-  ##     "../stage/xhi-sp.log",
-  ##     "utf8",
-  ##     function( error, json_str ) {
-  ##       if ( error ) { return console.error( error ); }
-  ##       log_map = JSON.parse( json_str );
-  ##       console.log(
-  ##         "xhi."
-  ##         + log_map[ "_shell_" ]
-  ##         + "."
-  ##         + log_map[ "_initModule_" ]
-  ##       );
-  ##     }
-  ##   );
-  ## '
-  ## );
-  ## sed -e "s/REPLACE_CMD/${REPLACE_CMD}/g" \
-  ## "${_tmplt_dir}/index.html.tmplt" > "${_dist_dir}/index.html"
-
   clean_tmp_files;
   _end_date=$(date "+%Y-%m-%d %H:%M:%S");
-  _log_fn "## ${_app_name} run complete on ${_end_date} ##";
+  _log_fn "  > ${_app_name} run complete on ${_end_date}";
+  echo "end ${_app_name}";
 ## END MAIN
-
