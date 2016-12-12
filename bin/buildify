@@ -4,9 +4,9 @@
 ## https://google.github.io/styleguide/shell.xml#Function_Names
 ## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
 
-## Exit when encountering undeclared variables
-## The -e check ( exit when encountering a non-zero exit status )
-## As we do our own checking 
+## The -u option forces bash to exit when encountering an uninit variable.
+## The -e option forces bash to exit when encountering a non-zero exit status.
+##   We omit -e as we do our own checking.
 set -u;
 
 ## == BEGIN Layout variables ===============================================
@@ -24,26 +24,27 @@ set -u;
     _mod_dir="${_npm_dir}/node_modules";
     _mod_dir_bin="${_mod_dir}/.bin";
 
+    _build_dir="${_npm_dir}/build";
+    _dist_dir="${_build_dir}/dist";
+    _stage_dir="${_build_dir}/stage";
+
     _top_log_name="${_app_name}.log";
     _top_log_file="${_npm_dir}/${_top_log_name}";
+
+    # cli varibles defaults
+    _do_help=0;
+    _do_verbose=0;
+    _dont_compress=0;
+    _tmplt_dir="${_npm_dir}/tmplt";
+
+    # executables
+    _pack_exe="${_bin_dir}/superpack.pl";
+    _ugjs_exe="${_mod_dir_bin}/uglifyjs";
+    _ugcss_exe="${_mod_dir_bin}/uglifycss";
 
     # timestamps
     _start_date_=$(date "+%Y-%m-%d %H:%M:%S");
     _ext_date=$(date "+%Y%m%d_%H%M%S");
-
-    # CLI switch varibles
-    _dist_dir="${_npm_dir}/build/dist";
-    _stage_dir="${_npm_dir}/build/stage";
-    _prod_dir="${_npm_dir}/build/prod";  
-    _tmplt_dir="${_npm_dir}/build/tmplt";
-    _do_help=0;
-    _dont_compress=0;
-    _do_verbose=0;
-
-    # Execlutables
-    _pack_exe="${_bin_dir}/superpack.pl";
-    _ugjs_exe="${_mod_dir_bin}/uglifyjs";
-    _ugcss_exe="${_mod_dir_bin}/uglifycss";
 
     # temp dir 
     # See http://www.linuxsecurity.com/content/view/115462/81/#mozTocId440182
@@ -53,6 +54,7 @@ set -u;
       _log_fn "  ! Could not create temporary directory";
       _abort_fn;
     }
+
   # echo "  < layout vars";
   ## == END Layout variables =================================================
 
@@ -66,7 +68,7 @@ _show_use_fn () {
 NAME : ${_app_name}
 
 SYNOPSIS
-  ${_app_name} [ options ] <buildfile1> <buildfile2> ...
+  ${_app_name} [ options ] <manifest_1> <manifest_2> ...
 ";
 
   [ "${_do_verbose}" -lt 1 ] && _log_stderr_fn "
@@ -75,113 +77,94 @@ Employ the -v or --verbose switch to see more detailed help.
 
   [ "${_do_verbose}" -gt 0 ] && _log_stderr_fn "
 DESCRIPTION
-  ${_app_name} builds production-ready JavaScript files
-  from sources specified in buildfiles.
+  ${_app_name} builds a production-ready web site from sources listed
+  in manifest files.  The output files are placed in ${_build_dir}
+  under the following subdirectories:
 
-  If the build file includes a javascript section, it creates
-  a two javascript files in the same directory as the build file.
-  The output files will have the same basename as the buildfile.
-  Therefore, '${_app_name} gallery.${_app_name}' will output
-  the files gallery-raw.js, gallery-min.js, and gallery-sp.js.
+    - ${_stage_dir} - Staging area
+    - ${_dist_dir}  - Distribution area
 
-  Options may be employed to change the output location, and to turn
-  compression off.
+  The output files will have the same basename as the source manifest
+  file.  Therefore, '${_app_name} ex01.${_app_name}' will output
+  the files with the ex01 prefix as illustrated in the examples.
 
 EXAMPLES
-  (1) If the file gallery.${_app_name} looks like so:
+  (1) If the file ex01.${_app_name} looks like so:
       ==============
       source:js
-      js/gallery.js
+      js/foo.js
       ==============
 
-  Then running buildify with this configuration:
+  Then running the following ...
 
-      $ ${_app_name} ./gallery.${_app_name}
+      $ ${_app_name} ./ex01.${_app_name}
 
-  will result in the following files:
+  ... results in the following files in ${_stage_dir}:
 
-      gallery-raw.js  # concatenated JS
-      gallery-min.js  # uglified JS
-      gallery-sp.js   # superpacked JS
-      gallery-sp.diag # superpack diagnostics
+      js/ex01-min.js  # uglified JS
+      js/ex01-raw.js  # concatenated JS
+      js/ex01-sp.diag # superpack diagnostics
+      js/ex01-sp.js   # superpacked JS
 
 
-  (2) If the file gallery.${_app_name} looks like so:
+  (2) If the file ex02.${_app_name} looks like so:
       ==============
       source:js
-      js/gallery.js
+      js/foo.js
+
       source:css
-      css/gallery.css
+      css/foo.css
       ==============
 
-  Then running buildify with this configuration:
+  Then running the following ...
 
-      ${_app_name} --nocompress ./gallery.${_app_name}
+      $ ${_app_name} ./ex02.${_app_name}
 
-  will result in the following files:
+  results in the following files in ${_stage_dir}:
+      js/ex02-min.js  # uglified JS
+      js/ex02-raw.js  # concatenated JS
+      js/ex02-sp.diag # superpack diagnostics
+      js/ex02-sp.js   # superpacked JS
 
-      gallery-raw.js   # concatenated JS
-      gallery-raw.css  # concatenated CSS
-
-
-  (3) We can specify an alternate output directory.
-      If the file gallery.${_app_name} looks like so:
-      ==============
-      source:js
-      js/gallery.js
-      source:css
-      css/gallery.css
-      ==============
-
-  Then running buildify with this configuration:
-
-      ${_app_name} -o /stage ./gallery.${_app_name}
-
-  will result in the following files in the directory /stage:
-
-      gallery-raw.js  # concatenated JS
-      gallery-min.js  # uglified JS
-      gallery-sp.js   # superpacked JS
-      gallery-sp.diag # superpack diagnostics
-      gallery-raw.css # concatenated CSS
-      gallery-raw.css # minified CSS
+      css/ex02-min.css # uglified CSS
+      css/ex02-raw.css # concatenated CSS
 
 ARGUMENTS
-  buildfile1, buildfile2, ... (REQUIRED)
-    Build files to process.
-    Each build file lists source files to process. It may have up to
-    two sections delineated by a source-type header.
-    ${_app_name} EXPECTS ALL PATHS TO BE RELATIVE TO THE REFERENCING 
-    CONFIRURATION FILE PATH.
+  manifest_1, manifest_2, ... (REQUIRED)
+    Manifests to process.  Each manifest lists the source files to 
+    process. It may have multiple sections delineated by a source-type header.
+    ${_app_name} expects all paths to be relative to the referencing 
+    manifest file path.
+
        sourcetype:js   # for javascript files, and
        # ... js files here ...
        sourcetype:css # for css and source files
-       # ... css files here .... (relative to buildfile path)
+       # ... css files here .... (relative to manifest path)
 
     Blank lines, comment lines, and trailing comments are ignored.
 
 OPTIONS
-  * -h | --help | --usage outputs this text and exit.
-
-  * -o <path> |--outputdir=<path> (OPTIONAL)
-    By default, ${_app_name} puts output files in the same directory
-    as the build file.  Use this option to override the default location.
-    <path> must be a writable directory.
+  * -h | --help | --usage (OPTIONAL)
+    Sends short help text to STDERR (usually the terminal) and exits.
+    When combined with the -v option, long help is presented.
 
   * -n | --nocompress (OPTIONAL)
-    By default, ${_app_name} outputs minified named <name>-min.js
-    and <name>-min.css.  This option disables creating and writing these
-    files.
+    By default ${_app_name} concatenates and minifies CSS and JS files.
+    It also SuperPacks JS files.  This option turns off this behavior.
 
   * -v | --verbose (OPTIONAL)
     Be noisy when processing
+  
+  * -t <dir> | --tmpltdir <dir> (OPTIONAL)
+    Directory containing templates
 
 REQUIRED PATCH
-  Buildify requires a patch to optimize symbol compression. 
-  If you have installed **hi\_score** this patch will already be applied.
-  If you need to install the patch manually, this should work:
+  Buildify uses Superpack symbol compression.  Superpack requires a patch
+  to UglifyJS.  If you have installed **hi\_score** this patch will have
+  been applied when running 'npm run prep-libs' which is the safest means
+  to apply the patch.  If you need to do so manually, this should also work:
   
-    \$ cd ../node_modules/
+    \$ cd ${_mod_dir}
     \$ patch -p0 < ../patch/uglifyjs-2.4.10.patch
 
 SEE ALSO
@@ -239,8 +222,8 @@ _abort_fn () {
 ## BEGIN MAIN
   ## BEGIN get options
   ## (see /usr/share/doc/util-linux/examples/getopt-parse.bash)
-  _cli_str=$(getopt -o hnvd:s:p:t: \
-    --long help,usage,nocompress,verbose,distdir:,stagedir:,proddir:,tmpltdir: \
+  _cli_str=$(getopt -o hnvt: \
+    --long help,usage,nocompress,verbose,tmpltdir: \
       -n "${_app_name}" -- "$@")
 
   if [ $? != 0 ] ; then
@@ -257,9 +240,6 @@ _abort_fn () {
       -h|--help|--usage) _do_help=1;       shift ;;
       -n|--nocompress)   _dont_compress=1; shift ;;
       -v|--verbose)      _do_verbose=1;    shift ;;
-      -d|--distdir)      _dist_dir="$2";   shift 2 ;;
-      -s|--stagedir)     _stage_dir="$2";  shift 2 ;;
-      -p|--proddir)      _prod_dir="$2";   shift 2 ;;
       -t|--tmpltdir)     _tmplt_dir="$2";  shift 2 ;;
       --) shift; break ;;
        *) _do_verbose=1;
@@ -337,15 +317,15 @@ _abort_fn () {
 
   if [ "${#_manifest_list[*]}" = 0 ]; then
     _do_verbose=1;
-    _log_fn "  ! No build file provided."
+    _log_fn "  ! No manifest provided."
     _abort_fn;
   fi
   ## END validiate input files
 
 
-  ## BEGIN process each buildfile in turn
+  ## BEGIN process each manifest in turn
   for (( _file_idx = 0; _file_idx < ${#_manifest_list[*]}; _file_idx++ )); do
-    ## BEGIN get path of buildfile and determine output names
+    ## BEGIN get path of manifest and determine output names
     _manifest_file="${_manifest_list[$_file_idx]}";
     _manifest_basename=$( basename "${_manifest_file}" );
     _manifest_short_name=$( echo "${_manifest_basename}" |cut -f1 -d'.' );
@@ -354,14 +334,14 @@ _abort_fn () {
 
     if [ -z "${_manifest_short_name}" ]; then
       _do_verbose=1;
-      _log_fn "  ! Root name of the build file is empty.";
+      _log_fn "  ! Root name of the manifest is empty.";
       _abort_fn;
     fi
 
     _log_fn "  > ${_app_name}  for ${_manifest_file} on ${_start_date_}";
-    ## END get path of buildfile and determine output names
+    ## END get path of manifest and determine output names
 
-    ## BEGIN read build file and append sources to arrays
+    ## BEGIN read manifest and append sources to arrays
     _js_file_list=();
     _css_file_list=();
     _source_type="";
@@ -377,21 +357,6 @@ _abort_fn () {
         | sed -e 's/^\s\+//g' | sed -e 's/\s\+$//g' );
 
       # get directives for paths
-      if echo "${_row_str}" | grep -q '^distdir\s*:'; then
-        _dist_dir=$( echo "${_row_str}" |sed -e 's/distdir\s*:\s*//g' );
-        _dist_dir="${_manifest_dir}/${_dist_dir}";
-        continue;
-      fi
-      if echo "${_row_str}" | grep -q '^stagedir\s*:'; then
-        _stage_dir=$( echo "${_row_str}" |sed -e 's/stagedir\s*:\s*//g' );
-        _stage_dir="${_manifest_dir}/${_stage_dir}";
-        continue;
-      fi
-      if echo "${_row_str}" | grep -q '^proddir\s*:'; then
-        _prod_dir=$( echo "${_row_str}" |sed -e 's/proddir\s*:\s*//g' );
-        _prod_dir="${_manifest_dir}/${_prod_dir}";
-        continue;
-      fi
       if echo "${_row_str}" | grep -q '^tmpltdir\s*:'; then
         _tmplt_dir=$( echo "${_row_str}" |sed -e 's/tmpltdir\s*:\s*//g' );
         _tmplt_dir="${_manifest_dir}/${_tmplt_dir}";
@@ -449,39 +414,39 @@ _abort_fn () {
           ;;
       esac
     done < "${_manifest_file}"
-    ## END read build file and append sources to arrays
+    ## END read manifest and append sources to arrays
 
-    ## BEGIN validate stage dir and move global log there
-    if [ "${_stage_dir}" == "" ]; then
-      _stage_dir="${_manifest_dir}";
+    ## BEGIN validate build dir and move global log to it
+    if [ -d "${_build_dir}" ]; then
+      _scratch_str="${_do_verbose}";
+      _do_verbose=1; 
+      _log_fn "The build directory ${_build_dir} already exists."
+      read -p 'Wipe and recreate? (y/N) ' -n1 _ans_str;
+      _ans_str="${_ans_str^^}";
+      if [ "${_ans_str^^:=N}" == 'N' ]; then 
+        _log_fn "  ! Aborted at user request.";
+        _abort_fn;
+      fi
+      _log_fn "";
+      _log_fn "  > Removing ${_build_dir} at user request";
+      rm -rf "${_build_dir}";
+      _log_fn "  > Removal complete.";
+      _do_verbose="${_scratch_str}"
+    fi
+
+    _log_fn "  > Processing";
+    mkdir ${_build_dir};
+    mkdir ${_stage_dir};
+    mkdir ${_dist_dir};
+
+    if ! mv "${_top_log_file}" "${_build_dir}"; then
+      _do_verbose=1;
+      _log_fn "  ! Could not move global log to build directory";
+      _abort_fn;
     else
-      mkdir -p "${_stage_dir}";
+      _top_log_file="${_build_dir}/${_top_log_name}";
     fi
-
-    if [ ! -d "${_stage_dir}" ]; then
-      _do_verbose=1;
-      _log_fn "  ! Stage directory is not valid";
-      _abort_fn;
-    fi
-
-    # normalize path (get rid of ../../ constructs)
-    cd "${_stage_dir}";
-    _stage_dir=$(pwd);
-
-    if [ ! -w "${_stage_dir}" ]; then
-      _do_verbose=1;
-      _log_fn "  ! Stage directory is not writable";
-      _abort_fn;
-    fi
-
-    if ! mv "${_top_log_file}" "${_stage_dir}"; then
-      _do_verbose=1;
-      _log_fn "  ! Could not move global log to stage directory";
-      _abort_fn;
-    else
-      _top_log_file="${_stage_dir}/${_top_log_name}";
-    fi
-    ## END validate output dir if provided and move global log there
+    ## END validate build dir and move global log there
 
     ## BEGIN determine paths
     _js_concat_file="${_tmp_dir}/$$.${_manifest_short_name}-src.js";
@@ -620,24 +585,25 @@ _abort_fn () {
     done
     ## END move over remaining files
   done
-  ## END process each buildfile in turn
+  ## END process each manifest in turn
 
   ## BEGIN move files to dist directory
   mkdir -p "${_dist_dir}" || _abort_fn;
   cd "${_dist_dir}";
   _dist_dir=$(pwd);
 
-  mkdir "${_dist_dir}/js";
-  mkdir "${_dist_dir}/img";
-  mkdir "${_dist_dir}/font";
-  mkdir "${_dist_dir}/font/vendor";
+  mkdir -p "${_dist_dir}/css";
+  mkdir -p "${_dist_dir}/js";
+  mkdir -p "${_dist_dir}/img";
+  mkdir -p "${_dist_dir}/font";
+  mkdir -p "${_dist_dir}/font/vendor";
 
   ## TODO copy app files to these directories like so
   # cp "${_stage_dir}/" "${_dist_dir}/js/";
 
-  ## TODO Provide ability to copy media file to dist dist like so:
+  ## TODO Provide ability to copy media file to dist like so:
   ## media:
-  ## cp "${_prod_dir}/img/xhi-bkgd-001.jpg" "${_dist_dir}/img/"
+  ## cp "${_npm_dir}/img/xhi-bkgd-001.jpg" "${_dist_dir}/img/"
 
   clean_tmp_files;
   _end_date=$(date "+%Y-%m-%d %H:%M:%S");
