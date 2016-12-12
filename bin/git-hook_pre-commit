@@ -119,7 +119,7 @@ set -u;
   echo "Updating HTML documents from MarkDown";
   "${_makedoc_exe}";
   _exit_code=$?;
-  if [ "${_exit_code}" -eq "0" ]; then
+  if [ "${_exit_code}" -ne "0" ]; then
     echo "Document file failure".
     echo "Please check your installation.";
     exit "${_exit_code}";
