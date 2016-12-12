@@ -57,7 +57,7 @@ __NS._makeUtil_ = function ( aMap ) {
     __typeof  = vMap._fnTypeof_,
     __keys    = vMap._fnGetKeyList_,
 
-    topSmap, topCmap, // State and config maps are set in initModule
+    topSmap, topCmap, // State and cfg maps are set in initModule
 
     getNowMs,     getVarType,  getBasename,
     getDirname,   logObj,  makeGuidStr,

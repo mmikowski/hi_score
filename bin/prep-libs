@@ -14,7 +14,7 @@ set -u;
 # 2. Install the commit hook if git is detected.
 #
 # TODO:
-# 1. Use the same configuration file as buildify / superpack
+# 1. Use the same cfg file as buildify / superpack
 # 2. Auto-update links to these files using in index.html
 #    (consider using sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html' )
 #

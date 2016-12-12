@@ -1713,7 +1713,7 @@ function makeSeriesMap ( test_obj ) {
       {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
       {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
       {"_show_idx_":0,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"2016-06-07","_width_ratio_":1}],"_time_list_":["23:14:00","23:14:01","23:14:01"]},
-      // these can not be solve with our current config
+      // these can not be solve with our current cfg
       undefined,
       undefined,
       undefined,

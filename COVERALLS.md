@@ -1,4 +1,4 @@
-# hi\_score Coveralls Configuration
+# hi\_score Coveralls Installation
 [![Coverage Status](https://coveralls.io/repos/github/mmikowski/hi_score/badge.svg?branch=master)](https://coveralls.io/github/mmikowski/hi_score?branch=master)
 
 If you create a fork you may submit your coverage report to coveralls.io.
@@ -13,7 +13,7 @@ results.
 
 The report page should look similar to the [master branch site][1].
 
-# Configuration
+# Installation
 Below are the steps we used to get coverage working. Many thanks to Elliot
 Stokes who's [blog post][2] provided most of the information.
 Most of this work is already integrated into **hi_score**. If you wish to 
@@ -26,7 +26,7 @@ publish a coveralls report for your fork, look at step 4.
   $ npm install istanbul --save-dev
 ```
 
-## 2. Configure git to ignore coverage directory
+## 2. Instruct git to ignore coverage directory
 
 ```bash
   $ cd hi_score
@@ -53,7 +53,7 @@ as shown in `https://coveralls.io/github/<username>/hi_score` at the TR.
 
 Place this token in the `.coveralls.yml` file. This is **your** token. As I
 understand it, this should always be kept private, so please add the 
-configuration file with this information to the `.gitignore` file:
+`.coveralls.yml` file with to the `.gitignore` file:
 
 ```bash
   $ cd hi_score
@@ -62,7 +62,7 @@ configuration file with this information to the `.gitignore` file:
 ```
 
 Run `npm covera` to send a report to coveralls.io. The detailed
-command which is run by this script is as follows:
+command run by this script is as follows:
 
 ```bash
   $ cd hi_score

@@ -7,8 +7,7 @@
     use strict;
     use feature ':5.10';
 
-    use List::Util qw(shuffle);
-    use List::MoreUtils qw(uniq);
+    use List::Util;
     use Data::Dumper;
     use File::Slurp;
     use Getopt::Mixed;
@@ -30,14 +29,11 @@
     local $Data::Dumper::Sortkeys => 1;
 
     ## BEGIN process command-line options
-    #
     Getopt::Mixed::init( 'i=s o=s l=s input>i output>o log>l' );
     my %opt_map;
 
 
-    while ( my( $option, $value, $pretty )
-      = Getopt::Mixed::nextOption()
-    ) {
+    while ( my( $option, $value, $pretty ) = Getopt::Mixed::nextOption() ) {
       $opt_map{ $option } = $value;
     };
     Getopt::Mixed::cleanup();
@@ -49,13 +45,11 @@
       || die q(required [o]utput not provided);
     my $log_file    = $opt_map{ 'l' }
       || die q(required [l]og not provided);
-    #
     ## END process command-line options
 
     ## BEGIN extract tokens from input
-    #
     # slurp in file content
-    my $script_str = read_file($script_file);
+    my $script_str = File::Slurp::read_file( $script_file );
     # split into lines
     my @str_script_lines = split qq(\n), $script_str;
 
@@ -84,11 +78,9 @@
     my @token_list
       = sort { $seen_mref->{$b} <=> $seen_mref->{$a} } keys(%{$seen_mref});
     # DEBUG: print STDERR join( q(, ), @token_list ) . "\n";
-    #
     ## END extract tokens from input
 
     ## BEGIN Deck management
-    #
     my @deck1_char_list = qw(
       _ a b c d e f g h i j k l m n o p q r s t u v w x y z
     );
@@ -119,11 +111,9 @@
 
       return scalar @deck_list;
     }
-    #
     ## END deck management
 
     ## BEGIN initialize vars to create token_x_munge_map map
-    #
     my %token_x_munge_map = ();
     # munge strings to skip; currently all js reserved words
     my $skip_key_mref = {
@@ -165,21 +155,17 @@
     # Initialize our list of deck_list by adding our first one
     my $deck_count = add_deck();
     my @munge_digit_list = ();
-    #
     ## END initialize vars to create token_x_munge_map map
 
     ## BEGIN Create %token_x_munge_map
-    #
     for my $token_str( @token_list ) {
       my $munge_str;
       my $found_count = 1;
 
       ## BEGIN find valid replacement token (munge_str)
-      #
       while ( $found_count != 0 ) {
 
         ## BEGIN build munge string
-        #
         # use last deck to get digit
         my $deck_idx = scalar( @deck_list ) - 1;
         my $is_roll_over = 1;
@@ -211,11 +197,9 @@
           }
         }
         $munge_str = join( q(), @munge_digit_list );
-        #
         ## END build munge string
 
         ## BEGIN test munge string
-        #
         # check to see if munge already exists in file ...
         my @match_list = grep { /\b$munge_str\b/ } @str_script_lines;
         # ... if it does, this is non-zero so we will build a new munge
@@ -227,20 +211,16 @@
           push @skipped_list, $munge_str;
           $skipped_count++;
         }
-        #
         ## END test munge string
       }
-      #
       ## END find valid replacement token (munge_str)
 
       # save the mapping
       $token_x_munge_map{$token_str} = $munge_str;
     }
-    #
     ## END Create %token_x_munge_map
 
     ## BEGIN collate and output
-    #
     # Replace tokens in script
     for my $pattern( @boundry_patterns ) {
       $script_str  =~ s{\b$pattern\b}{$token_x_munge_map{$pattern}}g;
@@ -282,6 +262,7 @@
 
     print STDERR qq(Token frequency: \n);
     print STDERR join( qq(,\n), @report_list );
+    print STDERR qq(Maximum symbol length is |${deck_count}|);
     # print STDERR Dumper( \$seen_mref );
 
     ## END collate and output

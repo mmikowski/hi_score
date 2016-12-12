@@ -6,7 +6,11 @@ node_modules
 coverage
 js-cov
 .coveralls.yml
+img/vendor
 js/vendor
 css/vendor
 font/vendor
 build
+index.html
+COVERALLS.html
+

@@ -54,7 +54,7 @@ __NS._makeData_ = function ( aMap ) {
       '__0 === ' + __0,
       '__1 === ' + __1,
       '__blank === ' + __blank,
-      'Module config map === ', topCmap,
+      'Module cfg map === ', topCmap,
       'Module state  map === ', topSmap
     );
   }

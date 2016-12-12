@@ -4,166 +4,149 @@
 ## https://google.github.io/styleguide/shell.xml#Function_Names
 ## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
 
-## Exit when encountering undeclared variables
-## The -e check ( exit when encountering a non-zero exit status )
-## As we do our own checking 
+## The -u option forces bash to exit when encountering an uninit variable.
+## The -e option forces bash to exit when encountering a non-zero exit status.
+##   We omit -e as we do our own checking.
 set -u;
 
-## To deploy this script:
-## cd ../.git/hooks
-## ln -s ../../bin/git-hook_pre-commit pre-commit
-## 
-
-## TODO: Update style per buildify and prep-libs.sh
-
 ## BEGIN Layout variables ==================================================
-NODE_EXE=$(which node);
-LINK_PATH=$(readlink -f -- "${0}");
-BIN_PATH=$(cd "${LINK_PATH%/*}" && echo "${PWD}");
-GGG_DIR=$(cd "$(git rev-parse --show-toplevel)" && pwd );
-PKG_FILE=$(find "${GGG_DIR}" -type f -wholename '*/package.json'  );
-PKG_DIR=$(dirname "${PKG_FILE}"  );
-MODS_DIR=$(find "${GGG_DIR}" -type d |grep '/node_modules$' |grep -v '/node_modules/');
-WAPP_DIR=$(dirname "${MODS_DIR}");
-JSLINT_EXE="${MODS_DIR}/.bin/jslint";
-NU_EXE="${MODS_DIR}/.bin/nodeunit";
-NU_FILE="${WAPP_DIR}/test/xhi_level_0.js";
-MAKEDOC_EXE="${GGG_DIR}/bin/make_doc";
-LIST_FILE="/tmp/git-pre-commit.${$}.list.tmp";
-TMP_FILE="/tmp/git-pre-commit.${$}.tmp";
-CHECK_STR="";
-## END Layout variables ====================================================
+  _app_name=$( basename $0 );
+  _orig_dir=$( pwd );
+  echo "start ${_app_name}";
+  echo "  > layout vars";
 
-## BEGIN Debug
-# echo "
-# NODE_EXE     : ${NODE_EXE}
-# LINK_PATH    : ${LINK_PATH}
-# BIN_PATH     : ${BIN_PATH}
-# GGG_DIR      : ${GGG_DIR}
-# PKG_FILE     : ${PKG_FILE}
-# PKG_DIR      : ${PKG_DIR}
-# MODS_DIR     : ${MODS_DIR}
-# WAPP_DIR     : ${WAPP_DIR}
-# JSLINT_EXE   : ${JSLINT_EXE}
-# NU_EXE       : ${NU_EXE}
-# NU_FILE      : ${NU_FILE}
-# MAKEDOC_EXE  : ${MAKEDOC_EXE}
-# LIST_FILE    : ${LIST_FILE}
-# TMP_FILE     : ${TMP_FILE}
-# CHECK_STR    : ${CHECK_STR}
-# ";
-## END Debug
+    # app path and name
+    _app_link=$( readlink -f -- "${0}" );
+    _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
 
-## BEGIN Lint JavaScript files =============================================
-if [ ! -x "${JSLINT_EXE}" ]; then
-  echo "JSLint executable not found."
-  echo "Please execute the following command: "
-  echo "  cd ${WAPP_DIR}; npm install ";
-  exit 1;
-fi
+    # npm module paths
+    _npm_dir=$( dirname "${_bin_dir}" );
+    _pkg_file="${_npm_dir}/package.json";
+    _mod_dir="${_npm_dir}/node_modules";
+    _mod_dir_bin="${_mod_dir}/.bin";
 
-cd "${GGG_DIR}";
-pwd;
+    # executables
+    _node_exe=$(which node);
+    _git_exe=$(which git);
+    _jslint_exe="${_mod_dir}/.bin/jslint";
+    _makedoc_exe="${_npm_dir}/bin/make_doc";
+    _nodeunit_exe="${_mod_dir}/.bin/nodeunit";
 
-git status \
-  | grep -v '/vendor/' \
-  | grep '.js$' \
-  | grep '^\s\+\(modified\|new file\)' \
-  | cut -d ":" -f 2- > "${LIST_FILE}"
+    if [ ! -x "${_git_exe}" ]; then
+      echo "Git not installed.  Aborting...";
+      exit 1;
+    fi
 
-## BEGIN Debug
-# echo ">>>>${LIST_FILE}<<<<";
-# echo ">>>>LIST_FILE:";
-# cat "${LIST_FILE}";
-# echo "<<<<";
-# exit 1;
-## END Debug
+    # more paths
+    _git_dir=$(cd "$(git rev-parse --show-toplevel)" && pwd );
+    _nodeunit_file="${_npm_dir}/test/xhi_level_0.js";
+    _list_file="/tmp/git-pre-commit.${$}.list.tmp";
+    _log_file="/tmp/git-pre-commit.${$}.tmp";
+    _scratch_str="";
 
-echo;
-echo "Tests of updated or new *.js files ...";
-cat "${LIST_FILE}" | while read FILE_NAME; do
-  echo "====> ${FILE_NAME}";
-  CHECK_STR=$(${JSLINT_EXE} "${FILE_NAME}");
-  CHECK_CODE=$?;
-  if [ "${CHECK_CODE}" -gt 0 ]; then
-    echo "  JSLint check FAILED";
-    echo "  ${CHECK_STR}";
-  fi;
-  CHECK_STR=$(grep -nP '\t' "${FILE_NAME}");
-  if [ ! -z "${CHECK_STR}" ]; then
-    echo "  Tab check FAILED";
-    echo "  ${CHECK_STR}";
-    echo;
+  # echo "  < layout vars";
+  ## == END Layout variables ===============================================
+
+  ## BEGIN Lint JavaScript files =============================================
+  if [ ! -x "${_jslint_exe}" ]; then
+    echo "JSLint executable not found."
+    echo "Please execute the following command: "
+    echo "  cd ${_npm_dir}; npm install ";
+    exit 1;
   fi
-  CHECK_STR=$(grep -nP '\s+$' ${FILE_NAME});
-  if [ ! -z "${CHECK_STR}" ]; then
-    echo "  Trailing space check FAILED";
-    echo "  ${CHECK_STR}";
-    echo;
-  fi
-  CHECK_STR=$(grep '^\s*.use strict.;$' ${FILE_NAME});
-  if [ -z "${CHECK_STR}" ]; then
-    echo "  Strict use check FAILED";
-    echo "  Please add 'use strict'; at the top of your module function.";
-    echo;
-  fi
-  echo "<====";
+
+  cd "${_git_dir}";
+  pwd;
+
+  git status \
+    | grep -v '/vendor/' \
+    | grep '.js$' \
+    | grep '^\s\+\(modified\|new file\)' \
+    | cut -d ":" -f 2- > "${_list_file}"
+
   echo;
-done | tee "${TMP_FILE}";
+  echo "Tests of updated or new *.js files ...";
+  cat "${_list_file}" | while read _loop_file; do
+    echo "====> ${_loop_file}";
+    _scratch_str=$(${_jslint_exe} "${_loop_file}");
+    _exit_code=$?;
+    if [ "${_exit_code}" -gt 0 ]; then
+      echo "  JSLint check FAILED";
+      echo "  ${_scratch_str}";
+    fi;
+    _scratch_str=$(grep -nP '\t' "${_loop_file}");
+    if [ ! -z "${_scratch_str}" ]; then
+      echo "  Tab check FAILED";
+      echo "  ${_scratch_str}";
+      echo;
+    fi
+    _scratch_str=$(grep -nP '\s+$' ${_loop_file});
+    if [ ! -z "${_scratch_str}" ]; then
+      echo "  Trailing space check FAILED";
+      echo "  ${_scratch_str}";
+      echo;
+    fi
+    _scratch_str=$(grep '^\s*.use strict.;$' ${_loop_file});
+    if [ -z "${_scratch_str}" ]; then
+      echo "  Strict use check FAILED";
+      echo "  Please add 'use strict'; at the top of your module function.";
+      echo;
+    fi
+    echo "<====";
+    echo;
+  done | tee "${_log_file}";
 
-echo "Tests complete";
-if grep -qs 'FAIL' "${TMP_FILE}"; then
-  echo "Checks did not pass.";
-  echo "  Please fix the problem files and commit again.";
-  rm "${TMP_FILE}";
-  exit 1;
-fi
+  echo "Tests complete";
+  if grep -qs 'FAIL' "${_log_file}"; then
+    echo "Checks did not pass.";
+    echo "  Please fix the problem files and commit again.";
+    cp "${_log_file}" "${_orig_dir}/pre-commit-error.log";
+    exit 1;
+  fi
 
-rm "${TMP_FILE}";
-rm "${LIST_FILE}";
+  rm "${_log_file}";
+  rm "${_list_file}";
 
-echo;
-## END Lint JavaScript files ===============================================
+  echo;
+  ## == END Lint JavaScript files ===========================================
 
-## BEGIN Process changed documents ========================================
-## TODO
-##  if [ ! -x "${MAKEDOC_EXE}" ]; then
-##    echo "bin/make_doc not found.  This file should exist.";
-##    echo "Please check your installation.";
-##    exit 1;
-##  fi
-##  echo "Updating HTML documents from MarkDown";
-##  "${MAKEDOC_EXE}";
-##  RET_VAL=$?;
-##  if [ "${RET_VAL}" -eq "0" ]; then
-##    echo "Document file failure".
-##    echo "Please check your installation.";
-##    exit "${RET_VAL}";
-##  fi
-##
-## END Process changed documents ==========================================
+  ## == BEGIN Process changed documents =====================================
+  if [ ! -x "${_makedoc_exe}" ]; then
+    echo "bin/make_doc not found.  This file should exist.";
+    echo "Please check your installation.";
+    exit 1;
+  fi
+  echo "Updating HTML documents from MarkDown";
+  "${_makedoc_exe}";
+  _exit_code=$?;
+  if [ "${_exit_code}" -eq "0" ]; then
+    echo "Document file failure".
+    echo "Please check your installation.";
+    exit "${_exit_code}";
+  fi
+  ## == END Process changed documents =======================================
 
-## BEGIN Run regression tests ==============================================
-if [ ! -x "${NODE_EXE}" ]; then
-  echo "Node not found.  Please install nodejs and ensure it is "
-  echo " found in your PATH environment variable."
-  exit 1;
-fi
+  ## == BEGIN Run regression tests ==========================================
+  if [ ! -x "${_node_exe}" ]; then
+    echo "Node not found.  Please install nodejs and ensure it is "
+    echo " found in your PATH environment variable."
+    exit 1;
+  fi
 
-if [ ! -x "${NU_EXE}" ]; then
-  echo "Nodeunit not found.  Please run "
-  echo "cd ${WAPP_DIR}; npm install"
-  echo
-fi
+  if [ ! -x "${_nodeunit_exe}" ]; then
+    echo "Nodeunit not found.  Please run "
+    echo "cd ${_npm_dir}; npm install"
+    echo
+  fi
 
-if [ ! -r "${NU_FILE}" ]; then
-  echo "Nodeunit file ${NU_FILE} not found."
-  echo "Please ensure it exists."
-  echo
-  exit 1;
-fi
+  if [ ! -r "${_nodeunit_file}" ]; then
+    echo "Nodeunit file ${_nodeunit_file} not found."
+    echo "Please ensure it exists."
+    echo
+    exit 1;
+  fi
 
-echo "Running regression tests";
-"${NU_EXE}" "${NU_FILE}"
-exit $?;
-## END Run regression tests ================================================
+  echo "Running regression tests";
+  "${_nodeunit_exe}" "${_nodeunit_file}"
+  exit $?;
+  ## == END Run regression tests ============================================

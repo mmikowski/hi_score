@@ -1,31 +1,54 @@
 #!/bin/bash
 
+## See style-guide
+## https://google.github.io/styleguide/shell.xml#Function_Names
+## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
+
+## Exit when encountering undeclared variables
+## The -e check ( exit when encountering a non-zero exit status )
+## As we do our own checking
+
 set -u
 
-ROOT_DIR=$(git rev-parse --show-toplevel);
-PANDOC=$(which pandoc);
+## == BEGIN Layout variables =============================================
+  _app_name=$( basename $0 );
+  _orig_dir=$( pwd );
+  echo "start ${_app_name}";
+  echo "  > layout vars";
 
-if [ -z "${PANDOC}" ]; then
+  _git_exe=$(which git);
+
+  # app path and name
+  _app_link=$( readlink -f -- "${0}" );
+  _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
+  if [ -x ${_git_exe} ]; then
+    _top_dir=$(${_git_exe} rev-parse --show-toplevel);
+  else
+    _top_dir=$( dirname ${_bin_dir} );
+  fi
+  _pandoc_exe=$(which pandoc);
+## == END Layout variables ===============================================
+
+if [ ! -x "${_pandoc_exe}" ]; then
   echo "Please install pandoc to use this utility";
   exit 1;
 fi
-cd "${ROOT_DIR}";
+cd "${_top_dir}";
 
 find -type f -name "*.md" \
   | grep -v 'node_modules' \
   | grep -v 'uglifyjs' \
-  | while read FILE; do
+  | while read _loop_file; do
 
-  DIR=$(dirname "${FILE}");
-  BASENAME=$(basename -s.md "${FILE}");
-  if [ "${BASENAME}" = "README" ]; then
-    BASENAME="index";
+  _loop_dir=$(dirname "${_loop_file}");
+  _loop_basename=$(basename -s.md "${_loop_file}");
+  if [ "${_loop_basename}" = "README" ]; then
+    _loop_basename="index";
   fi
-  echo "Generating ${DIR}/${BASENAME}.html from ${FILE}"
-
-  "${PANDOC}" "${FILE}" \
+  echo "Generating ${_loop_dir}/${_loop_basename}.html from ${_loop_file}"
+  "${_pandoc_exe}" "${_loop_file}" \
   -f markdown_github \
-  -so "${DIR}/${BASENAME}.html" \
-  -H "${ROOT_DIR}/cfg/md-github.style";
+  -so "${_loop_dir}/${_loop_basename}.html" \
+  -H "${_top_dir}/cfg/md-github.style";
 done
 

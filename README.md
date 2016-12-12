@@ -7,42 +7,42 @@ as found in [Single Page Web Applications - JavaScript end-to-end][_00].
 ## Hello World Example
 
 ```html
-<!doctype html>
-<html>
-  <head>
-    <script src="js/vendor/jquery-3.1.1.js"></script>
-    <script src="js/vendor/pcss-1.3.5.js"></script>
-    <script src="js/vendor/pcss.cfg-1.3.5.js"></script>
-    <script src="js/vendor/jquery.event.gevent-1.1.6.js"></script>
-    <script src="js/vendor/jquery.event.ue-1.3.2.js"></script>
+  <!doctype html>
+  <html>
+    <head>
+      <script src="js/vendor/jquery-3.1.1.js"></script>
+      <script src="js/vendor/pcss-1.3.5.js"></script>
+      <script src="js/vendor/pcss.cfg-1.3.5.js"></script>
+      <script src="js/vendor/jquery.event.gevent-1.1.6.js"></script>
+      <script src="js/vendor/jquery.event.ue-1.3.2.js"></script>
 
-    <script src="js/xhi/00.js"></script>
-    <script src="js/xhi/01.util.js"></script>
-    <script src="js/xhi/02.data.js"></script>
-    <script src="js/xhi/03.model.js"></script>
-    <script src="js/xhi/04.utilb.js"></script>
-    <script src="js/xhi/05.css_base.js"></script>
-    <script src="js/xhi/05.css_lb.js"></script>
-    <script src="js/xhi/05.css_shell.js"></script>
-    <script src="js/xhi/06.css.js"></script>
-    <script src="js/xhi/06.lb.js"></script>
-    <script src="js/xhi/07.shell.js"></script>
-    <script src="js/xhi/08.app.js"></script>
+      <script src="js/xhi/00.js"></script>
+      <script src="js/xhi/01.util.js"></script>
+      <script src="js/xhi/02.data.js"></script>
+      <script src="js/xhi/03.model.js"></script>
+      <script src="js/xhi/04.utilb.js"></script>
+      <script src="js/xhi/05.css_base.js"></script>
+      <script src="js/xhi/05.css_lb.js"></script>
+      <script src="js/xhi/05.css_shell.js"></script>
+      <script src="js/xhi/06.css.js"></script>
+      <script src="js/xhi/06.lb.js"></script>
+      <script src="js/xhi/07.shell.js"></script>
+      <script src="js/xhi/08.app.js"></script>
 
-    <script>
-    $(function () {
-      xhi._makeApp_( 'ex01' );
+      <script>
+      $(function () {
+        xhi._makeApp_( 'ex01' );
 
-      ex01._shell_._initModule_( $('body') );
-      ex01._lb_._showLb_({
-        _title_html_   : 'Hello World',
-        _content_html_ : '<p>Grab the title bar to drag.</p>'
+        ex01._shell_._initModule_( $('body') );
+        ex01._lb_._showLb_({
+          _title_html_   : 'Hello World',
+          _content_html_ : '<p>Grab the title bar to drag.</p>'
+        });
       });
-    });
-    </script>
-  </head>
-  <body></body>
-</html>
+      </script>
+    </head>
+    <body></body>
+  </html>
 ```
 
 ## Overview
@@ -210,7 +210,7 @@ now if you are ambitious:
 
 ```bash
   cd hi_score
-  npm run buildify config/ex01.buildify
+  npm run buildify cfg/ex01.buildify
 
   cd build/stage
   ls
@@ -232,10 +232,46 @@ which makes further optimizations by pruning code easier.
 We will add further documentation as we complete polishing this feature for
 general use.
 
+## Examples
+You must install **hi\_score** locally by cloning or forking the [Git
+repository][_28] (preferred) or using `npm install` and then run the standard
+incantation to view these example.  If you are viewing this index from a 
+local source you're already there.  If not, here is the incantation again:
+
+```bash
+  cd  hi_score
+  npm install
+  npm run prep-libs
+```
+
+We can then control-click the links to the following examples to inspect them
+in separate tabs:
+
+- [Example 1](./ex01.html)
+- [Example 2](./ex02.html)
+
+Both of the applications use the xhi libraries yet they have completely 
+separate namespaces. We can use the Chrome developer tools to 
+inspect these differences.  Press `<shift>-<ctrl>-i` (or `<shift>-<cmd>-i`
+on a Mac) to open these tools.
+
+When we view the Example 1 tab we can type `ex01` into the JavaScript console
+and press return and see that this single variable points to all our unique 
+code in this application.  However, if we type `ex02` we see that this 
+variable is `undefined`, as it should be.  If we visit the Example 2 tab we
+can see that the opposite is true - `ex01` is `undefined` and `ex02` contains
+all our application code.  This namespacing allows us to provide a suite of 
+web applications that share the same UX without interferring with each other.
+
+This name spacing extends to CSS as well.  If we inspect the HTML in the 
+Example 1 tab, we can see that nearly all classes start with an `ex01-` prefix,
+whereas the Example 2 tab uses `ex02-`.
+
+
 ## Vendor assets
 All vendor assets are listed in the `devDependencies` map in the
 `package.json` file.  If you want to add a vendor asset, the best method is to
-add the npm package there and then update the `bin/prep-libs.sh` script
+add the npm package there and then update the `bin/prep-libs` script
 to copy the asset to the correct directory: `js/vendor/`,
 `css/vendor`, `font/vendor`, or `img/vendor`.
 
@@ -327,7 +363,8 @@ MIT
 - (x) Number code library level
 
 ### Version 0.8.x
-- (wip) Implement npm-base build system for production
+- (wip) Implement build system
+- Unify shell scripts nomenclature
 - Add constructor where only selected components are added
 - Add dependency graph for above
   
@@ -365,3 +402,4 @@ MIT
 [_25]:https://www.npmjs.com/package/uglifyjs
 [_26]:http://absurdjs.com/
 [_27]:http://www.responsivejs.com/
+[_28]:https://github.com/mmikowski/hi_score

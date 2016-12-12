@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Get off the framework-of-the-month treadmill and take control of your SPA. Hi_Score assembles best-in-class libraries in a feature-module architecture as detailed in 'Single Page Web Applicaitons, JavaScript end-to-end'",
   "keywords": [
     "spa",
@@ -15,7 +15,7 @@
   "main": "hi_score",
   "scripts": {
     "buildify" : "bin/buildify",
-    "prep-libs": "bin/prep-libs.sh",
+    "prep-libs": "bin/prep-libs",
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js",
     "cover": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
     "covera": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls"

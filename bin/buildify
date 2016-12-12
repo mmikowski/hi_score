@@ -38,7 +38,7 @@ set -u;
     _tmplt_dir="${_npm_dir}/tmplt";
 
     # executables
-    _pack_exe="${_bin_dir}/superpack.pl";
+    _pack_exe="${_bin_dir}/superpack";
     _ugjs_exe="${_mod_dir_bin}/uglifyjs";
     _ugcss_exe="${_mod_dir_bin}/uglifycss";
 
@@ -46,7 +46,7 @@ set -u;
     _start_date_=$(date "+%Y-%m-%d %H:%M:%S");
     _ext_date=$(date "+%Y%m%d_%H%M%S");
 
-    # temp dir 
+    # temp dir
     # See http://www.linuxsecurity.com/content/view/115462/81/#mozTocId440182
     _tmp_dir="${TMPDIR-/tmp}/$$.${_app_name}.${_ext_date}";
     ( umask 077 && mkdir "${_tmp_dir}" ) || {
@@ -54,9 +54,8 @@ set -u;
       _log_fn "  ! Could not create temporary directory";
       _abort_fn;
     }
-
   # echo "  < layout vars";
-  ## == END Layout variables =================================================
+  ## == END Layout variables ===============================================
 
 ## BEGIN function to echo to STDERR
 _log_stderr_fn () { echo "$*" >&2; }
@@ -131,9 +130,9 @@ EXAMPLES
 
 ARGUMENTS
   manifest_1, manifest_2, ... (REQUIRED)
-    Manifests to process.  Each manifest lists the source files to 
+    Manifests to process.  Each manifest lists the source files to
     process. It may have multiple sections delineated by a source-type header.
-    ${_app_name} expects all paths to be relative to the referencing 
+    ${_app_name} expects all paths to be relative to the referencing
     manifest file path.
 
        sourcetype:js   # for javascript files, and
@@ -154,7 +153,7 @@ OPTIONS
 
   * -v | --verbose (OPTIONAL)
     Be noisy when processing
-  
+
   * -t <dir> | --tmpltdir <dir> (OPTIONAL)
     Directory containing templates
 
@@ -163,7 +162,7 @@ REQUIRED PATCH
   to UglifyJS.  If you have installed **hi\_score** this patch will have
   been applied when running 'npm run prep-libs' which is the safest means
   to apply the patch.  If you need to do so manually, this should also work:
-  
+
     \$ cd ${_mod_dir}
     \$ patch -p0 < ../patch/uglifyjs-2.4.10.patch
 
@@ -209,9 +208,9 @@ clean_tmp_files () {
 ## BEGIN function to abort processing
 _abort_fn () {
   _do_verbose=1;
-  _log_fn "";
-  _log_fn "  > See ${_app_name} -hv for detailed usage.";
-  _log_fn "  ! Processing ABORTED.";
+  _log_fn '';
+  _log_fn "## See ${_app_name} -hv for detailed usage.";
+  _log_fn "## ! Processing ABORTED.";
 
   clean_tmp_files;
   # exit with error (bash shell standard)
@@ -229,7 +228,7 @@ _abort_fn () {
   if [ $? != 0 ] ; then
 		_do_verbose=1;
     _log_stderr_fn "  ! Trouble processing command line.";
-    _abort_fn; 
+    _abort_fn;
   fi
 
   # Note the quotes around $_cli_str: they are essential!
@@ -419,11 +418,11 @@ _abort_fn () {
     ## BEGIN validate build dir and move global log to it
     if [ -d "${_build_dir}" ]; then
       _scratch_str="${_do_verbose}";
-      _do_verbose=1; 
+      _do_verbose=1;
       _log_fn "The build directory ${_build_dir} already exists."
       read -p 'Wipe and recreate? (y/N) ' -n1 _ans_str;
       _ans_str="${_ans_str^^}";
-      if [ "${_ans_str^^:=N}" == 'N' ]; then 
+      if [ "${_ans_str^^:=N}" == 'N' ]; then
         _log_fn "  ! Aborted at user request.";
         _abort_fn;
       fi
@@ -439,7 +438,8 @@ _abort_fn () {
     mkdir ${_stage_dir};
     mkdir ${_dist_dir};
 
-    if ! mv "${_top_log_file}" "${_build_dir}"; then
+    if [ "${_top_log_file}" != "${_build_dir}/${_top_log_name}" ] \
+      && ! mv "${_top_log_file}" "${_build_dir}"; then
       _do_verbose=1;
       _log_fn "  ! Could not move global log to build directory";
       _abort_fn;
@@ -549,12 +549,12 @@ _abort_fn () {
     ## BEGIN compress css file if specified
     if [ -r "${_css_concat_file}" ] && [ ${_dont_compress} -eq 0 ]; then
       _log_fn "  > UglifyCSS Compressing '${_css_concat_file}'";
-    
+
       ${_ugcss_exe} "${_css_concat_file}" \
         1> "${ugcss_out_file}" \
         2>> "${_ugcss_log_file}";
       _ugcss_exit_code=$?;
-    
+
       if [ ${_ugcss_exit_code} == 0 ]; then
         _log_fn "  > Compression successful.  Output is '${ugcss_out_file}'";
         rm "${_ugcss_log_file}";
