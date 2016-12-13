@@ -54,7 +54,7 @@
     my @str_script_lines = split qq(\n), $script_str;
 
     # create a list of tokens to replace
-    my @raw_patterns = $script_str =~ m{_[A-Za-z0-9\$_-]+_}g;
+    my @raw_patterns = $script_str =~ m{_[A-Za-z0-9\$_]+_}g;
 
     # TODO : Create a general solution to add and exclude tokens
     my @boundry_patterns = ( 'TAFFY', 'jQuery', 'EXIT' );
@@ -226,7 +226,7 @@
       $script_str  =~ s{\b$pattern\b}{$token_x_munge_map{$pattern}}g;
       delete $token_x_munge_map{$pattern};
     }
-    $script_str  =~ s{\b(_[A-Za-z0-9\$_-]+_)\b}{$token_x_munge_map{$1}}ge;
+    $script_str  =~ s{\b(_[A-Za-z0-9\$_]+_)\b}{$token_x_munge_map{$1}}ge;
     $script_str  =~ s{[\n\r]}{}g;
 
     # modify dumper to turn into JSON

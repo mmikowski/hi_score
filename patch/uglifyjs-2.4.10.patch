@@ -1,7 +1,7 @@
 diff -Naur uglifyjs/lib/scope.js uglifyjs/lib/scope.js
---- uglifyjs/lib/scope.js	2015-03-11 19:31:00.000000000 -0700
-+++ uglifyjs/lib/scope.js	2016-12-01 21:59:56.747082703 -0800
-@@ -246,27 +246,34 @@
+--- uglifyjs/lib/scope.js	2016-12-13 14:21:29.006391624 -0800
++++ uglifyjs/lib/scope.js	2016-12-13 14:29:16.032300635 -0800
+@@ -246,27 +246,35 @@
      return symbol.thedef = def;
  });
  
@@ -15,6 +15,7 @@ diff -Naur uglifyjs/lib/scope.js uglifyjs/lib/scope.js
 +    var sym, name, m, n, j, i, ext = this.enclosed;
 +    OUT: for ( j = 0; j < 1000; j++ ) {
 +        m = base54( ++this.cname );
++        if ( m === '_' ) { continue OUT };
 +        n = '_' + m + '_';
 +
 +        if ( ! is_identifier( n ) ) { continue OUT; }
@@ -48,6 +49,6 @@ diff -Naur uglifyjs/lib/scope.js uglifyjs/lib/scope.js
 +     throw 'Cannot find unique key after 1000 iterations';
  });
 +// END hi_score patch line 276
-
+ 
  AST_Function.DEFMETHOD("next_mangled", function(options, def){
      // #179, #326
