@@ -321,6 +321,38 @@ _abort_fn () {
   fi
   ## END validiate input files
 
+  ## BEGIN validate build dir and move global log to it
+  if [ -d "${_build_dir}" ]; then
+    _scratch_str="${_do_verbose}";
+    _do_verbose=1;
+    _log_fn "The build directory ${_build_dir} already exists."
+    read -p 'Wipe and recreate? (y/N) ' _ans_str;
+    _ans_str="${_ans_str^^}";
+    if [ "${_ans_str^^:=N}" == 'N' ]; then
+      _log_fn "  ! Aborted at user request.";
+      _abort_fn;
+    fi
+    _log_fn "";
+    _log_fn "  > Removing ${_build_dir} at user request";
+    rm -rf "${_build_dir}";
+    _log_fn "  > Removal complete.";
+    _do_verbose="${_scratch_str}"
+  fi
+
+  _log_fn "  > Processing";
+  mkdir ${_build_dir};
+  mkdir ${_stage_dir};
+  mkdir ${_dist_dir};
+
+  if [ "${_top_log_file}" != "${_build_dir}/${_top_log_name}" ] \
+    && ! mv "${_top_log_file}" "${_build_dir}"; then
+    _do_verbose=1;
+    _log_fn "  ! Could not move global log to build directory";
+    _abort_fn;
+  else
+    _top_log_file="${_build_dir}/${_top_log_name}";
+  fi
+  ## END validate build dir and move global log there
 
   ## BEGIN process each manifest in turn
   for (( _file_idx = 0; _file_idx < ${#_manifest_list[*]}; _file_idx++ )); do
@@ -414,39 +446,6 @@ _abort_fn () {
       esac
     done < "${_manifest_file}"
     ## END read manifest and append sources to arrays
-
-    ## BEGIN validate build dir and move global log to it
-    if [ -d "${_build_dir}" ]; then
-      _scratch_str="${_do_verbose}";
-      _do_verbose=1;
-      _log_fn "The build directory ${_build_dir} already exists."
-      read -p 'Wipe and recreate? (y/N) ' -n1 _ans_str;
-      _ans_str="${_ans_str^^}";
-      if [ "${_ans_str^^:=N}" == 'N' ]; then
-        _log_fn "  ! Aborted at user request.";
-        _abort_fn;
-      fi
-      _log_fn "";
-      _log_fn "  > Removing ${_build_dir} at user request";
-      rm -rf "${_build_dir}";
-      _log_fn "  > Removal complete.";
-      _do_verbose="${_scratch_str}"
-    fi
-
-    _log_fn "  > Processing";
-    mkdir ${_build_dir};
-    mkdir ${_stage_dir};
-    mkdir ${_dist_dir};
-
-    if [ "${_top_log_file}" != "${_build_dir}/${_top_log_name}" ] \
-      && ! mv "${_top_log_file}" "${_build_dir}"; then
-      _do_verbose=1;
-      _log_fn "  ! Could not move global log to build directory";
-      _abort_fn;
-    else
-      _top_log_file="${_build_dir}/${_top_log_name}";
-    fi
-    ## END validate build dir and move global log there
 
     ## BEGIN determine paths
     _js_concat_file="${_tmp_dir}/$$.${_manifest_short_name}-src.js";
