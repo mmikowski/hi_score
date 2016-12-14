@@ -154,9 +154,6 @@ OPTIONS
   * -v | --verbose (OPTIONAL)
     Be noisy when processing
 
-  * -t <dir> | --tmpltdir <dir> (OPTIONAL)
-    Directory containing templates
-
 REQUIRED PATCH
   Buildify uses Superpack symbol compression.  Superpack requires a patch
   to UglifyJS.  If you have installed **hi\_score** this patch will have
@@ -194,7 +191,7 @@ _log_fn () {
 ## END function to log output
 
 ## BEGIN function to clean up temp files
-clean_tmp_files () {
+_clean_tmp_fn () {
   if [ -w "${_tmp_dir}" ]; then
     if echo "${_tmp_dir}" | grep -q "${_app_name}"; then
       _do_verbose=1;
@@ -212,7 +209,7 @@ _abort_fn () {
   _log_fn "## See ${_app_name} -hv for detailed usage.";
   _log_fn "## ! Processing ABORTED.";
 
-  clean_tmp_files;
+  _clean_tmp_fn;
   # exit with error (bash shell standard)
   exit 1;
 }
@@ -222,7 +219,7 @@ _abort_fn () {
   ## BEGIN get options
   ## (see /usr/share/doc/util-linux/examples/getopt-parse.bash)
   _cli_str=$(getopt -o hnvt: \
-    --long help,usage,nocompress,verbose,tmpltdir: \
+    --long help,usage,nocompress,verbose: \
       -n "${_app_name}" -- "$@")
 
   if [ $? != 0 ] ; then
@@ -234,12 +231,13 @@ _abort_fn () {
   # Note the quotes around $_cli_str: they are essential!
   eval set -- "${_cli_str}"
 
+  # Example arg option with an argument
+  # -t|--tmpltdir)     _tmplt_dir="$2";  shift 2 ;;
   while true; do
     case "$1" in
       -h|--help|--usage) _do_help=1;       shift ;;
       -n|--nocompress)   _dont_compress=1; shift ;;
       -v|--verbose)      _do_verbose=1;    shift ;;
-      -t|--tmpltdir)     _tmplt_dir="$2";  shift 2 ;;
       --) shift; break ;;
        *) _do_verbose=1;
           _log_stderr_fn "Trouble processing command line.";
@@ -297,6 +295,8 @@ _abort_fn () {
 
   ## BEGIN validiate input files
   _manifest_list=();
+  _deploy_copy_list=();
+  _deploy_subtree_list=();
   for _manifest_file in $@; do
     if [ ! -f "${_manifest_file}" ]; then
       _do_verbose=1;
@@ -375,7 +375,7 @@ _abort_fn () {
     ## BEGIN read manifest and append sources to arrays
     _js_file_list=();
     _css_file_list=();
-    _source_type="";
+    _section_type="";
 
     while read _row_str; do
       # skip blank lines
@@ -387,37 +387,31 @@ _abort_fn () {
       _row_str=$(echo "${_row_str}" | sed -e 's/#.*$//g' \
         | sed -e 's/^\s\+//g' | sed -e 's/\s\+$//g' );
 
-      # get directives for paths
-      if echo "${_row_str}" | grep -q '^tmpltdir\s*:'; then
-        _tmplt_dir=$( echo "${_row_str}" |sed -e 's/tmpltdir\s*:\s*//g' );
-        _tmplt_dir="${_manifest_dir}/${_tmplt_dir}";
-        continue;
-      fi
-
-      # process section headers
+      # process section header 'sourcetype'
       if echo "${_row_str}" | grep -q '^sourcetype\s*:'; then
-        _source_type=$( echo "${_row_str}" |sed -e 's/sourcetype\s*:\s*//g' );
-        _log_fn "  > Source type: ${_source_type}";
+        _section_type=$( echo "${_row_str}" |sed -e 's/sourcetype\s*:\s*//g' );
+        _log_fn "  > Section: ${_row_str}"
         continue;
       fi
 
       # skip anything if section type not yet specified
-      [ "${_source_type}" == "" ] && continue;
+      [ "${_section_type}" == "" ] && continue;
 
       # determine full path to source file and test
       _source_file="${_manifest_dir}/${_row_str}";
 
-      if [ ! -r "${_source_file}" ]; then
-        _do_verbose=1;
-        _log_fn "  ! ${_source_type} file ${_source_file} is not readable.";
-        _log_fn "  ! Do you need to update your manifest file?";
-        _log_fn "  ! X_${_row_str}_X";
-        _abort_fn;
+      if [ "${_section_type}" = "css" ] || [ "${_section_type}" = "js" ]; then
+        if [ ! -r "${_source_file}" ]; then
+          _do_verbose=1;
+          _log_fn "  ! ${_section_type} file ${_source_file} is not readable.";
+          _log_fn "  ! Do you need to update your manifest file?";
+          _log_fn "  ! X_${_row_str}_X";
+          _abort_fn;
+        fi
       fi
-
       _ext_str=$( echo ${_row_str} |sed -e 's/^.*\.//' );
 
-      case "${_source_type}" in
+      case "${_section_type}" in
         js)
           if [ "${_ext_str}" != 'js' ]; then
             _do_verbose=1;
@@ -439,8 +433,20 @@ _abort_fn () {
           _css_file_list[${#_css_file_list[*]}]=${_source_file};
           _log_fn "  > Added file ${_row_str} to css processing queue.";
           ;;
+        subtree)
+          _deploy_subtree_list[${#_css_file_list[*]}]=${_source_file};
+          _scratch_str="${_do_verbose}"; _do_verbose=1;
+          _log_fn "  ! deploy subtree not yet implemented ${_row_str}";
+          _do_verbose="${_scratch_str}";
+          ;;
+        copy)
+          _deploy_copy_list[${#_css_file_list[*]}]=${_source_file};
+          _scratch_str="${_do_verbose}"; _do_verbose=1;
+          _log_fn "  ! deploy copy not yet implemented ${_row_str}";
+          _do_verbose="${_scratch_str}";
+          ;;
         *) _do_verbose=1;
-          _log_fn "  ! Source type (${_source_type}) not supported.";
+          _log_fn "  ! Source type (${_section_type}) not supported.";
           _abort_fn;
           ;;
       esac
@@ -595,16 +601,8 @@ _abort_fn () {
   mkdir -p "${_dist_dir}/js";
   mkdir -p "${_dist_dir}/img";
   mkdir -p "${_dist_dir}/font";
-  mkdir -p "${_dist_dir}/font/vendor";
 
-  ## TODO copy app files to these directories like so
-  # cp "${_stage_dir}/" "${_dist_dir}/js/";
-
-  ## TODO Provide ability to copy media file to dist like so:
-  ## media:
-  ## cp "${_npm_dir}/img/xhi-bkgd-001.jpg" "${_dist_dir}/img/"
-
-  clean_tmp_files;
+  _clean_tmp_fn;
   _end_date=$(date "+%Y-%m-%d %H:%M:%S");
   _log_fn "  > ${_app_name} run complete on ${_end_date}";
   echo "end ${_app_name}";

@@ -27,3 +27,12 @@ sourcetype:css
   ../css/xhi-fonts.css
   ../css/font-awesome-4.7.0-mod.css
 
+sourcetype:copy
+  _STAGE_/ex01-sp.js   _DIST_/js/ex01.js
+  _STAGE_/ex01-min.css _DIST_/css/ex01.css
+
+sourcetype:subtree
+  ../tmplt/ex01.html -1 _DIST_/
+  ../font/vendor/font-awesome-4.7.0 0 _DIST_/
+  ../font/vendor/open-sans-fontface-1.4.0/Regular/ 0 _DIST_/
+
