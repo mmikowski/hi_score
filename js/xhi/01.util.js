@@ -333,13 +333,22 @@ __NS._makeUtil_ = function ( aMap ) {
   }
   // END Public prereq method /makePadNumStr/
 
+  // BEGIN public prereq method /makeEscRxStr/
+  function makeEscRxStr( arg_str ) {
+    var str = castStr( arg_str, __blank );
+    // JSLint capable str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    // See http://stackoverflow.com/questions/3115150
+    return str.replace( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
+  }
+  // END Public prereq method /makeEscRxStr/
+
   // BEGIN Public prereq method /makeRxObj/
   // Purpose   : Create a regular expression object
   // Example   : makeRxObj( '\s*hello\s*', 'i' );
   function makeRxObj ( arg_pattern_str, arg_option_str ) {
     var
       pattern_str = castStr( arg_pattern_str, __blank ),
-      option_str  = castStr( arg_option_str,  __blank )
+      option_str  = castStr( arg_option_str )
       ;
 
     if ( option_str ) {
@@ -688,7 +697,7 @@ __NS._makeUtil_ = function ( aMap ) {
       return __undef;
     }
 
-    GET_KEY: for ( idx = __0; idx < key_count; idx++ ) {
+    _GET_KEY_: for ( idx = __0; idx < key_count; idx++ ) {
       raw_key = path_list[ idx ];
       struct_type = getVarType( walk_struct );
       switch ( struct_type ) {
@@ -706,7 +715,7 @@ __NS._makeUtil_ = function ( aMap ) {
         || ( ! walk_struct[ vMap._hasOwnProp_ ]( key ) )
       ) {
         is_good = __false;
-        break GET_KEY;
+        break _GET_KEY_;
       }
       walk_struct = walk_struct[ key ];
     }
@@ -1032,12 +1041,12 @@ __NS._makeUtil_ = function ( aMap ) {
       solve_count = __0;
       solve_list  = [];
 
-      WORD: for ( idx = __0; idx < word_count; idx++ ) {
+      _WORD_: for ( idx = __0; idx < word_count; idx++ ) {
         solve_word  = word_list[ idx ];
         solve_count += solve_word[ __length ] + __1;
         if ( solve_count >= limit_int - __3 ) {
           solve_list[ __push ]( '...' );
-          break WORD;
+          break _WORD_;
         }
         solve_list[ __push ]( solve_word );
       }
@@ -1184,10 +1193,10 @@ __NS._makeUtil_ = function ( aMap ) {
       idx, val_data, val_str, label_str
       ;
 
-    OPTION: for ( idx = __0; idx < val_count; idx++ ) {
+    _OPTION_: for ( idx = __0; idx < val_count; idx++ ) {
       val_data = val_list[ idx ];
       val_str  = castStr( val_data, __blank );
-      if ( val_str === __blank ) { continue OPTION; }
+      if ( val_str === __blank ) { continue _OPTION_; }
       label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
 
       html_str += '<option value="' + val_str + '"';
@@ -1237,9 +1246,9 @@ __NS._makeUtil_ = function ( aMap ) {
       idx, val_str, label_str
       ;
 
-    RADIO: for ( idx = __0; idx < val_count; idx++ ) {
+    _RADIO_: for ( idx = __0; idx < val_count; idx++ ) {
       val_str   = castStr( val_list[ idx ], __blank );
-      if ( val_str === __blank ) { continue RADIO; }
+      if ( val_str === __blank ) { continue _RADIO_; }
 
       label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
 
@@ -1260,7 +1269,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //   replaces a single symbol with a predefined value.
   // Example   :
   //   fn = makeReplaceFn( 'x', 'fred' );
-  //   __logMsg( 'info', fn('you do not know {_x_}.') );
+  //   __logMsg( 'info', fn('you do not know {x}.') );
   //   // Prints 'you do not know fred.'
   // Arguments : ( positional )
   //  0 - search_str : A string to use to search.  It is wrapped
@@ -1271,7 +1280,8 @@ __NS._makeUtil_ = function ( aMap ) {
     var
       search_str = castStr( arg_search_str, __blank ),
       value_str  = castStr( arg_value_str,  __blank ),
-      search_rx  = makeRxObj( '{_' + search_str + '_}', 'g' )
+      escape_str = makeEscRxStr( '{' + search_str + '}' ),
+      search_rx  = makeRxObj( escape_str, 'g' )
       ;
 
     return function ( arg_tmplt ) {
@@ -1430,13 +1440,13 @@ __NS._makeUtil_ = function ( aMap ) {
     top_count  = tgt_count;
 
     // Back off limits to resolve as close to target as possible
-    BACKOFF: for ( jdx = __0; jdx < __10; jdx ++ ) {
+    _BACKOFF_: for ( jdx = __0; jdx < __10; jdx ++ ) {
       // Solve for unit size through interpolation
       btm_idx    = __0;
       top_idx    = unit_count - __1;
       last_btm_idx = __undef;
       last_top_idx = __undef;
-      INTERPOLATE: for ( idx = __0; idx < unit_count; idx++ ) {
+      _INTERPOLATE_: for ( idx = __0; idx < unit_count; idx++ ) {
         // Calculate ranges
         check_idx   = btm_idx
           + __floor( ( ( top_idx - btm_idx ) / __2 ) + nMap._d5_ );
@@ -1444,7 +1454,7 @@ __NS._makeUtil_ = function ( aMap ) {
         check_count = __floor( ( span_ms / check_map._ms_ ) + nMap._d5_);
         if ( ( top_idx - btm_idx ) === __1 && last_btm_idx !== __undef ) {
           if ( btm_idx === last_btm_idx && top_idx === last_top_idx ) {
-            break INTERPOLATE;
+            break _INTERPOLATE_;
           }
         }
         last_btm_idx = btm_idx;
@@ -1453,11 +1463,11 @@ __NS._makeUtil_ = function ( aMap ) {
         // Continue loop if out of range
         if ( check_count < btm_count ) {
           top_idx = check_idx;
-          continue INTERPOLATE;
+          continue _INTERPOLATE_;
         }
         if ( check_count > top_count ) {
           btm_idx = check_idx;
-          continue INTERPOLATE;
+          continue _INTERPOLATE_;
         }
         solve_map = {
           _show_idx_   : check_map._show_idx_,
@@ -1468,7 +1478,7 @@ __NS._makeUtil_ = function ( aMap ) {
         idx = unit_count;
       }
 
-      if ( solve_map ) { break BACKOFF; }
+      if ( solve_map ) { break _BACKOFF_; }
 
       // No solution found; Increase range and try again
       expand_ratio = __1 + ( ( jdx + __1 ) / __10 );
@@ -1564,9 +1574,11 @@ __NS._makeUtil_ = function ( aMap ) {
         map        = castMap( arg_map, {} ),
         input_str  = castStr( map._input_str_, __blank  ),
         lookup_map = castMap( map._lookup_map_,      {} ),
+
         tmplt_rx   = map._tmplt_rx_ || topCmap._tmplt_rx_,
         bound_fn   = lookupFn.bind( lookup_map )
         ;
+
       return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
     }
     return mainFn;
@@ -1589,13 +1601,13 @@ __NS._makeUtil_ = function ( aMap ) {
       idx, key
       ;
 
-    KEY: for ( idx = __0; idx < key_count; idx++ ) {
+    _KEY_: for ( idx = __0; idx < key_count; idx++ ) {
       key = key_list[ idx ];
       if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
         logObj._logMsg_(
           '_warn_', '_key_not_supported_:|' + __Str( key ) + '|'
         );
-        continue KEY;
+        continue _KEY_;
       }
       base_map[ key ] = clone_map[ key ];
     }
@@ -1715,7 +1727,7 @@ __NS._makeUtil_ = function ( aMap ) {
       int_next_key
       ;
 
-    SET_KEY: for ( idx = __0; idx < path_count; idx++ ) {
+    _SET_KEY_: for ( idx = __0; idx < path_count; idx++ ) {
       raw_key      = path_list[ idx ];
       raw_next_key = path_list[ idx + __1 ];
       struct_type  = getVarType( walk_struct );
@@ -1724,7 +1736,7 @@ __NS._makeUtil_ = function ( aMap ) {
       if ( raw_key === __null ) {
         if ( struct_type !== '_Array_' ) {
           is_good = __false;
-          break SET_KEY;
+          break _SET_KEY_;
         }
         solve_key = walk_struct[ __length ];
       }
@@ -1735,13 +1747,13 @@ __NS._makeUtil_ = function ( aMap ) {
         solve_key = castStr( raw_key );
         if ( ! solve_key ) {
           is_good = __false;
-          break SET_KEY;
+          break _SET_KEY_;
         }
       }
 
       if ( idx === last_idx ) {
         walk_struct[ solve_key ] = val_data;
-        break SET_KEY;
+        break _SET_KEY_;
       }
 
       if ( ! walk_struct[ vMap._hasOwnProp_ ]( solve_key ) ) {
@@ -1883,6 +1895,7 @@ __NS._makeUtil_ = function ( aMap ) {
     _getNumSign_      : getNumSign,
     _makeArgList_     : makeArgList,
     _makePadNumStr_   : makePadNumStr,
+    _makeEscRxStr_    : makeEscRxStr,
     _makeRxObj_       : makeRxObj,
     _makeScrubStr_    : makeScrubStr,
     _makeUcFirstStr_  : makeUcFirstStr,

@@ -32,7 +32,6 @@
     Getopt::Mixed::init( 'i=s o=s l=s input>i output>o log>l' );
     my %opt_map;
 
-
     while ( my( $option, $value, $pretty ) = Getopt::Mixed::nextOption() ) {
       $opt_map{ $option } = $value;
     };
@@ -54,7 +53,7 @@
     my @str_script_lines = split qq(\n), $script_str;
 
     # create a list of tokens to replace
-    my @raw_patterns = $script_str =~ m{_[A-Za-z0-9\$_]+_}g;
+    my @raw_patterns = $script_str =~ m{_[^_][A-Za-z0-9\$_]*_}g;
 
     # TODO : Create a general solution to add and exclude tokens
     my @boundry_patterns = ( 'TAFFY', 'jQuery', 'EXIT' );
@@ -62,9 +61,6 @@
       my @bonus_matches = $script_str =~ m{\b$pattern\b}g;
       push @raw_patterns, @bonus_matches;
     }
-
-    # remove '___'
-    @raw_patterns = grep( !/^___$/, @raw_patterns );
 
     # count frequency
     my $seen_mref = {};
@@ -185,7 +181,8 @@
             # Now consider deck to the left
             $deck_idx--;
             if ( $deck_idx < 0 ) {
-              $deck_idx = add_deck() - 1;
+              $deck_count = add_deck();
+              $deck_idx   = $deck_count - 1;
               $pull_deck_lref = $deck_list[ $deck_idx ];
               $munge_digit_list[ $deck_idx ] = pop( @{ $pull_deck_lref } );
               $is_roll_over   = 0;
@@ -200,9 +197,9 @@
         ## END build munge string
 
         ## BEGIN test munge string
-        # check to see if munge already exists in file ...
+        # Check to see if munge already exists in file ...
         my @match_list = grep { /\b$munge_str\b/ } @str_script_lines;
-        # ... if it does, this is non-zero so we will build a new munge
+        # ... if it is, this is non-zero so we will build a new munge
         $found_count = scalar @match_list;
 
         # add in reserved words
@@ -226,8 +223,12 @@
       $script_str  =~ s{\b$pattern\b}{$token_x_munge_map{$pattern}}g;
       delete $token_x_munge_map{$pattern};
     }
-    $script_str  =~ s{\b(_[A-Za-z0-9\$_]+_)\b}{$token_x_munge_map{$1}}ge;
+    $script_str  =~ s{\b(_[^_][A-Za-z0-9\$_]*_)\b}{$token_x_munge_map{$1}}ge;
     $script_str  =~ s{[\n\r]}{}g;
+
+    open my $fh_output, '>', $output_file;
+    print $fh_output $script_str;
+    close $fh_output;
 
     # modify dumper to turn into JSON
     my $json_str = Dumper( \%token_x_munge_map );
@@ -235,10 +236,6 @@
     $json_str    =~ s{'}{"}g;
     $json_str    =~ s{\$VAR1 = }{};
     $json_str    =~ s{;$}{};
-
-    open my $fh_output, '>', $output_file;
-    print $fh_output $script_str;
-    close $fh_output;
 
     open my $fh_log,'>', $log_file;
     print $fh_log $json_str;
@@ -262,7 +259,7 @@
 
     print STDERR qq(Token frequency: \n);
     print STDERR join( qq(,\n), @report_list );
-    print STDERR qq(Maximum symbol length is |${deck_count}|);
+    print STDERR qq(\n\nMaximum symbol length is |${deck_count}|);
     # print STDERR Dumper( \$seen_mref );
 
     ## END collate and output

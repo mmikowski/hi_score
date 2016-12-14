@@ -24,7 +24,7 @@ __NS._makeCssLb_ = function ( aMap ) {
   var
     aKey    = aMap._aKey_,
     __util  = aMap._util_,
-    __p     = __util._makeReplaceFn_( 'p', aKey ),
+    __p     = __util._makeReplaceFn_( '_p_', aKey ),
 
     topCmap =  {
       _selector_list_ : [

@@ -670,10 +670,10 @@ __NS._makeLb_ = function ( aMap ) {
       idx, row_map, lookup_map, content_html;
 
     initModule();
-    ROW: for ( idx = __0; idx < row_count; idx++ ) {
+    _ROW_: for ( idx = __0; idx < row_count; idx++ ) {
       row_map = __castMap( row_list[ idx ] );
 
-      if ( ! row_map ) { continue ROW; }
+      if ( ! row_map ) { continue _ROW_; }
       lookup_map      = __util._cloneData_( row_map );
       lookup_map._ns_ = aKey;
 

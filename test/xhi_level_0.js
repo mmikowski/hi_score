@@ -1535,14 +1535,16 @@ function makeReplaceFn ( test_obj ) {
     ret_1b_str = 'fred {_2_} {_3_} {_d_}',
     ret_1c_str = '{_1_} {_2_} {_3_} fred',
     ret_2c_str = '{_c_} fred {_e_} fred',
+
     // [ arg_list, expect_data from fn ]
     assert_list  = [
       [ [],                tmplt1_str, tmplt2_str ],
       [ [ __undef ],       tmplt1_str, tmplt2_str ],
       [ [ {}, 'party' ],   tmplt1_str, tmplt2_str ],
-      [ [ 1,2,3,4,5 ],     ret_1a_str, tmplt2_str ],
-      [ [ '1', 'fred' ],   ret_1b_str, tmplt2_str ],
-      [ [ 'd', 'fred' ],   ret_1c_str, ret_2c_str ]
+      [ [ 1,2,3,4,5 ],     tmplt1_str, tmplt2_str ],
+      [ [ '_1_',2 ],       ret_1a_str, tmplt2_str ],
+      [ [ '_1_', 'fred' ], ret_1b_str, tmplt2_str ],
+      [ [ '_d_', 'fred' ], ret_1c_str, ret_2c_str ]
     ],
 
     assert_count = assert_list.length,
@@ -1571,7 +1573,7 @@ function makeReplaceFn ( test_obj ) {
     solve2_str = make_str_fn( tmplt2_str );
     msg_str    = __Str( test_count ) + '. '
       + '|' + __Str( solve2_str ) + '| === |' + expect2_str + '|';
-    test_obj.ok( solve1_str === expect1_str, msg_str );
+    test_obj.ok( solve2_str === expect2_str, msg_str );
     test_count++;
   }
   test_obj.done();

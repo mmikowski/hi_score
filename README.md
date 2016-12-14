@@ -220,17 +220,19 @@ The results of the single JS avascript file is as follows:
 
 | Attribute   | Original        | Minified        | Superpack       |
 |-------------|----------------:|----------------:|----------------:|
-| Size        | 600,961 ( 100%) | 215,399 (35.5%) | 159,587 (26.6%) |
-| Gzipped     | 151,510 (25.2%) | 62,745  (10.4%) | 56,628  (09.4%) |
-| % Gzipped   | 151,510 ( 100%) | 62,745  (41.4%) | 56,628  (37.4%) |
+| Size        | 601,027 ( 100%) | 215,400 (35.8%) | 162,494 (27.1%) |
+| Gzipped     | 151,716 (25.2%) | 62,895  (10.4%) | 57,275  (09.5%) |
+| % Gzipped   | 151,716 ( 100%) | 62,895  (41.4%) | 57,275  (37.7%) |
 
 Reducing a dozen or so HTTP requests to one for a single JS file also reduces
 load time. Superpack analyzes symbol use and replaces them with the smallest
 keys available prioritized by frequency. SuperPack reports this frequency
 which makes further optimizations by pruning code easier.
 
-We will add further documentation as we complete polishing this feature for
-general use.
+The more uses object propoerties and prunes the code, the more effect
+**Superpack** will have on the compression ratio.  For some tightly optimized
+projects, the Superpack code can be half the size of minified code alone.
+It also allows one to use long, expressive key names without penalty.
 
 ## Examples
 You must install **hi\_score** locally by cloning or forking the [Git

@@ -25,7 +25,7 @@ __NS._makeCssShell_ = function ( aMap ) {
     aKey    = aMap._aKey_,
     vMap    = aMap._vMap_,
     __util  = aMap._util_,
-    __p     = __util._makeReplaceFn_( 'p', aKey ),
+    __p     = __util._makeReplaceFn_( '_p_', aKey ),
     __blank = vMap._blank_,
 
     topCmap = {

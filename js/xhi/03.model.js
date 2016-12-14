@@ -47,10 +47,7 @@ __NS._makeModel_ = function ( aMap ) {
 
   // == BEGIN PUBLIC METHODS ===========================================
   function initModule ( $top_box ) {
-
-    // Initial DOM content using methods above
-    // and then set jQuery colection cache
-    //
+    // Initialize DOM content
     __logMsg( '_info_', aKey, $,
       '__0 === ' + __0,
       '__1 === ' + __1,
