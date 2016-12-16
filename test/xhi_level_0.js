@@ -1261,6 +1261,37 @@ function makeErrorObj ( test_obj ) {
   test_obj.done();
 }
 
+
+function makeEscRxStr ( test_obj ) {
+  var
+    // [ arg_list, expect_list ]
+    assert_list = [
+      [ [         ],           __blank ],
+      [ [ __null  ],           __blank ],
+      [ [ __undef ],           __blank ],
+      [ [ __0     ],               '0' ]
+    ],
+
+    assert_count = assert_list.length,
+    make_str_fn  = __util._makeEscRxStr_,
+
+    idx, expect_list, arg_list, expect_str,
+    solve_str, msg_str
+    ;
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_list[ idx ];
+    arg_list   = expect_list[ __0 ];
+    expect_str = expect_list[ __1 ];
+    solve_str  = make_str_fn.apply( __undef, arg_list );
+
+    msg_str   = __Str( idx ) + '. '
+      + __Str( solve_str ) + ' === ' + __Str( expect_str );
+    test_obj.ok( solve_str === expect_str, msg_str );
+  }
+  test_obj.done();
+}
+
 function makeGuidStr ( test_obj ) {
   var
     seen_map     = {},
@@ -1342,7 +1373,7 @@ function makeOptionHtml ( test_obj ) {
         + '<option value="betty" selected="selected">Betty</option>'
       ],
       [ { _val_list_  : [ 'rosey', 'betty', 'debauch',
-          { cow: null }, [ 32 ], __undef, 99, 865, -22, __null
+          { cow: __null }, [ 32 ], __undef, 99, 865, -22, __null
          ],
           _label_map_   : { 'debauch' : 'De Bauch Airy' },
           _select_list_ : [ 'debauch', -22 ]
@@ -2458,7 +2489,7 @@ function shuffleList ( test_obj ) {
       [ [ [ {} ] ],             __true  ],
       [ [ [ [] ] ],             __true  ],
       [ [ [ __null ] ],         __true  ],
-      [ [ [ __null, {} ] ],     __true  ],
+      [ [ [ __null, {} ] ],     __true  ]
 
     ],
 
@@ -3290,6 +3321,7 @@ module.exports = {
   _makeDebounce04Fn_: makeDebounce04Fn,
   _makeEllipsisStr_ : makeEllipsisStr,
   _makeErrorObj_    : makeErrorObj,
+  _makeEscRxStr_    : makeEscRxStr,
   _makeGuidStr_     : makeGuidStr,
   _makeMapUtilObj_  : makeMapUtilObj,
   _makeOptionHtml_  : makeOptionHtml,
