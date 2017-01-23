@@ -81,7 +81,7 @@ Attributes that have yet to be "turned on" are marked WIP:
 - Fractal MVC architecture
 - Type safety [with typecasting][_05]
 - Best practice style
-- Stable (WIP)
+- Stable
 
 As of 0.7.0 we have adopted a constructor approach to create a
 **hi\_score**-based application. We have isolated the `xhi` libraries to
