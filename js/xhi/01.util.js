@@ -113,7 +113,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /getVarType/
 
   // BEGIN Public prereq method /castBool/
-  // Purpose   : Returns a boolean.  If the value is not a
+  // Purpose   : Returns a boolean. If the value is not a
   //   true boolean, returns the alternate value.
   //
   function castBool ( data, alt_data ) {
@@ -260,7 +260,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
   // BEGIN Public prereq method /getNumSign/
   // Purpose : Provided an argument, will attempt to convert it into
-  //   a number.  If it is a negative number, a -1 will be returned.
+  //   a number. If it is a negative number, a -1 will be returned.
   //   In all other cases, a positive 1 is returned.
   //
   function getNumSign ( n ) {
@@ -478,7 +478,7 @@ __NS._makeUtil_ = function ( aMap ) {
         try  {
           consoleRef[ level_cmd ]( arg_list[ __1 ] );
         }
-        // Everything failed.  We give up.
+        // Everything failed. We give up.
         catch ( e1 ) { return __false; }
       }
       return __true;
@@ -711,9 +711,7 @@ __NS._makeUtil_ = function ( aMap ) {
           key = __undef;
           break;
       }
-      if ( key === __undef
-        || ( ! walk_struct[ vMap._hasOwnProp_ ]( key ) )
-      ) {
+      if ( key === __undef ) {
         is_good = __false;
         break _GET_KEY_;
       }
@@ -873,7 +871,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //       current date.
   //     If BOTH are provided, _date_ms_ will be used in
   //       preference to date_obj.
-  //   * _do_time_ : (opt) A boolean.  Default is false.
+  //   * _do_time_ : (opt) A boolean. Default is false.
   //
   function makeDateStr ( arg_map ) {
     var
@@ -957,7 +955,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
   // BEGIN Public method /makeThrottleFn/
   // Purpose: Returns a function that will only fire once per
-  //   delay_ms milliseconds.  It fires immediately on first
+  //   delay_ms milliseconds. It fires immediately on first
   //   call.
   //
   function makeThrottleFn ( arg_map ) {
@@ -1126,7 +1124,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //    | }
   // 4. Set the function in the utility
   //    | map_util_obj._setMapFn_( mapUtil_renameFn );
-  // 5. Initialize the result map.  You need this pointer.
+  // 5. Initialize the result map. You need this pointer.
   //    | result_map = {};
   //    | map_util_obj._setResultMap_( result_map );
   // 6. Invoke the map function:
@@ -1272,7 +1270,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //   __logMsg( 'info', fn('you do not know {x}.') );
   //   // Prints 'you do not know fred.'
   // Arguments : ( positional )
-  //  0 - search_str : A string to use to search.  It is wrapped
+  //  0 - search_str : A string to use to search. It is wrapped
   //    in '{_<search_str>_}'
   //  1 - value_str : Replacement value
   //
@@ -1293,7 +1291,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
   // BEGIN Public method /makeSeenMap/
   // Purpose: Convert arg_key_list into a map with each key assigned
-  // the value of arg_seen_data.  If not provided, arg_seen_data === true
+  // the value of arg_seen_data. If not provided, arg_seen_data === true
   //
   function makeSeenMap ( arg_key_list, arg_seen_data ) {
     var
@@ -1588,14 +1586,18 @@ __NS._makeUtil_ = function ( aMap ) {
   // BEGIN Public method /mergeMaps/
   // Purpose : Merge properties of extend_map into base_map
   //
+  // Warning : The extend map is not deep copied. If you wish
+  // to copy deep references:
+  //   extend_map = cloneData( src_map );
+  //   merge_map  = mergeMaps( base_map, extend_map );
+  //
   function mergeMaps( arg_base_map, arg_extend_map, arg_attr_list ) {
     var
       base_map   = castMap(  arg_base_map,   {} ),
       extend_map = castMap(  arg_extend_map, {} ),
       attr_list  = castList( arg_attr_list ),
 
-      clone_map  = cloneData( extend_map ),
-      key_list   = __keys( clone_map ),
+      key_list   = __keys( extend_map ),
       key_count  = key_list[ __length ],
 
       idx, key
@@ -1609,7 +1611,7 @@ __NS._makeUtil_ = function ( aMap ) {
         );
         continue _KEY_;
       }
-      base_map[ key ] = clone_map[ key ];
+      base_map[ key ] = extend_map[ key ];
     }
     return base_map;
   }
@@ -1700,7 +1702,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //             [ { car : [ 'Meyers!' ] } ]
   // Example   : _setStructData_( [], [ 'car', null ], 'Meyers!'  );
   //             Returns __false, as 'car' cannot be a property of the
-  //             base structure.  It must be null which means "next
+  //             base structure. It must be null which means "next
   //             available array item" or an integer.
   //
   // Arguments : ( positional )

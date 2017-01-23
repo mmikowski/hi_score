@@ -343,6 +343,10 @@ _abort_fn () {
   mkdir ${_build_dir};
   mkdir ${_stage_dir};
   mkdir ${_dist_dir};
+  mkdir -p "${_dist_dir}/css/vendor";
+  mkdir -p "${_dist_dir}/js/vendor";
+  mkdir -p "${_dist_dir}/img/vendor";
+  mkdir -p "${_dist_dir}/font/vendor";
 
   if [ "${_top_log_file}" != "${_build_dir}/${_top_log_name}" ] \
     && ! mv "${_top_log_file}" "${_build_dir}"; then
@@ -436,13 +440,13 @@ _abort_fn () {
         subtree)
           _deploy_subtree_list[${#_css_file_list[*]}]=${_source_file};
           _scratch_str="${_do_verbose}"; _do_verbose=1;
-          _log_fn "  ! deploy subtree not yet implemented ${_row_str}";
+          # _log_fn "  ! deploy subtree not yet implemented ${_row_str}";
           _do_verbose="${_scratch_str}";
           ;;
         copy)
           _deploy_copy_list[${#_css_file_list[*]}]=${_source_file};
           _scratch_str="${_do_verbose}"; _do_verbose=1;
-          _log_fn "  ! deploy copy not yet implemented ${_row_str}";
+          # _log_fn "  ! deploy copy not yet implemented ${_row_str}";
           _do_verbose="${_scratch_str}";
           ;;
         *) _do_verbose=1;
@@ -466,7 +470,7 @@ _abort_fn () {
 
     _css_out_file="${_stage_base_name}-raw.css";
     _js_out_file="${_stage_base_name}-raw.js";
-    ugcss_out_file="${_stage_base_name}-min.css";
+    _ugcss_out_file="${_stage_base_name}-min.css";
     _ugjs_out_file="${_stage_base_name}-min.js";
     _pack_out_file="${_stage_base_name}-sp.js";
     touch "${_pack_log_file}";
@@ -556,12 +560,12 @@ _abort_fn () {
       _log_fn "  > UglifyCSS Compressing '${_css_concat_file}'";
 
       ${_ugcss_exe} "${_css_concat_file}" \
-        1> "${ugcss_out_file}" \
+        1> "${_ugcss_out_file}" \
         2>> "${_ugcss_log_file}";
       _ugcss_exit_code=$?;
 
       if [ ${_ugcss_exit_code} == 0 ]; then
-        _log_fn "  > Compression successful.  Output is '${ugcss_out_file}'";
+        _log_fn "  > Compression successful.  Output is '${_ugcss_out_file}'";
         rm "${_ugcss_log_file}";
       else
         _do_verbose=1;
@@ -589,21 +593,23 @@ _abort_fn () {
       fi
     done
     ## END move over remaining files
+
+    ## BEGIN deployment (WIP)
+    pushd "${_dist_dir}";
+    cp "${_tmplt_dir}/${_manifest_short_name}.html" "${_dist_dir}/"
+    cp -a "${_npm_dir}"/font/vendor/* "${_dist_dir}/font/vendor/"
+    cp "${_pack_out_file}" "${_dist_dir}/js/"
+    cp "${_ugcss_out_file}" "${_dist_dir}/css/"
+    popd;
+    ## END deployment (WIP)
+
   done
   ## END process each manifest in turn
-
-  ## BEGIN move files to dist directory
-  mkdir -p "${_dist_dir}" || _abort_fn;
-  cd "${_dist_dir}";
-  _dist_dir=$(pwd);
-
-  mkdir -p "${_dist_dir}/css";
-  mkdir -p "${_dist_dir}/js";
-  mkdir -p "${_dist_dir}/img";
-  mkdir -p "${_dist_dir}/font";
 
   _clean_tmp_fn;
   _end_date=$(date "+%Y-%m-%d %H:%M:%S");
   _log_fn "  > ${_app_name} run complete on ${_end_date}";
   echo "end ${_app_name}";
 ## END MAIN
+
+
