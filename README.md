@@ -4,6 +4,13 @@
 An SPA template using best-in-class libraries, assets, and architecture
 as found in [Single Page Web Applications - JavaScript end-to-end][_00].
 
+## Quick install
+```bash
+$ git clone git@github.com:mmikowski/hi_score.git
+$ cd hi_score
+$ npm install && npm run prep-libs
+```
+
 ## Hello World Example
 
 ```html
@@ -58,44 +65,33 @@ best-in-class libraries that we manage instead of having a framework
 that controls us. We thought of calling it `low-score` or `under-dash`
 but decided to aim higher.
 
+## The Goal
+Provide an SPA starter project that installs best-in-class assets and tools to
+save time and guide best code practices.
+
+## Key attributes
+- Download and management of best-in-class JS libs and fonts [npm run prep-libs]
+- A commit hook which checks for whitespace, JSLint, and tests [npm run prep-libs]
+- Regression tests (1270+ assertions) [npm run test]
+- Code coverage reports (currently 98.9%) [npm run cover]
+- Integration to Coveralls [npm run covera]
+- Compressed, deployment-ready code in seconds [npm run buildify]
+
+hi_score also features fractal MVC architecture, type safety with typecasting, best practice style (including style guides and a cheat sheet), and two simple example applications.
+
 ## Code Style
 We use the code style presented in
 [Single Page Web Applications - JavaScript end-to-end][_00]
 (see reviews on [Amazon][_02]). The [quick reference][_03] and the
-[full code standard][_04] are available online. The architecture is
-illustrated in the quick reference.
-
-## The Goal
-Provide an SPA template that not only includes a sample applicaiton, but also
-downloads and sets up best-in-class libraries, assets, and architecture.
-This environment will progress as technology and support evolve.
-
-## Key attributes
-Attributes that have yet to be "turned on" are marked WIP:
-
-- A fast, one-touch build system
-- Highly Compressible
-- Testable
-- Commit-hook enforce quality code (JSLint and regression test)
-- Flexible
-- Fractal MVC architecture
-- Type safety [with typecasting][_05]
-- Best practice style
-- Stable
-
-As of 0.7.0 we have adopted a constructor approach to create a
-**hi\_score**-based application. We have isolated the `xhi` libraries to
-the `js/xhi` directory, which leaves the `js` directory open for
-inclusion of the project libraries.  We have also adjusted the `xhi` file
-names to describe their include and call precidence.
+[full code standard][_04] are available online.
 
 ## Architecture
-Are libraries are structured to facilitate loose coupling but strict call
+The `xhi` libraries are structured to facilitate loose coupling but strict call
 precidence. For example the `00.js` library must be loaded to the JavaScript
 environment before any other `xhi` code, and it may not call any library with
 a higher precidence number. The `08.app.js`, in comparison, must be loaded
 after all the `00-07` libraries, but it may call any library of the
-same or lower precidence. See the diagram below.
+same or lower precidence:
 
 ```
   /|                                                       //////
@@ -129,7 +125,7 @@ same or lower precidence. See the diagram below.
  //////                                                       |/
 ```
 
-We use model events to communicate changes to the Shell and Feature modules,
+We use model events to broadcast changes to the Shell and Feature modules,
 and we keep our feature modules isolated from each other. This enhances
 portability and quality.
 
@@ -138,10 +134,10 @@ Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
 sympathy.
 
 ## Development environment
-### Ubuntu 16.10 server
-We deploy on this platform. Once we have build essentials, git,
-and node installed everything just works. After a basic install the following
-should fill in the gaps.
+### Ubuntu 16.10
+Everything should just work on Ubuntu 16.10 as that is the development OS
+for `hi_score`.  There are a few prerequisites that many developers may 
+already have installed:
 
 ```bash
   sudo apt-get install build-essential openssh-server git pandoc
@@ -155,7 +151,7 @@ be installed as for Ubuntu 16.10 server. It works fine on CentOS 6.5, for
 example.
 
 See [this guide][_06] for NodeJS package installation on other Linux
-distros. Here is a more [general guide][_07] for (k)Ubuntu.
+distros. Here is a more [generic guide][_07] for (k)Ubuntu.
 
 ### Virtual Machine
 Use AWS or a Virtual Box image using Ubuntu 16.10 server using the the same
@@ -167,7 +163,7 @@ already running Linux.
 ### Mac
 We recommend using a virtual machine if possible.  However we should
 be able to develop natively on Mac. At the very least we'll need Bash 4+
-and GNU Core utilities installed along with NodeJS, Git,
+and GNU Core utilities installed// along with NodeJS, Git,
 PanDoc, and SSH. This [guide][_08] should help with installation of
 the GNU Core utilities.
 
