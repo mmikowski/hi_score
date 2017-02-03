@@ -77,7 +77,7 @@ save time and guide best code practices.
 - Integration to Coveralls [npm run covera]
 - Compressed, deployment-ready code in seconds [npm run buildify]
 
-hi_score also features fractal MVC architecture, type safety with typecasting, best practice style (including style guides and a cheat sheet), and two simple example applications.
+**hi\_score** also features fractal MVC architecture, type safety with typecasting, best practice style (including style guides and a cheat sheet), and two simple example applications.
 
 ## Code Style
 We use the code style presented in
@@ -136,7 +136,7 @@ sympathy.
 ## Development environment
 ### Ubuntu 16.10
 Everything should just work on Ubuntu 16.10 as that is the development OS
-for `hi_score`.  There are a few prerequisites that many developers may 
+for **hi\_score**. There are a few prerequisites that many developers may 
 already have installed:
 
 ```bash
@@ -161,7 +161,7 @@ This is probably the best way to get familiar with the code if you are not
 already running Linux.
 
 ### Mac
-We recommend using a virtual machine if possible.  However we should
+We recommend using a virtual machine if possible. However we should
 be able to develop natively on Mac. At the very least we'll need Bash 4+
 and GNU Core utilities installed// along with NodeJS, Git,
 PanDoc, and SSH. This [guide][_08] should help with installation of
@@ -178,7 +178,7 @@ appreciate your help documenting it for the benefit of others.
 
 ## Development
 ### Install
-Install **hi_score** dependencies and then copy vendor libraries.
+Install **hi\_score** dependencies and then copy vendor libraries.
 
 ```bash
   home$ git clone git@github.com:mmikowski/hi_score.git
@@ -197,13 +197,14 @@ Run the regression tests through **npm**.
   hi_score$ npm test
 ```
 
-These tests for the `xhi` libraries currently cover the
-root namespace (`xhi/00.js`), the utilities (`xhi/01.util.js`),
-the browser utilities (`xhi/04.utilb.js`) and the litebox feature module
-(`xhi/06.lb.js`). We will be expanding coverage to include data and models.
+The tests for the `xhi` libraries currently cover the
+root namespace (`00.js`), the utilities (`01.util.js`),
+the browser utilities (`04.utilb.js`) and the litebox feature module
+(`06.lb.js`). We plan to expand coverage to include data and models
+in subsequent releases.
 
 ### Check coverage
-Next we can check the code coverage.
+Check the code coverage by running the `cover` script.
 
 ```
   hi_score$ npm run cover
@@ -212,12 +213,12 @@ Next we can check the code coverage.
 
 We use the excellent `Istanbul` code coverage tool along with the JSDOM
 package. Previously we had used `nodeunitb` for testing but was unsuccessful
-in getting usable coverage reports.  We see 98.9% coverage for the four modules
+in getting usable coverage reports. We see 98.9% coverage for the four modules
 tested as of version 0.9.0.
 
 ### Update coveralls (optional)
 If you create a new fork you may send a coveralls report as shown in the [master
- branch site][_09].  The process to set up coveralls is described in 
+ branch site][_09]. The process to set up coveralls is described in 
 `hi_score/COVERALLS.md`.
 
 ```bash
@@ -226,10 +227,10 @@ If you create a new fork you may send a coveralls report as shown in the [master
 
 ### Build
 We employ `buildify` and `superpack` to prepare the code for production.
-As of version 0.9.0 our first full build system is in place.  This is a
+As of version 0.9.0 our first full build system is in place. This is a
 generalization of a build system that has been in use on many production
 systems and is currently in-use on some very high-volume sites
-(100m views per day).  We continue to improve feedback and usability.
+(100m views per day). We continue to improve feedback and usability.
 
 ```bash
   hi_score$ npm run buildify
@@ -248,34 +249,6 @@ with `npm update -D`. If we want these changes to propagate, we must run
 `index.html` file to point to the updated versions. We expect to automate
 the last step in future updates.
 
-## Build system
-The results of a build are found in `build/dist`.
-
-```bash
-  hi_score$ cd build/dist
-  dist$ tree
-```
-
-| Attribute   | Original         | Minified (%)     | Superpack        |
-|-------------|-----------------:|-----------------:|-----------------:|
-| Size        | 601,027 (100.0%) | 215,400 ( 35.8%) | 162,494 ( 27.1%) |
-| Gzipped     | 151,716 ( 25.2%) |  62,895 ( 10.4%) |  57,275 ( 09.5%) |
-| % Gzipped   |                  |  62,895 ( 41.4%) |  57,275 ( 37.7%) |
-|-------------|-----------------:|-----------------:|-----------------:|
-| HTTP reqs   |      27 (100.0%) |       4 ( 15.4%) |       4 ( 15.4%) |
-| Local ms    |     231 (100.0%) |     166 ( 71.2%) |     144 ( 62.3%) |
-
-**Superpack** analyzes symbol use and replaces them with the smallest
-keys available prioritized by frequency. It reports this frequency
-which makes further optimizations by pruning code easier.  On larger code
-projects with many object properities **Superpack** has been
-shown to reduce minimized code by an additional 50%.
-
-Reducing a dozen or so HTTP requests to one for a single JS file reduces
-load time.  In the table above the load time measurements were made using a
-local HTTP server which is almost certainly a best-case scenario.  We expect
-to add results for a remote server soon.
-
 ## Namespacing
 After installation we can control-click the following links to inspect
 the uncompressed example applicaitons.
@@ -283,7 +256,7 @@ the uncompressed example applicaitons.
 - [Example 1](./ex01.html)
 - [Example 2](./ex02.html)
 
-Yes we know the examples are lame.  We're working on that.
+Yes we know the examples are lame. We're working on that.
 
 Both of the applications use the `xhi` libraries and provide nearly
 identical features yet *they have completely separate namespaces.*
@@ -292,26 +265,26 @@ Press `<shift>-<ctrl>-i` (or `<shift>-<cmd>-i` on a Mac) to open these tools.
 
 When we view the Example 1 tab we can type `ex01` into the JavaScript console
 and press return and see that this single variable points to all our unique
-code in this application.  However, if we type `ex02` we see that this
-variable is `undefined`, as it should be.  If we visit the Example 2 tab we
+code in this application. However, if we type `ex02` we see that this
+variable is `undefined`, as it should be. If we visit the Example 2 tab we
 can see that the opposite is true - `ex01` is `undefined` and `ex02` contains
-all our application code.  This namespacing allows us to provide a suite of
+all our application code. This namespacing allows us to provide a suite of
 web applications that share the same UX without interferring with each other.
 
-This name spacing extends to CSS as well.  If we inspect the HTML in the
+This name spacing extends to CSS as well. If we inspect the HTML in the
 Example 1 tab, we can see that nearly all classes start with an `ex01-` prefix,
 whereas the Example 2 tab uses `ex02-`.
 
 ## Vendor assets
 All vendor assets are listed in the `devDependencies` map in the
-`package.json` file.  If you want to add a vendor asset, the best method is to
+`package.json` file. If you want to add a vendor asset, the best method is to
 add the npm package there and then update the `bin/prep-libs` script
 to copy the asset to the correct directory: `js/vendor/`,
 `css/vendor`, `font/vendor`, or `img/vendor`.
 
 ### JavaScript
 Client libraries are copied to the `js/vendor` directory with their
-version number appended to their names.  These include:
+version number appended to their names. These include:
 
 - [jQuery][_10] DOM manipulation
 - [PowerCSS][_11] JS-powered CSS
@@ -335,13 +308,52 @@ Libraries used for development and testing are not copied:
 
 ### CSS
 CSS libraries are copied to the `css/vendor` directory with their
-version number appended to their names.  We currently include
+version number appended to their names. We currently include
 the Font Awesome library.
 
 ### Fonts
 Font files are copied to the `font/vendor` directory with their
-version number appended to their names.  We currently include
+version number appended to their names. We currently include
 the open-sans-webfont and Font Awesome files.
+
+## Distribution
+This is where it all comes
+together.  Everything you do not want to distribute to the public is removed
+from the distribution, which is further compressed and minified.  The result
+is an application that can easily load 10x faster and take only 5-10% of the
+space of the code.
+
+The results of a build are found in `build/dist`. Take a look at how few files
+and little disk space is used in our distribution:
+
+```bash
+  hi_score$ cd build/dist
+  dist$ tree
+```
+
+**Superpack** analyzes symbol use and replaces them with the smallest
+keys available prioritized by frequency. It reports this frequency
+which makes further optimizations by pruning code easier. On larger code
+projects with many object properities **Superpack** has been
+shown to reduce minimized code by an additional 50%.
+
+Reducing a dozen or so HTTP requests to one for a single, highly compressed 
+JS file can reduce load time to 10% of prior values.  The table below shows 
+some of the results:
+
+| Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
+|-------------|-----------------:|-----------------:|-----------------:|
+| Size        | 601,027 (100.0%) | 215,400 ( 35.8%) | 162,494 ( 27.1%) |
+| Gzipped     | 151,716 ( 25.2%) |  62,895 ( 10.4%) |  57,275 ( 09.5%) |
+
+| Attribute   | Original         | Minified (%)     | Superpack (%)    |
+|-------------|-----------------:|-----------------:|-----------------:|
+| HTTP reqs   |      27 (100.0%) |       4 ( 15.4%) |       4 ( 15.4%) |
+| Local ms    |     231 (100.0%) |     166 ( 71.2%) |     144 ( 62.3%) |
+| Deploy Size |           121 MB |    8 MB (  6.6%) |    8 MB (  6.5%) |
+
+The load time measurements were made using a local HTTP server which is almost 
+certainly a best-case scenario. We hope to add results for a remote server soon.
 
 ## Contribute!
 Any improvements or suggestions are welcome through the [issues tracker][_29].
