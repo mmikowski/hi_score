@@ -593,13 +593,19 @@ __NS._makeUtil_ = function ( aMap ) {
 
       map_count = map_list[ __length ],
       found_idx  = __n1,
-      idx, row_map
+      idx, row_map, row_key_list
       ;
 
     for ( idx = __0; idx < map_count; idx++ ) {
       row_map = map_list[ idx ];
       if ( __typeof( row_map ) !== 'object' ) { continue; }
-      if ( ! row_map[ vMap._hasOwnProp_ ]( key ) ) { continue; }
+
+      // This is similar to but not the same as hasOwnProperty.
+      // This prevents false positives when sparse maps do not have
+      // the requested key.
+      row_key_list = __keys( row_map );
+      if ( row_key_list[ vMap._indexOf_ ]( key ) === __n1 ) { continue; }
+
       if ( row_map[ key ] === data ) {
         found_idx = idx;
         break;

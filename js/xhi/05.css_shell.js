@@ -10,7 +10,7 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global pcss, $ */
+/*global */
 
 var __ns = 'xhi', __NS;
 /* istanbul ignore next */
@@ -25,8 +25,9 @@ __NS._makeCssShell_ = function ( aMap ) {
     aKey    = aMap._aKey_,
     vMap    = aMap._vMap_,
     __util  = aMap._util_,
-    __p     = __util._makeReplaceFn_( '_p_', aKey ),
+
     __blank = vMap._blank_,
+    __p     = __util._makeReplaceFn_( '_p_', aKey ),
 
     topCmap = {
       _selector_list_ : [
@@ -40,7 +41,7 @@ __NS._makeCssShell_ = function ( aMap ) {
             _left_       : '_3d75rem_',
             _right_      : '_0_',
             _height_     : '_3d75rem_',
-            _background_ : '_hex_frame_',
+            _background_ : '_frame_hex_',
             _transition_ : '_trans_short_'
           }
         },
@@ -74,14 +75,14 @@ __NS._makeCssShell_ = function ( aMap ) {
             _height_      : '_2rem_',
             _padding_     : [[ '_0_', '_1rem_', '_0_', '_2rem_' ]],
             _line_height_ : '_2rem_',
-            _color_       : '_hex_txt_lt_',
-            _background_  : '_hex_area_accent_',
-            _border_      : [[ '_d0625rem_', '_solid_', '_hex_area_mid_xlt_' ]],
+            _color_       : '_txt_lt_hex_',
+            _background_  : '_area_accent_hex_',
+            _border_      : [[ '_d0625rem_', '_solid_', '_area_mid_xlt_hex_' ]],
             _border_radius_ : '_d5rem_'
           }
         },
         { _selector_str_  : __p('.{_p_}-_shell_head_search_ > input:focus'),
-          _rule_map_ : { _border_color_ : '_hex_area_mid_dk_' }
+          _rule_map_ : { _border_color_ : '_area_mid_dk_hex_' }
         },
         { _selector_str_  : __p('.{_p_}-_shell_head_search_ .{_p_}-_x_mag_'),
           _rule_map_ : {
@@ -92,19 +93,19 @@ __NS._makeCssShell_ = function ( aMap ) {
             _height_      : '_2rem_',
             _line_height_ : '_2rem_',
             _font_size_   : '_1d125rem_',
-            _color_       : '_hex_link_',
+            _color_       : '_link_hex_',
             _cursor_      : '_pointer_',
             _font_family_ : '_font_family_awesome_'
           }
         },
         { _selector_str_  : __p('.{_p_}-_shell_head_search_ .{_p_}-_x_mag_:hover'),
-          _rule_map_ : { _color_ : '_hex_link_lt_' }
+          _rule_map_ : { _color_ : '_link_lt_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_head_ a'),
-          _rule_map_     : { _color_ : '_hex_link_lt_' }
+          _rule_map_     : { _color_ : '_link_lt_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_head_ a:hover'),
-          _rule_map_     : { _color_ : '_hex_link_dk_' }
+          _rule_map_     : { _color_ : '_link_dk_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_umenu_'),
           _rule_map_ : {
@@ -114,13 +115,13 @@ __NS._makeCssShell_ = function ( aMap ) {
             _top_      : '_0_',
             _right_    : '_0_',
             _padding_  : [[ '_d25rem_', '_0_' ]],
-            _color_    : '_hex_link_',
+            _color_    : '_link_hex_',
             _border_radius_ : [[ '_0_', '_0_', '_0_', '_1rem_' ]]
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_umenu_.{_p_}-_x_open_'),
           _rule_map_     : {
-            _background_ : '_hex_frame_',
+            _background_ : '_frame_hex_',
             _box_shadow_ : '_shdw_04_'
           }
         },
@@ -132,7 +133,7 @@ __NS._makeCssShell_ = function ( aMap ) {
             _width_       : '_100p_',
             _padding_     : [[ '_0_', '_1rem_' ]],
             _font_size_   : '_1d125rem_',
-            _color_       : '_hex_link_',
+            _color_       : '_link_hex_',
             _white_space_ : '_nowrap_',
             _text_align_  : '_right_',
             _cursor_        : '_pointer_'
@@ -154,7 +155,7 @@ __NS._makeCssShell_ = function ( aMap ) {
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_umenu_>li:hover'),
-          _rule_map_ : { _color_ : '_hex_link_lt_' }
+          _rule_map_ : { _color_ : '_link_lt_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_umenu_>li span'),
           _rule_map_ : {
@@ -181,28 +182,29 @@ __NS._makeCssShell_ = function ( aMap ) {
             _line_height_: '_3d75rem_',
             _font_family_: '_font_family_awesome_',
             _font_size_  : '_1d5rem_',
-            _color_      : '_hex_link_lt_',
-            _background_ : '_hex_frame_dk_',
+            _color_      : '_link_lt_hex_',
+            _background_ : '_frame_dk_hex_',
             _text_align_ : '_center_',
             _cursor_     : '_pointer_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_tgl_:hover'),
-          _rule_map_ : { _color_ : '_hex_link_dk_' }
+          _rule_map_ : { _color_ : '_link_xlt_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_nav_'),
           _rule_map_ : {
             _z_index_     : [ '10' ],
-            _position_   : '_fixed_',
-            _box_shadow_ : '_shdw_02_',
-            _top_        : '_0_',
-            _left_       : '_0_',
-            _bottom_     : '_0_',
-            _width_      : '_3d75rem_',
+            _position_    : '_fixed_',
+            _box_shadow_  : '_shdw_02_',
+            _top_         : '_0_',
+            _left_        : '_0_',
+            _bottom_      : '_0_',
+            _width_       : '_3d75rem_',
             _padding_top_ : [ '4.25rem' ],
-            _background_ : '_hex_frame_dk_',
-            _overflow_   : '_hidden_',
-            _transition_ : '_trans_short_'
+            _background_  : '_frame_dk_hex_',
+            _overflow_y_  : '_auto_',
+            _overflow_x_  : '_hidden_',
+            _transition_  : '_trans_short_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_nav_>li'),
@@ -218,13 +220,19 @@ __NS._makeCssShell_ = function ( aMap ) {
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_nav_>li a'),
-          _rule_map_ : { _color_ : '_hex_link_lt_' }
+          _rule_map_ : { _color_ : '_link_lt_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_nav_>li a:hover'),
-          _rule_map_ : { _color_ : '_hex_link_dk_' }
+          _rule_map_ : { _color_ : '_link_xlt_hex_' }
+        },
+        { _selector_str_ : '.xhi-_shell_nav_>li.active a',
+          _rule_map_     : { _color_ : '_link_xlt_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_nav_>li.{_p_}-_x_select_'),
-          _rule_map_ : { _background_ : '_hex_frame_xdk_' }
+          _rule_map_ : { _color_ : '_link_xlt_hex_' }
+        },
+        { _selector_str_ : '.xhi-_shell_nav_>li.xhi-_x_select_',
+          _rule_map_ : { _background_ : '_frame_xdk_hex_' }
         },
         { _selector_str_ : __p('.{_p_}-_shell_nav_ li span'),
           _rule_map_ : {
@@ -235,6 +243,37 @@ __NS._makeCssShell_ = function ( aMap ) {
             _font_size_    : '_1d5rem_',
             _text_align_   : '_center_',
             _text_decoration_ : '_none_'
+          }
+        },
+        { _selector_str_ : __p('.{_p_}-_shell_foot_'),
+          _rule_map_     : {
+            _z_index_       : [ '30' ],
+            _position_      : '_fixed_',
+            _bottom_        : '_0_',
+            _right_         : '_0_',
+            _border_radius_ : [[ '_d375rem_', '_0_', '_0_','_0_' ]],
+            _padding_       : [[ '_d375rem_', '_d75rem_','_d75rem_','_d75rem_' ]],
+            _background_    : '_frame_dk_hex_',
+            _color_         : '_link_lt_hex_'
+          }
+        },
+        { _selector_str_ : __p('.{_p_}-_shell_foot_txt_'),
+          _rule_map_     : {
+            _position_   : '_relative_',
+            _font_size_  : '_d625rem_',
+            _text_align_ : '_center_',
+            _padding_bottom_ : '_d25rem_'
+          }
+        },
+        { _selector_str_ : __p('.{_p_}-_shell_foot_img_'),
+          _rule_map_     : {
+            _position_   : '_relative_',
+            _height_     : [ '12px' ],
+            _width_      : [ '95px' ],
+            _background_ : [[
+              '_foot_url_', '_no_repeat_', '_center_','_center_'
+            ]],
+            _background_size_ : '_cover_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_cont_'),
@@ -254,9 +293,9 @@ __NS._makeCssShell_ = function ( aMap ) {
             _right_      : '_0_',
             _bottom_     : '_0_',
             _height_     : '_3rem_',
-            _border_top_ : [[ '_d125rem_', '_solid_', '_hex_accent_dk_' ]],
+            _border_top_ : [[ '_d125rem_', '_solid_', '_accent_dk_hex_' ]],
             _padding_    : [[ '_0_', '_2rem_', '_0_', '_5d5rem_' ]],
-            _background_ : '_hex_area_mid_dk_'
+            _background_ : '_area_core_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_cont_head_'),
@@ -274,7 +313,7 @@ __NS._makeCssShell_ = function ( aMap ) {
             _float_          : '_left_',
             _line_height_    : '_2rem_',
             _font_size_      : '_1d25rem_',
-            _color_          : '_hex_link_fade_'
+            _color_          : '_link_fade_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_cont_head_bread_ li:nth-child(even)'),
@@ -288,7 +327,7 @@ __NS._makeCssShell_ = function ( aMap ) {
         { _selector_str_ : __p('.{_p_}-_shell_cont_head_bread_ li:last-child'),
           _rule_map_     : {
             _font_size_ : '_1d75rem_',
-            _color_     : '_hex_txt_',
+            _color_     : '_txt_hex_',
             _cursor_    : '_default_'
           }
         },

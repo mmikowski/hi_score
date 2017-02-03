@@ -62,54 +62,54 @@ __NS._makeCssBase_ = function ( aMap ) {
         { _palette_name_       : 'BackInBlack',
           // Accent colors complement primary hue but a distinctly different.
           // Use to draw attention to features.
-          _hex_accent_         : '#4e7585',
-          _hex_accent_dk_      : '#527582',
-          _hex_accent_lt_      : '#385966',
+          _accent_hex_         : '#4e7585',
+          _accent_dk_hex_      : '#527582',
+          _accent_lt_hex_      : '#385966',
 
           // Area colors are intended to fill large swaths of area.
           // Generally they are less intense than comparable text colors.
-          _hex_area_           : '#16181a', // default background
-          _hex_area_accent_    : '#22282a', // box background
-          _hex_area_hover_     : '#000000', // full-bright
-          _hex_area_mid_       : '#5d676f',
-          _hex_area_mid_dk_    : '#657685',
-          _hex_area_mid_lt_    : '#474e54',
-          _hex_area_mid_xlt_   : '#393f44',
+          _area_hex_           : '#16181a', // default background
+          _area_accent_hex_    : '#22282a', // box background
+          _area_hover_hex_     : '#000000', // full-bright
+          _area_mid_hex_       : '#5d676f',
+          _area_mid_dk_hex_    : '#657685',
+          _area_mid_lt_hex_    : '#474e54',
+          _area_mid_xlt_hex_   : '#393f44',
 
           // Standard button colors.
-          _hex_btn_area_       : '#6cafff', // === _hex_link_
-          _hex_btn_area_hover_ : '#89c3ff', // === _hex_link_dk_
-          _hex_btn_txt_        : '#16181a', // === _hex_area_
-          _hex_btn_txt_hover_  : '#000000', // === _hex_area_hover_
+          _btn_area_hex_       : '#6cafff', // === _link_hex_
+          _btn_area_hover_hex_ : '#89c3ff', // === _link_dk_hex_
+          _btn_txt_hex_        : '#16181a', // === _area_hex_
+          _btn_txt_hover_hex_  : '#000000', // === _area_hover_hex_
 
           // Frame colors are used by the outside frame (header, footer,
           // sidebar) as background colors.
-          _hex_frame_          : '#acb9c3', // header + footer
-          _hex_frame_dk_       : '#cdccd4', // lh menu
-          _hex_frame_lt_       : '#94a5b2', // header + footer hover
-          _hex_frame_xdk_      : '#d8e8f5', // lh menu selected
+          _frame_hex_          : '#acb9c3', // header + footer
+          _frame_dk_hex_       : '#cdccd4', // lh menu
+          _frame_lt_hex_       : '#94a5b2', // header + footer hover
+          _frame_xdk_hex_      : '#d8e8f5', // lh menu selected
 
           // Link colors should be only used on elements which users tap,
           // click, drag, or otherwise interact.
-          _hex_link_           : '#6cafff', // link on both lt and dk bkg
-          _hex_link_lt_        : '#89c3ff', // hover on dk bkg
-          _hex_link_fade_      : '#4b576b', // faded link on color
-          _hex_link_dk_        : '#3e5e96', // hover on lt bkg
+          _link_hex_           : '#6cafff', // link on both lt and dk bkg
+          _link_lt_hex_        : '#89c3ff', // hover on dk bkg
+          _link_fade_hex_      : '#4b576b', // faded link on color
+          _link_dk_hex_        : '#3e5e96', // hover on lt bkg
 
           // The placeholder color is a subdued text color shown in input
           // fields when there is no content.
-          _hex_placeholder_    : '#5d676f', // === _hex_area_mid_
+          _placeholder_hex_    : '#5d676f', // === _area_mid_hex_
 
           // Text colors are generally more saturated and are darker
           // (lighter in inverse scheme) than correlating area colors.
-          _hex_txt_            : '#acb9c3', // document font
-          _hex_txt_alt_        : '#a47330', // altr ~ invert of hex_txt_link
-          _hex_txt_dk_         : '#c3ccd4',
-          _hex_txt_inv_        : '#5b666e',
-          _hex_txt_inv_dk_     : '#77848f',
-          _hex_txt_inv_lt_     : '#3d454a',
-          _hex_txt_lt_         : '#94a5b2',
-          _hex_txt_xlt_        : '#77848f',
+          _txt_hex_            : '#acb9c3', // document font
+          _txt_alt_hex_        : '#a47330', // altr ~ invert of hex_txt_link
+          _txt_dk_hex_         : '#c3ccd4',
+          _txt_inv_hex_        : '#5b666e',
+          _txt_inv_dk_hex_     : '#77848f',
+          _txt_inv_lt_hex_     : '#3d454a',
+          _txt_lt_hex_         : '#94a5b2',
+          _txt_xlt_hex_        : '#77848f',
 
           // The top-left logo image path.
           _logo_url_           : __p('url(app/img/{_p_}-logo-white.png)'),
@@ -157,8 +157,8 @@ __NS._makeCssBase_ = function ( aMap ) {
             _height_      : '_100p_',
             _font_family_ : '_font_family_sans_',
             _font_size_   : '_font_size_',
-            _color_       : '_hex_txt_',
-            _background_  : '_hex_area_'
+            _color_       : '_txt_hex_',
+            _background_  : '_area_hex_'
           }
         },
         { _selector_str_ : 'body',
@@ -168,15 +168,15 @@ __NS._makeCssBase_ = function ( aMap ) {
             _display_    : '_block_',
             _overflow_x_ : '_hidden_',
             _overflow_y_ : '_auto_',
-            _color_      : '_hex_txt_'
+            _color_      : '_txt_hex_'
           }
         },
         { _selector_str_ : '::-webkit-input-placeholder',
-          _rule_map_     : { _color_   : '_hex_placeholder_' }
+          _rule_map_     : { _color_   : '_placeholder_hex_' }
         },
         { _selector_str_ : '::-ms-input-placeholder',
           _rule_map_     : {
-            _color_   : '_hex_placeholder_',
+            _color_   : '_placeholder_hex_',
             _opacity_ : '_1_'
           }
         },
@@ -184,7 +184,7 @@ __NS._makeCssBase_ = function ( aMap ) {
         { _selector_str_ : 'input[type="text"]::-moz-placeholder,'
             + 'textarea::-moz-placeholder',
           _rule_map_     : {
-            _color_   : '_hex_placeholder_',
+            _color_   : '_placeholder_hex_',
             _opacity_ : '_1_'
           }
         },
@@ -192,7 +192,7 @@ __NS._makeCssBase_ = function ( aMap ) {
         { _selector_str_ : 'input[type="text"]::placeholder,'
           + 'textarea::placeholder',
           _rule_map_     : {
-            _color_ : '_hex_placeholder_',
+            _color_ : '_placeholder_hex_',
             _opacity_ : '_1_'
           }
         },
@@ -202,15 +202,15 @@ __NS._makeCssBase_ = function ( aMap ) {
             _position_      : '_relative_',
             _margin_        : [['_d75rem_', '_1d5rem_', '_d75rem_', '_1d5rem_']],
             _box_shadow_    : '_shdw_01_',
-            _border_        : [[ '_d125rem_', '_solid_', '_hex_link_' ]],
+            _border_        : [[ '_d125rem_', '_solid_', '_link_hex_' ]],
             _outline_       : '_none_',
             _border_radius_ : '_d375rem_',
             _height_        : '_2rem_',
             _line_height_   : '_1d75rem_',
             _padding_       : [['_0_', '_1d125rem_']],
             _font_size_     : '_1d125rem_',
-            _color_         : '_hex_btn_txt_',
-            _background_    : '_hex_link_',
+            _color_         : '_btn_txt_hex_',
+            _background_    : '_link_hex_',
             _text_shadow_   : '_txt_shdw_01_inv_',
             _cursor_        : '_pointer_'
           }
@@ -229,18 +229,18 @@ __NS._makeCssBase_ = function ( aMap ) {
         },
         { _selector_str_ : __p('button.{_p_}-_x_alt_'),
           _rule_map_ : {
-            _background_  : '_hex_area_',
-            _color_       : '_hex_link_',
+            _background_  : '_area_hex_',
+            _color_       : '_link_hex_',
             _text_shadow_ : '_none_'
           }
         },
         { _selector_str_ : __p('button.{_p_}-_x_disable_,'
             + 'button.{_p_}-_x_disable_:hover'),
           _rule_map_ : {
-            _background_   : '_hex_area_mid_',
-            _color_        : '_hex_txt_xlt_',
+            _background_   : '_area_mid_hex_',
+            _color_        : '_txt_xlt_hex_',
             _cursor_       : '_default_',
-            _border_color_ : '_hex_txt_xlt_'
+            _border_color_ : '_txt_xlt_hex_'
           }
         },
         { _selector_str_ : __p('div.{_p_}-_x_fill_abs_'),
@@ -256,19 +256,19 @@ __NS._makeCssBase_ = function ( aMap ) {
         },
         { _selector_str_ : 'button:hover',
           _rule_map_     : {
-            _background_ : '_hex_link_dk_',
-            _color_      : '_hex_btn_txt_hover_'
+            _background_ : '_link_dk_hex_',
+            _color_      : '_btn_txt_hover_hex_'
           }
         },
         { _selector_str_ : 'a',
           _rule_map_     : {
-            _color_  : '_hex_link_',
+            _color_  : '_link_hex_',
             _cursor_ : '_pointer_'
           }
         },
         { _selector_str_ : 'a:hover',
           _rule_map_     : {
-            _color_           : '_hex_link_dk_',
+            _color_           : '_link_dk_hex_',
             _text_decoration_ : '_underline_'
           }
         },
@@ -284,20 +284,20 @@ __NS._makeCssBase_ = function ( aMap ) {
         },
         { _selector_str_ : __p('.{_p_}-_x_link_,.{_p_}-_x_link_inv_'),
           _rule_map_     : {
-            _color_  : '_hex_link_',
+            _color_  : '_link_hex_',
             _cursor_ : '_pointer_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_x_link_:hover'),
           _rule_map_     : {
             _text_decoration_ : '_underline_',
-            _color_           : '_hex_link_dk_'
+            _color_           : '_link_dk_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_x_link_inv_:hover'),
           _rule_map_     : {
             _text_decoration_ : '_underline_',
-            _color_           : '_hex_link_lt_'
+            _color_           : '_link_lt_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_x_bold_'),
@@ -317,10 +317,10 @@ __NS._makeCssBase_ = function ( aMap ) {
             _position_        : '_relative_',
             _height_          : '_3rem_',
             _line_height_     : '_2rem_',
-            _border_bottom_   : [[ '_d25rem_', '_solid_', '_hex_area_' ]],
+            _border_bottom_   : [[ '_d25rem_', '_solid_', '_area_hex_' ]],
             _font_size_       : '_1d125rem_',
-            _color_           : '_hex_area_',
-            _background_      : '_hex_area_mid_lt_',
+            _color_           : '_area_hex_',
+            _background_      : '_area_mid_lt_hex_',
             _vertical_align_  : '_middle_',
             _list_style_type_ : '_none_'
           }
@@ -336,14 +336,14 @@ __NS._makeCssBase_ = function ( aMap ) {
         },
         { _selector_str_ : __p('.{_p_}-_x_tab_>li:hover'),
           _rule_map_ : {
-            _color_       : '_hex_area_hover_',
-            _background_  : '_hex_area_mid_'
+            _color_       : '_area_hover_hex_',
+            _background_  : '_area_mid_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_x_tab_>li.{_p_}-_x_active_'),
           _rule_map_     : {
-            _color_      : '_hex_link_',
-            _background_ : '_hex_area_',
+            _color_      : '_link_hex_',
+            _background_ : '_area_hex_',
             _cursor_     : '_default_'
           }
         },
@@ -352,7 +352,7 @@ __NS._makeCssBase_ = function ( aMap ) {
             _display_    : '_none_',
             _padding_    : [[ '_d5rem_', '_d5rem_','_0_','_d5rem_' ]],
             _overflow_x_ : '_hidden_',
-            _background_ : '_hex_area_',
+            _background_ : '_area_hex_',
             _cursor_      : '_default_'
           }
         },
@@ -367,25 +367,25 @@ __NS._makeCssBase_ = function ( aMap ) {
             _position_      : '_relative_',
             _margin_bottom_ : '_d5rem_',
             _border_        :
-              [[ '_d125rem_', '_solid_', '_hex_area_mid_xlt_' ]],
+              [[ '_d125rem_', '_solid_', '_area_mid_xlt_hex_' ]],
             _border_radius_ : '_d5rem_',
             _padding_       : [[ '_d5rem_', '_1rem_', '_d75rem_', '_1rem_' ]],
-            _background_    : '_hex_area_mid_xlt_',
-            _color_         : '_hex_txt_lt_',
+            _background_    : '_area_mid_xlt_hex_',
+            _color_         : '_txt_lt_hex_',
             _cursor_        : '_pointer_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li.{_p_}-_x_active_'),
           _rule_map_     : {
-            _background_   : '_hex_area_',
-            _color_        : '_hex_txt_dk_'
+            _background_   : '_area_hex_',
+            _color_        : '_txt_dk_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li:hover'),
           _rule_map_     : {
-            _background_   : '_hex_area_',
-            _color_        : '_hex_txt_dk_',
-            _border_color_ : '_hex_txt_alt_'
+            _background_   : '_area_hex_',
+            _color_        : '_txt_dk_hex_',
+            _border_color_ : '_txt_alt_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_x_list_title_'),
@@ -393,7 +393,7 @@ __NS._makeCssBase_ = function ( aMap ) {
             _line_height_    : '_1d25rem_',
             _font_size_      : '_1d125rem_',
             _margin_bottom_  : '_d5rem_',
-            _color_          : '_hex_link_',
+            _color_          : '_link_hex_',
             _vertical_align_ : '_top_',
             _word_break_     : '_break_word_'
           }
@@ -405,7 +405,7 @@ __NS._makeCssBase_ = function ( aMap ) {
             _text_align_     : '_right_',
             _line_height_    : '_1d25rem_',
             _font_size_      : '_1rem_',
-            _color_          : '_hex_txt_xlt_',
+            _color_          : '_txt_xlt_hex_',
             _vertical_align_ : '_top_'
           }
         }

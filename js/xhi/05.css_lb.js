@@ -10,7 +10,7 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global pcss */
+/*global */
 
 var __ns = 'xhi', __NS;
 /* istanbul ignore next */
@@ -35,11 +35,11 @@ __NS._makeCssLb_ = function ( aMap ) {
             _display_       : '_block_',
             _opacity_       : '_0_',
             _width_         : '_50p_',
-            _border_        : [[ '_d25rem_', '_solid_','_hex_area_hover_' ]],
+            _border_        : [[ '_d25rem_', '_solid_','_area_hover_hex_' ]],
             _border_radius_ : '_d5rem_',
             _box_shadow_    : '_shdw_02_',
-            _background_    : '_hex_area_',
-            _color_         : '_hex_txt_',
+            _background_    : '_area_hex_',
+            _color_         : '_txt_hex_',
             _overflow_x_    : '_hidden_',
             _overflow_y_    : '_auto_',
             _transition_    : [ 'opacity .5s ease' ]
@@ -62,7 +62,7 @@ __NS._makeCssLb_ = function ( aMap ) {
             _bottom_     : '_0_',
             _right_      : '_0_',
             _overflow_   : '_hidden_',
-            _background_ : '_hex_txt_inv_',
+            _background_ : '_txt_inv_hex_',
             _cursor_   : '_pointer_',
             _transition_ : [ 'opacity .5s ease' ]
           }
@@ -106,7 +106,7 @@ __NS._makeCssLb_ = function ( aMap ) {
             _position_ : '_relative_',
             _padding_    : [[ '_d25rem_', '_1rem_' ]],
             _font_size_  : '_1d5rem_',
-            _background_ : '_hex_area_mid_',
+            _background_ : '_area_mid_hex_',
             _cursor_     : '_move_'
           }
         },
@@ -131,7 +131,7 @@ __NS._makeCssLb_ = function ( aMap ) {
             _width_       : '_4rem_',
             _text_align_  : '_center_',
             _font_family_ : '_font_family_awesome_',
-            _color_       : '_hex_accent_',
+            _color_       : '_accent_hex_',
             _animation_   : ['spinIt 1s linear infinite']
           }
         },

@@ -1,6 +1,6 @@
 /**
  *    xhi_level_0.js
- *    Node unit test suite for xhi.util.js and xhi.utilb.js
+ *    Node unit test suite xhi, util, utilb, lb
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -498,15 +498,15 @@ function getListAttrIdx ( test_obj ) {
     ],
     assert_list  = [
       // [ arg_list, expect_data ]
-      [ [ map_list, 'foo', __1 ], __0 ],
-      [ [ map_list, 'foo', __2 ], __1 ],
-      [ [ map_list, 'foo', __3 ], __n1  ],
-      [ [ map_list, 'bar', 'string' ], __0 ],
-      [ [ map_list, 'bar', 'foofy' ], __1 ],
-      [ [ map_list, 'bar', 'poopy' ], __n1 ],
-      [ [ map_list, 'bang', __null ], __3  ],
+      [ [ map_list, 'foo', __1      ], __0  ],
+      [ [ map_list, 'foo', __2      ], __1  ],
+      [ [ map_list, 'foo', __3      ], __n1 ],
+      [ [ map_list, 'bar', 'string' ], __0  ],
+      [ [ map_list, 'bar', 'foofy'  ], __1  ],
+      [ [ map_list, 'bar', 'poopy'  ], __n1 ],
+      [ [ map_list, 'bang', __null  ], __3  ],
       [ [ map_list, 'bang', __undef ], __n1 ],
-      [ [ map_list, 'biz',  __undef ], __4 ]
+      [ [ map_list, 'biz',  __undef ], __4  ]
     ],
 
     assert_count = assert_list.length,

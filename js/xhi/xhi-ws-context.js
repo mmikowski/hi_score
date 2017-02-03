@@ -30,7 +30,7 @@
     // svg
     correspondingUseElement : obj,
 
-    // xhi._util_
+    // __NS._util_
     _attr_list_      : list,
     _bool_           : bool,
     _fn_             : fn,
@@ -43,12 +43,12 @@
     _target_map_     : map,
     _tgt_count_      : num,
 
-    // xhi._utilb_
+    // __NS._utilb_
     _select_str_ : str,
     _title_map_  : map,
     name : str,
 
-    // xhi._lb_
+    // _NS._lb_
     _do_block_click_ : bool,
     _do_draggable_   : bool,
     _do_title_close_ : bool,
