@@ -276,7 +276,7 @@ __NS._makeLb_ = function ( aMap ) {
   // END method /setCloseFn/
 
   // BEGIN method /showBusy/
-  function showBusy ( /*busy_str*/ ) {
+  function showBusy ( /*msg_str*/ ) {
     var active_class = topCmap._active_class_;
     initModule();
     hideLb();
@@ -287,8 +287,8 @@ __NS._makeLb_ = function ( aMap ) {
     $Map._$spin_[ vMap._addClass_ ]( active_class );
 
     // TODO: Add this
-    // if ( busy_str )(
-    //   $Map._$msg_[ vMap._text_ ]( busy_str );
+    // if ( msg_str )(
+    //   $Map._$msg_[ vMap._text_ ]( msg_str );
     // )
   }
   // END method /showBusy/
@@ -296,7 +296,7 @@ __NS._makeLb_ = function ( aMap ) {
   // BEGIN DOM method /afterShow/
   // Purpose: Finishes presentation of litebox after it is shown
   //
-  function afterShow() {
+  function afterShow () {
     var
       smap        = this,
       do_sizing   = smap._do_sizing_,
@@ -320,14 +320,15 @@ __NS._makeLb_ = function ( aMap ) {
       };
       $litebox[ vMap._css_ ]( css_map );
     }
-    $litebox[ vMap._addClass_ ]( active_class );
+
     if ( do_mask ) {
       $mask[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
         vMap._addClass_ ]( active_class );
     }
-    if ( onshow_fn ) {
-      onshow_fn( $litebox, $mask );
-    }
+
+    if ( onshow_fn ) { onshow_fn( $litebox, $mask ); }
+
+    $litebox[ vMap._addClass_ ]( active_class );
   }
   // END DOM method /afterShow/
 
@@ -357,12 +358,11 @@ __NS._makeLb_ = function ( aMap ) {
   //
   // Defaults :
   //   * _layout_key_ : '_top_'
-  //
-  //     +-- litebox -----+--------------+
-  //     | _title_html_   | _close_html_ |
-  //     +----------------+--------------+
-  //     | _content_html_                |
-  //     +-------------------------------+
+  //       +-- litebox -----+--------------+
+  //       | _title_html_   | _close_html_ |
+  //       +----------------+--------------+
+  //       | _content_html_                |
+  //       +-------------------------------+
   //   * Position: center/center
   //   * Size: 50% width and natural height, max-height 50%
   //     (mobile: w x h is 90%/90%)
@@ -370,19 +370,15 @@ __NS._makeLb_ = function ( aMap ) {
   //
   // Options:
   //   * _layout_key_ : '_all_'
-  //
-  //     +-- litebox --------------------+
-  //     | _content_html_                |
-  //     +-------------------------------+
-  //
+  //       +-- litebox --------------------+
+  //       | _content_html_                |
+  //       +-------------------------------+
   //   * _layout_key_ : '_btm_'
-  //
-  //     +-- litebox -----+--------------+
-  //     | _content_html_                |
-  //     +-------------------------------+
-  //     | _title_html_   | _close_html_ |
-  //     +----------------+--------------+
-  //
+  //       +-- litebox -----+--------------+
+  //       | _content_html_                |
+  //       +-------------------------------+
+  //       | _title_html_   | _close_html_ |
+  //       +----------------+--------------+
   //   * _autoclose_ms_ : cancels the window after a i seconds
   //   * _content_html_ - Primary content.  If not initially provided, will
   //       show a 50% height loading graphic.

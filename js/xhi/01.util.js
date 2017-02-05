@@ -67,12 +67,19 @@ __NS._makeUtil_ = function ( aMap ) {
 
   // == BEGIN PREREQ METHODS ==========================================
   // BEGIN Public prereq method /getVarType/
-  // Returns '_Function_', '_Object_', '_Array_',
-  // '_String_', '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
+  // Summary   : getVarType( <data> )
+  // Purpose   : Determine the type of data provided.
+  // Example   : getVarType( [] ); // '_Array_'
+  // Arguments : (positional)
+  //   <data> - value to examine
+  // Returns   : '_Function_', '_Object_', '_Array_', '_String_',
+  //             '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
+  // Throws    : none
+  //
   //
   getVarType = (function () {
     var
-      typeof_map = {
+      typeofMap = {
         'boolean'   : '_Boolean_',
         'number'    : '_Number_',
         'string'    : '_String_',
@@ -90,31 +97,37 @@ __NS._makeUtil_ = function ( aMap ) {
         'Undefined' : '_Undefined_'
       };
 
-    function get_type_fn ( data ) {
+    function mainFn ( data ) {
       var type_key, type_str;
 
-      if ( data === __null  ) { return '_Null_'; }
-      if ( data === __undef ) { return '_Undefined_'; }
-      if ( __Array.isArray( data ) ) { return '_Array_'; }
+      if ( data === __null         ) { return '_Null_';      }
+      if ( data === __undef        ) { return '_Undefined_'; }
+      if ( __Array.isArray( data ) ) { return '_Array_';     }
 
       type_key = __typeof( data );
-      type_str = typeof_map[ type_key ];
+      type_str = typeofMap[ type_key ];
 
       if ( type_str && type_str !== '_Object_' ) { return type_str; }
 
       type_key = {}[ vMap._toString_ ][ vMap._call_ ](
         data )[ vMap._slice_ ]( nMap._8_, __n1 );
 
-      //noinspection NestedConditionalExpressionJS
-      return typeof_map[ type_key ] || type_key;
+      return typeofMap[ type_key ] || type_key;
     }
-    return get_type_fn;
+    return mainFn;
   }());
   // END Public prereq method /getVarType/
 
   // BEGIN Public prereq method /castBool/
-  // Purpose   : Returns a boolean. If the value is not a
-  //   true boolean, returns the alternate value.
+  // Summary   : castBool( <data>, <alt_data> )
+  // Purpose   : Cast a boolean value
+  // Example   : castBool( true ); // returns true
+  // Arguments : (positional)
+  //   <data>     - data to cast as boolean
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if it is a boolean, <alt_data> otherwise
+  // Throws    : none
   //
   function castBool ( data, alt_data ) {
     if ( arguments[ __length ] >= __2 ) {
@@ -126,21 +139,34 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /castBool/
 
   // BEGIN Public prereq method /castFn/
-  // Purpose   : Returns a boolean, always
-  //   If data is false or falsey, returns false
-  //   Otherwise returns true.
+  // Summary   : castFn( <data>, <alt_data> )
+  // Purpose   : Cast a function
+  // Example   : castFn( function(){} ); // returns function
+  // Arguments : (positional)
+  //   <data>     - data to cast as function
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if it is a function, <alt_data> otherwise
+  // Throws    : none
   //
   function castFn ( data, alt_data ) {
     var var_type = getVarType( data );
-    return var_type === '_Function_' ? data : alt_data;
+    return ( var_type === '_Function_' ) ? data : alt_data;
   }
   // END Public prereq method /castFn/
 
   // BEGIN Public prereq method /castInt/
-  // Purpose   : Returns an integer from any data provided.
+  // Summary   : castInt( <data>, <alt_data> )
+  // Purpose   : Cast an integer
+  // Example   : castInt( '25.425' ); // returns 25
+  // Arguments : (positional)
+  //   <data>     - data to cast as int
+  //   <alt_data> - alternate value to return
+  // Returns   :
   //   If a number, returns the number rounded to nearest int.
   //   If a string, returns the number rep rounded to nearest int.
-  //   Any other value returns the alt_data provided
+  //   Otherwise <alt_data>.
+  // Throws    : none
   //
   function castInt ( data, alt_data ) {
     var
@@ -155,6 +181,16 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /castInt/
 
   // BEGIN Public prereq method /castJQ/
+  // Summary   : castJQ( <data>, <alt_data> )
+  // Purpose   : Cast a jQuery object
+  // Example   : castJQ( $top_box ); // returns $top_box
+  // Arguments : (positional)
+  //   <data>     - data to cast as jQuery object
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if it is a jQuery object, <alt_data> otherwise
+  // Throws    : none
+  //
   function castJQ ( data, alt_data ) {
     if ( topSmap._has_jq_ ) {
       return ( data && data instanceof jQuery ) ? data : alt_data;
@@ -165,38 +201,54 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public preq method /castJQ/
 
   // BEGIN Public prereq method /castList/
-  // Purpose   : Returns a map from any provided data.
-  //   If an array, returns the data unchanged.
-  //   Any other value returns the alt_data provided
+  // Summary   : castList( <data>, <alt_data> )
+  // Purpose   : Cast a list
+  // Example   : castList( [] ); // returns the array
+  // Arguments : (positional)
+  //   <data>     - data to cast as list
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if it is a list, <alt_data> otherwise
+  // Throws    : none
   //
   function castList ( data, alt_data ) {
     var var_type = getVarType( data );
-    return var_type === '_Array_'
-      ? data : alt_data;
+    return ( var_type === '_Array_' ) ? data : alt_data;
   }
   // END Public prereq method /castList/
 
   // BEGIN Public prereq method /castMap/
-  // Purpose   : Returns a map from any provided data.
-  //   If an object, returns the data unchanged.
-  //   Any other value returns the alt_data provided
+  // Summary   : castMap( <data>, <alt_data> )
+  // Purpose   : Cast a map
+  // Example   : castMap( {} ); // returns the object
+  // Arguments : (positional)
+  //   <data>     - data to cast as map
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if it is a map, <alt_data> otherwise
+  // Throws    : none
   //
   function castMap ( data, alt_data ) {
     var var_type = getVarType( data );
-    return var_type === '_Object_'
-      ? data : alt_data;
+    return ( var_type === '_Object_' ) ? data : alt_data;
   }
   // END Public prereq method /castMap/
 
   // BEGIN Public prereq method /castNum/
-  // Purpose   : Returns an number from any data provided.
-  //   If a number, returns the number rounded to nearest int.
-  //   If a string, returns the number rep rounded to nearest int.
-  //   Any other value returns the alt_data provided
+  // Summary   : castNum( <data>, <alt_data> )
+  // Purpose   : Cast a floating point number
+  // Example   : castNum( '25.425' ); // returns 25.425
+  // Arguments : (positional)
+  //   <data>     - data to cast as number
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if a number, or a string converted into a number,
+  //   <alt_data> otherwise
+  // Throws    : none
   //
   function castNum ( data, alt_data ) {
     var var_type = getVarType( data ), num;
-    num = var_type === '_Number_'
+    num = ( var_type === '_Number_' )
       ? data : var_type === '_String_'
       ? parseFloat( data ) : __undef
       ;
@@ -205,22 +257,34 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /castNum/
 
   // BEGIN Public prereq method /castObj/
-  // Purpose   : Returns a map from any provided data.
-  //   If an object, returns the data unchanged.
-  //   Any other value returns the alt_data provided
+  // Summary   : castObj( <obj_type>, <data>, <alt_data> )
+  // Purpose   : Cast an object
+  // Example   : castObj( 'styleSheetList',document.styleSheets  );
+  // Arguments : (positional)
+  //   <obj_type> - string of object type (see Example)
+  //   <data>     - data to cast as <obj_type> object
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if an <obj_type> object, <alt_data> otherwise
+  // Throws    : none
   //
   function castObj ( obj_type, data, alt_data ) {
     var var_type = getVarType( data );
-    return var_type === obj_type
-      ? data : alt_data;
+    return var_type === obj_type ? data : alt_data;
   }
   // END Public prereq method /castObj/
 
   // BEGIN Public prereq method /castStr/
-  // Purpose   : Returns a string from any provided data.
-  //   If a string, returns the string unchanged.
-  //   If a number, creates a string
-  //   Any other value the alt_data provided
+  // Summary   : castStr( <data>, <alt_data> )
+  // Purpose   : Cast a string
+  // Example   : castStr( 25.425 ); // returns '25.425'
+  // Arguments : (positional)
+  //   <data>     - data to cast as string
+  //   <alt_data> - alternate value to return
+  // Returns   :
+  //   <data> if a string, or a number converted to a string,
+  //   <alt_data> otherwise
+  // Throws    : none
   //
   function castStr ( data, alt_data ) {
     var var_type = getVarType( data );
@@ -231,17 +295,31 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /castStr/
   //
   // BEGIN Public prereq method /cloneData/
-  // Purpose: Deep clones non-recursive data structures fastest
+  // Summary   : cloneData( <data> )
+  // Purpose   : Deep clones non-recursive data structures fastest
+  // Example   : cloneData( [] ); // return copy of list
+  // Arguments : (positional)
+  //   <data> - data to clone
+  // Returns   : undefined if data is recursive; otherwise a deep
+  //   copy is returned.
+  // Throws    : none
   //
   function cloneData ( data ) {
+    var clone_data;
     if ( data === __undef ) { return data; }
-    return __jparse( __j2str( data ) );
+    try { clone_data = __jparse( __j2str( data ) ); }
+    catch ( ignore_obj ) { clone_data = __undef; }
+    return clone_data;
   }
   // END Public prereq method /cloneData/
 
   // BEGIN Public prereq method /getNowMs/
-  // Purpose: Returns the current timestamp in milliseconds
-  //   The Date.now() method is 3x faster than the +new Date()
+  // Purpose   : Get timestamp
+  // Example   : getNowMs(); // returns 1486283077968
+  // Returns   : The current timestamp in milliseconds
+  // Throws    : none
+  //
+  // The Date.now() method is 3x faster than the +new Date()
   //   in NodeJS, and I have confirmed this provides almost the
   //   the same performance in that env as a raw Date.now() call.
   //
@@ -259,19 +337,23 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /getNowMs/
 
   // BEGIN Public prereq method /getNumSign/
-  // Purpose : Provided an argument, will attempt to convert it into
-  //   a number. If it is a negative number, a -1 will be returned.
-  //   In all other cases, a positive 1 is returned.
+  // Summary   : getNumSign( <data> )
+  // Purpose   : Convert number into -1 or 1
+  // Example   : getNumSign( '-25' ); // returns -1
+  // Arguments :
+  //   <data> - number or string to convert to -1 or 1
+  // Returns   : -1 if the processed number is less than 0,
+  //   otherwise 1.
+  // Throws    : none
   //
   function getNumSign ( n ) {
     var num = __Num( n );
-    return ( ! isNaN( num ) && num < __0 )
-      ? __n1 : __1;
+    return ( ! isNaN( num ) && num < __0 ) ? __n1 : __1;
   }
   // END Public prereq method /getNumSign/
 
   // BEGIN private method /getTzDateObj/
-  // Purpose   : Returns a date object singleton for use by Tz methods
+  // Returns   : A date object singleton for use by Tz methods
   //
   function getTzDateObj () {
     if ( ! topSmap._date_obj_ ) {
@@ -282,13 +364,20 @@ __NS._makeUtil_ = function ( aMap ) {
   // END private method /getTzDateObj/
 
   // BEGIN Public prereq method /makeArgList/
-  // Converts provided argument object into a real array
+  // Summary   : makeArgList( <arg_obj> )
+  // Purpose   : Make a real array from data in argument object
+  // Example   : makeArgList( arguments ); // returns [ ... ]
+  // Arguments :
+  //   <arg_obj> - an argument object ('arguments' in functions)
+  // Returns   : An array of argument values
+  // Throws    : none
+  //
+  // The technique used is around 3x faster than
+  //   return Array.prototype.slice.call( arg_obj );
+  // See https://github.com/petkaantonov/bluebird/wiki/\
+  //   Optimization-killers#3-managing-arguments
   //
   function makeArgList ( arg_obj ) {
-    // The following technique is around 3x faster than
-    //   return Array.prototype.slice.call( arg_obj );
-    // See https://github.com/petkaantonov/bluebird/wiki/\
-    //   Optimization-killers#3-managing-arguments
     var
       src_obj    = castObj( 'Arguments', arg_obj, {} ),
       arg_count  = src_obj[ __length ],
@@ -303,7 +392,14 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /makeArgList/
 
   // BEGIN Public prereq method /makePadNumStr/
-  // Example: makePadNumStr( 25, 3 ) return '025';
+  // Summary   : makePadNumStr( <number>, <count> )
+  // Purpose   : Pad an int with 0s for <count> digits
+  // Example   : makePadNumStr( 25, 3 ) return '025';
+  // Arguments :
+  //   <number> - the number to pad
+  //   <count>  - the number of digits to fill
+  // Returns   : A trimmed and padded string
+  // Throws    : none
   //
   function makePadNumStr( arg_num, arg_count ) {
     var
@@ -334,17 +430,32 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public prereq method /makePadNumStr/
 
   // BEGIN public prereq method /makeEscRxStr/
+  // Summary   : makeEscRxStr( <string> ) {
+  // Purpose   : Escapes a regular expression string
+  // Example   : makeEscRxStr( '[]' ) // returns '\[\]\'
+  // Arguments : <string> to escape
+  // Returns   : Escaped regular expression string
+  // Throws    : none
+  //
+  // JSLint capable str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  // See http://stackoverflow.com/questions/3115150
+  //
   function makeEscRxStr( arg_str ) {
     var str = castStr( arg_str, __blank );
-    // JSLint capable str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-    // See http://stackoverflow.com/questions/3115150
     return str.replace( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
   }
   // END Public prereq method /makeEscRxStr/
 
   // BEGIN Public prereq method /makeRxObj/
+  // Summary   : makeRxObj( <pattern>, <options> )
   // Purpose   : Create a regular expression object
   // Example   : makeRxObj( '\s*hello\s*', 'i' );
+  // Arguments :
+  //   <pattern> - a string to convert into a regexp
+  //   <options> - an option string
+  // Returns   : A regular expression object
+  // Throws    : none
+  //
   function makeRxObj ( arg_pattern_str, arg_option_str ) {
     var
       pattern_str = castStr( arg_pattern_str, __blank ),
@@ -625,8 +736,8 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /getListAttrMap/
 
   // BEGIN Public method /getListDiff/
-  // Purpose: Finds all elements common between two lists.
-  //   Does _not_ do a deep comparison; two similar lists or maps
+  // Purpose : Find all elements common between two lists.
+  //   Do _not_ do a deep comparison; two similar lists or maps
   //   will be reported as different unless they point the the same
   //   data structure.
   //
@@ -804,7 +915,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeClockStr/
 
   // BEGIN Public method /makeCommaNumStr/
-  // Purpose: Converts a number into a string optimized for readability
+  // Purpose   : Convert a number into a string optimized for readability
   // Example   : makeCommaNumStr({ _input_num_ : 1999 })
   //             Returns '2.0k'
   // Arguments :
@@ -822,7 +933,6 @@ __NS._makeUtil_ = function ( aMap ) {
   //   * Success - Returns formated string
   //   * Failure - Blank string
   //
-  // Example: str =
   function makeCommaNumStr ( arg_map ) {
     var
       map             = castMap( arg_map, {} ),
@@ -860,7 +970,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeCommaNumStr/
 
   // BEGIN Public method /makeDateStr/
-  // Purpose: Creates a string from data_data in the form of a date object
+  // Purpose   : Create a string from a date object
   //   or a UTC time number (in milliseconds).
   // Examples:
   // 1. makeDateStr({ _date_obj_ : new Date() });
@@ -870,7 +980,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // 3. makeDateStr({ _date_ms_ : 1474311626050 })
   //    Returns '2016-09-19'
   //
-  // Arguments:
+  // Arguments :
   //   * _date_obj_ : A valid date object.
   //   * _date_ms_  : A date time in ms.
   //     If neither date_obj or date_ms is provided, will use the
@@ -932,7 +1042,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeDateStr/
 
   // BEGIN Public method /makeDebounceFn/
-  // Purpose: Returns a function that will only fire after
+  // Purpose : Return a function that will fire after
   //   delay_ms milliseconds of inactivity.
   //
   function makeDebounceFn ( arg_map ) {
@@ -960,7 +1070,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeDebounceFn/
 
   // BEGIN Public method /makeThrottleFn/
-  // Purpose: Returns a function that will only fire once per
+  // Purpose : Return a function that will fire once per
   //   delay_ms milliseconds. It fires immediately on first
   //   call.
   //
@@ -1006,14 +1116,15 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeThrottleFn/
 
   // BEGIN Public method /makeEllipsisStr/
-  // Purpose: Shorten a string to a maximum length and append ellipsis
+  // Purpose : Shorten a string to a maximum length and append ellipsis
   //   if it is exceeded.
-  // Example: makeEllipsisStr({
-  //    _input_str_      : 'hee haw and the boys',
-  //    _char_limit_int_ : 10,
-  //    _do_word_break_  : true
-  //  });
-  //  // returns 'hee haw ...'
+  // Example   :
+  //   makeEllipsisStr({
+  //     _input_str_      : 'hee haw and the boys',
+  //     _char_limit_int_ : 10,
+  //     _do_word_break_  : true
+  //   });
+  //   // returns 'hee haw ...'
   //
   // Arguments:
   // _input_str_      : (req) The string to shorten if required
@@ -1062,13 +1173,13 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeEllipsisStr/
 
   // BEGIN Public method /makeErrorObj/
-  // Purpose: A convenient method to create an error object
-  // Arguments:
+  // Purpose   : A convenient method to create an error object
+  // Arguments :
   //   * name_text - the error name
   //   * msg_text  - long error message
   //   * data      - optional data attached to error object
-  // Returns  : newly constructed error object
-  // Throws   : none
+  // Returns   : newly constructed error object
+  // Throws    : none
   //
   function makeErrorObj ( arg_name, arg_msg, arg_data ) {
     var
@@ -1107,10 +1218,10 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeGuidStr/
 
   // BEGIN Public method /makeMapUtilObj/
-  // Purpose: Creates a thread-safe map utility object
+  // Purpose  : Creates a thread-safe map utility object
   //   useful to streamlining list.map() functions and
   //   avoiding nesting.
-  // Example:
+  // Example  :
   // 1. Create a map_util object:
   //    | var map_util_obj = makeMapUtilObj();
   // 2. (optional) Set any data your map function will use.
@@ -1234,7 +1345,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makePctStr/
 
   // BEGIN Public method /makeRadioHtml/
-  // Purpose: make an array of checkboxes from a list
+  // Purpose : make an array of checkboxes from a list
   //
   function makeRadioHtml ( arg_map ) {
     var
@@ -1269,7 +1380,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeRadioHtml/
 
   // BEGIN Public method /makeReplaceFn/
-  // Purpose   : Returns a high-performance function that
+  // Purpose   : Return a high-performance function that
   //   replaces a single symbol with a predefined value.
   // Example   :
   //   fn = makeReplaceFn( 'x', 'fred' );
@@ -1296,7 +1407,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeReplaceFn/
 
   // BEGIN Public method /makeSeenMap/
-  // Purpose: Convert arg_key_list into a map with each key assigned
+  // Purpose : Convert arg_key_list into a map with each key assigned
   // the value of arg_seen_data. If not provided, arg_seen_data === true
   //
   function makeSeenMap ( arg_key_list, arg_seen_data ) {
@@ -1318,7 +1429,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makeSeenMap/
 
   // BEGIN Public method /makeStrFromMap/
-  // Purpose: Concatenate a number of key-values
+  // Purpose : Concatenate a number of key-values
   // into a single string
   function makeStrFromMap ( arg_map ) {
     var
@@ -1624,7 +1735,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /mergeMaps/
 
   // BEGIN Public method /pollFunction/
-  // Purpose: Run the <arg_fn> function every <arg_ms> milliseconds
+  // Purpose : Run the <arg_fn> function every <arg_ms> milliseconds
   //   either <arg_count> number of times or until the function
   //   returns __false, whichever comes first.
   // Arguments ( positional )

@@ -44,7 +44,16 @@ __NS._makeTmplt_ = function ( aMap ) {
   // == END UTILITY METHODS ============================================
 
   // == BEGIN DOM METHODS ==============================================
-  // Cache jQuery collections here
+  // BEGIN DOM Method /set$Map/
+  // Summary   : set$Map( <jquery_obj> );
+  // Purpose   : Set the module jQuery cache
+  // Example   : set$Map( $top_box );
+  // Arguments : (positional)
+  //   0: $top_box : A jQuery object used to locate DOM elements.
+  // Settings  : Module-scoped $Map is populated by this function.
+  // Returns   : undef
+  // Throws    : none
+  //
   function set$Map ( $top_box ) {
     $Map = { _$top_box_ : $top_box };
   }
