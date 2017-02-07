@@ -50,6 +50,7 @@ __NS._makeLb_ = function ( aMap ) {
     __castMap  = __util._castMap_,
     __castNum  = __util._castNum_,
     __castStr  = __util._castStr_,
+    __p        = __util._makeReplaceFn_( '_p_', aKey ),
     __tmplt    = __util._makeTmpltStr_,
 
     topSmap = {
@@ -59,10 +60,7 @@ __NS._makeLb_ = function ( aMap ) {
       _is_masked_    : __false,  // Mask-on flag
       _is_ready_     : __false,  // Has DOM been initialized?
       _is_busy_      : __false,  // Is litebox in use?
-      _lb_class_str_ : __blank,  // Caller specified class(es) of lb
-      _local_html_   : __undef,  // Cached local spin html with aKey
-      _main_html_    : __undef,  // Cached main html with aKey
-      _mod_class_str_: __blank,  // Caller specified modifier class(es) of lb
+      _mod_class_str_: __blank,  // Caller specified class(es) for lb
       _onclose_fn_   : __undef   // Callback function on close
     },
 
@@ -71,50 +69,56 @@ __NS._makeLb_ = function ( aMap ) {
     topCmap = {
       _trans_ms_ : 350, // transition time
       _active_class_ : aKey + '-_x_active_',
-      _main_tmplt_ : __blank
-        + '<div id="{_ns_}-_lb_mask_" class="{_ns_}-_lb_mask_"></div>'
-        + '<div id="{_ns_}-_lb_spin_" class="{_ns_}-_lb_spin_">'
-          + '&#xf021;'
+      _main_html_ : __p( __blank
+        + '<div id="{_p_}-_lb_mask_" class="{_p_}-_lb_mask_"></div>'
+        + '<div id="{_p_}-_lb_spin_" class="{_p_}-_lb_spin_">&#xf021;'
+        + '</div><div id="{_p_}-_lb_"></div>'
+      ),
+      _spin_tmplt_ : __p(
+        '<div class="{_p_}-_lb_spin_ {_p_}-_x_local_">&#xf021;</div>'
+      ),
+      _local_html_ : __p( __blank
+        + '<div class="{_p_}-_lb_mask_ {_p_}-_x_local_ {_p_}-_x_active_">'
         + '</div>'
-        + '<div id="{_ns_}-_lb_"></div>',
-      _spin_tmplt_ : '<div class="{_ns_}-_lb_spin_ {_ns_}-_x_local_">'
-        + '&#xf021;</div>',
-      _local_tmplt_ : __blank
-        + '<div class="{_ns_}-_lb_mask_ {_ns_}-_x_local_ {_ns_}-_x_active_"></div>'
-        + '<div class="{_ns_}-_lb_spin_ {_ns_}-_x_local_ {_ns_}-_x_active_">'
-          + '&#xf021;</div>',
-      _success_tmplt_ : __blank
-        + '<div class="{_ns_}-_lb_success_">'
-          + '<div class="{_ns_}-_lb_success_title_">'
+        + '<div class="{_p_}-_lb_spin_ {_p_}-_x_local_ {_p_}-_x_active_">'
+        + '&#xf021;</div>'
+      ),
+      _success_tmplt_ : __p( __blank
+        + '<div class="{_p_}-_lb_success_">'
+          + '<div class="{_p_}-_lb_success_title_">'
             + '{_msg_str_}'
           + '</div>'
-        + '</div>',
-      _erow_tmplt_ : __blank
-        + '<div class="{_ns_}-_lb_error_row_">'
-          + '<div class="{_ns_}-_lb_error_row_code_">{_code_}</div>'
-          + '<div class="{_ns_}-_lb_error_row_name_">{_name_}</div>'
-          + '<div class="{_ns_}-_lb_error_row_descr_">{_descr_}</div>'
-        + '</div>',
-      _error_tmplt_ : __blank
-        + '<div class="{_ns_}-_lb_error_">'
+        + '</div>'
+      ),
+      _erow_tmplt_ : __p( __blank
+        + '<div class="{_p_}-_lb_error_row_">'
+          + '<div class="{_p_}-_lb_error_row_code_">{_code_}</div>'
+          + '<div class="{_p_}-_lb_error_row_name_">{_name_}</div>'
+          + '<div class="{_p_}-_lb_error_row_descr_">{_descr_}</div>'
+        + '</div>'
+      ),
+      _error_tmplt_ : __p( __blank
+        + '<div class="{_p_}-_lb_error_">'
           + '<h1>Error</h1>'
-          + '<div class="{_ns_}-_lb_error_list_">'
+          + '<div class="{_p_}-_lb_error_list_">'
             + '{_rows_html_}'
           + '</div>'
-        + '</div>',
+        + '</div>'
+      ),
       _tmplt_map_ : {
         _all_ : '{_content_html_}',
-        _btm_ : __blank
-        + '<div class="{_ns_}-_lb_content_">{_content_html_}</div>'
-        + '<div class="{_ns_}-_lb_title_">{_title_html_}</div>'
-        + '<div class="{_ns_}-_lb_close_">{_close_html_}</div>',
-        _top_ : __blank
-        + '<div class="{_ns_}-_lb_title_">{_title_html_}</div>'
-        + '<div class="{_ns_}-_lb_close_">{_close_html_}</div>'
-        + '<div class="{_ns_}-_lb_content_">{_content_html_}</div>'
+        _btm_ : __p( __blank
+          + '<div class="{_p_}-_lb_content_">{_content_html_}</div>'
+          + '<div class="{_p_}-_lb_title_">{_title_html_}</div>'
+          + '<div class="{_p_}-_lb_close_">{_close_html_}</div>'
+        ),
+        _top_ : __p( __blank
+          + '<div class="{_p_}-_lb_title_">{_title_html_}</div>'
+          + '<div class="{_p_}-_lb_close_">{_close_html_}</div>'
+          + '<div class="{_p_}-_lb_content_">{_content_html_}</div>'
+        )
       }
     },
-
     coordDraggable
     ;
   // == END MODULE SCOPE VARIABLES ====================================
@@ -137,19 +141,10 @@ __NS._makeLb_ = function ( aMap ) {
   // BEGIN DOM method /initModule/
   // Checks to see if we have been initialized; if not, we do so
   function initModule () {
-    var main_html;
     if ( topSmap._is_ready_ ) { return; }
 
     // Add to DOM
-    main_html = topSmap._main_html_;
-    if ( ! main_html ) {
-      main_html = __tmplt({
-        _input_str_  : topCmap._main_tmplt_,
-        _lookup_map_ : { _ns_ : aKey }
-      });
-      topSmap._main_html_ = main_html;
-    }
-    $('body')[ vMap._append_ ]( main_html );
+    $('body')[ vMap._append_ ]( topCmap._main_html_ );
 
     // Cache jQuery collections and set state
     set$Map();
@@ -161,20 +156,9 @@ __NS._makeLb_ = function ( aMap ) {
 
   // BEGIN DOM method /addLocalSpin/
   function addLocalSpin( arg_$box ) {
-    var
-      $box       = __castJQ( arg_$box ),
-      local_html = topSmap._local_html_
-      ;
+    var $box = __castJQ( arg_$box );
 
-    if ( ! local_html ) {
-      local_html = __tmplt({
-        _input_str_  : topCmap._local_tmplt_,
-        _lookup_map_ :  { _ns_ : aKey }
-      });
-      topSmap._local_html_ = local_html;
-    }
-
-    if ( $box ) { $box.html( local_html ); }
+    if ( $box ) { $box.html( topCmap._local_html_ ); }
   }
   // END DOM method /addLocalSpin/
 
@@ -182,7 +166,7 @@ __NS._makeLb_ = function ( aMap ) {
   function cleanUp () {
     var
       smap = this;
-      topSmap._cleanup_toid_  = __undef;
+      topSmap._cleanup_toid_ = __undef;
 
     /* istanbul ignore next */
     if ( ! smap ) { return; }
@@ -191,7 +175,6 @@ __NS._makeLb_ = function ( aMap ) {
       vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
     $Map._$litebox_[ vMap._removeAttr_ ]( vMap._style_ )[
       vMap._css_ ]( cssKmap._display_, cssVmap._none_ )[
-      vMap._removeClass_ ]( smap._lb_class_str_ )[
       vMap._removeClass_ ]( smap._mod_class_str_ );
 
     if ( $Map._$content_ ) {
@@ -206,14 +189,12 @@ __NS._makeLb_ = function ( aMap ) {
       $Map._$close_[ vMap._removeAttr_ ]( vMap._style_ )[
         vMap._empty_ ]();
     }
-
-    topSmap._mod_class_str_ = __blank;
-    topSmap._lb_class_str_  = __blank;
-    topSmap._is_busy_       = __false;
-
     if ( smap._callback_fn_ ) {
       smap._callback_fn_( $Map._$litebox_, $Map._$mask_ );
     }
+    topSmap._is_busy_       = __false;
+    topSmap._mod_class_str_ = __blank;
+    topSmap._is_masked_     = __false;
   }
   // END DOM method /cleanUp/
 
@@ -235,14 +216,11 @@ __NS._makeLb_ = function ( aMap ) {
     if ( topSmap._is_busy_ === __true ) {
       clean_smap = {
         _callback_fn_   : callback_fn,
-        _lb_class_str_  : topSmap._lb_class_str_,
         _mod_class_str_ : topSmap._mod_class_str_
       };
 
-      topSmap._lb_class_str_ = __blank;
-      topSmap._is_masked_    = __false;
       $Map._$litebox_[ vMap._removeClass_ ]( active_class );
-      $Map._$mask_[ vMap._removeClass_ ]( active_class );
+      $Map._$mask_[    vMap._removeClass_ ]( active_class );
 
       clean_fn               = cleanUp[ vMap._bind_ ]( clean_smap );
       topSmap._cleanup_fn_   = clean_fn;
@@ -356,50 +334,46 @@ __NS._makeLb_ = function ( aMap ) {
   //    }
   //  });
   //
-  // Defaults :
-  //   * _layout_key_ : '_top_'
+  // Options:
+  //   * _autoclose_ms_   : (infinity) Cancels the window after n milliseconds
+  //   * _content_html_   : (50% ht loading graphic) Content in main panel
+  //   * _close_html_     : (blank) Close symbol or text
+  //   * _do_block_click_ : (false) Block user click on mask to close?
+  //   * _do_dflt_class_  : (true) Keep default lightbox class?
+  //   * _do_draggable_   : (true) User drag by title bar?
+  //   * _do_mask_        : (true) Show mask under litebox?
+  //   * _do_title_close_ : (true) Tap on title to close?
+  //   * _layout_key_ : ('_top_')
+  //     '_top_'
   //       +-- litebox -----+--------------+
   //       | _title_html_   | _close_html_ |
   //       +----------------+--------------+
   //       | _content_html_                |
   //       +-------------------------------+
-  //   * Position: center/center
-  //   * Size: 50% width and natural height, max-height 50%
-  //     (mobile: w x h is 90%/90%)
-  //   * Overflow-y: auto; overflow-x hidden
   //
-  // Options:
-  //   * _layout_key_ : '_all_'
+  //     '_all_'
   //       +-- litebox --------------------+
   //       | _content_html_                |
   //       +-------------------------------+
-  //   * _layout_key_ : '_btm_'
+  //
+  //     '_btm_'
   //       +-- litebox -----+--------------+
   //       | _content_html_                |
   //       +-------------------------------+
   //       | _title_html_   | _close_html_ |
   //       +----------------+--------------+
-  //   * _autoclose_ms_ : cancels the window after a i seconds
-  //   * _content_html_ - Primary content.  If not initially provided, will
-  //       show a 50% height loading graphic.
-  //   * _close_html_     - close symbol or text.  Blank omits a close button.
-  //   * _do_block_click_ : This blocks the the user from clicking on the
-  //       mask to close the litebox
-  //   * _do_draggable_   - enable dragging of litebox by the title bar
-  //   * _do_title_close_ - tap on title to close (overrides close symbol)
-  //   * _do_mask_        - set to false to disable mask
-  //   * _lb_class_str_   - replace stock litebox class with this
+  //   * _mod_class_str_  : ('') Augment stock litebox class string
   //     ( separate multiple classes by a space, e.g. 'c1 c2 c3 ... ' )
-  //   * _mod_class_str_  - augment stock litebox class with this
-  //     ( separate multiple classes by a space, e.g. 'c1 c2 c3 ... ' )
-  //   * _position_map_ - set this to override default positioning
-  //     (mobile w x h stays 90%/90%)
-  //   * Set is_overflow_y and is_overflow_x to override overflow defaults
-  //   * _onclose_fn_     : function to call on close
-  //     When provided, the function is fired on close, and if it returns
-  //     a truthy value, the litebox is closed.  A FALSEY VALUES WILL
-  //     retain the litebox.
-  //   * _onshow_fn_      : function to after show is complete.
+  //   * _position_map_   : (undef) CSS map to override standard
+  //       position, size, and other attributes.
+  //       Default position is centered.  Width is 50% of window, height
+  //       is natural height required to contain content / max-height 50%.
+  //       Constent scrolling is enabled veritcal and disabled horizontal.
+  //       Mobile w x h is 90%/90%.
+  //   * _onclose_fn_     : (null) A function called when close is requested.
+  //       THE LITEBOX IS CLOSED IFF IT RETURNS A TRUTHY VALUE.
+  //   * _onshow_fn_      : (null) A function to after rendering and
+  //       animations are complete.
   //      The $lite_box and $mask are provided as positional arguments
   //      to this function.
   //   * _title_html_     : title string
@@ -414,7 +388,6 @@ __NS._makeLb_ = function ( aMap ) {
       close_html    = __castStr(  map._close_html_,    __blank ),
       content_html  = __castStr(  map._content_html_,  __blank ),
       layout_key    = __castStr(  map._layout_key_ )   || '_top_',
-      lb_class_str  = __castStr(  map._lb_class_str_ ) || aKey + '-_lb_',
       mod_class_str = __castStr(  map._mod_class_str_, __blank ),
       title_html    = __castStr(  map._title_html_,    __blank ),
 
@@ -423,12 +396,13 @@ __NS._makeLb_ = function ( aMap ) {
 
       do_bclick     = __castBool( map._do_block_click_, __false ),
       do_draggable  = __castBool( map._do_draggable_,    __true ),
+      do_dflt_class = __castBool( map._do_dflt_class_,   __true ),
       do_mask       = __castBool( map._do_mask_,         __true ),
       do_tclose     = __castBool( map._do_title_close_,  __true ),
       onclose_fn    = __castFn(   map._onclose_fn_,      __null ),
       onshow_fn     = __castFn(   map._onshow_fn_,       __null ),
-      active_class  = topCmap._active_class_,
 
+      active_class  = topCmap._active_class_,
       $litebox      = $Map._$litebox_,
       $mask         = $Map._$mask_,
 
@@ -452,7 +426,6 @@ __NS._makeLb_ = function ( aMap ) {
       _lookup_map_ : {
         _close_html_   : close_html,
         _content_html_ : content_html,
-        _ns_           : aKey,
         _title_html_   : title_html
       }
     });
@@ -514,10 +487,11 @@ __NS._makeLb_ = function ( aMap ) {
     }
     css_map.display = cssVmap._block_;
 
-    // Set specified class (or aKey + '-_lb_' default)
-    $litebox[ vMap._addClass_ ]( lb_class_str  );
+    // Set classses
+    if ( do_dflt_class )  {
+      mod_class_str = aKey + '-_lb_ ' + mod_class_str;
+    }
     $litebox[ vMap._addClass_ ]( mod_class_str );
-    topSmap._lb_class_str_  = lb_class_str;
     topSmap._mod_class_str_ = mod_class_str;
 
     // Show and (if requested) size litebox
@@ -639,19 +613,15 @@ __NS._makeLb_ = function ( aMap ) {
   // BEGIN showSuccess
   function showSuccess ( arg_str ) {
     var
-      msg_str = __castStr( arg_str, __blank ),
-      content_html;
+      msg_str      = __castStr( arg_str, __blank ),
+      content_html = __tmplt({
+        _input_str_  : topCmap._success_tmplt_,
+        _lookup_map_ : {
+          _msg_str_ : msg_str,
+        }
+      });
 
     initModule();
-
-    content_html = __tmplt({
-      _input_str_  : topCmap._success_tmplt_,
-      _lookup_map_ : {
-        _msg_str_ : msg_str,
-        _ns_      : aKey
-      }
-    });
-
     return showLb({ _content_html_ : content_html });
   }
   // END showSuccess
@@ -669,8 +639,7 @@ __NS._makeLb_ = function ( aMap ) {
       row_map = __castMap( row_list[ idx ] );
 
       if ( ! row_map ) { continue ROW; }
-      lookup_map      = __util._cloneData_( row_map );
-      lookup_map._ns_ = aKey;
+      lookup_map = __util._cloneData_( row_map );
 
       rows_html += __tmplt({
         _input_str_  : topCmap._erow_tmplt_,
@@ -681,7 +650,6 @@ __NS._makeLb_ = function ( aMap ) {
     content_html = __tmplt({
       _input_str_  : topCmap._error_tmplt_,
       _lookup_map_ : {
-        _ns_        : aKey,
         _rows_html_ : rows_html || 'unknown error'
       }
     });
