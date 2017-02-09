@@ -391,6 +391,34 @@ __NS._makeUtil_ = function ( aMap ) {
   }
   // END Public prereq method /makeArgList/
 
+  // BEGIN public method /makeMetricStr/
+  function makeMetricStr( arg_num ) {
+    var
+      num     = castNum( arg_num, __0 ),
+      abs_num = vMap._fnGetAbs_( num ),
+      root_num, suffix
+      ;
+
+    if ( abs_num >= 1e+9 ) {
+      root_num = num / 1e+9;
+      suffix   = 'G';
+    }
+    else if ( abs_num >= 1e+6 ) {
+      root_num = num / 1e+6;
+      suffix   = 'M';
+    }
+    else if ( abs_num >= 1e+3 ) {
+      root_num = num / 1e+3;
+      suffix   = 'K';
+    }
+    else {
+      root_num = num;
+      suffix  = __blank;
+    }
+    return root_num.toPrecision( __3 ) + suffix;
+  }
+  // END public method /makeMetricStr/
+
   // BEGIN Public prereq method /makePadNumStr/
   // Summary   : makePadNumStr( <number>, <count> )
   // Purpose   : Pad an int with 0s for <count> digits
@@ -2039,6 +2067,7 @@ __NS._makeUtil_ = function ( aMap ) {
     _makeErrorObj_    : makeErrorObj,
     _makeGuidStr_     : makeGuidStr,
     _makeMapUtilObj_  : makeMapUtilObj,
+    _makeMetricStr_   : makeMetricStr,
     _makeOptionHtml_  : makeOptionHtml,
     _makePctStr_      : makePctStr,
     _makeRadioHtml_   : makeRadioHtml,
