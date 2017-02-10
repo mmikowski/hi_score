@@ -76,6 +76,8 @@ save time and guide best code practices.
 - Code coverage reports (currently 98.9%) [npm run cover]
 - Integration to Coveralls [npm run covera]
 - Compressed, deployment-ready code in seconds [npm run buildify]
+- Automatic processing of markdown files to browsable HTML (README.md ->
+  index.html)
 
 **hi\_score** also features fractal MVC architecture, type safety with typecasting, best practice style (including style guides and a cheat sheet), and two simple example applications.
 
@@ -213,8 +215,8 @@ Check the code coverage by running the `cover` script.
 
 We use the excellent `Istanbul` code coverage tool along with the JSDOM
 package. Previously we had used `nodeunitb` for testing but was unsuccessful
-in getting usable coverage reports. We see 98.9% coverage for the four modules
-tested as of version 0.9.0.
+in getting usable coverage reports. Current coverage is reported at the top of
+this document.
 
 ### Update coveralls (optional)
 If you create a new fork you may send a coveralls report as shown in the [master
@@ -227,9 +229,8 @@ If you create a new fork you may send a coveralls report as shown in the [master
 
 ### Build
 We employ `buildify` and `superpack` to prepare the code for production.
-As of version 0.9.0 our first full build system is in place. This is a
-generalization of a build system that has been in use on many production
-systems and is currently in-use on some very high-volume sites
+This is a generalization of a system that has been in use on many production
+sites for over 5 years and is currently used on some very high-volume sites
 (100m views per day). We continue to improve feedback and usability.
 
 ```bash
@@ -238,9 +239,9 @@ systems and is currently in-use on some very high-volume sites
   dist$ google-chrome ex01.html ex02.html
 ```
 
-The build process creates two isolated applications that share resources like
-fonts, vendor libraries, and other assets. This is generally the preferred
-approach.
+In this example the build process creates two isolated applications that share
+resources like fonts, libraries, and images.  This is generally the preferred
+approach when building a suite of web applications.
 
 ### Update
 One may update all the npm libraries, npm assets, and the `package.json` file
@@ -415,7 +416,8 @@ MIT
 - Add dependency graph for above
 
 ### Version 0.9.x
-- Initial full-stack build system `npm run buildify`
+- Add distribution build system `npm run buildify`
+- Add utilities and tests
 
 ## Similar Projects
 [absurd.js][_26], [responsive.js][_27]
