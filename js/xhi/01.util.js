@@ -60,8 +60,8 @@ __NS._makeUtil_ = function ( aMap ) {
     topSmap, topCmap, // State and cfg maps are set in initModule
 
     getNowMs,     getVarType,  getBasename,
-    getDirname,   logObj,  makeGuidStr,
-    makeTmpltStr
+    getDirname,   logObj,      makeGuidStr,
+    makeTmpltStr, trimStrList
     ;
   // == END MODULE SCOPE VARIABLES ====================================
 
@@ -1925,7 +1925,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // Returns : boolean
   //  * true  : Shuffle successful
   //  * false : Shuffle not successful
-
+  //
   function shuffleList ( arg_list ) {
     var
       list  = castList( arg_list ),
@@ -1951,6 +1951,22 @@ __NS._makeUtil_ = function ( aMap ) {
     return __true;
   }
   // END public method /shuffleList/
+
+  // BEGIN public method /trimStrList/
+  trimStrList = ( function () {
+    function mapFn( data ) {
+      return getVarType( data ) === '_String_'
+        ? data[ vMap._trim_ ]() : data;
+    }
+    function mainFn ( arg_list ) {
+      var list = castList( arg_list );
+      if ( ! list ) { return arg_list; }
+      return list[ vMap._map_ ]( mapFn );
+    }
+    return mainFn;
+  }());
+  // END utility /trimStrList/
+
   // == END PUBLIC METHODS ============================================
 
   // BEGIN initialize module
@@ -2082,7 +2098,8 @@ __NS._makeUtil_ = function ( aMap ) {
     _pushUniqListVal_ : pushUniqListVal,
     _rmListVal_       : rmListVal,
     _setStructData_   : setStructData,
-    _shuffleList_     : shuffleList
+    _shuffleList_     : shuffleList,
+    _trimStrList_     : trimStrList
   };
 };
 // == END MODULE __NS._makeUtil_ ======================================

@@ -2607,6 +2607,42 @@ function shuffleList ( test_obj ) {
   test_obj.done();
 }
 
+function trimStrList ( test_obj ) {
+  var
+    assert_table = [
+      [ [ __undef               ],            __undef ],
+      [ [ __null                ],            __null  ],
+      [ [ []                    ],                 [] ],
+      [ [ [1,2,3]               ],            [1,2,3] ],
+      [ [ [3,2,1]               ],            [3,2,1] ],
+      [ [ [' fred',2,1]         ],   [ 'fred', 2, 1 ] ],
+      [ [ [ '  bob  ' ], {},'p' ],           [ 'bob' ]],
+      [ [ [ ' x', 'y ', ' z ' ] ],     [ 'x','y','z' ]],
+      [ [ [ __undef, 0, ' z ' ] ],   [ __undef,0,'z' ]]
+    ],
+
+    assert_count  = assert_table.length,
+    trim_fn       = __util._trimStrList_,
+
+    idx, expect_list, arg_list,
+    expect_data, solve_data, msg_str
+  ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_table[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_data = expect_list[ __1 ];
+    solve_data  = trim_fn.apply( __undef,  arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_data: '
+      + JSON.stringify( solve_data )
+      + '\n expect_data: ' + JSON.stringify( expect_data );
+    test_obj.deepEqual( solve_data, expect_data, msg_str );
+  }
+  test_obj.done();
+}
+
 // ===== UTILB
 function decodeHtml ( test_obj ) {
   var
@@ -3395,6 +3431,7 @@ module.exports = {
   _rmListVal_       : rmListVal,
   _setStructData_   : setStructData,
   _shuffleList_     : shuffleList,
+  _trimStrList_     : trimStrList,
 
   // UtilB
   _decodeHtml_      : decodeHtml,
