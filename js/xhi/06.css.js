@@ -2,7 +2,7 @@
  *    xhi.css.js
  *    Controller for JS-driven CSS using PowerCSS
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,

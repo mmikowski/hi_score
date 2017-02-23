@@ -2,7 +2,7 @@
  *    xhi.lb.js
  *    Litebox manager
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -487,7 +487,7 @@ __NS._makeLb_ = function ( aMap ) {
     }
     css_map.display = cssVmap._block_;
 
-    // Set classses
+    // Set classes
     if ( do_dflt_class )  {
       mod_class_str = aKey + '-_lb_ ' + mod_class_str;
     }

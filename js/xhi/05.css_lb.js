@@ -1,8 +1,8 @@
 /**
  *    xhi.css_lb.js
- *    Litebox manager CSS classes using PowerCSS
+ *    Define Litebox (_lb_) CSS classes for PowerCSS
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -34,7 +34,6 @@ __NS._makeCssLb_ = function ( aMap ) {
             _position_      : '_absolute_',
             _display_       : '_block_',
             _opacity_       : '_0_',
-            _width_         : '_50p_',
             _border_        : [[ '_d25rem_', '_solid_','_area_hover_hex_' ]],
             _border_radius_ : '_d5rem_',
             _box_shadow_    : '_shdw_02_',

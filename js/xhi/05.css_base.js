@@ -1,8 +1,8 @@
 /**
  *    xhi.css_base.js
- *    Base resources for PowerCSS
+ *    Define CSS values (primitives) for PowerCSS
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -10,7 +10,7 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global pcss */
+/*global */
 
 var __ns = 'xhi', __NS;
 /* istanbul ignore next */
@@ -62,54 +62,54 @@ __NS._makeCssBase_ = function ( aMap ) {
         { _palette_name_       : 'BackInBlack',
           // Accent colors complement primary hue but a distinctly different.
           // Use to draw attention to features.
-          _accent_hex_         : '#4e7585',
-          _accent_dk_hex_      : '#527582',
-          _accent_lt_hex_      : '#385966',
+          _accent_hex_        : '#4e7585',
+          _accent_dk_hex_     : '#527582',
+          _accent_lt_hex_     : '#385966',
 
           // Area colors are intended to fill large swaths of area.
           // Generally they are less intense than comparable text colors.
-          _area_hex_           : '#16181a', // default background
-          _area_accent_hex_    : '#22282a', // box background
-          _area_hover_hex_     : '#000000', // full-bright
-          _area_mid_hex_       : '#5d676f',
-          _area_mid_dk_hex_    : '#657685',
-          _area_mid_lt_hex_    : '#474e54',
-          _area_mid_xlt_hex_   : '#393f44',
+          _area_hex_          : '#16181a', // default background
+          _area_accent_hex_   : '#22282a', // box background
+          _area_hover_hex_    : '#000000', // full-bright
+          _area_mid_hex_      : '#5d676f',
+          _area_mid_dk_hex_   : '#657685',
+          _area_mid_lt_hex_   : '#474e54',
+          _area_mid_xlt_hex_  : '#393f44',
 
           // Standard button colors.
-          _btn_area_hex_       : '#6cafff', // === _link_hex_
-          _btn_area_hover_hex_ : '#89c3ff', // === _link_dk_hex_
-          _btn_txt_hex_        : '#16181a', // === _area_hex_
-          _btn_txt_hover_hex_  : '#000000', // === _area_hover_hex_
+          _btn_area_hex_      : '#6cafff', // === _link_hex_
+          _btn_area_hover_hex_: '#89c3ff', // === _link_dk_hex_
+          _btn_txt_hex_       : '#16181a', // === _area_hex_
+          _btn_txt_hover_hex_ : '#000000', // === _area_hover_hex_
 
           // Frame colors are used by the outside frame (header, footer,
           // sidebar) as background colors.
-          _frame_hex_          : '#acb9c3', // header + footer
-          _frame_dk_hex_       : '#cdccd4', // lh menu
-          _frame_lt_hex_       : '#94a5b2', // header + footer hover
-          _frame_xdk_hex_      : '#d8e8f5', // lh menu selected
+          _frame_hex_         : '#acb9c3', // header + footer
+          _frame_dk_hex_      : '#cdccd4', // lh menu
+          _frame_lt_hex_      : '#94a5b2', // header + footer hover
+          _frame_xdk_hex_     : '#d8e8f5', // lh menu selected
 
           // Link colors should be only used on elements which users tap,
           // click, drag, or otherwise interact.
-          _link_hex_           : '#6cafff', // link on both lt and dk bkg
-          _link_lt_hex_        : '#89c3ff', // hover on dk bkg
-          _link_fade_hex_      : '#4b576b', // faded link on color
-          _link_dk_hex_        : '#3e5e96', // hover on lt bkg
+          _link_hex_          : '#6cafff', // link on both lt and dk bkg
+          _link_lt_hex_       : '#89c3ff', // hover on dk bkg
+          _link_fade_hex_     : '#4b576b', // faded link on color
+          _link_dk_hex_       : '#3e5e96', // hover on lt bkg
 
           // The placeholder color is a subdued text color shown in input
           // fields when there is no content.
-          _placeholder_hex_    : '#5d676f', // === _area_mid_hex_
+          _placeholder_hex_   : '#5d676f', // === _area_mid_hex_
 
           // Text colors are generally more saturated and are darker
           // (lighter in inverse scheme) than correlating area colors.
-          _txt_hex_            : '#acb9c3', // document font
-          _txt_alt_hex_        : '#a47330', // altr ~ invert of hex_txt_link
-          _txt_dk_hex_         : '#c3ccd4',
-          _txt_inv_hex_        : '#5b666e',
-          _txt_inv_dk_hex_     : '#77848f',
-          _txt_inv_lt_hex_     : '#3d454a',
-          _txt_lt_hex_         : '#94a5b2',
-          _txt_xlt_hex_        : '#77848f',
+          _txt_hex_           : '#acb9c3', // document font
+          _txt_alt_hex_       : '#a47330', // altr ~ invert of hex_txt_link
+          _txt_dk_hex_        : '#c3ccd4',
+          _txt_inv_hex_       : '#5b666e',
+          _txt_inv_dk_hex_    : '#77848f',
+          _txt_inv_lt_hex_    : '#3d454a',
+          _txt_lt_hex_        : '#94a5b2',
+          _txt_xlt_hex_       : '#77848f',
 
           // The top-left logo image path.
           _logo_url_           : __p('url(app/img/{_p_}-logo-white.png)'),
@@ -172,7 +172,7 @@ __NS._makeCssBase_ = function ( aMap ) {
           }
         },
         { _selector_str_ : '::-webkit-input-placeholder',
-          _rule_map_     : { _color_   : '_placeholder_hex_' }
+          _rule_map_     : { _color_ : '_placeholder_hex_' }
         },
         { _selector_str_ : '::-ms-input-placeholder',
           _rule_map_     : {
@@ -200,7 +200,8 @@ __NS._makeCssBase_ = function ( aMap ) {
           _rule_map_     : {
             _display_       : '_block_',
             _position_      : '_relative_',
-            _margin_        : [['_d75rem_', '_1d5rem_', '_d75rem_', '_1d5rem_']],
+            _margin_        :
+              [['_d75rem_', '_1d5rem_', '_d75rem_', '_1d5rem_']],
             _box_shadow_    : '_shdw_01_',
             _border_        : [[ '_d125rem_', '_solid_', '_link_hex_' ]],
             _outline_       : '_none_',

@@ -2,7 +2,7 @@
  *    xhi.util.js
  *    Utilities which do not require jQuery or a browser
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -59,9 +59,9 @@ __NS._makeUtil_ = function ( aMap ) {
 
     topSmap, topCmap, // State and cfg maps are set in initModule
 
-    getNowMs,     getVarType,  getBasename,
-    getDirname,   logObj,      makeGuidStr,
-    makeTmpltStr, trimStrList
+    checkDateStr, getNowMs,     getVarType,
+    getBasename,  getDirname,   logObj,
+    makeGuidStr,  makeTmpltStr, trimStrList
     ;
   // == END MODULE SCOPE VARIABLES ====================================
 
@@ -391,34 +391,6 @@ __NS._makeUtil_ = function ( aMap ) {
   }
   // END Public prereq method /makeArgList/
 
-  // BEGIN public method /makeMetricStr/
-  function makeMetricStr( arg_num ) {
-    var
-      num     = castNum( arg_num, __0 ),
-      abs_num = vMap._fnGetAbs_( num ),
-      root_num, suffix
-      ;
-
-    if ( abs_num >= 1e+9 ) {
-      root_num = num / 1e+9;
-      suffix   = 'G';
-    }
-    else if ( abs_num >= 1e+6 ) {
-      root_num = num / 1e+6;
-      suffix   = 'M';
-    }
-    else if ( abs_num >= 1e+3 ) {
-      root_num = num / 1e+3;
-      suffix   = 'K';
-    }
-    else {
-      root_num = num;
-      suffix  = __blank;
-    }
-    return root_num.toPrecision( __3 ) + suffix;
-  }
-  // END public method /makeMetricStr/
-
   // BEGIN Public prereq method /makePadNumStr/
   // Summary   : makePadNumStr( <number>, <count> )
   // Purpose   : Pad an int with 0s for <count> digits
@@ -633,6 +605,73 @@ __NS._makeUtil_ = function ( aMap ) {
   // == END UTILITY METHODS ===========================================
 
   // == BEGIN PUBLIC METHODS ==========================================
+  // BEGIN Public method /checkDateStr/
+  // Purpose   : Check validity of a date string
+  // Example   : checkDateStr( '2017-02-29' ); // false
+  //             checkDateStr( '2016-02-29' ); // true  (leap year)
+  // Returns   : boolean
+  // Throws    : none
+  //
+  // This method works only of strings in the formats
+  // yyyy-mm-dd or yyyy/mm/dd and does not validate the time.
+  //
+  //
+  checkDateStr = (function () {
+    var dateRx
+      = /^(\d{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/;
+
+    function mainFn ( arg_date_str ) {
+      var
+        date_str   = castStr( arg_date_str, __blank ),
+        match_list = date_str.match( dateRx ),
+
+        yy_int, mm_int, dd_int, date_obj, check_int
+        ;
+
+      if ( ! match_list ) { return false; }
+
+      yy_int = +match_list[ 1 ] - 1900;
+      mm_int = +match_list[ 2 ] - 1;
+      dd_int = +match_list[ 3 ];
+
+      date_obj = new Date( Date.UTC( yy_int, mm_int, dd_int ));
+      check_int = date_obj.getUTCDate();
+
+      // Invalid dates will not match
+      return check_int === dd_int;
+    }
+    return mainFn;
+  }());
+  // END Public method /checkDateStr/
+
+  // BEGIN public method /makeMetricStr/
+  function makeMetricStr( arg_num ) {
+    var
+      num     = castNum( arg_num, __0 ),
+      abs_num = vMap._fnGetAbs_( num ),
+      root_num, suffix
+      ;
+
+    if ( abs_num >= 1e+9 ) {
+      root_num = num / 1e+9;
+      suffix   = 'G';
+    }
+    else if ( abs_num >= 1e+6 ) {
+      root_num = num / 1e+6;
+      suffix   = 'M';
+    }
+    else if ( abs_num >= 1e+3 ) {
+      root_num = num / 1e+3;
+      suffix   = 'K';
+    }
+    else {
+      root_num = num;
+      suffix  = __blank;
+    }
+    return root_num.toPrecision( __3 ) + suffix;
+  }
+  // END public method /makeMetricStr/
+
   // BEGIN Public method /clearMap/
   function clearMap ( arg_map ) {
     var
@@ -899,6 +938,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // Arguments : ( positional )
   //   0 - int (required) time_ms  UTC time in milliseconds
   //   1 - int (optional) show_idx Precision.
+  //    -1 === show DDd:HHh:MMm:SSs
   //     0 === show HH:MM:SS << default
   //     1 === show HH:MM
   //     2 === show HH
@@ -927,17 +967,30 @@ __NS._makeUtil_ = function ( aMap ) {
       raw_hrs_int = __floor( raw_min_int / hrs_min ),
       hrs_int     = raw_hrs_int % day_hrs,
 
+      day_int     = __floor( raw_hrs_int / day_hrs ),
       mns         = makePadNumStr,
+
       time_list
       ;
 
     time_list = [ mns( hrs_int, __2 ) ];
+
     if ( show_idx < __2 ) {
       time_list[ __push ]( mns( min_int, __2 ) );
     }
     if ( show_idx < __1 ) {
       time_list[ __push ]( mns( sec_int, __2 ) );
     }
+
+    // Special case for '[DDd:]HHh:MMm:SSs' format
+    if ( show_idx === -1 ) {
+      return ( day_int ? day_int + 'd:' : __blank )
+        + time_list[ __0 ] + 'h:'
+        + time_list[ __1 ] + 'm:'
+        + time_list[ __2 ] + 's'
+        ;
+    }
+    // All other formats
     return time_list[ vMap._join_ ](':');
   }
   // END Public method /makeClockStr/
@@ -1269,7 +1322,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //    | }
   // 4. Set the function in the utility
   //    | map_util_obj._setMapFn_( mapUtil_renameFn );
-  // 5. Initialize the result map. You need this pointer.
+  // 5. Initialize the result map.  You need this pointer.
   //    | result_map = {};
   //    | map_util_obj._setResultMap_( result_map );
   // 6. Invoke the map function:
@@ -1373,7 +1426,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // END Public method /makePctStr/
 
   // BEGIN Public method /makeRadioHtml/
-  // Purpose : make an array of checkboxes from a list
+  // Purpose : Make an array of checkboxes from a list
   //
   function makeRadioHtml ( arg_map ) {
     var
@@ -2063,6 +2116,7 @@ __NS._makeUtil_ = function ( aMap ) {
     _makeScrubStr_    : makeScrubStr,
     _makeUcFirstStr_  : makeUcFirstStr,
 
+    _checkDateStr_    : checkDateStr,
     _clearMap_        : clearMap,
     _encodeHtml_      : encodeHtml,
     _getBasename_     : getBasename,

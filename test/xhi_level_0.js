@@ -249,6 +249,47 @@ function castStr ( test_obj ) {
   test_obj.done();
 }
 
+function checkDateStr ( test_obj ) {
+  var
+    assert_table = [
+      // arg_list, expect_data
+      [ [],                         __false ],
+      [ [ __undef ],                __false ],
+      [ [ __null  ],                __false ],
+      [ [ {}  ],                    __false ],
+      [ [ []  ],                    __false ],
+      [ [ 25  ],                    __false ],
+      [ [ 0   ],                    __false ],
+      [ [ new Date() ],             __false ],
+      [ [ '2017-02-29' ],           __false ],
+      [ [ '2016-02-29' ],           __true  ],
+      [ [ '2020-02-29' ],           __true  ],
+      [ [ '2016-12-01' ],           __true  ],
+      [ [ '2016-2-1'   ],           __true  ],
+      [ [ '2016-01-30' ],           __true  ],
+      [ [ '2016-01-40' ],           __false ],
+    ],
+    assert_count = assert_table.length,
+    test_fn      = __util._checkDateStr_,
+
+    msg_str,  idx,      expect_list,
+    arg_list, is_valid, expect_bool
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_table[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_bool = expect_list[ __1 ];
+    is_valid    = test_fn[ vMap._apply_ ]( __undef, arg_list );
+    msg_str = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n is_valid: ' + is_valid
+      + '\n expect_val: ' + expect_bool;
+    test_obj.ok( is_valid === expect_bool, msg_str );
+  }
+  test_obj.done();
+}
+
 function clearMap ( test_obj ) {
   //noinspection JSUnusedGlobalSymbols
   var
@@ -875,7 +916,12 @@ function makeClockStr ( test_obj ) {
       [ [ 1473980001000, 2 ], '22' ],
       [ [ 1474832093000    ], '19:34:53' ],
       [ [ 1474832093000, 1 ], '19:34' ],
-      [ [ 1474832093000, 2 ], '19' ]
+      [ [ 1474832093000, 2 ], '19' ],
+      [ [ 1474832093000, -1], '17069d:19h:34m:53s' ],
+      [ [ 86400000, -1     ], '1d:00h:00m:00s' ],
+      [ [ 97200000, -1     ], '1d:03h:00m:00s' ],
+      [ [ 98700000, -1     ], '1d:03h:25m:00s' ],
+      [ [ 98745000, -1     ], '1d:03h:25m:45s' ]
     ],
 
     assert_count = assert_table.length,
@@ -3379,6 +3425,7 @@ function showSuccess ( test_obj ) {
 // 3. Inspect the output
 // makeReplaceFn( mockTestObj );
 // makeMetricStr( mockTestObj );
+// checkDateStr( mockTestObj );
 
 module.exports = {
   // Util
@@ -3386,6 +3433,7 @@ module.exports = {
   _castInt_         : castInt,
   _castJQ_          : castJQ,
   _castStr_         : castStr,
+  _checkDateStr_    : checkDateStr,
   _clearMap_        : clearMap,
   _cloneData_       : cloneData,
   _encodeHtml_      : encodeHtml,

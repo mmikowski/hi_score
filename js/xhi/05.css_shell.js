@@ -1,8 +1,8 @@
 /**
  *    xhi.css_shell.js
- *    Shell class for JS-driven CSS using PowerCSS
+ *    Define shell (_shell_) CSS classes for PowerCSS
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,

@@ -1,8 +1,8 @@
 /*
  *    xhi.shell.js
- *    Shell module for xhi application
+ *    Application shell module
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
+ *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -43,14 +43,17 @@ __NS._makeShell_ = function ( aMap ) {
     $Map
     ;
   // == END MODULE SCOPE VARIABLES =====================================
+
   // == BEGIN DOM METHODS ==============================================
   // Cache jQuery collections here
   function set$Map ( $top_box ) {
     $Map = { _$top_box_ : $top_box };
   }
   // == END DOM METHODS ================================================
+
   // == BEGIN EVENT HANDLERS ===========================================
   // == END EVENT HANDLERS =============================================
+
   // == BEGIN PUBLIC METHODS ===========================================
   function initModule ( $top_box ) {
 
@@ -77,6 +80,6 @@ __NS._makeShell_ = function ( aMap ) {
   }
 
   aMap._shell_ = { _initModule_ : initModule };
-// == END PUBLIC METHODS =============================================
+  // == END PUBLIC METHODS =============================================
 };
 // == END MODULE __NS._makeShell_ ======================================
