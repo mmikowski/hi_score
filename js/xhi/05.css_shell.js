@@ -265,37 +265,12 @@ __NS._makeCssShell_ = function ( aMap ) {
             _padding_bottom_ : '_d25rem_'
           }
         },
-        { _selector_str_ : __p('.{_p_}-_shell_foot_img_'),
-          _rule_map_     : {
-            _position_   : '_relative_',
-            _height_     : [ '12px' ],
-            _width_      : [ '95px' ],
-            _background_ : [[
-              '_foot_url_', '_no_repeat_', '_center_','_center_'
-            ]],
-            _background_size_ : '_cover_'
-          }
-        },
         { _selector_str_ : __p('.{_p_}-_shell_cont_'),
           _rule_map_ : {
             _margin_     : '_auto_',
             _padding_    : [[ '_5rem_', '_2rem_', '_3rem_', '_5d5rem_' ]],
             _max_width_  : [ '100rem' ],
             _transition_ : '_trans_short_'
-          }
-        },
-        // Keep this padding and max_width in sync with {_p_}-_shell_cont_
-        { _selector_str_ : __p('.{_p_}-_shell_base_'),
-          _rule_map_ : {
-            _z_index_    : [ '35' ],
-            _position_   : '_fixed_',
-            _left_       : '_0_',
-            _right_      : '_0_',
-            _bottom_     : '_0_',
-            _height_     : '_3rem_',
-            _border_top_ : [[ '_d125rem_', '_solid_', '_accent_dk_hex_' ]],
-            _padding_    : [[ '_0_', '_2rem_', '_0_', '_5d5rem_' ]],
-            _background_ : '_area_core_hex_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_shell_cont_head_'),
