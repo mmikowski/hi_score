@@ -96,8 +96,9 @@ __NS._makeCssBase_ = function ( aMap ) {
           // click, drag, or otherwise interact.
           _link_hex_          : '#6cafff', // link on both lt and dk bkg
           _link_lt_hex_       : '#89c3ff', // hover on dk bkg
+          _link_xlt_hex_      : '#a9b3ff', // hover on dk bkg
           _link_fade_hex_     : '#4b576b', // faded link on color
-          _link_dk_hex_       : '#3e5e96', // hover on lt bkg
+          _link_dk_hex_       : '#89c3ff', // hover on lt bkg
 
           // The placeholder color is a subdued text color shown in input
           // fields when there is no content.
