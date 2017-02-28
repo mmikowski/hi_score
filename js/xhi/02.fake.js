@@ -1,6 +1,9 @@
-/**
- *    xhi.fake.js
- *    Fake data for unit tests
+/*
+ *    02.fake.js
+ *
+ *    Use     : xhi._makeFake_( app_map );
+ *    Synopsis: Add mock _data_ capabilities to app_map
+ *    Provides: Shared mock data transfer methods (AJAX, Websockets)
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -43,7 +46,6 @@ __NS._fake_ = function ( aMap ) {
   function fetchExampleMap () {
     __logMsg( '_warn_', '_place_mock_fetch_here_' );
   }
-
   function configModule () {
     __logMsg( '_warn_', '_place_mock_config_here_' );
   }

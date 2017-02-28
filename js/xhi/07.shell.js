@@ -1,6 +1,9 @@
 /*
- *    xhi.shell.js
- *    Application shell module
+ *    07.shell.js
+ *
+ *    Use     : xhi._makeShell_( app_map );
+ *    Synopsis: Add _shell_ capabilities to app_map
+ *    Provides: Page Shell controller
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -55,29 +58,31 @@ __NS._makeShell_ = function ( aMap ) {
   // == END EVENT HANDLERS =============================================
 
   // == BEGIN PUBLIC METHODS ===========================================
+  // BEGIN Public method /initModule/
   function initModule ( $top_box ) {
-
     // Set styles
-    //
     aMap._css_._initModule_();
 
     // Initial DOM content using methods above
     // and then set jQuery colection cache
-    //
     $top_box[ vMap._html_ ]( topCmap._main_tmplt_ );
-
     set$Map( $top_box );
-    __logMsg( '_info_',
-      '__0 === ' + __0,
-      '__1 === ' + __1,
-      '__blank === ' + __blank,
-      'Module cfg map === ', topCmap,
-      'Module state  map === ', topSmap,
-      '$Map:', $Map
+
+    // Report debug values
+    __logMsg( '_info_', $,
+      '\n  __0     === ' + __0,
+      '\n  __1     === ' + __1,
+      '\n  __blank === ' + __blank,
+      '\n  aKey    === ' + aKey,
+      '\n  aMap    === ' + JSON.stringify( aMap ),
+      '\n  topCmap === ' + JSON.stringify( topCmap ),
+      '\n  topSmap === ' + JSON.stringify( topSmap ),
+      '\n  $Map    === ' + JSON.stringify( $Map )
     );
 
     // Bind shell event handlers (taps, drags, long-press, etc)
   }
+  // END Public method /initModule/
 
   aMap._shell_ = { _initModule_ : initModule };
   // == END PUBLIC METHODS =============================================

@@ -1,6 +1,9 @@
-/**
- *    xhi.css_shell.js
- *    Define shell (_shell_) CSS classes for PowerCSS
+/*
+ *    05.css_shell.js
+ *
+ *    Use     : xhi._makeCssShell_( app_map );
+ *    Synopsis: Add _css_shell_ capabilities to app_map
+ *    Provides: CSS symbols for shell (_shell_) used by PowerCSS
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */

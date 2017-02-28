@@ -1,6 +1,9 @@
-/**
- *    xhi.util.js
- *    Utilities which do not require jQuery or a browser
+/*
+ *    01.util.js
+ *
+ *    Use     : xhi._makeUtil_( app_map );
+ *    Synopsis: Add _util_ capabilities to app_map
+ *    Provides: Utilities which do not require jQuery or a browser
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -352,7 +355,7 @@ __NS._makeUtil_ = function ( aMap ) {
   }
   // END Public prereq method /getNumSign/
 
-  // BEGIN private method /getTzDateObj/
+  // BEGIN Private method /getTzDateObj/
   // Returns   : A date object singleton for use by Tz methods
   //
   function getTzDateObj () {
@@ -361,7 +364,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return topSmap._date_obj_;
   }
-  // END private method /getTzDateObj/
+  // END Private method /getTzDateObj/
 
   // BEGIN Public prereq method /makeArgList/
   // Summary   : makeArgList( <arg_obj> )
@@ -937,11 +940,14 @@ __NS._makeUtil_ = function ( aMap ) {
   // Example   : clock_str = makeClockStr( 1465621376000 ); // '05:02:56'
   // Arguments : ( positional )
   //   0 - int (required) time_ms  UTC time in milliseconds
-  //   1 - int (optional) show_idx Precision.
-  //    -1 === show DDd:HHh:MMm:SSs
-  //     0 === show HH:MM:SS << default
-  //     1 === show HH:MM
-  //     2 === show HH
+  //   1 - int (default 3) time_idx Precision
+  //     -3 === [DDd:]HHh:MMm:SSs
+  //     -3 === [DDd:]HHh:MMm
+  //     -1 === [DDd:]HHh
+  //      0 === ''
+  //      1 === HH
+  //      2 === HH:MM
+  //      3 === HH:MM:SS
   // Returns   : String
   // Cautions  :
   //   Remember to use your local timezone offset if you want to
@@ -949,10 +955,12 @@ __NS._makeUtil_ = function ( aMap ) {
   //       tz_offset_ms = aMap._util_._getTzOffsetMs_(),
   //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
-  function makeClockStr ( arg_time_ms, arg_show_idx ) {
+  function makeClockStr ( arg_time_ms, arg_time_idx ) {
     var
       time_ms   = castInt( arg_time_ms,  __0 ),
-      show_idx  = castInt( arg_show_idx, __0 ),
+      time_idx  = castInt( arg_time_idx, __3 ),
+      abs_idx   = vMap._fnGetAbs_( time_idx  ),
+
       sec_ms    = topCmap._sec_ms_,
       min_sec   = topCmap._min_sec_,
       hrs_min   = topCmap._hrs_min_,
@@ -970,27 +978,33 @@ __NS._makeUtil_ = function ( aMap ) {
       day_int     = __floor( raw_hrs_int / day_hrs ),
       mns         = makePadNumStr,
 
-      time_list
+      time_list   = [],
+      scratch_str
       ;
 
-    time_list = [ mns( hrs_int, __2 ) ];
+    if ( abs_idx === 0 || abs_idx > 3 ) { return __blank; }
 
-    if ( show_idx < __2 ) {
-      time_list[ __push ]( mns( min_int, __2 ) );
-    }
-    if ( show_idx < __1 ) {
-      time_list[ __push ]( mns( sec_int, __2 ) );
+    if ( time_idx < __0 && day_int > __0 ) {
+      scratch_str = day_int + 'd';
+      time_list[ __push ]( scratch_str );
     }
 
-    // Special case for '[DDd:]HHh:MMm:SSs' format
-    if ( show_idx === -1 ) {
-      return ( day_int ? day_int + 'd:' : __blank )
-        + time_list[ __0 ] + 'h:'
-        + time_list[ __1 ] + 'm:'
-        + time_list[ __2 ] + 's'
-        ;
+    scratch_str = mns( hrs_int, __2 );
+    if ( time_idx < __0 ) { scratch_str += 'h'; }
+    time_list[ __push ]( scratch_str );
+
+    if ( abs_idx > __1 ) {
+      scratch_str = mns( min_int, __2 );
+      if ( time_idx < __0 ) { scratch_str += 'm'; }
+      time_list[ __push ]( scratch_str );
     }
-    // All other formats
+
+    if ( abs_idx > __2 ) {
+      scratch_str = mns( sec_int, __2 );
+      if ( time_idx < __0 ) { scratch_str += 's'; }
+      time_list[ __push ]( scratch_str );
+    }
+
     return time_list[ vMap._join_ ](':');
   }
   // END Public method /makeClockStr/
@@ -1056,7 +1070,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // Examples:
   // 1. makeDateStr({ _date_obj_ : new Date() });
   //    Returns a string like '2016-09-18'
-  // 2. makeDateStr({ _date_obj_ : new Date(), _do_time_ : true });
+  // 2. makeDateStr({ _date_obj_ : new Date(), _time_idx_ : 3 });
   //    Returns a string like '2016-09-18 12:45:52'
   // 3. makeDateStr({ _date_ms_ : 1474311626050 })
   //    Returns '2016-09-19'
@@ -1068,20 +1082,20 @@ __NS._makeUtil_ = function ( aMap ) {
   //       current date.
   //     If BOTH are provided, _date_ms_ will be used in
   //       preference to date_obj.
-  //   * _do_time_ : (opt) A boolean. Default is false.
+  //   * _time_idx_ (default 0): See _makeClockStr_ to determine
+  //       the clock string format
   //
   function makeDateStr ( arg_map ) {
     var
-      map       = castMap(  arg_map, {} ),
-      do_time   = castBool( map._do_time_, __false ),
-      date_ms   = castInt(  map._date_ms_, __undef ),
-
+      map       = castMap(  arg_map,           {} ),
+      date_ms   = castInt(  map._date_ms_         ),
       date_obj  = castObj( 'Date', map._date_obj_ ),
+      time_idx  = castInt(  map._time_idx_, __0   ),
+
       mns       = makePadNumStr,
 
       yrs_int,   mon_int,   day_int,
-      hrs_int,   min_int,   sec_int,
-      date_list, date_str,  time_list,
+      date_list, date_str,  time_ms,
       time_str
       ;
 
@@ -1104,21 +1118,17 @@ __NS._makeUtil_ = function ( aMap ) {
     date_str = date_list[ vMap._join_ ]('-');
 
     // no time requested
-    if ( ! do_time ) { return date_str; }
+    if ( time_idx === __0 ) { return date_str; }
 
     // time requested
-    hrs_int  = __Num( date_obj.getHours()   );
-    min_int  = __Num( date_obj.getMinutes() );
-    sec_int  = __Num( date_obj.getSeconds() );
+    time_ms = __Num( date_obj.getHours()   ) * topCmap._hrs_ms_
+            + __Num( date_obj.getMinutes() ) * topCmap._min_ms_
+            + __Num( date_obj.getSeconds() ) * topCmap._sec_ms_
+            ;
 
-    time_list = [
-      mns( hrs_int, __2 ),
-      mns( min_int, __2 ),
-      mns( sec_int, __2 )
-    ];
-    time_str = time_list[ vMap._join_ ](':');
+    time_str = makeClockStr( time_ms, time_idx );
 
-    return date_str + ' ' + time_str;
+    return time_str ?  date_str + ' ' + time_str : date_str;
   }
   // END Public method /makeDateStr/
 
@@ -1322,7 +1332,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //    | }
   // 4. Set the function in the utility
   //    | map_util_obj._setMapFn_( mapUtil_renameFn );
-  // 5. Initialize the result map.  You need this pointer.
+  // 5. Initialize the result map. You need this pointer.
   //    | result_map = {};
   //    | map_util_obj._setResultMap_( result_map );
   // 6. Invoke the map function:
@@ -1580,7 +1590,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //        '23:20', '23:30', '23:40', '23:50', '00:00', '00:10',
   //        '00:20', '00:30', '00:40', '00:50', '01:00', '01:10'
   //      ]
-  //      _show_idx_   : 1,
+  //      _time_idx_   : 1,
   //      _unit_count_ : 12,
   //      _unit_ms_    : 600000,
   //      _unit_name_  : '10m',
@@ -1589,7 +1599,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //
   //    _date_list_  = list of dates and position of date labels
   //    _left_ratio_ = starting postion of time stamps
-  //    _show_idx_   = precision of time to show; 0=HH, 1=HH:MM, 2=HH:MM:SS
+  //    _time_idx_   = precision of time to show 0 = '', 1=HH, 2=HH:MM, 3=HH:MM:SS
   //    _time_list_  = list of time labels
   //    _unit_count_ = number of time labels units returned
   //    _unit_ms_    = number of ms in
@@ -1612,7 +1622,7 @@ __NS._makeUtil_ = function ( aMap ) {
       offset_str   = makeClockStr( tz_offset_ms ),
       offset_list  = offset_str[ vMap._split_ ](':'),
 
-      span_ms,         uni_ms_list,  unit_count,
+      span_ms,         unit_ms_list, unit_count,
       btm_idx,         top_idx,      last_btm_idx,
       last_top_idx,    btm_count,    top_count,
       expand_ratio,
@@ -1627,9 +1637,9 @@ __NS._makeUtil_ = function ( aMap ) {
       ;
 
     // Get the time span and a list of available units
-    span_ms     = max_ms - min_ms;
-    uni_ms_list = topCmap._unit_ms_list_;
-    unit_count  = uni_ms_list[ __length ];
+    span_ms      = max_ms - min_ms;
+    unit_ms_list = topCmap._unit_ms_list_;
+    unit_count   = unit_ms_list[ __length ];
 
     // Init for solve loop
     btm_count  = tgt_count;
@@ -1646,7 +1656,7 @@ __NS._makeUtil_ = function ( aMap ) {
         // Calculate ranges
         check_idx   = btm_idx
           + __floor( ( ( top_idx - btm_idx ) / __2 ) + nMap._d5_ );
-        check_map   = uni_ms_list[ check_idx ];
+        check_map   = unit_ms_list[ check_idx ];
         check_count = __floor( ( span_ms / check_map._ms_ ) + nMap._d5_);
         if ( ( top_idx - btm_idx ) === __1 && last_btm_idx !== __undef ) {
           if ( btm_idx === last_btm_idx && top_idx === last_top_idx ) {
@@ -1666,7 +1676,7 @@ __NS._makeUtil_ = function ( aMap ) {
           continue _INTERPOLATE_;
         }
         solve_map = {
-          _show_idx_   : check_map._show_idx_,
+          _time_idx_   : check_map._time_idx_,
           _unit_count_ : check_count,
           _unit_ms_    : check_map._ms_,
           _unit_name_  : check_map._str_
@@ -1719,7 +1729,7 @@ __NS._makeUtil_ = function ( aMap ) {
     solve_time_list = [];
     while ( left_ratio < __1 ) {
       solve_ms  = __floor( left_ratio * span_ms ) + min_ms;
-      solve_str = makeClockStr( solve_ms, solve_map._show_idx_ );
+      solve_str = makeClockStr( solve_ms, solve_map._time_idx_ );
       solve_time_list[ __push ]( solve_str );
       left_ratio += solve_map._unit_ratio_;
     }
@@ -2056,31 +2066,31 @@ __NS._makeUtil_ = function ( aMap ) {
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
       _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
       _unit_ms_list_ : [
-        { _str_ : '0.1s',  _ms_ :      100, _show_idx_ : __0 },
-        { _str_ : '0.25s', _ms_ :      250, _show_idx_ : __0 },
-        { _str_ : '0.5s',  _ms_ :      500, _show_idx_ : __0 },
-        { _str_ : '1s',    _ms_ :     1000, _show_idx_ : __0 },
-        { _str_ : '2.5s',  _ms_ :     2500, _show_idx_ : __0 },
-        { _str_ : '5s',    _ms_ :     5000, _show_idx_ : __0 },
-        { _str_ : '10s',   _ms_ :    10000, _show_idx_ : __0 },
-        { _str_ : '15s',   _ms_ :    15000, _show_idx_ : __0 },
-        { _str_ : '30s',   _ms_ :    30000, _show_idx_ : __0 },
-        { _str_ : '1m',    _ms_ :    60000, _show_idx_ : __1 },
-        { _str_ : '2.5m',  _ms_ :   150000, _show_idx_ : __0 },
-        { _str_ : '5m',    _ms_ :   300000, _show_idx_ : __1 },
-        { _str_ : '10m',   _ms_ :   600000, _show_idx_ : __1 },
-        { _str_ : '15m',   _ms_ :   900000, _show_idx_ : __1 },
-        { _str_ : '30m',   _ms_ :  1800000, _show_idx_ : __1 },
-        { _str_ : '1hr',   _ms_ :  3600000, _show_idx_ : __1 },
-        { _str_ : '2hr',   _ms_ :  7200000, _show_idx_ : __1 },
-        { _str_ : '4hr',   _ms_ : 14400000, _show_idx_ : __1 },
-        { _str_ : '6hr',   _ms_ : 21600000, _show_idx_ : __1 },
-        { _str_ : '8hr',   _ms_ : 28800000, _show_idx_ : __1 },
-        { _str_ : '12hr',  _ms_ : 43200000, _show_idx_ : __2 },
-        { _str_ : '1d',    _ms_ : 86400000, _show_idx_ : __2 },
-        { _str_ : '2d',    _ms_ : 86400000*2, _show_idx_ : __2 },
-        { _str_ : '4d',    _ms_ : 86400000*4, _show_idx_ : __2 },
-        { _str_ : '1wk',   _ms_ : 86400000*7, _show_idx_ : __2 }
+        { _str_ : '0.1s',  _ms_ :        100, _time_idx_ : __3 },
+        { _str_ : '0.25s', _ms_ :        250, _time_idx_ : __3 },
+        { _str_ : '0.5s',  _ms_ :        500, _time_idx_ : __3 },
+        { _str_ : '1s',    _ms_ :       1000, _time_idx_ : __3 },
+        { _str_ : '2.5s',  _ms_ :       2500, _time_idx_ : __3 },
+        { _str_ : '5s',    _ms_ :       5000, _time_idx_ : __3 },
+        { _str_ : '10s',   _ms_ :      10000, _time_idx_ : __3 },
+        { _str_ : '15s',   _ms_ :      15000, _time_idx_ : __3 },
+        { _str_ : '30s',   _ms_ :      30000, _time_idx_ : __3 },
+        { _str_ : '1m',    _ms_ :      60000, _time_idx_ : __2 },
+        { _str_ : '2.5m',  _ms_ :     150000, _time_idx_ : __3 },
+        { _str_ : '5m',    _ms_ :     300000, _time_idx_ : __2 },
+        { _str_ : '10m',   _ms_ :     600000, _time_idx_ : __2 },
+        { _str_ : '15m',   _ms_ :     900000, _time_idx_ : __2 },
+        { _str_ : '30m',   _ms_ :    1800000, _time_idx_ : __2 },
+        { _str_ : '1hr',   _ms_ :    3600000, _time_idx_ : __2 },
+        { _str_ : '2hr',   _ms_ :    7200000, _time_idx_ : __2 },
+        { _str_ : '4hr',   _ms_ :   14400000, _time_idx_ : __2 },
+        { _str_ : '6hr',   _ms_ :   21600000, _time_idx_ : __2 },
+        { _str_ : '8hr',   _ms_ :   28800000, _time_idx_ : __2 },
+        { _str_ : '12hr',  _ms_ :   43200000, _time_idx_ : __1 },
+        { _str_ : '1d',    _ms_ :   86400000, _time_idx_ : __1 },
+        { _str_ : '2d',    _ms_ : 86400000*2, _time_idx_ : __1 },
+        { _str_ : '4d',    _ms_ : 86400000*4, _time_idx_ : __1 },
+        { _str_ : '1wk',   _ms_ : 86400000*7, _time_idx_ : __1 }
       ]
     };
     /* istanbul ignore next */

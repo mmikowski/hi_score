@@ -1,6 +1,9 @@
-/**
- *    xhi.js
- *    Root module for xhi namespace
+/*
+ *    00.js
+ *
+ *    Use     : xhi._makeRoot_( '<namespace>' );
+ *    Synopsis: Create an app_map using named <namespace>
+ *    Provides: An application map containing shared symbols
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */

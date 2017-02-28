@@ -1,6 +1,9 @@
-/**
- *    xhi.utilb.js
- *    Utilities which require a browser and jQuery ($)
+/*
+ *    04.utilb.js
+ *
+ *    Use     : xhi._makeUtilb_( app_map );
+ *    Synopsis: Add _utilb_ capabilities to app_map
+ *    Provides: Browser utilities, requires jQuery
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -230,7 +233,6 @@ __NS._makeUtilb_ = function ( aMap ) {
     return onBuf;
   }());
   // END Public method /onBufferReady/
-
 
   // BEGIN Public method /resizeTextarea/
   // Summary   : is_done = resizeTextarea( $textarea, 800 );

@@ -1,6 +1,9 @@
-/**
- *    xhi.model.js
- *    Root model module, placeholder.
+/*
+ *    03.model.js
+ *
+ *    Use     : xhi._makeModel_( app_map );
+ *    Synopsis: Add _model_ capabilities to app_map
+ *    Provides: Business logic methods
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -42,20 +45,26 @@ __NS._makeModel_ = function ( aMap ) {
   // == BEGIN UTILITY METHODS ==========================================
   // == END UTILITY METHODS ============================================
 
+  // == BEGIN PRIVATE METHODS ==========================================
+  // == END PRIVATE METHODS ============================================
+
   // == BEGIN EVENT HANDLERS ===========================================
   // == END EVENT HANDLERS =============================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  function initModule ( $top_box ) {
-    // Initialize DOM content
-    __logMsg( '_info_', aKey, $,
-      '__0 === ' + __0,
-      '__1 === ' + __1,
-      '__blank === ' + __blank,
-      'Module cfg map === ', topCmap,
-      'Module state  map === ', topSmap
+  // BEGIN Public method /initModule/
+  function initModule () {
+    __logMsg( '_info_', $,
+      '\n  __0     === ' + __0,
+      '\n  __1     === ' + __1,
+      '\n  __blank === ' + __blank,
+      '\n  aKey    === ' + aKey,
+      '\n  aMap    === ' + JSON.stringify( aMap ),
+      '\n  topCmap === ' + JSON.stringify( topCmap ),
+      '\n  topSmap === ' + JSON.stringify( topSmap )
     );
   }
+  // END Public method /initModule/
 
   aMap._model_ = { _initModule_ : initModule };
   // == END PUBLIC METHODS =============================================

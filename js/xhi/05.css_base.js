@@ -1,6 +1,9 @@
-/**
- *    xhi.css_base.js
- *    Define CSS values (primitives) for PowerCSS
+/*
+ *    05.css_base.js
+ *
+ *    Use     : xhi._makeCssBase_( app_map );
+ *    Synopsis: Add _css_base_ capabilities to app_map
+ *    Provides: Shared CSS symbols used by PowerCSS
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */

@@ -1,6 +1,10 @@
-/**
+/*
  *    xhi.module-tmplt.js
- *    Feature module template
+ *
+ *    Use: $ cp xhi.module-tmplt.js 07.<newfeature>.js
+ *    Synopsis: Feature module template
+ *    Provides: A template that embodies best practice
+ *
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -22,6 +26,7 @@ __NS._makeTmplt_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
+    aKey     = aMap._aKey_,
     vMap     = aMap._vMap_,
     nMap     = aMap._nMap_,
     __util   = aMap._util_,
@@ -44,7 +49,7 @@ __NS._makeTmplt_ = function ( aMap ) {
   // == END UTILITY METHODS ============================================
 
   // == BEGIN DOM METHODS ==============================================
-  // BEGIN DOM Method /set$Map/
+  // BEGIN DOM method /set$Map/
   // Summary   : set$Map( <jquery_obj> );
   // Purpose   : Set the module jQuery cache
   // Example   : set$Map( $top_box );
@@ -57,27 +62,30 @@ __NS._makeTmplt_ = function ( aMap ) {
   function set$Map ( $top_box ) {
     $Map = { _$top_box_ : $top_box };
   }
+  // END DOM method /set$Map/
   // == END DOM METHODS ================================================
 
   // == BEGIN EVENT HANDLERS ===========================================
   // == END EVENT HANDLERS =============================================
 
   // == BEGIN PUBLIC METHODS ===========================================
+  // BEGIN Public method /initModule/
   function initModule ( $top_box ) {
-
-    // Initial DOM content using methods above
-    // and then set jQuery colection cache
-    //
+    // Initial DOM content and set jQuery collection cache
     set$Map( $top_box );
+
     __logMsg( '_info_', $,
-      '__0 === ' + __0,
-      '__1 === ' + __1,
-      '__blank === ' + __blank,
-      'Module cfg map === ', topCmap,
-      'Module state  map === ', topSmap,
-      '$Map:', $Map
+      '\n  __0     === ' + __0,
+      '\n  __1     === ' + __1,
+      '\n  __blank === ' + __blank,
+      '\n  aKey    === ' + aKey,
+      '\n  aMap    === ' + JSON.stringify( aMap ),
+      '\n  topCmap === ' + JSON.stringify( topCmap ),
+      '\n  topSmap === ' + JSON.stringify( topSmap ),
+      '\n  $Map    === ' + JSON.stringify( $Map )
     );
   }
+  // END Public method /initModule/
 
   aMap._makeTmplt_ = { _initModule_ : initModule };
   // == END PUBLIC METHODS =============================================

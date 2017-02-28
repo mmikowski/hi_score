@@ -1,6 +1,9 @@
-/**
- *    xhi.lb.js
- *    Litebox manager
+/*
+ *    06.lb.js
+ *
+ *    Use     : xhi._makeLb_( app_map );
+ *    Synopsis: Add _lb_ capabilities to app_map
+ *    Provides: Lightbox feature module
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */

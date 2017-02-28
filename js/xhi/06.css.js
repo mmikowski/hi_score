@@ -1,6 +1,9 @@
-/**
- *    xhi.css.js
- *    Controller for JS-driven CSS using PowerCSS
+/*
+ *    06.css.js
+ *
+ *    Use     : xhi._makeCss_( app_map );
+ *    Synopsis: Add _css_ capabilities to app_map
+ *    Provides: Run-time CSS styling using PowerCSS
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */

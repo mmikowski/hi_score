@@ -1,4 +1,4 @@
-/**
+/*
  *    xhi-ws-context.js
  *    This file is used by WebStorm to resolve properties
  *    key received from external sources such as AJAX.
@@ -56,6 +56,5 @@
     _layout_key_     : str,
     _autoclose_ms_   : int,
     _position_map_   : map,
-
   };
 }());

@@ -1,6 +1,9 @@
-/**
- *    xhi.css_lb.js
- *    Define Litebox (_lb_) CSS classes for PowerCSS
+/*
+ *    05.css_lb.js
+ *
+ *    Use     : xhi._makeCssLb_( app_map );
+ *    Synopsis: Add _css_lb_ capabilities to app_map
+ *    Provides: CSS symbols for litebox (_lb_) used by PowerCSS
  *
  *    @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
