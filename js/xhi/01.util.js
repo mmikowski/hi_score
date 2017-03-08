@@ -620,22 +620,35 @@ __NS._makeUtil_ = function ( aMap ) {
   //
   //
   checkDateStr = (function () {
-    var dateRx
-      = /^(\d{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/;
+    var
+      dateUsRx
+      = /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]([0-9]{4})\b/,
+      dateUtcRx
+        = /^([0-9]{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/
+      ;
 
-    function mainFn ( arg_date_str ) {
+    function mainFn ( arg_map ) {
       var
-        date_str   = castStr( arg_date_str, __blank ),
-        match_list = date_str.match( dateRx ),
-
-        yy_int, mm_int, dd_int, date_obj, check_int
+        map        = castMap( arg_map, {} ),
+        date_str   = castStr( map._date_str_,  __blank ),
+        order_str  = castStr( map._order_str_, __blank ),
+        match_list, yy_int, mm_int, dd_int, date_obj, check_int
         ;
 
-      if ( ! match_list ) { return false; }
-
-      yy_int = +match_list[ 1 ] - 1900;
-      mm_int = +match_list[ 2 ] - 1;
-      dd_int = +match_list[ 3 ];
+      if ( order_str === '_us_') {
+        match_list = date_str.match( dateUsRx );
+        if ( ! match_list ) { return __false; }
+        yy_int = +match_list[ 3 ] - 1900;
+        mm_int = +match_list[ 1 ] - 1;
+        dd_int = +match_list[ 2 ];
+      }
+      else {
+        match_list = date_str.match( dateUtcRx );
+        if ( ! match_list ) { return __false; }
+        yy_int = +match_list[ 1 ] - 1900;
+        mm_int = +match_list[ 2 ] - 1;
+        dd_int = +match_list[ 3 ];
+      }
 
       date_obj = new Date( Date.UTC( yy_int, mm_int, dd_int ));
       check_int = date_obj.getUTCDate();
@@ -1084,6 +1097,8 @@ __NS._makeUtil_ = function ( aMap ) {
   //       preference to date_obj.
   //   * _time_idx_ (default 0): See _makeClockStr_ to determine
   //       the clock string format
+  //   * _order_str_ (default ''):
+  //       Request '_us_' results in stupid-format: mm/dd/yyyy hh:mm:ss.
   //
   function makeDateStr ( arg_map ) {
     var
@@ -1091,6 +1106,7 @@ __NS._makeUtil_ = function ( aMap ) {
       date_ms   = castInt(  map._date_ms_         ),
       date_obj  = castObj( 'Date', map._date_obj_ ),
       time_idx  = castInt(  map._time_idx_, __0   ),
+      order_str = castStr(  map._order_str_, __blank ),
 
       mns       = makePadNumStr,
 
@@ -1110,12 +1126,22 @@ __NS._makeUtil_ = function ( aMap ) {
     mon_int = __Num( date_obj.getMonth() ) + __1;
     day_int = __Num( date_obj.getDate()  );
 
+    if ( order_str === '_us_' ) {
+      date_list = [
+        mns( mon_int, __2 ),
+        mns( day_int, __2 ),
+        mns( yrs_int, __4 )
+      ];
+      date_str = date_list[ vMap._join_ ]('/');
+    }
+    else {
     date_list = [
       mns( yrs_int, __4 ),
       mns( mon_int, __2 ),
       mns( day_int, __2 )
     ];
     date_str = date_list[ vMap._join_ ]('-');
+    }
 
     // no time requested
     if ( time_idx === __0 ) { return date_str; }
@@ -1718,7 +1744,7 @@ __NS._makeUtil_ = function ( aMap ) {
         width_ratio = width_ratio + ( __1 - accum_ratio );
       }
       solve_date_list[ __push ]({
-        _date_str_    : makeDateStr({ _date_ms_ : date_ms }),
+        _date_str_    : makeDateStr({ _date_ms_ : date_ms, _order_str_ : '_us_' }),
         _width_ratio_ : width_ratio
       });
       date_offset = __0;
