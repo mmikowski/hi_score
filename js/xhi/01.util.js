@@ -1135,12 +1135,12 @@ __NS._makeUtil_ = function ( aMap ) {
       date_str = date_list[ vMap._join_ ]('/');
     }
     else {
-    date_list = [
-      mns( yrs_int, __4 ),
-      mns( mon_int, __2 ),
-      mns( day_int, __2 )
-    ];
-    date_str = date_list[ vMap._join_ ]('-');
+      date_list = [
+        mns( yrs_int, __4 ),
+        mns( mon_int, __2 ),
+        mns( day_int, __2 )
+      ];
+      date_str = date_list[ vMap._join_ ]('-');
     }
 
     // no time requested

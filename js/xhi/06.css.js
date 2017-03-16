@@ -33,7 +33,6 @@ __NS._makeCss_ = function ( aMap ) {
     __0      = nMap._0_,
     __false  = vMap._false_,
     __true   = vMap._true_,
-    __undef  = vMap._undef_,
     __Number = vMap._Number_,
     __logObj = __util._getLogObj_(),
     __logMsg = __logObj._logMsg_,
@@ -71,30 +70,36 @@ __NS._makeCss_ = function ( aMap ) {
   // BEGIN public method /setThemeIdx/
   function setThemeIdx( arg_idx ) {
     var
+      idx            = __util._castInt_( arg_idx, 0 ),
       theme_map_list = aMap._css_base_._themeMapList_,
       theme_idx      = topSmap._theme_idx_,
       theme_count    = theme_map_list[ vMap._length_ ],
-      idx            = Number( arg_idx ),
       theme_mixin_map;
 
-    if ( idx === __undef ) { idx = __0; }
-    if ( idx === theme_idx || idx > theme_count || idx < __0) { return; }
+    // Return current theme index if request is out of range
+    // or matches existing.
+    if ( idx === theme_idx || idx > theme_count || idx < __0 ) {
+      return theme_idx;
+    }
 
+    // Get the mixin map for the requested idx.  If no map exists,
+    // use the first theme map (0).
     theme_idx = idx;
     theme_mixin_map = theme_map_list[ theme_idx ];
-
     if ( ! theme_mixin_map ) {
       theme_idx       = __0;
       theme_mixin_map = theme_map_list[ __0 ] || {};
     }
-    topSmap._theme_idx_ = theme_idx;
 
+    // Set the cascade and safe state. Return current them index.
     pcss._setCascade_({
       _cascade_id_     : '_c01_',
       _mode_str_       : '_change_',
       _mixin_map_      : theme_mixin_map,
       _regen_type_     : '_use_'
     });
+    topSmap._theme_idx_ = theme_idx;
+    return theme_idx;
   }
   // END public method /setThemeIdx/
 

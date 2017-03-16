@@ -1,6 +1,6 @@
 {
   "name": "hi_score",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Get off the framework-of-the-month treadmill and take control of your SPA. Hi_Score assembles best-in-class libraries in a feature-module architecture as detailed in 'Single Page Web Applicaitons, JavaScript end-to-end'",
   "keywords": [
     "spa",
@@ -32,7 +32,7 @@
   "homepage": "https://github.com/mmikowski/hi_score",
   "dependencies": {},
   "devDependencies": {
-    "coveralls": "2.11.15",
+    "coveralls": "2.11.16",
     "font-awesome": "4.7.0",
     "istanbul": "0.4.5",
     "jquery": "3.1.1",
