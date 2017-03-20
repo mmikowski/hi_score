@@ -71,7 +71,7 @@ __NS._makeTmplt_ = function ( aMap ) {
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModule/
   function initModule ( $top_box ) {
-    // Initial DOM content and set jQuery collection cache
+    // Initialize DOM content and set jQuery collection cache
     set$Map( $top_box );
 
     __logMsg( '_info_', $,

@@ -8,7 +8,7 @@ as found in [Single Page Web Applications - JavaScript end-to-end][_00].
 ```bash
 $ git clone git@github.com:mmikowski/hi_score.git
 $ cd hi_score
-$ npm install && npm run prep-libs
+$ npm install && npm run setup
 ```
 
 ## Hello World Example
@@ -70,12 +70,12 @@ Provide an SPA starter project that installs best-in-class assets and tools to
 save time and guide best code practices.
 
 ## Key attributes
-- Download and management of best-in-class JS libs and fonts [npm run prep-libs]
-- A commit hook which checks for whitespace, JSLint, and tests [npm run prep-libs]
+- Download and management of best-in-class JS libs and fonts [npm run setup]
+- A commit hook which checks for whitespace, JSLint, and tests [npm run setup]
 - Regression tests (1270+ assertions) [npm run test]
 - Code coverage reports (currently 98.9%) [npm run cover]
 - Integration to Coveralls [npm run covera]
-- Compressed, deployment-ready code in seconds [npm run buildify]
+- Compressed, deployment-ready code in seconds [npm run build]
 - Automatic processing of markdown files to browsable HTML (README.md ->
   index.html)
 
@@ -186,7 +186,7 @@ Install **hi\_score** dependencies and then copy vendor libraries.
   home$ git clone git@github.com:mmikowski/hi_score.git
   home$ cd hi_score
   hi_score$ npm install
-  hi_score$ npm run prep-libs
+  hi_score$ npm run setup
 ```
 
 One can also use `npm install hi_score` but the git method is preferred.
@@ -234,7 +234,7 @@ sites for over 5 years and is currently used on some very high-volume sites
 (100m views per day). We continue to improve feedback and usability.
 
 ```bash
-  hi_score$ npm run buildify
+  hi_score$ npm run build
   hi_score$ cd build/dist
   dist$ google-chrome ex01.html ex02.html
 ```
@@ -246,7 +246,7 @@ approach when building a suite of web applications.
 ### Update
 One may update all the npm libraries, npm assets, and the `package.json` file
 with `npm update -D`. If we want these changes to propagate, we must run
-`npm run prep-libs` again to update the vendor libraries, and update the
+`npm run setup` again to update the vendor libraries, and update the
 `index.html` file to point to the updated versions. We expect to automate
 the last step in future updates.
 
@@ -279,7 +279,7 @@ whereas the Example 2 tab uses `ex02-`.
 ## Vendor assets
 All vendor assets are listed in the `devDependencies` map in the
 `package.json` file. If you want to add a vendor asset, the best method is to
-add the npm package there and then update the `bin/prep-libs` script
+add the npm package there and then update the `bin/setup` script
 to copy the asset to the correct directory: `js/vendor/`,
 `css/vendor`, `font/vendor`, or `img/vendor`.
 
@@ -410,14 +410,25 @@ MIT
 - (x) Number code library level
 
 ### Version 0.8.x
-- Work on build system
-- Unify shell scripts nomenclature
-- Add constructor where only selected components are added
-- Add dependency graph for above
+- (x) Work on build system
+- (x) Unify shell scripts nomenclature
+- (x) Add constructor where only selected components are added
+- (x) Add dependency levels for xhi libs
 
 ### Version 0.9.x
-- Add distribution build system `npm run buildify`
-- Add utilities and tests
+- (x) Add distribution build system `npm run buildify`
+- (x) Add utilities and tests
+
+### Version 1.0.x
+- (x) Initial feature complete
+- (x) Add utils and tests
+
+### Version 1.1.x
+- (x) Rename `npm run prep-libs` to `npm run setup`
+- (x) Rename `npm run buildify` to `npm run build`
+- (x) Update libs, add express
+- (i) Add utils and tests
+- (p) Increase complexity of example applications
 
 ## Similar Projects
 [absurd.js][_26], [responsive.js][_27]

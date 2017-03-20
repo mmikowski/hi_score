@@ -151,7 +151,7 @@ set -u;
     cp "${_mod_dir}/jquery/dist/jquery.js" "jquery-${vrs}.js";
 
     vrs=$(_get_version_fn jquery.event.dragscroll);
-    cp "${_mod_dir}/jquery.event.dragscroll/jquery.event.dragscroll.js" \
+    cp "${_mod_dir}/jquery.event.dragscroll/dist/jquery.event.dragscroll.js" \
       "jquery.event.dragscroll-${vrs}.js";
 
     vrs=$(_get_version_fn jquery.event.gevent);
