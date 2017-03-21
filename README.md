@@ -138,7 +138,7 @@ sympathy.
 ## Development environment
 ### Ubuntu 16.10
 Everything should just work on Ubuntu 16.10 as that is the development OS
-for **hi\_score**. There are a few prerequisites that many developers may 
+for **hi\_score**. There are a few prerequisites that many developers may
 already have installed:
 
 ```bash
@@ -163,20 +163,19 @@ This is probably the best way to get familiar with the code if you are not
 already running Linux.
 
 ### Mac
-We recommend using a virtual machine if possible. However we should
-be able to develop natively on Mac. At the very least we'll need Bash 4+
-and GNU Core utilities installed// along with NodeJS, Git,
-PanDoc, and SSH. This [guide][_08] should help with installation of
-the GNU Core utilities.
+We recommend using a virtual machine if possible. However one should
+be able to develop natively on Mac. At the very least one will need Bash 4+,
+[GNU Core utilities][_08],  NodeJS, Git, PanDoc, and SSH.
 
 ### Windows
-We recommend using a virtual machine as detailed below. Installation
-*may* work with the new Linux subsystemw on Windows 10 but we wouldn't
-bet on it.
+We recommend using a virtual machine as detailed above. Installation
+*might* work with the new Linux subsystem on Windows 10 but we don't
+have any experience with it.
 
-### Updates
-If you have set the code on a platform other than Ubuntu 16.10 we would
-appreciate your help documenting it for the benefit of others.
+### Contribute
+If you have installed the code on a platform other than Ubuntu 16.10
+we would appreciate a write up so we can add to this document for the
+benefit of others.
 
 ## Development
 ### Install
@@ -220,7 +219,7 @@ this document.
 
 ### Update coveralls (optional)
 If you create a new fork you may send a coveralls report as shown in the [master
- branch site][_09]. The process to set up coveralls is described in 
+ branch site][_09]. The process to set up coveralls is described in
 `hi_score/COVERALLS.md`.
 
 ```bash
@@ -338,8 +337,8 @@ which makes further optimizations by pruning code easier. On larger code
 projects with many object properities **Superpack** has been
 shown to reduce minimized code by an additional 50%.
 
-Reducing a dozen or so HTTP requests to one for a single, highly compressed 
-JS file can reduce load time to 10% of prior values.  The table below shows 
+Reducing a dozen or so HTTP requests to one for a single, highly compressed
+JS file can reduce load time to 10% of prior values.  The table below shows
 some of the results:
 
 | Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
@@ -353,7 +352,7 @@ some of the results:
 | Local ms    |     231 (100.0%) |     166 ( 71.2%) |     144 ( 62.3%) |
 | Deploy Size |           121 MB |    8 MB (  6.6%) |    8 MB (  6.5%) |
 
-The load time measurements were made using a local HTTP server which is almost 
+The load time measurements were made using a local HTTP server which is almost
 certainly a best-case scenario. We hope to add results for a remote server soon.
 
 ## Contribute!
