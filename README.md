@@ -282,29 +282,67 @@ add the npm package there and then update the `bin/setup` script
 to copy the asset to the correct directory: `js/vendor/`,
 `css/vendor`, `font/vendor`, or `img/vendor`.
 
+    "font-awesome"            : "4.7.0",
+    "jquery"                  : "3.2.0",
+    "jquery.event.dragscroll" : "1.0.0",
+    "jquery.event.gevent"     : "1.1.6",
+    "jquery.event.ue"         : "1.3.2",
+    "jquery.scrolli"          : "1.0.1",
+    "jquery.urianchor"        : "1.3.5",
+    "open-sans-fontface"      : "1.4.0",
+    "powercss"                : "1.3.5",
+    "taffydb"                 : "2.7.3",
+
+    "clusterjs"               : "0.7.1",
+    "express"                 : "4.15.2",
+    "mongodb"                 : "2.2.25",
+    "mysql2"                  : "1.2.0",
+    "websocket"               : "1.0.22",
+
+    "coveralls"               : "2.12.0",
+    "istanbul"                : "0.4.5",
+    "jsdom"                   : "9.12.0",
+    "jslint"                  : "0.10.3",
+    "node-inspector"          : "0.12.10",
+    "nodeunit"                : "0.11.0",
+    "uglifycss"               : "0.0.25",
+    "uglifyjs"                : "2.4.10"
+
 ### JavaScript
-Client libraries are copied to the `js/vendor` directory with their
-version number appended to their names. These include:
+Client libraries are copied to `js/vendor` directories with their
+version number appended to their names.  This makes them
+available via the web server.  These include:
+- [Font Awesome][_30]: Icon fonts
+- [jQuery][_10]: DOM manipulation
+- [PowerCSS][_11]: JS-powered CSS
+- [jQuery Plugin: event.dragscroll][_12]: Inertia scroll
+- [jQuery Plugin: event.gevent][_13]: Global events
+- [jQuery Plugin: event.ue][_14]: Touch and desktop gestures
+- [jQuery Plugin: scrolli][_15]: Scroll indicators
+- [jQuery Plugin: urianchor][_16]: SPA routing
+- [Open Sans][_31]: OSS Font face
+- [SprintF][_32]: Sprintf library
+- [TaffyDB][_17]: Client data management
 
-- [jQuery][_10] DOM manipulation
-- [PowerCSS][_11] JS-powered CSS
-- [jQuery Plugin: event.dragscroll][_12] Inertia scroll
-- [jQuery Plugin: event.gevent][_13] Global events
-- [jQuery Plugin: event.ue][_14] Touch and desktop gestures
-- [jQuery Plugin: scrolli][_15] Scroll indicators
-- [jQuery Plugin: urianchor][_16] SPA routing
-- [TaffyDB][_17]
+Libraries used for the node server:
 
-Libraries used for development and testing are not copied:
+- [clusterjs][_34]: Server multiplexer
+- [express][_36]: Minimalist Sinatra HTTP server
+- [mongodb][_34]: Official mongodb node client
+- [mysql2][_35]: Faster mysql interface
+- [websocket][_37]: Websockets interface
 
-- [coveralls][_18] Code coverage reporting
-- [istanbul][_19] Code coverage
-- [jsdom][_20] DOM mock for testing
-- [jslint][_21] Linting for commit hook
-- [nodeunit][_22] Unit testing
-- [node-inspector][_23] Debugging
-- [uglifycss][_24] Minification
-- [uglifyjs][_25] Minification
+Libraries used for development and build include:
+
+- [coveralls][_18]: Code coverage reporting
+- [istanbul][_19]: Code coverage
+- [jsdom][_20]: DOM mock for testing
+- [jslint][_21]: Linting for commit hook
+- [nodeunit][_22]: Unit testing
+- [node-inspector][_23]: Debugging
+- [uglifycss][_24]: CSS minification
+- [uglifyjs][_25]: JS minitifcation
+- buildify + superpack: Build system
 
 ### CSS
 CSS libraries are copied to the `css/vendor` directory with their
@@ -317,11 +355,10 @@ version number appended to their names. We currently include
 the open-sans-webfont and Font Awesome files.
 
 ## Distribution
-This is where it all comes
-together.  Everything you do not want to distribute to the public is removed
-from the distribution, which is further compressed and minified.  The result
-is an application that can easily load 10x faster and take only 5-10% of the
-space of the code.
+This is where it all comes together. The build system removes everything from
+the distribution except for the essentails.  It also compresses, obsufucates, 
+and superpacks. The result can load up to 10x faster and typically consumes 
+only 5-10% of the disk space of the development code.
 
 The results of a build are found in `build/dist`. Take a look at how few files
 and little disk space is used in our distribution:
@@ -464,3 +501,10 @@ MIT
 [_27]:http://www.responsivejs.com/
 [_28]:https://github.com/mmikowski/hi_score
 [_29]:https://github.com/mmikowski/hi_score/issues
+[_30]:https://www.npmjs.com/package/font-awesome
+[_31]:https://www.npmjs.com/package/open-sans-fontface
+[_32]:https://www.npmjs.com/package/sprintf-js
+[_33]:https://www.npmjs.com/package/mysql2
+[_34]:https://www.npmjs.com/package/mongodb
+[_35]:https://www.npmjs.com/package/clusterjs
+[_36]:https://www.npmjs.com/package/express
