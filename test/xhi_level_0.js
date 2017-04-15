@@ -1035,6 +1035,8 @@ function makeCommaNumStr ( test_obj ) {
 }
 
 function makeDateStr ( test_obj ) {
+  // TODO 2017-04-14 crit - this test is not tz adjusted.
+  // The test computer must be set to tz America/Los_Angeles to pass.
   var
     date_obj     = new Date(),
     assert_table  = [
@@ -1932,6 +1934,8 @@ function makeSeenMap ( test_obj ) {
 }
 
 function makeSeriesMap ( test_obj ) {
+  // TODO 2017-04-14 crit - this test is not tz adjusted.
+  // The test computer must be set to tz America/Los_Angeles to pass.
   var
     start_ms = 1465452840000,
     delta_list = [
