@@ -1,8 +1,50 @@
-# hi\_score
+![hi_score][_0A]
 [![Coverage Status](https://coveralls.io/repos/github/mmikowski/hi_score/badge.svg?branch=master)](https://coveralls.io/github/mmikowski/hi_score?branch=master)
 
-An SPA template using best-in-class libraries, assets, and architecture
-as found in [Single Page Web Applications - JavaScript end-to-end][_00].
+*A modern full-life-cycle starter project for SPAs*
+
+## Overview
+This is an SPA starter project that installs best-in-class assets and tools
+to save time and guide best code practices.  Install **`hi_score`** today and
+start writing Test-driven native JS client code immediately. The project comes with 
+recommended libraries, but feel free to swap our your own. That's the point.
+
+**hi\_score** provides an ever improving set of best-in-class libraries
+that we manage instead of having a [framework that controls us][_01]. We thought of
+calling it `loscore` or `under-dash` but decided to aim higher.
+
+# Features
+**`hi_score`** can really jump-start web client development.  With lots of
+hard stuff resolved out-of-the-box, we can focus on improving things that really
+matter, like the JavaScript, HTML, CSS and architecture we need for our application.
+
+After installation, **`hi_score`** provides many highly desirable capabilities
+that can be otherwise very difficult to orchestrate:
+
+- Fractal MVC architecture and proven file structure [see diagram below]
+- Vendor library management [npm install && npm run setup]
+  including auto-patch hooks
+- Vendor font management [npm install && npm run setup]
+- Code written to exacting [standards][05] to ensure readability and
+  modularity
+- Full code standard and quick-reference guides [`docs/`]
+- Automatic namespacing and run-time control of CSS using [PowerCSS][06]
+- Automatic linting [JSLint, whitespace check, strict check]
+- Automatic in-line browsable HTML documentation [markdown + pandoc]
+- TDD and regression tests [nodeunit + JSDOM]
+- Commit-hook which ensures tests and linting pass before check-in [`git-hook\_pre-commit`]
+- Type safety with type-cast utilities [`js/xhi`]
+- Code coverage currently at 98.9% [Istanbul]
+- Code coverage reporting to coveralls.io (Coveralls)
+- Build system manifest (Buildify)
+- Build system compression *including* property keys [auto-patched UglifyJS + SuperPack]
+- Distribution-ready code
+- Two simple demo applications that show compression and namespacing [`npm run
+  build`]
+
+Install **`hi_score`** today and start writing TDD driven client code
+immediately. The project comes with recommended libraries, but feel free to
+swap our your own (but read the [docs][10] on how to do this). That's the point.
 
 ## Quick install
 ```bash
@@ -10,76 +52,6 @@ $ git clone git@github.com:mmikowski/hi_score.git
 $ cd hi_score
 $ npm install && npm run setup
 ```
-
-## Hello World Example
-
-```html
-  <!doctype html>
-  <html>
-    <head>
-      <script src="js/vendor/jquery-3.1.1.js"></script>
-      <script src="js/vendor/pcss-1.3.5.js"></script>
-      <script src="js/vendor/pcss.cfg-1.3.5.js"></script>
-      <script src="js/vendor/jquery.event.gevent-1.1.6.js"></script>
-      <script src="js/vendor/jquery.event.ue-1.3.2.js"></script>
-
-      <script src="js/xhi/00.js"></script>
-      <script src="js/xhi/01.util.js"></script>
-      <script src="js/xhi/02.data.js"></script>
-      <script src="js/xhi/03.model.js"></script>
-      <script src="js/xhi/04.utilb.js"></script>
-      <script src="js/xhi/05.css_base.js"></script>
-      <script src="js/xhi/05.css_lb.js"></script>
-      <script src="js/xhi/05.css_shell.js"></script>
-      <script src="js/xhi/06.css.js"></script>
-      <script src="js/xhi/06.lb.js"></script>
-      <script src="js/xhi/07.shell.js"></script>
-      <script src="js/xhi/08.app.js"></script>
-
-      <script>
-      $(function () {
-        xhi._makeApp_( 'ex01' );
-
-        ex01._shell_._initModule_( $('body') );
-        ex01._lb_._showLb_({
-          _title_html_   : 'Hello World',
-          _content_html_ : '<p>Grab the title bar to drag.</p>'
-        });
-      });
-      </script>
-    </head>
-    <body></body>
-  </html>
-```
-
-## Overview
-There it is again. The new *hot* SPA framework that makes our current
-one obsolete. Now we have to unlearn everything from the old and reinvest
-in the new *hotness*. Some of us have spent far more time learning
-intricate framework DSLs than the JavaScript we need. Are we ready to get
-off that treadmill?
-
-[Do we really want an SPA framework?][_01] If not, then **hi\_score**
-is here to help. We provide an ever improving set of
-best-in-class libraries that we manage instead of having a framework
-that controls us. We thought of calling it `low-score` or `under-dash`
-but decided to aim higher.
-
-## The Goal
-Provide an SPA starter project that installs best-in-class assets and tools to
-save time and guide best code practices.
-
-## Key attributes
-- Download and management of best-in-class JS libs and fonts [npm run setup]
-- A commit hook which checks for whitespace, JSLint, and tests [npm run setup]
-- Regression tests (1270+ assertions) [npm run test]
-- Code coverage reports (currently 98.9%) [npm run cover]
-- Integration to Coveralls [npm run covera]
-- Compressed, deployment-ready code in seconds [npm run build]
-- Automatic processing of markdown files to browsable HTML (README.md ->
-  index.html)
-
-**hi\_score** also features fractal MVC architecture, type safety with typecasting, best practice style (including style guides and a cheat sheet), and two simple example applications.
 
 ## Code Style
 We use the code style presented in
@@ -177,7 +149,7 @@ If you have installed the code on a platform other than Ubuntu 16.10
 we would appreciate a write up so we can add to this document for the
 benefit of others.
 
-## Development
+## Use
 ### Install
 Install **hi\_score** dependencies and then copy vendor libraries.
 
@@ -204,7 +176,7 @@ the browser utilities (`04.utilb.js`) and the litebox feature module
 (`06.lb.js`). We plan to expand coverage to include data and models
 in subsequent releases.
 
-### Check coverage
+### Coverage
 Check the code coverage by running the `cover` script.
 
 ```
@@ -217,7 +189,7 @@ package. Previously we had used `nodeunitb` for testing but was unsuccessful
 in getting usable coverage reports. Current coverage is reported at the top of
 this document.
 
-### Update coveralls (optional)
+### Publish coverage
 If you create a new fork you may send a coveralls report as shown in the [master
  branch site][_09]. The process to set up coveralls is described in
 `hi_score/COVERALLS.md`.
@@ -471,6 +443,7 @@ MIT
 
 ## End
 
+[_0A]:img/hi_score.png
 [_00]:https://www.manning.com/books/single-page-web-applications
 [_01]:http://mmikowski.github.io/no-frameworks
 [_02]:http://www.amazon.com/dp/1617290750
@@ -508,3 +481,4 @@ MIT
 [_34]:https://www.npmjs.com/package/mongodb
 [_35]:https://www.npmjs.com/package/clusterjs
 [_36]:https://www.npmjs.com/package/express
+[_37]:https://www.npmjs.com/package/websocket
