@@ -4,7 +4,7 @@
 *A modern full-life-cycle starter project for SPAs*
 
 ## Overview
-This is an SPA starter project that installs best-in-class assets and tools to save time and guide best code practices. Install **hi_score** today and start writing Test-driven native JS client code immediately. The project comes with recommended libraries, but feel free to swap them out as needed. [That's the point][_01].
+This is an SPA starter project that installs best-in-class assets and tools to save time and guide best practice. Install **hi_score** today and start writing Test-driven native JS client code immediately. The project comes with recommended libraries, but feel free to swap them out as needed. [That's the point][_01].
 
 # Features
 **hi\_score** jump-starts web client development by providing many highly desirable capabilities which can otherwise very difficult to orchestrate. With all the hard stuff resolved out-of-the-box, we can focus on improving things that really matter, like the JavaScript, HTML, CSS and architecture we need for our application. Here are the key features:
@@ -12,34 +12,34 @@ This is an SPA starter project that installs best-in-class assets and tools to s
 - Fractal MVC architecture and proven file structure (see diagram below)
 - Vendor library management (`npm install && npm run setup`) including auto-patch hooks
 - Vendor font management (`npm install && npm run setup`)
-- Code written to exacting [standards][_03] to ensure readability and modularity
+- Libraries written to exacting [standards][_03] to ensure readability and modularity
 - Full code [standard][_03] and [quick-reference guides][_04] included
 - Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
 - Automatic linting (JSLint, whitespace check, strict check)
 - Automatic in-line browsable HTML documentation (markdown and pandoc)
 - TDD and regression tests (nodeunit + JSDOM)
-- Commit-hook which ensures tests and linting pass before check-in (`git-hook\_pre-commit`)
+- Commit-hook which ensures tests and linting pass before check-in (`git-hook_pre-commit`)
 - Type safety with type-cast utilities (`js/xhi/01.util.js`)
-- Code coverage currently at 98.9% (Istanbul)
-- Code coverage reporting to coveralls.io (Coveralls)
-- Build system manifest (Buildify)
-- Build system compression *including* property keys (auto-patched UglifyJS + SuperPack)
-- Distribution-ready code
+- Code coverage at 98.9% per coveralls.io (Istanbul, Coveralls)
+- Build manifest (Buildify)
+- Build compression *including* property keys (auto-patched UglifyJS + SuperPack)
+- Creation of distribution-ready directory from build process (`npm run build` creates `build/dist`)
 - Two simple demo applications that show compression and namespacing (`npm run build`)
 
-## Quick install
+## Quick start
 ```bash
-$ git clone git@github.com:mmikowski/hi_score.git
-$ cd hi_score
-$ npm install && npm run setup
+  mkdir -p ~/GitHub
+  cd ~/GitHub
+  git clone git@github.com:mmikowski/hi_score.git
+  cd hi_score
+  npm install && npm run setup
 ```
 
 ## Code Style
-We use the code style presented in
-[Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
+We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
 
 ## Architecture
-The `xhi` libraries are structured to facilitate loose coupling but strict call precidence. For example the `xhi/00.js` library must be loaded to the JavaScript environment before any other `xhi` code, and it may not call any library with a higher precidence number. The `08.app.js`, in comparison, must be loaded after all the `00-07` libraries, but it may call any library of the same or lower precidence:
+The `xhi` libraries are structured to facilitate loose coupling but strict call precidence. For example the `xhi/00.js` library must be loaded to the browser before any other `xhi` code, and it may not call any library with a higher precidence number. The `08.app.js`, in comparison, must be loaded after all the `00-07` libraries, but it may call any library of the same or lower precidence:
 
 ```
   /|                                                       //////
@@ -80,13 +80,17 @@ Our baseline compatibility is IE9+. If you are targeting IE 8, you have our symp
 
 ## Development environment
 ### Ubuntu 16.04, 16.10, 17.04
-Everything should just work on recent Ubuntu and derivative distributions. We can ensure these are installed.
+Everything should just work on recent Ubuntu and derivative distributions like Mint or Kubuntu. Here are the steps to install prequisites on Ubuntu 17.04:
 
 ```bash
-  # Install nodejs
+  # Install development libs
   sudo apt-get install build-essential openssh-server git pandoc
+
+  # Install nodejs
   curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
   sudo apt-get install -y nodejs
+
+  # Install mongodb
   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
     --recv 0C49F3730359A14518585931BC711F9BA15703C6
   echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
@@ -94,9 +98,8 @@ Everything should just work on recent Ubuntu and derivative distributions. We ca
   sudo apt-get update && sudo apt-get install -y mongodb-org
 ```
 
-
 ### Other Linux distributions
-Other modern Linux distributions should generally work as long as the same tools can be installed as as above. It works fine on CentOS 6.5 with development libraries installed.
+Other modern Linux distributions should generally work as long as the same tools can be installed as as above. It works fine on CentOS with development libraries installed:
 
 ```bash
  yum install gcc gcc-c++ make openssl-devel
@@ -105,9 +108,9 @@ Other modern Linux distributions should generally work as long as the same tools
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
 ### Virtual Machine
-Use AWS or a Virtual Box image using Ubuntu 16.10 server using the the same steps as Ubuntu 16.10 server, above.
+Use AWS or a Virtual Box image using Ubuntu 16.04 Server using the the same steps above.
 
-This is probably the best way to get familiar with the code if we are not already running Linux.
+This is probably the best way to get familiar with the project if you are not already running Linux.
 
 ### Mac
 We recommend using a virtual machine if possible. However one should be able to develop natively on Mac. At the very least one will need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
@@ -120,33 +123,13 @@ If you have installed the code on a platform other than Ubuntu we would apprecia
 
 ## Use
 ### Install
-Install **hi\_score** dependencies and then copy vendor libraries.
-
-```bash
-  home$ git clone git@github.com:mmikowski/hi_score.git
-  home$ cd hi_score
-  hi_score$ npm install
-  hi_score$ npm run setup
-```
-
-One can also use `npm install hi_score` but the git method is preferred. No errors should be reported.
+Install **hi\_score** dependencies and then copy vendor libraries as illustrated in the **Quick start** section.  One can also use `npm install hi_score` but the git method is preferred. No errors should be reported.
 
 ### Test
-Run the regression tests through **npm**.
-
-```bash
-  hi_score$ npm test
-```
-
-The tests for the `xhi` libraries cover the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`) and the litebox feature module (`06.lb.js`). We plan to expand coverage to include data and models in subsequent releases.
+Run the regression tests using `npm test`. These tests for the `xhi` libraries cover the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`) and the litebox feature module (`06.lb.js`). We plan to expand coverage to include data and models in subsequent releases.
 
 ### Coverage
-Check the code coverage by running the `cover` script.
-
-```
-  hi_score$ npm run cover
-  hi_score$ google-chrome coverage/lcov-report/index.html
-```
+Check the code coverage by using `npm run cover`. We can then open the `coverage/lcov-report/index.html` file with a browser to inspect coverage.
 
 We use the excellent `Istanbul` code coverage tool along with the JSDOM package. Previously we had used `nodeunitb` for testing but was unsuccessful in getting usable coverage reports. Current coverage is reported at the top of this document.
 
@@ -154,16 +137,18 @@ We use the excellent `Istanbul` code coverage tool along with the JSDOM package.
 If you create a new fork you may send a coveralls report as shown in the [master branch site][_09]. The process to set up coveralls is described in `hi_score/COVERALLS.md`.
 
 ```bash
-  hi_score$ npm run covera
+  cd ~/GitHub/hi_score
+  npm run covera
 ```
 
 ### Build
 We employ `buildify` and `superpack` to prepare the code for production. This is a generalization of a system that has been in use on many production sites for over 5 years and has been used for years on a very high-volume site (100m views per day). We continue to improve feedback and usability.
 
 ```bash
-  hi_score$ npm run build
-  hi_score$ cd build/dist
-  dist$ google-chrome ex01.html ex02.html
+  cd ~/GitHub/hi_score
+  npm run build
+  cd build/dist
+  google-chrome ex01.html ex02.html
 ```
 
 In this example the build process creates two isolated applications that share resources like fonts, libraries, and images. This is generally the preferred approach when building a suite of web applications.
@@ -172,12 +157,10 @@ In this example the build process creates two isolated applications that share r
 One may update all the npm libraries, assets and the `package.json` file with `npm update -D`. If we want these changes to propagate, we must run `npm run setup` again to update the vendor libraries, and update the `index.html` file to point to the updated versions. We expect to automate the last step in future updates.
 
 ## Namespacing
-After installation we can control-click the following links to inspect the uncompressed example applicaitons.
+After installation we can control-click the following links to inspect the uncompressed example applicaitons. Yes we know the examples are lame. We're working on that.
 
 - [Example 1](./ex01.html)
 - [Example 2](./ex02.html)
-
-Yes we know the examples are lame. We're working on that.
 
 Both of the applications use the `xhi` libraries and provide nearly identical features yet *they have completely separate namespaces.* We can use the Chrome developer tools to inspect these differences. Press `<shift>-<ctrl>-i` (or `<shift>-<cmd>-i` on a Mac) to open these tools.
 
@@ -234,13 +217,18 @@ Font files are copied to the `font/vendor` directory with their version number a
 - [Open Sans][_31]: OSS Font face
 
 ## Distribution
-This is where it all comes together. The build system removes everything from the distribution except for the essentails. It also compresses, obsufucates, and superpacks. The result can load up to 10x faster and typically consumes only 5-10% of the disk space of the development code.
-
-The results of a build are found in `build/dist`. Take a look at how few files and little disk space is used in our distribution:
+This is where it all comes together. The build system compresses, obsufucates, and superpacks JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/dist`). The result can load up to 10x faster and typically consumes only 5-10% of the disk space of the development code. We can inspect the files and disk usage as below
 
 ```bash
-  hi_score$ cd build/dist
-  dist$ tree
+  cd ~/GitHub/hi_score
+
+  # Get disk usage of all development files
+  du -sh . 
+
+  # Inspect distribution directory
+  cd build/dist
+  tree
+  du -sh .
 ```
 
 **Superpack** analyzes symbol use and replaces them with the smallest keys available prioritized by frequency. It reports this frequency which makes further optimizations by pruning code easier. On larger code projects with many object properities **Superpack** has been shown to reduce minimized code by up to an additional 50%.
