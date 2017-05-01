@@ -4,47 +4,28 @@
 *A modern full-life-cycle starter project for SPAs*
 
 ## Overview
-This is an SPA starter project that installs best-in-class assets and tools
-to save time and guide best code practices.  Install **`hi_score`** today and
-start writing Test-driven native JS client code immediately. The project comes with 
-recommended libraries, but feel free to swap our your own. That's the point.
-
-**hi\_score** provides an ever improving set of best-in-class libraries
-that we manage instead of having a [framework that controls us][_01]. We thought of
-calling it `loscore` or `under-dash` but decided to aim higher.
+This is an SPA starter project that installs best-in-class assets and tools to save time and guide best code practices. Install **hi_score** today and start writing Test-driven native JS client code immediately. The project comes with recommended libraries, but feel free to swap them out as needed. [That's the point][_01].
 
 # Features
-**`hi_score`** can really jump-start web client development.  With lots of
-hard stuff resolved out-of-the-box, we can focus on improving things that really
-matter, like the JavaScript, HTML, CSS and architecture we need for our application.
+**hi\_score** jump-starts web client development by providing many highly desirable capabilities which can otherwise very difficult to orchestrate. With all the hard stuff resolved out-of-the-box, we can focus on improving things that really matter, like the JavaScript, HTML, CSS and architecture we need for our application. Here are the key features:
 
-After installation, **`hi_score`** provides many highly desirable capabilities
-that can be otherwise very difficult to orchestrate:
-
-- Fractal MVC architecture and proven file structure [see diagram below]
-- Vendor library management [npm install && npm run setup]
-  including auto-patch hooks
-- Vendor font management [npm install && npm run setup]
-- Code written to exacting [standards][05] to ensure readability and
-  modularity
-- Full code standard and quick-reference guides [`docs/`]
-- Automatic namespacing and run-time control of CSS using [PowerCSS][06]
-- Automatic linting [JSLint, whitespace check, strict check]
-- Automatic in-line browsable HTML documentation [markdown + pandoc]
-- TDD and regression tests [nodeunit + JSDOM]
-- Commit-hook which ensures tests and linting pass before check-in [`git-hook\_pre-commit`]
-- Type safety with type-cast utilities [`js/xhi`]
-- Code coverage currently at 98.9% [Istanbul]
+- Fractal MVC architecture and proven file structure (see diagram below)
+- Vendor library management (`npm install && npm run setup`) including auto-patch hooks
+- Vendor font management (`npm install && npm run setup`)
+- Code written to exacting [standards][_03] to ensure readability and modularity
+- Full code [standard][_03] and [quick-reference guides][_04] included
+- Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
+- Automatic linting (JSLint, whitespace check, strict check)
+- Automatic in-line browsable HTML documentation (markdown and pandoc)
+- TDD and regression tests (nodeunit + JSDOM)
+- Commit-hook which ensures tests and linting pass before check-in (`git-hook\_pre-commit`)
+- Type safety with type-cast utilities (`js/xhi/01.util.js`)
+- Code coverage currently at 98.9% (Istanbul)
 - Code coverage reporting to coveralls.io (Coveralls)
 - Build system manifest (Buildify)
-- Build system compression *including* property keys [auto-patched UglifyJS + SuperPack]
+- Build system compression *including* property keys (auto-patched UglifyJS + SuperPack)
 - Distribution-ready code
-- Two simple demo applications that show compression and namespacing [`npm run
-  build`]
-
-Install **`hi_score`** today and start writing TDD driven client code
-immediately. The project comes with recommended libraries, but feel free to
-swap our your own (but read the [docs][10] on how to do this). That's the point.
+- Two simple demo applications that show compression and namespacing (`npm run build`)
 
 ## Quick install
 ```bash
@@ -55,17 +36,10 @@ $ npm install && npm run setup
 
 ## Code Style
 We use the code style presented in
-[Single Page Web Applications - JavaScript end-to-end][_00]
-(see reviews on [Amazon][_02]). The [quick reference][_03] and the
-[full code standard][_04] are available online.
+[Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
 
 ## Architecture
-The `xhi` libraries are structured to facilitate loose coupling but strict call
-precidence. For example the `00.js` library must be loaded to the JavaScript
-environment before any other `xhi` code, and it may not call any library with
-a higher precidence number. The `08.app.js`, in comparison, must be loaded
-after all the `00-07` libraries, but it may call any library of the
-same or lower precidence:
+The `xhi` libraries are structured to facilitate loose coupling but strict call precidence. For example the `xhi/00.js` library must be loaded to the JavaScript environment before any other `xhi` code, and it may not call any library with a higher precidence number. The `08.app.js`, in comparison, must be loaded after all the `00-07` libraries, but it may call any library of the same or lower precidence:
 
 ```
   /|                                                       //////
@@ -99,55 +73,50 @@ same or lower precidence:
  //////                                                       |/
 ```
 
-We use model events to broadcast changes to the Shell and Feature modules,
-and we keep our feature modules isolated from each other. This enhances
-portability and quality.
+We use model events to broadcast changes to the Shell and Feature modules and we keep our feature modules isolated from each other. This enhances portability and quality.
 
 ## Browser compatibility
-Our baseline compatibility is IE9+. If you are targeting IE 8, you have our
-sympathy.
+Our baseline compatibility is IE9+. If you are targeting IE 8, you have our sympathy.
 
 ## Development environment
-### Ubuntu 16.10
-Everything should just work on Ubuntu 16.10 as that is the development OS
-for **hi\_score**. There are a few prerequisites that many developers may
-already have installed:
+### Ubuntu 16.04, 16.10, 17.04
+Everything should just work on recent Ubuntu and derivative distributions. We can ensure these are installed.
 
 ```bash
+  # Install nodejs
   sudo apt-get install build-essential openssh-server git pandoc
   curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
   sudo apt-get install -y nodejs
+  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
+    --recv 0C49F3730359A14518585931BC711F9BA15703C6
+  echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
+    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+  sudo apt-get update && sudo apt-get install -y mongodb-org
 ```
 
-### Other Linux distributions
-Other modern *distros* generally work as long as the same tools can
-be installed as for Ubuntu 16.10 server. It works fine on CentOS 6.5, for
-example.
 
-See [this guide][_06] for NodeJS package installation on other Linux
-distros. Here is a more [generic guide][_07] for (k)Ubuntu.
+### Other Linux distributions
+Other modern Linux distributions should generally work as long as the same tools can be installed as as above. It works fine on CentOS 6.5 with development libraries installed.
+
+```bash
+ yum install gcc gcc-c++ make openssl-devel
+```
+
+See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
 ### Virtual Machine
-Use AWS or a Virtual Box image using Ubuntu 16.10 server using the the same
-steps as Ubuntu 16.10 server, above.
+Use AWS or a Virtual Box image using Ubuntu 16.10 server using the the same steps as Ubuntu 16.10 server, above.
 
-This is probably the best way to get familiar with the code if you are not
-already running Linux.
+This is probably the best way to get familiar with the code if we are not already running Linux.
 
 ### Mac
-We recommend using a virtual machine if possible. However one should
-be able to develop natively on Mac. At the very least one will need Bash 4+,
-[GNU Core utilities][_08],  NodeJS, Git, PanDoc, and SSH.
+We recommend using a virtual machine if possible. However one should be able to develop natively on Mac. At the very least one will need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
 
 ### Windows
-We recommend using a virtual machine as detailed above. Installation
-*might* work with the new Linux subsystem on Windows 10 but we don't
-have any experience with it.
+We recommend using a virtual machine as detailed above. Installation *might* work with the new Linux subsystem on Windows 10 but we don't have any experience with it.
 
 ### Contribute
-If you have installed the code on a platform other than Ubuntu 16.10
-we would appreciate a write up so we can add to this document for the
-benefit of others.
+If you have installed the code on a platform other than Ubuntu we would appreciate a write up so we can add to this document for the benefit of others.
 
 ## Use
 ### Install
@@ -160,8 +129,7 @@ Install **hi\_score** dependencies and then copy vendor libraries.
   hi_score$ npm run setup
 ```
 
-One can also use `npm install hi_score` but the git method is preferred.
-No errors should be reported.
+One can also use `npm install hi_score` but the git method is preferred. No errors should be reported.
 
 ### Test
 Run the regression tests through **npm**.
@@ -170,11 +138,7 @@ Run the regression tests through **npm**.
   hi_score$ npm test
 ```
 
-The tests for the `xhi` libraries currently cover the
-root namespace (`00.js`), the utilities (`01.util.js`),
-the browser utilities (`04.utilb.js`) and the litebox feature module
-(`06.lb.js`). We plan to expand coverage to include data and models
-in subsequent releases.
+The tests for the `xhi` libraries cover the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`) and the litebox feature module (`06.lb.js`). We plan to expand coverage to include data and models in subsequent releases.
 
 ### Coverage
 Check the code coverage by running the `cover` script.
@@ -184,25 +148,17 @@ Check the code coverage by running the `cover` script.
   hi_score$ google-chrome coverage/lcov-report/index.html
 ```
 
-We use the excellent `Istanbul` code coverage tool along with the JSDOM
-package. Previously we had used `nodeunitb` for testing but was unsuccessful
-in getting usable coverage reports. Current coverage is reported at the top of
-this document.
+We use the excellent `Istanbul` code coverage tool along with the JSDOM package. Previously we had used `nodeunitb` for testing but was unsuccessful in getting usable coverage reports. Current coverage is reported at the top of this document.
 
 ### Publish coverage
-If you create a new fork you may send a coveralls report as shown in the [master
- branch site][_09]. The process to set up coveralls is described in
-`hi_score/COVERALLS.md`.
+If you create a new fork you may send a coveralls report as shown in the [master branch site][_09]. The process to set up coveralls is described in `hi_score/COVERALLS.md`.
 
 ```bash
   hi_score$ npm run covera
 ```
 
 ### Build
-We employ `buildify` and `superpack` to prepare the code for production.
-This is a generalization of a system that has been in use on many production
-sites for over 5 years and is currently used on some very high-volume sites
-(100m views per day). We continue to improve feedback and usability.
+We employ `buildify` and `superpack` to prepare the code for production. This is a generalization of a system that has been in use on many production sites for over 5 years and has been used for years on a very high-volume site (100m views per day). We continue to improve feedback and usability.
 
 ```bash
   hi_score$ npm run build
@@ -210,81 +166,32 @@ sites for over 5 years and is currently used on some very high-volume sites
   dist$ google-chrome ex01.html ex02.html
 ```
 
-In this example the build process creates two isolated applications that share
-resources like fonts, libraries, and images.  This is generally the preferred
-approach when building a suite of web applications.
+In this example the build process creates two isolated applications that share resources like fonts, libraries, and images. This is generally the preferred approach when building a suite of web applications.
 
 ### Update
-One may update all the npm libraries, npm assets, and the `package.json` file
-with `npm update -D`. If we want these changes to propagate, we must run
-`npm run setup` again to update the vendor libraries, and update the
-`index.html` file to point to the updated versions. We expect to automate
-the last step in future updates.
+One may update all the npm libraries, assets and the `package.json` file with `npm update -D`. If we want these changes to propagate, we must run `npm run setup` again to update the vendor libraries, and update the `index.html` file to point to the updated versions. We expect to automate the last step in future updates.
 
 ## Namespacing
-After installation we can control-click the following links to inspect
-the uncompressed example applicaitons.
+After installation we can control-click the following links to inspect the uncompressed example applicaitons.
 
 - [Example 1](./ex01.html)
 - [Example 2](./ex02.html)
 
 Yes we know the examples are lame. We're working on that.
 
-Both of the applications use the `xhi` libraries and provide nearly
-identical features yet *they have completely separate namespaces.*
-We can use the Chrome developer tools to inspect these differences.
-Press `<shift>-<ctrl>-i` (or `<shift>-<cmd>-i` on a Mac) to open these tools.
+Both of the applications use the `xhi` libraries and provide nearly identical features yet *they have completely separate namespaces.* We can use the Chrome developer tools to inspect these differences. Press `<shift>-<ctrl>-i` (or `<shift>-<cmd>-i` on a Mac) to open these tools.
 
-When we view the Example 1 tab we can type `ex01` into the JavaScript console
-and press return and see that this single variable points to all our unique
-code in this application. However, if we type `ex02` we see that this
-variable is `undefined`, as it should be. If we visit the Example 2 tab we
-can see that the opposite is true - `ex01` is `undefined` and `ex02` contains
-all our application code. This namespacing allows us to provide a suite of
-web applications that share the same UX without interferring with each other.
+When we view the Example 1 tab we can type `ex01` into the JavaScript console and press return and see that this single variable points to all our unique code in this application. However, if we type `ex02` we see that this variable is `undefined`, as it should be. If we visit the Example 2 tab we can see that the opposite is true - `ex01` is `undefined` and `ex02` contains all our application code. This namespacing allows us to provide a suite of web applications that share the same UX without interferring with each other.
 
-This name spacing extends to CSS as well. If we inspect the HTML in the
-Example 1 tab, we can see that nearly all classes start with an `ex01-` prefix,
-whereas the Example 2 tab uses `ex02-`.
+This name spacing extends to CSS as well. If we inspect the HTML in the Example 1 tab, we can see that nearly all classes start with an `ex01-` prefix, whereas the Example 2 tab uses `ex02-`.
 
 ## Vendor assets
-All vendor assets are listed in the `devDependencies` map in the
-`package.json` file. If you want to add a vendor asset, the best method is to
-add the npm package there and then update the `bin/setup` script
-to copy the asset to the correct directory: `js/vendor/`,
-`css/vendor`, `font/vendor`, or `img/vendor`.
-
-    "font-awesome"            : "4.7.0",
-    "jquery"                  : "3.2.0",
-    "jquery.event.dragscroll" : "1.0.0",
-    "jquery.event.gevent"     : "1.1.6",
-    "jquery.event.ue"         : "1.3.2",
-    "jquery.scrolli"          : "1.0.1",
-    "jquery.urianchor"        : "1.3.5",
-    "open-sans-fontface"      : "1.4.0",
-    "powercss"                : "1.3.5",
-    "taffydb"                 : "2.7.3",
-
-    "clusterjs"               : "0.7.1",
-    "express"                 : "4.15.2",
-    "mongodb"                 : "2.2.25",
-    "mysql2"                  : "1.2.0",
-    "websocket"               : "1.0.22",
-
-    "coveralls"               : "2.12.0",
-    "istanbul"                : "0.4.5",
-    "jsdom"                   : "9.12.0",
-    "jslint"                  : "0.10.3",
-    "node-inspector"          : "0.12.10",
-    "nodeunit"                : "0.11.0",
-    "uglifycss"               : "0.0.25",
-    "uglifyjs"                : "2.4.10"
+All vendor assets are listed in the `devDependencies` map in the `package.json` file. If you want to add a vendor asset, the best method is to add the npm package there and then update the `bin/setup` script to copy the asset to the correct directory: `js/vendor/`, `css/vendor`, `font/vendor`, or `img/vendor`.
 
 ### JavaScript
-Client libraries are copied to `js/vendor` directories with their
-version number appended to their names.  This makes them
-available via the web server.  These include:
-- [Font Awesome][_30]: Icon fonts
+
+Client JavaScript libraries are copied to `js/vendor` directories with their version number appended to their names. This makes them available to the web server:
+
 - [jQuery][_10]: DOM manipulation
 - [PowerCSS][_11]: JS-powered CSS
 - [jQuery Plugin: event.dragscroll][_12]: Inertia scroll
@@ -292,7 +199,6 @@ available via the web server.  These include:
 - [jQuery Plugin: event.ue][_14]: Touch and desktop gestures
 - [jQuery Plugin: scrolli][_15]: Scroll indicators
 - [jQuery Plugin: urianchor][_16]: SPA routing
-- [Open Sans][_31]: OSS Font face
 - [SprintF][_32]: Sprintf library
 - [TaffyDB][_17]: Client data management
 
@@ -304,7 +210,7 @@ Libraries used for the node server:
 - [mysql2][_35]: Faster mysql interface
 - [websocket][_37]: Websockets interface
 
-Libraries used for development and build include:
+Libraries used for development, test, and build:
 
 - [coveralls][_18]: Code coverage reporting
 - [istanbul][_19]: Code coverage
@@ -317,38 +223,29 @@ Libraries used for development and build include:
 - buildify + superpack: Build system
 
 ### CSS
-CSS libraries are copied to the `css/vendor` directory with their
-version number appended to their names. We currently include
-the Font Awesome library.
+CSS libraries are copied to the `css/vendor` directory with their version number appended to their names. We copy the Font Awesome CSS files to this directory:
+
+- [Font Awesome][_30]: Icon fonts
 
 ### Fonts
-Font files are copied to the `font/vendor` directory with their
-version number appended to their names. We currently include
-the open-sans-webfont and Font Awesome files.
+Font files are copied to the `font/vendor` directory with their version number appended to their names. We copy the open-sans-webfont and Font Awesome files to this directory:
+
+- [Font Awesome][_30]: Icon fonts
+- [Open Sans][_31]: OSS Font face
 
 ## Distribution
-This is where it all comes together. The build system removes everything from
-the distribution except for the essentails.  It also compresses, obsufucates, 
-and superpacks. The result can load up to 10x faster and typically consumes 
-only 5-10% of the disk space of the development code.
+This is where it all comes together. The build system removes everything from the distribution except for the essentails. It also compresses, obsufucates, and superpacks. The result can load up to 10x faster and typically consumes only 5-10% of the disk space of the development code.
 
-The results of a build are found in `build/dist`. Take a look at how few files
-and little disk space is used in our distribution:
+The results of a build are found in `build/dist`. Take a look at how few files and little disk space is used in our distribution:
 
 ```bash
   hi_score$ cd build/dist
   dist$ tree
 ```
 
-**Superpack** analyzes symbol use and replaces them with the smallest
-keys available prioritized by frequency. It reports this frequency
-which makes further optimizations by pruning code easier. On larger code
-projects with many object properities **Superpack** has been
-shown to reduce minimized code by an additional 50%.
+**Superpack** analyzes symbol use and replaces them with the smallest keys available prioritized by frequency. It reports this frequency which makes further optimizations by pruning code easier. On larger code projects with many object properities **Superpack** has been shown to reduce minimized code by up to an additional 50%.
 
-Reducing a dozen or so HTTP requests to one for a single, highly compressed
-JS file can reduce load time to 10% of prior values.  The table below shows
-some of the results:
+Reducing a dozen or so HTTP requests to one for a single, highly compressed JS file can reduce load time to 10% of prior values.  The table below shows some of the results:
 
 | Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
 |-------------|-----------------:|-----------------:|-----------------:|
@@ -361,16 +258,14 @@ some of the results:
 | Local ms    |     231 (100.0%) |     166 ( 71.2%) |     144 ( 62.3%) |
 | Deploy Size |           121 MB |    8 MB (  6.6%) |    8 MB (  6.5%) |
 
-The load time measurements were made using a local HTTP server which is almost
-certainly a best-case scenario. We hope to add results for a remote server soon.
+The load time measurements were made using a local HTTP server which is almost certainly a best-case scenario. We hope to add results for a remote server soon.
 
 ## Contribute!
-Any improvements or suggestions are welcome through the [issues tracker][_29].
-Pull requests are especially appreciated.
+Any improvements or suggestions are welcome through the [issues tracker][_29]. Pull requests are especially appreciated.
 
 ## Release Notes
 ### Copyright (c)
-2016 Michael S. Mikowski (mike[dot]mikowski[at]gmail[dotcom])
+2016, 2017 Michael S. Mikowski (mike[dot]mikowski[at]gmail[dotcom])
 
 ### License
 MIT
@@ -387,9 +282,7 @@ MIT
 
 ### Version 0.3.x
 - (x) Add code coverage
-- (x) Replace `getDeepMapVal` and `setDeepMapVal` with much more powerful
-  and tested `getStructData` and `setStructData` which empowers you with
-  transversal and creation of arbitrary mixed list and map structures.
+- (x) Replace `getDeepMapVal` and `setDeepMapVal` with more powerful and tested `getStructData` and `setStructData`
 - (x) Updates to `xhi/01.util.js`
 
 ### Version 0.4.x
