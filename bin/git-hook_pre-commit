@@ -9,7 +9,7 @@
 ##   We omit -e as we do our own checking.
 set -u;
 
-## BEGIN Layout variables ==================================================
+  ## BEGIN Layout variables ==================================================
   _app_name=$( basename $0 );
   _orig_dir=$( pwd );
   echo "start ${_app_name}";

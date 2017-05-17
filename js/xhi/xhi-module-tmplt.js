@@ -1,7 +1,7 @@
 /*
- *    xhi.module-tmplt.js
+ *    xhi-module-tmplt.js
  *
- *    Use: $ cp xhi.module-tmplt.js 07.<newfeature>.js
+ *    Use: $ cp xhi-module-tmplt.js 07.<newfeature>.js
  *    Synopsis: Feature module template
  *    Provides: A template that embodies best practice
  *
