@@ -6,7 +6,7 @@
 
 ## Exit when encountering undeclared variables
 ## The -e check ( exit when encountering a non-zero exit status )
-## As we do our own checking 
+## As we do our own checking
 set -u;
 
 # 1. Wipes and copy vendor libs to the js/vendor, css/vendor, and
@@ -26,33 +26,33 @@ set -u;
   echo "  > layout vars";
 
     # app path and name
-    _app_link=$( readlink -f -- "${0}" );
-    _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
+    _appLink=$( readlink -f -- "${0}" );
+    _binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
 
     # npm module paths
-    _git_dir=''; # initialize
-    _npm_dir=$( dirname "${_bin_dir}" );
-    _mod_dir="${_npm_dir}/node_modules";
-    _app_dir="${_npm_dir}";
-    _pkg_file="${_npm_dir}/package.json";
-    _ugly_dir="${_mod_dir}/uglifyjs";
-    _scope_file="${_ugly_dir}/lib/scope.js";
+    _gitDir=''; # initialize
+    _npmDir=$( dirname "${_binDir}" );
+    _moduleFqDir="${_npmDir}/node_modules";
+    _appFqDir="${_npmDir}";
+    _pkgFile="${_npmDir}/package.json";
+    _uglyDir="${_moduleFqDir}/uglifyjs";
+    _scopeFile="${_uglyDir}/lib/scope.js";
 
-    _version_str="";
-    _patch_str="// BEGIN hi_scope patch line 249";
-    _patch_file="${_npm_dir}/patch/uglifyjs-2.4.10.patch";
+    _versionStr='';
+    _patchStr='// BEGIN hi_scope patch line 249';
+    _patchFile="${_npmDir}/patch/uglifyjs-2.4.10.patch";
 
     # executables
-    _git_exe=$(   which git );
-    _patch_exe=$( which patch );
+    _gitExe=$(   which git );
+    _patchExe=$( which patch );
 
   # echo "  < layout vars";
   ## == END Layout variables =================================================
 
-  ## == BEGIN _parse_version_file_fn () - Read package.json and parse ========
-  _parse_version_file_fn () {
-    pushd "${_npm_dir}/bin" > /dev/null;
-    _version_str=$(
+  ## == BEGIN _parsePkgFileFn () - Read package.json and parse ========
+  _parsePkgFileFn () {
+    pushd "${_npmDir}/bin" > /dev/null;
+    _versionStr=$(
       node -e '
         var fs = require( "fs" );
         fs.readFile(
@@ -83,14 +83,14 @@ set -u;
     );
     popd > /dev/null;
   }
-  ## == END _parse_version_file_fn () ========================================
+  ## == END _parsePkgFileFn () ========================================
 
-  ## == BEGIN _get_version_fn() - Look up version for requested package ======
-  _get_version_fn () {
+  ## == BEGIN _readPkgVersionFn() - Look up version for requested package ======
+  _readPkgVersionFn () {
     local IFS='';
     _match_str="$*";
-    if [ "${_version_str}" == "" ]; then _parse_version_file_fn; fi;
-    echo "${_version_str}" |sed -e 's/ /\n/g'| while read _line_str; do
+    if [ "${_versionStr}" == "" ]; then _parsePkgFileFn; fi;
+    echo "${_versionStr}" |sed -e 's/ /\n/g'| while read _line_str; do
       _key=$(echo "${_line_str}" |cut -f1 -d':' );
       _val=$(echo "${_line_str}" |cut -f2 -d':' );
       if [ "${_key}" == "${_match_str}" ]; then
@@ -98,123 +98,125 @@ set -u;
       fi;
     done
   }
-  ## == END _get_version_fn() ================================================
+  ## == END _readPkgVersionFn() ================================================
 
   ## == BEGIN main - Copy vendor assets and add commit hook ==================
   echo "  > main";
   echo "  >> main / verify env";
-    if [ -x "${_git_exe}" ]; then 
-      _top_dir=$( ${_git_exe} rev-parse --show-toplevel 2>/dev/null );
-      if [ ! -z "${_top_dir}" ]; then
-        _git_dir=$( cd "${_top_dir}" && pwd );
+    if [ -x "${_gitExe}" ]; then
+      _topDir=$( ${_gitExe} rev-parse --show-toplevel 2>/dev/null );
+      if [ ! -z "${_topDir}" ]; then
+        _gitDir=$( cd "${_topDir}" && pwd );
       fi
     fi
 
-    if [ ! -x "${_patch_exe}" ]; then
+    if [ ! -x "${_patchExe}" ]; then
       echo "  !! FAIL: Could not find patch executable."
       echo "       Please install patch."
       exit 1;
     fi
 
-    if [ ! -w "${_scope_file}" ]; then
-      echo "  !! FAIL: Cannot write to ${_scope_file}.";
+    if [ ! -w "${_scopeFile}" ]; then
+      echo "  !! FAIL: Cannot write to ${_scopeFile}.";
       echo "        Did you forget to run 'npm install' first?";
       exit 1;
     fi
   # echo "  << main / verify env";
-  
-  echo "  >> main / remove dirs";
-    cd "${_app_dir}";
-    if [ -r "js/vendor" ]; then
-      rm -rf "js/vendor";
-    fi
-    if [ -r "css/vendor" ]; then
-      rm -rf "css/vendor";
-    fi
-    if [ -r "font/vendor" ]; then
-      rm -rf "font/vendor";
-    fi
- 
-    mkdir -p "js/vendor";
-    mkdir -p "css/vendor";
-    mkdir -p "font/vendor";
-  # echo "  << main / remove dirs";
 
-  echo "  >> main / copy vendor libs"; 
-    cd "${_app_dir}/js/vendor";
+  echo "  >> main / copy vendor libs";
+    manifestList=(
+      # Use js/vendor dir with js extensions
+      '!!;js/vendor;js'
+      'powercss;powercss/dist/pcss.js;pcss'
+      'powercss;powercss/dist/pcss.cfg.js;pcss.cfg'
+      'jquery;jquery/dist/jquery.js'
+      'jquery.event.dragscroll;jquery.event.dragscroll/dist/jquery.event.dragscroll.js'
+      'jquery.event.gevent;jquery.event.gevent/jquery.event.gevent.js'
+      'jquery.event.ue;jquery.event.ue/jquery.event.ue.js'
+      'jquery.scrolli;jquery.scrolli/dist/jquery.scrolli.js'
+      'jquery.urianchor;jquery.urianchor/jquery.uriAnchor.js'
+      'taffydb;taffydb/taffy.js;taffy'
 
-    vrs=$(_get_version_fn powercss);
-    cp "${_mod_dir}/powercss/dist/pcss.js" "pcss-${vrs}.js"
-    cp "${_mod_dir}/powercss/dist/pcss.cfg.js" "pcss.cfg-${vrs}.js"
+      # Use css/vendor dir with css extensions
+      '!!;css/vendor;css'
+      'font-awesome;/font-awesome/css/font-awesome.css'
 
-    vrs=$(_get_version_fn jquery);
-    cp "${_mod_dir}/jquery/dist/jquery.js" "jquery-${vrs}.js";
+      # Use font/vendor dir with directory copy
+      '!!;font/vendor;__dir'
+      'font-awesome;font-awesome/fonts'
+      'open-sans-fontface;open-sans-fontface/fonts'
+    );
 
-    vrs=$(_get_version_fn jquery.event.dragscroll);
-    cp "${_mod_dir}/jquery.event.dragscroll/dist/jquery.event.dragscroll.js" \
-      "jquery.event.dragscroll-${vrs}.js";
+    for _manifest_line in ${manifestList[@]}; do
+      _field_list=(${_manifest_line//;/ });
+      if [ "${_field_list[0]}" = "!!" ]; then
+        _dest_dir="${_field_list[1]}";
+        _ext_str="${_field_list[2]}";
+        if [ -r "${_appFqDir}" ]; then
+          _fq_dest_dir="${_appFqDir}/${_dest_dir}";
+          if [ -r "${_fq_dest_dir}" ]; then
+            rm -rf "${_fq_dest_dir}";
+          fi
+          mkdir -p "${_fq_dest_dir}";
+        fi
+        continue;
+      fi
+      _pkg_name="${_field_list[0]}";
+      _src_dir="${_field_list[1]}";
+      if [ "${#_field_list[@]}" -lt 3 ]; then
+        _dest_base="${_pkg_name}";
+      else
+        _dest_base="${_field_list[2]}";
+      fi
 
-    vrs=$(_get_version_fn jquery.event.gevent);
-    cp "${_mod_dir}/jquery.event.gevent/jquery.event.gevent.js" \
-      "jquery.event.gevent-${vrs}.js";
+      _vers_str=$( _readPkgVersionFn "${_pkg_name}" );
 
-    vrs=$(_get_version_fn jquery.event.ue);
-    cp "${_mod_dir}/jquery.event.ue/jquery.event.ue.js" \
-      "jquery.event.ue-${vrs}.js";
+      if   [ -z "${_moduleFqDir}" ] \
+        || [ -z "${_src_dir}"     ] \
+        || [ -z "${_pkg_name}"    ] \
+        || [ -z "${_dest_base}"   ] \
+        || [ -z "${_vers_str}"    ]; then
+        echo 'Unexpected error processing manifest';
+        echo "Line ${_manifest_line}"
+        continue;
+      fi
 
-    vrs=$(_get_version_fn jquery.scrolli);
-    cp "${_mod_dir}/jquery.scrolli/dist/jquery.scrolli.js" \
-      "jquery.scrolli-${vrs}.js";
+      if [ "${_ext_str}" = "__dir" ]; then
+        cp -a "${_moduleFqDir}/${_src_dir}" \
+          "${_appFqDir}/${_dest_dir}/${_dest_base}-${_vers_str}";
+      else
+        cp "${_moduleFqDir}/${_src_dir}" \
+          "${_appFqDir}/${_dest_dir}/${_dest_base}-${_vers_str}.${_ext_str}"
+      fi
+    done
+  # echo "  << main / copy vendor libs";
 
-    vrs=$(_get_version_fn jquery.urianchor);
-    cp "${_mod_dir}/jquery.urianchor/jquery.uriAnchor.js" \
-      "jquery.urianchor-${vrs}.js";
-
-    vrs=$(_get_version_fn taffydb);
-    cp "${_mod_dir}/taffydb/taffy.js" "taffy-${vrs}.js";
-
-    # ----
-
-    cd "${_app_dir}/css/vendor";
-    vrs=$(_get_version_fn font-awesome);
-    cp "${_mod_dir}/font-awesome/css/font-awesome.css" "font-awesome-${vrs}.css";
-
-    # ----
-
-    cd "${_app_dir}/font/vendor";
-    vrs=$(_get_version_fn font-awesome);
-    cp -a "${_mod_dir}/font-awesome/fonts" "font-awesome-${vrs}";
-
-    vrs=$(_get_version_fn open-sans-fontface);
-    cp -a "${_mod_dir}/open-sans-fontface/fonts" "open-sans-fontface-${vrs}";
-  # echo "  << main / copy vendor libs"; 
-
-  echo "  >> main / add git hook"; 
-    if [ ! -z "${_git_dir}" ]; then
-      _precommit_file="${_git_dir}/.git/hooks/pre-commit";
+  echo "  >> main / add git hook";
+    if [ ! -z "${_gitDir}" ]; then
+      _precommit_file="${_gitDir}/.git/hooks/pre-commit";
       if [ -L "${_precommit_file}" ]; then
         rm -f "${_precommit_file}";
       fi
 
-      cd "${_git_dir}/.git/hooks" \
+      cd "${_gitDir}/.git/hooks" \
         && ln -s "../../bin/git-hook_pre-commit" "./pre-commit" \
         && echo "  ? INFO installed git hook.";
     else
       echo "  ?  INFO : Git hook not installed."
       echo "            Run 'npm run ${_app_name}' again once checked-in to git."
     fi
-  # echo "  << main / add git hook"; 
+  # echo "  << main / add git hook";
 
   # Patch reference:
   # http://www.thegeekstuff.com/2014/12/patch-command-examples
   # diff -Naur old_dir new_dir > file.patch
 
   echo "  >> main / patch uglifyjs";
-    if ( grep -q "${_patch_str}" "${_scope_file}" ); then
+    if ( grep -q "${_patchStr}" "${_scopeFile}" ); then
       echo "  ? INFO: Uglify patch already applied.";
     else
-      cd "${_mod_dir}";
-      "${_patch_exe}" -p0 < "${_patch_file}";
+      cd "${_moduleFqDir}";
+      "${_patchExe}" -p0 < "${_patchFile}";
       echo "  ? INFO: Uglify patch applied";
     fi
   # echo "  << main / patch uglifyjs";
