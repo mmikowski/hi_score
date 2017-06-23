@@ -129,20 +129,15 @@ Install **hi\_score** dependencies and then copy vendor libraries as illustrated
 Run the regression tests using `npm test`. These tests for the `xhi` libraries cover the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`) and the litebox feature module (`06.lb.js`). We plan to expand coverage to include data and models in subsequent releases.
 
 ### Coverage
-Check the code coverage by using `npm run cover`. We can then open the `coverage/lcov-report/index.html` file with a browser to inspect coverage.
+Check the code coverage by using `npm run coverage`. We can then open the `coverage/lcov-report/index.html` file with a browser to inspect coverage.
 
 We use the excellent `Istanbul` code coverage tool along with the JSDOM package. Previously we had used `nodeunitb` for testing but was unsuccessful in getting usable coverage reports. Current coverage is reported at the top of this document.
 
 ### Publish coverage
-If you create a new fork you may send a coveralls report as shown in the [master branch site][_09]. The process to set up coveralls is described in `hi_score/COVERALLS.md`.
-
-```bash
-  cd ~/GitHub/hi_score
-  npm run covera
-```
+If you create a new fork you may send a coveralls report as shown in the [master branch site][_09].  Publish the coverage to the coveralls site using `npm run publish-coverage`. The process to set up coveralls is described in `hi_score/COVERALLS.md`.
 
 ### Build
-We employ `buildify` and `superpack` to prepare the code for production. This is a generalization of a system that has been in use on many production sites for over 5 years and has been used for years on a very high-volume site (100m views per day). We continue to improve feedback and usability.
+We employ `buildify` and `superpack` to prepare the code for production. This is a system has evolved over 10 years and is used on some high-volume sites (100m views per day).
 
 ```bash
   cd ~/GitHub/hi_score
@@ -151,7 +146,7 @@ We employ `buildify` and `superpack` to prepare the code for production. This is
   google-chrome ex01.html ex02.html
 ```
 
-In this example the build process creates two isolated applications that share resources like fonts, libraries, and images. This is generally the preferred approach when building a suite of web applications.
+This example shows the creation of two simple single-page web applications that share resources (like fonts, libraries, and images) yet the have fully isolated JavaScript namespaces.
 
 ### Update
 One may update all the npm libraries, assets and the `package.json` file with `npm update -D`. If we want these changes to propagate, we must run `npm run setup` again to update the vendor libraries, and update the `index.html` file to point to the updated versions. We expect to automate the last step in future updates.

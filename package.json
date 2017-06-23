@@ -1,7 +1,7 @@
 {
   "name": "hi_score",
-  "version": "1.1.9",
-  "description": "A modern full-life-cycle starter project for SPAs. Hi_Score assembles best-in-class libraries in a feature-module architecture",
+  "version": "1.1.10",
+  "description": "A 2017 full-life-cycle starter project for SPAs. Hi_Score assembles best-in-class libraries in a feature-module architecture",
   "keywords": [
     "spa",
     "library",
@@ -17,8 +17,8 @@
     "build": "bin/buildify cfg/*.buildify",
     "setup": "bin/setup",
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js",
-    "cover": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
-    "covera": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
+    "coverage": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
+    "publish-coverage": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",

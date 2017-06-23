@@ -8,7 +8,7 @@ results.
 
 ```bash
   $ cd hi_score
-  $ npm run covera
+  $ npm run publish-coverage
 ```
 
 The report page should look similar to the [master branch site][1].
@@ -61,7 +61,7 @@ understand it, this should always be kept private, so please add the
   $ cat 'repo_token: ---------your-token-here---------' > .coveralls.yml
 ```
 
-Run `npm covera` to send a report to coveralls.io. The detailed
+Run `npm run publish-coverage` to send a report to coveralls.io. The detailed
 command run by this script is as follows:
 
 ```bash
