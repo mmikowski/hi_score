@@ -48,7 +48,7 @@ diff -Naur uglifyjs/lib/scope.js uglifyjs/lib/scope.js
 +     }
 +     throw 'Cannot find unique key after 1000 iterations';
  });
-+// END hi_score patch line 276
++// . END hi_score patch line 276
  
  AST_Function.DEFMETHOD("next_mangled", function(options, def){
      // #179, #326

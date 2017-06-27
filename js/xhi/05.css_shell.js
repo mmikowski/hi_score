@@ -1,11 +1,11 @@
 /*
- *    05.css_shell.js
+ * 05.css_shell.js
  *
- *    Use     : xhi._makeCssShell_( app_map );
- *    Synopsis: Add _css_shell_ capabilities to app_map
- *    Provides: CSS symbols for shell (_shell_) used by PowerCSS
+ * Use     : xhi._makeCssShell_( app_map );
+ * Synopsis: Add _css_shell_ capabilities to app_map
+ * Provides: CSS symbols for shell (_shell_) used by PowerCSS
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -400,11 +400,11 @@ __NS._makeCssShell_ = function ( aMap ) {
         // -- end {_p_}-_shell_ narrow-width conditional selectors
       ]
     };
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   aMap._css_shell_ = { _selectorList_ : topCmap._selector_list_ };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeCssShell_ ===================================
+// == . END MODULE __NS._makeCssShell_ =================================
 

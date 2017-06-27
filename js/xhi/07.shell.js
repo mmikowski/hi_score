@@ -1,11 +1,11 @@
 /*
- *    07.shell.js
+ * 07.shell.js
  *
- *    Use     : xhi._makeShell_( app_map );
- *    Synopsis: Add _shell_ capabilities to app_map
- *    Provides: Page Shell controller
+ * Use     : xhi._makeShell_( app_map );
+ * Synopsis: Add _shell_ capabilities to app_map
+ * Provides: Page Shell controller
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -45,17 +45,17 @@ __NS._makeShell_ = function ( aMap ) {
 
     $Map
     ;
-  // == END MODULE SCOPE VARIABLES =====================================
+ // == . END MODULE SCOPE VARIABLES ====================================
 
   // == BEGIN DOM METHODS ==============================================
   // Cache jQuery collections here
   function set$Map ( $top_box ) {
     $Map = { _$top_box_ : $top_box };
   }
-  // == END DOM METHODS ================================================
+  // == . END DOM METHODS ==============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
-  // == END EVENT HANDLERS =============================================
+  // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModule/
@@ -82,9 +82,9 @@ __NS._makeShell_ = function ( aMap ) {
 
     // Bind shell event handlers (taps, drags, long-press, etc)
   }
-  // END Public method /initModule/
+  // . END Public method /initModule/
 
   aMap._shell_ = { _initModule_ : initModule };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeShell_ ======================================
+// == . END MODULE __NS._makeShell_ ====================================

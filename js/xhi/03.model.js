@@ -1,11 +1,11 @@
 /*
- *    03.model.js
+ * 03.model.js
  *
- *    Use     : xhi._makeModel_( app_map );
- *    Synopsis: Add _model_ capabilities to app_map
- *    Provides: Business logic methods
+ * Use     : xhi._makeModel_( app_map );
+ * Synopsis: Add _model_ capabilities to app_map
+ * Provides: Business logic methods
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -40,16 +40,16 @@ __NS._makeModel_ = function ( aMap ) {
     topCmap = {},
     topSmap = {}
     ;
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN UTILITY METHODS ==========================================
-  // == END UTILITY METHODS ============================================
+  // == . END UTILITY METHODS ==========================================
 
   // == BEGIN PRIVATE METHODS ==========================================
-  // == END PRIVATE METHODS ============================================
+  // == . END PRIVATE METHODS ==========================================
 
   // == BEGIN EVENT HANDLERS ===========================================
-  // == END EVENT HANDLERS =============================================
+  // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModule/
@@ -64,10 +64,10 @@ __NS._makeModel_ = function ( aMap ) {
       '\n  topSmap === ' + JSON.stringify( topSmap )
     );
   }
-  // END Public method /initModule/
+  // . END Public method /initModule/
 
   aMap._model_ = { _initModule_ : initModule };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeModel_ ======================================
+// == . END MODULE __NS._makeModel_ ====================================
 

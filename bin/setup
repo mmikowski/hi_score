@@ -12,6 +12,7 @@ set -u;
 # 1. Wipes and copy vendor libs to the js/vendor, css/vendor, and
 #    font/vendor directories using the current version from package.json.
 # 2. Install the commit hook if git is detected.
+# 3. Applies patch to uglifyjs
 #
 # TODO:
 # 1. Use the same cfg file as buildify / superpack
@@ -20,9 +21,9 @@ set -u;
 #
 
   ## == BEGIN Layout variables ===============================================
-  _app_name=$( basename $0 );
-  _orig_dir=$( pwd );
-  echo "start ${_app_name}";
+  _appName=$( basename $0 );
+  _origDir=$( pwd );
+  echo "start ${_appName}";
   echo "  > layout vars";
 
     # app path and name
@@ -149,7 +150,7 @@ set -u;
 
     for _manifest_line in ${manifestList[@]}; do
       _field_list=(${_manifest_line//;/ });
-      if [ "${_field_list[0]}" = "!!" ]; then
+      if [ "${_field_list[0]}" == "!!" ]; then
         _dest_dir="${_field_list[1]}";
         _ext_str="${_field_list[2]}";
         if [ -r "${_appFqDir}" ]; then
@@ -181,7 +182,7 @@ set -u;
         continue;
       fi
 
-      if [ "${_ext_str}" = "__dir" ]; then
+      if [ "${_ext_str}" == "__dir" ]; then
         cp -a "${_moduleFqDir}/${_src_dir}" \
           "${_appFqDir}/${_dest_dir}/${_dest_base}-${_vers_str}";
       else
@@ -203,7 +204,7 @@ set -u;
         && echo "  ? INFO installed git hook.";
     else
       echo "  ?  INFO : Git hook not installed."
-      echo "            Run 'npm run ${_app_name}' again once checked-in to git."
+      echo "            Run 'npm run ${_appName}' again once checked-in to git."
     fi
   # echo "  << main / add git hook";
 
@@ -222,9 +223,9 @@ set -u;
   # echo "  << main / patch uglifyjs";
   echo;
 
-  cd "${_orig_dir}";
+  cd "${_origDir}";
   # echo "  <  main"
-  echo "end ${_app_name}";
+  echo "end ${_appName}";
   echo;
 
   exit 0;

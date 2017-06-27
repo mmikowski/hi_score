@@ -23,8 +23,8 @@ This is an SPA starter project that installs best-in-class assets and tools to s
 - Code coverage at 98.9% per coveralls.io (Istanbul, Coveralls)
 - Build manifest (Buildify)
 - Build compression *including* property keys (auto-patched UglifyJS + SuperPack)
-- Creation of distribution-ready directory from build process (`npm run build` creates `build/dist`)
-- Two simple demo applications that show compression and namespacing (`npm run build`)
+- Creation of distribution-ready directory from build process (`npm run make` creates `build/dist`)
+- Two simple demo applications that show compression and namespacing (`npm run make`)
 
 ## Quick start
 ```bash
@@ -141,7 +141,7 @@ We employ `buildify` and `superpack` to prepare the code for production. This is
 
 ```bash
   cd ~/GitHub/hi_score
-  npm run build
+  npm run make
   cd build/dist
   google-chrome ex01.html ex02.html
 ```
@@ -309,9 +309,15 @@ MIT
 
 ### Version 1.1.x
 - (x) Rename `npm run prep-libs` to `npm run setup`
-- (x) Rename `npm run buildify` to `npm run build`
+- (x) Rename `npm run cover`     to `npm run coverage`
+- (x) Rename `npm run covera`    to `npm run publish-coverage`
+- (x) Rename `npm run buildify`  to `npm run make`
+- (x) Syntax refinements
 - (x) Update libs, add express
-- (i) Add utils and tests
+- (x) Add utils and tests
+
+### Version 1.2.x
+- (i) Move to all-js installation and build system
 - (p) Increase complexity of example applications
 
 ## Similar Projects

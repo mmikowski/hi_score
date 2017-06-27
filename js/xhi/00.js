@@ -1,11 +1,11 @@
 /*
- *    00.js
+ * 00.js
  *
- *    Use     : xhi._makeRoot_( '<namespace>' );
- *    Synopsis: Create an app_map using named <namespace>
- *    Provides: An application map containing shared symbols
+ * Use     : xhi._makeRoot_( '<namespace>' );
+ * Synopsis: Create an app_map using named <namespace>
+ * Provides: An application map containing shared symbols
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -208,7 +208,7 @@ xhi._makeRoot_ = function ( aKey ) {
       _10_     : 10,
       _100_    : 100
     };
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   return {
@@ -216,12 +216,12 @@ xhi._makeRoot_ = function ( aKey ) {
     _nMap_    : nMap,
     _vMap_    : vMap
   };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeRoot_ =======================================
+// == . END MODULE __NS._makeRoot_ =====================================
 
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */
 try { module.exports = xhi; }
 catch ( ignore ) {}
-// == END BROWSER AND NODE SUPPORT =====================================
+// == . END BROWSER AND NODE SUPPORT ===================================

@@ -1,11 +1,11 @@
 /*
- *    08.app.js
+ * 08.app.js
  *
- *    Use: xhi._makeApp_( '<namespace>' );
- *    Synopsis: Assembles an application in the provided namespace
- *    Provides: app_map which has the global name '<namespace>'
+ * Use: xhi._makeApp_( '<namespace>' );
+ * Synopsis: Assembles an application in the provided namespace
+ * Provides: app_map which has the global name '<namespace>'
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -45,4 +45,4 @@ __NS._makeApp_ = function ( app_key ) {
   __global[ app_key ] = app_map;
   return app_map;
 };
-// == END MODULE __NS._makeApp_ ========================================
+// == . END MODULE __NS._makeApp_ ======================================

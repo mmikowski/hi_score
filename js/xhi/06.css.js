@@ -1,11 +1,11 @@
 /*
- *    06.css.js
+ * 06.css.js
  *
- *    Use     : xhi._makeCss_( app_map );
- *    Synopsis: Add _css_ capabilities to app_map
- *    Provides: Run-time CSS styling using PowerCSS
+ * Use     : xhi._makeCss_( app_map );
+ * Synopsis: Add _css_ capabilities to app_map
+ * Provides: Run-time CSS styling using PowerCSS
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -41,13 +41,13 @@ __NS._makeCss_ = function ( aMap ) {
       _is_ready_  : __false,
       _theme_idx_ : __0
     };
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN UTILITY METHODS ==========================================
-  // == END UTILITY METHODS ============================================
+  // == . END UTILITY METHODS ==========================================
 
   // == BEGIN DOM METHODS ==============================================
-  // == END DOM METHODS ================================================
+  // == . END DOM METHODS ==============================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN public method /getThemeCount/
@@ -56,7 +56,7 @@ __NS._makeCss_ = function ( aMap ) {
       theme_map_list = aMap._css_base_._themeMapList_;
     return theme_map_list[ vMap._length_ ];
   }
-  // END public method /getThemeCount/
+  // . END public method /getThemeCount/
 
   // BEGIN public method /getThemeMixinMap/
   function getThemeMixinMap () {
@@ -65,7 +65,7 @@ __NS._makeCss_ = function ( aMap ) {
       theme_idx      = topSmap._theme_idx_;
     return theme_map_list[ theme_idx ];
   }
-  // END public method /getThemeMixinMap/
+  // . END public method /getThemeMixinMap/
 
   // BEGIN public method /setThemeIdx/
   function setThemeIdx( arg_idx ) {
@@ -101,7 +101,7 @@ __NS._makeCss_ = function ( aMap ) {
     topSmap._theme_idx_ = theme_idx;
     return theme_idx;
   }
-  // END public method /setThemeIdx/
+  // . END public method /setThemeIdx/
 
   // BEGIN public method /initModule/
   function initModule ( arg_idx ) {
@@ -163,7 +163,7 @@ __NS._makeCss_ = function ( aMap ) {
     });
     topSmap._is_ready_ = __true;
   }
-  // END public method /initModule/
+  // . END public method /initModule/
 
   aMap._css_ = {
     _getCssKeyMap_     : pcss._getCssKeyMap_,
@@ -174,7 +174,7 @@ __NS._makeCss_ = function ( aMap ) {
 
     _initModule_       : initModule
   };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeCss_ ========================================
+// == . END MODULE __NS._makeCss_ ======================================
 

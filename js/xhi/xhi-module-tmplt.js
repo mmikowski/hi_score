@@ -1,12 +1,11 @@
 /*
- *    xhi-module-tmplt.js
+ * xhi-module-tmplt.js
  *
- *    Use: $ cp xhi-module-tmplt.js 07.<newfeature>.js
- *    Synopsis: Feature module template
- *    Provides: A template that embodies best practice
+ * Use: $ cp xhi-module-tmplt.js 07.<newfeature>.js
+ * Synopsis: Feature module template
+ * Provides: A template that embodies best practice
  *
- *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -43,10 +42,10 @@ __NS._makeTmplt_ = function ( aMap ) {
 
     $Map
     ;
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN UTILITY METHODS ==========================================
-  // == END UTILITY METHODS ============================================
+  // == . END UTILITY METHODS ==========================================
 
   // == BEGIN DOM METHODS ==============================================
   // BEGIN DOM method /set$Map/
@@ -62,11 +61,11 @@ __NS._makeTmplt_ = function ( aMap ) {
   function set$Map ( $top_box ) {
     $Map = { _$top_box_ : $top_box };
   }
-  // END DOM method /set$Map/
-  // == END DOM METHODS ================================================
+  // . END DOM method /set$Map/
+  // == . END DOM METHODS ==============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
-  // == END EVENT HANDLERS =============================================
+  // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModule/
@@ -85,10 +84,10 @@ __NS._makeTmplt_ = function ( aMap ) {
       '\n  $Map    === ' + JSON.stringify( $Map )
     );
   }
-  // END Public method /initModule/
+  // . END Public method /initModule/
 
   aMap._makeTmplt_ = { _initModule_ : initModule };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeTmplt_ ======================================
+// == . END MODULE __NS._makeTmplt_ ====================================
 

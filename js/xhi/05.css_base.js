@@ -1,11 +1,11 @@
 /*
- *    05.css_base.js
+ * 05.css_base.js
  *
- *    Use     : xhi._makeCssBase_( app_map );
- *    Synopsis: Add _css_base_ capabilities to app_map
- *    Provides: Shared CSS symbols used by PowerCSS
+ * Use     : xhi._makeCssBase_( app_map );
+ * Synopsis: Add _css_base_ capabilities to app_map
+ * Provides: Shared CSS symbols used by PowerCSS
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -417,7 +417,7 @@ __NS._makeCssBase_ = function ( aMap ) {
       ]
       /* END {_p_}-_x_*_ selectors */
     };
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   aMap._css_base_ = {
@@ -425,6 +425,6 @@ __NS._makeCssBase_ = function ( aMap ) {
     _selectorList_   : topCmap._selector_list_,
     _themeMapList_   : topCmap._theme_map_list_
   };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeCssBase_ ====================================
+// == . END MODULE __NS._makeCssBase_ ==================================

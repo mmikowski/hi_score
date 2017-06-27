@@ -1,11 +1,11 @@
 /*
- *    04.utilb.js
+ * 04.utilb.js
  *
- *    Use     : xhi._makeUtilb_( app_map );
- *    Synopsis: Add _utilb_ capabilities to app_map
- *    Provides: Browser utilities, requires jQuery
+ * Use     : xhi._makeUtilb_( app_map );
+ * Synopsis: Add _utilb_ capabilities to app_map
+ * Provides: Browser utilities, requires jQuery
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -24,8 +24,8 @@ catch ( e1 ) { __NS = window[ __ns ]; }
 __NS._makeUtilb_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
+  // TODO: add when needed: aKey  = aMap._aKey_
   var
-    // TODO: add when needed: aKey  = aMap._aKey_
     nMap     = aMap._nMap_,
     vMap     = aMap._vMap_,
     __util   = aMap._util_,
@@ -56,10 +56,10 @@ __NS._makeUtilb_ = function ( aMap ) {
     onBufferReady
     ;
 
-  // == END MODULE SCOPE VARIABLES ====================================
+  // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
-  // == END UTILITY METHODS ===========================================
+  // == . END UTILITY METHODS =========================================
 
   // == BEGIN PUBLIC METHODS ==========================================
   // BEGIN Public method /decodeHtml/
@@ -70,7 +70,7 @@ __NS._makeUtilb_ = function ( aMap ) {
     var str = __castStr( arg_str, __blank );
     return $('<div></div>')[ vMap._html_]( str )[ vMap._text_ ]();
   }
-  // END Public method /decodeHtml/
+  // . END Public method /decodeHtml/
 
   // BEGIN Public method /fillForm/
   // Purpose: Fills a form by input names
@@ -104,7 +104,7 @@ __NS._makeUtilb_ = function ( aMap ) {
     });
     return __true;
   }
-  // END Public method /fillForm/
+  // . END Public method /fillForm/
 
   // BEGIN Public method /fixInputByType/
   function fixInputByType ( arg_$input ) {
@@ -132,7 +132,7 @@ __NS._makeUtilb_ = function ( aMap ) {
     }
     return solve_data;
   }
-  // END Public method /fixInputByType/
+  // . END Public method /fixInputByType/
 
   // BEGIN Public method /getFormMap/
   // Purpose: Create a map of form values key by input name
@@ -179,7 +179,7 @@ __NS._makeUtilb_ = function ( aMap ) {
 
     return form_map;
   }
-  // END Public method /getFormMap/
+  // . END Public method /getFormMap/
 
   // BEGIN Public method /onDomReady/
   // Purpose : Executes a provided function only after the browser DOM
@@ -232,7 +232,7 @@ __NS._makeUtilb_ = function ( aMap ) {
 
     return onBuf;
   }());
-  // END Public method /onBufferReady/
+  // . END Public method /onBufferReady/
 
   // BEGIN Public method /resizeTextarea/
   // Summary   : is_done = resizeTextarea( $textarea, 800 );
@@ -273,7 +273,7 @@ __NS._makeUtilb_ = function ( aMap ) {
     $textarea[ vMap._css_ ]( cssKmap._height_, solve_ht_px );
     return __true;
   }
-  // END Public method /resizeTextarea/
+  // . END Public method /resizeTextarea/
 
   aMap._utilb_ = {
     _decodeHtml_     : decodeHtml,
@@ -282,7 +282,7 @@ __NS._makeUtilb_ = function ( aMap ) {
     _onBufferReady_  : onBufferReady,
     _resizeTextarea_ : resizeTextarea
   };
-  // == END PUBLIC METHODS ============================================
+  // == . END PUBLIC METHODS ==========================================
 };
-// == END MODULE __NS._makeUtilb_ =====================================
+// == . END MODULE __NS._makeUtilb_ ===================================
 

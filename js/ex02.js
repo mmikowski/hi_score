@@ -1,6 +1,6 @@
 /**
  *    ex02.js
- *    Example 02 applicaton using xhi instances instead of modules.
+ *    Example 02 application using xhi instances instead of modules.
  *
  *    Michael S. Mikowski - mike.mikowski@gmail.com
 */

@@ -1,11 +1,11 @@
 /*
- *    xhi-ws-context.js
- *    This file is used by WebStorm to resolve properties
- *    key received from external sources such as AJAX.
- *    It is also useful as a reference.
- *    It should *NOT* be included in production code.
+ * xhi-ws-context.js
+ * This file is used by WebStorm to resolve properties
+ * key received from external sources such as AJAX.
+ * It is also useful as a reference.
+ * It should *NOT* be included in production code.
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true,  indent : 2,      maxerr : 50,

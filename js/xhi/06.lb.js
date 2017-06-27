@@ -1,11 +1,11 @@
 /*
- *    06.lb.js
+ * 06.lb.js
  *
- *    Use     : xhi._makeLb_( app_map );
- *    Synopsis: Add _lb_ capabilities to app_map
- *    Provides: Lightbox feature module
+ * Use     : xhi._makeLb_( app_map );
+ * Synopsis: Add _lb_ capabilities to app_map
+ * Provides: Lightbox feature module
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -124,10 +124,10 @@ __NS._makeLb_ = function ( aMap ) {
     },
     coordDraggable
     ;
-  // == END MODULE SCOPE VARIABLES ====================================
+  // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
-  // == END UTILITY METHODS ===========================================
+  // == . END UTILITY METHODS =========================================
 
   // == BEGIN DOM METHODS =============================================
   // BEGIN DOM method /set$Map/
@@ -139,7 +139,7 @@ __NS._makeLb_ = function ( aMap ) {
       _$spin_    : $( '#' + aKey + '-_lb_spin_' )
     };
   }
-  // END DOM method /set$Map/
+  // . END DOM method /set$Map/
 
   // BEGIN DOM method /initModule/
   // Checks to see if we have been initialized; if not, we do so
@@ -155,7 +155,7 @@ __NS._makeLb_ = function ( aMap ) {
     $Map._$mask_[    vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
     topSmap._is_ready_ = __true;
   }
-  // END DOM method /initModule/
+  // . END DOM method /initModule/
 
   // BEGIN DOM method /addLocalSpin/
   function addLocalSpin( arg_$box ) {
@@ -163,7 +163,7 @@ __NS._makeLb_ = function ( aMap ) {
 
     if ( $box ) { $box.html( topCmap._local_html_ ); }
   }
-  // END DOM method /addLocalSpin/
+  // . END DOM method /addLocalSpin/
 
   // BEGIN DOM method /cleanUp/
   function cleanUp () {
@@ -199,7 +199,7 @@ __NS._makeLb_ = function ( aMap ) {
     topSmap._mod_class_str_ = __blank;
     topSmap._is_masked_     = __false;
   }
-  // END DOM method /cleanUp/
+  // . END DOM method /cleanUp/
 
   // BEGIN DOM method /hideLb/
   // This clears the litebox content
@@ -231,7 +231,7 @@ __NS._makeLb_ = function ( aMap ) {
     }
     return $Map._$litebox_;
   }
-  // END DOM method /hideLb/
+  // . END DOM method /hideLb/
 
   // BEGIN DOM method /closeLb/
   // The difference between closeLb and hideLb is that close
@@ -248,13 +248,13 @@ __NS._makeLb_ = function ( aMap ) {
     }
     return hideLb();
   }
-  // END DOM method /closeLb/
+  // . END DOM method /closeLb/
 
   // BEGIN method /setCloseFn/
   function setCloseFn ( fn_cb ) {
     topSmap._onclose_fn_ = __castFn( fn_cb );
   }
-  // END method /setCloseFn/
+  // . END method /setCloseFn/
 
   // BEGIN method /showBusy/
   function showBusy ( /*msg_str*/ ) {
@@ -272,7 +272,7 @@ __NS._makeLb_ = function ( aMap ) {
     //   $Map._$msg_[ vMap._text_ ]( msg_str );
     // )
   }
-  // END method /showBusy/
+  // . END method /showBusy/
 
   // BEGIN DOM method /afterShow/
   // Purpose: Finishes presentation of litebox after it is shown
@@ -311,7 +311,7 @@ __NS._makeLb_ = function ( aMap ) {
 
     $litebox[ vMap._addClass_ ]( active_class );
   }
-  // END DOM method /afterShow/
+  // . END DOM method /afterShow/
 
   // BEGIN method /showLb/
   // Purpose  : Show a litebox of content.
@@ -514,9 +514,9 @@ __NS._makeLb_ = function ( aMap ) {
     topSmap._is_busy_ = __true;
     return $litebox;
   }
-  // END method /showLb/
+  // . END method /showLb/
 
-  // == END DOM METHODS ===============================================
+  // == . END DOM METHODS =============================================
 
   // == BEGIN EVENT HANDLERS ==========================================
   // The event handlers are impossible to test well without a browser.
@@ -590,7 +590,7 @@ __NS._makeLb_ = function ( aMap ) {
     topSmap._resize_toid_ = __undef;
     return __true;
   }
-  // == END EVENT HANDLERS ============================================
+  // == . END EVENT HANDLERS ==========================================
 
   // == BEGIN COORDINATORS =============================================
   // These methods are here because they tie DOM methods to handlers.
@@ -610,7 +610,7 @@ __NS._makeLb_ = function ( aMap ) {
     }
   }
   coordDraggable = coordDraggable0;
-  // == END COORDINATORS ===============================================
+  // == . END COORDINATORS =============================================
 
   // == BEGIN PUBLIC METHODS ==========================================
   // BEGIN showSuccess
@@ -627,7 +627,7 @@ __NS._makeLb_ = function ( aMap ) {
     initModule();
     return showLb({ _content_html_ : content_html });
   }
-  // END showSuccess
+  // . END showSuccess
 
   function showErrorList ( arg_row_list ) {
     var
@@ -673,7 +673,7 @@ __NS._makeLb_ = function ( aMap ) {
 
     _initModule_    : initModule
   };
-  // == END PUBLIC METHODS ============================================
+  // == . END PUBLIC METHODS ==========================================
 };
-// == END MODULE __NS._makeLb_ ========================================
+// == . END MODULE __NS._makeLb_ ======================================
 

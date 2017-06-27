@@ -1,11 +1,11 @@
 /*
- *    02.data.js
+ * 02.data.js
  *
- *    Use     : xhi._makeData_( app_map );
- *    Synopsis: Add _data_ capabilities to app_map
- *    Provides: Shared data transfer methods (AJAX, Websockets)
+ * Use     : xhi._makeData_( app_map );
+ * Synopsis: Add _data_ capabilities to app_map
+ * Provides: Shared data transfer methods (AJAX, Websockets)
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -46,11 +46,11 @@ __NS._makeData_ = function ( aMap ) {
     topCmap = {},
     topSmap = {}
     ;
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN UTILITY METHODS ==========================================
   function encodeUriComp ( str ) { return encodeURIComponent( str ); }
-  // == END UTILITY METHODS ============================================
+  // == . END UTILITY METHODS ==========================================
 
   // == BEGIN PRIVATE METHODS ==========================================
   // BEGIN private method /addJqxhrToList/
@@ -62,7 +62,7 @@ __NS._makeData_ = function ( aMap ) {
     if ( list_idx > __n1 ) { return; }
     jqxhr_list[ vMap._push_ ]( jqxhr_obj );
   }
-  // END private method /addJqxhrToList/
+  // . END private method /addJqxhrToList/
 
   // BEGIN private method /delJqxhrFromList/
   function delJqxhrFromList ( jqxhr_obj ) {
@@ -85,7 +85,7 @@ __NS._makeData_ = function ( aMap ) {
       catch ( error_obj ) { __logMsg( '_no_cancel_' ); }
     }
   }
-  // END private method /delJqxhrFromList/
+  // . END private method /delJqxhrFromList/
 
   // BEGIN private and public method /handleNoauth/
   function handleNoauth () {
@@ -94,7 +94,7 @@ __NS._makeData_ = function ( aMap ) {
       aKey + '-_data_', { '_use_str_' : '_noauth_' }
     );
   }
-  // END private public method /handleNoauth/
+  // . END private public method /handleNoauth/
 
   // BEGIN private method /onFailJqxhr/
   function onFailJqxhr ( jqxhr, status_type, error_data ) {
@@ -106,7 +106,7 @@ __NS._makeData_ = function ( aMap ) {
     }
     return smap._fail_fn_ && smap._fail_fn_( error_data, status_type );
   }
-  // END private method /onFailJqxhr/
+  // . END private method /onFailJqxhr/
 
   // BEGIN private method /onDoneJqxhr/
   function onDoneJqxhr ( arg_data, status_type, jqxhr ) {
@@ -123,7 +123,7 @@ __NS._makeData_ = function ( aMap ) {
     // Despite successful transmission, status_int says we have a problem
     onFailJqxhr( jqxhr, status_type, arg_data );
   }
-  // END private method /onDoneJqxhr/
+  // . END private method /onDoneJqxhr/
 
   // BEGIN private method /sendHttpRequest/
   function sendHttpRequest ( arg_map ) {
@@ -185,7 +185,7 @@ __NS._makeData_ = function ( aMap ) {
 
     jqxhr_obj[ vMap._then_ ]( done_jqxhr_fn, fail_jqxhr_fn );
   }
-  // END private method /sendHttpRequest/
+  // . END private method /sendHttpRequest/
 
   // BEGIN private methods for Delete, Get, Post, and Put
   function sendHttpGet ( arg_map ) {
@@ -204,11 +204,11 @@ __NS._makeData_ = function ( aMap ) {
     arg_map._request_type_ = 'PUT';
     sendHttpRequest( arg_map );
   }
-  // END private methods for Delete, Get, Post, and Put
-  // == END PRIVATE METHDS =============================================
+  // . END private methods for Delete, Get, Post, and Put
+  // == . END PRIVATE METHDS ===========================================
 
   // == BEGIN EVENT HANDLERS ===========================================
-  // == END EVENT HANDLERS =============================================
+  // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModule/
@@ -226,10 +226,10 @@ __NS._makeData_ = function ( aMap ) {
       sendHttpPost, sendHttpPut
     );
   }
-  // END Public method /initModule/
+  // . END Public method /initModule/
 
   aMap._data_ = { _initModule_ : initModule };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeData_ =======================================
+// == . END MODULE __NS._makeData_ =====================================
 

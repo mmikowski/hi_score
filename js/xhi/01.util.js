@@ -1,11 +1,11 @@
 /*
- *    01.util.js
+ * 01.util.js
  *
- *    Use     : xhi._makeUtil_( app_map );
- *    Synopsis: Add _util_ capabilities to app_map
- *    Provides: Utilities which do not require jQuery or a browser
+ * Use     : xhi._makeUtil_( app_map );
+ * Synopsis: Add _util_ capabilities to app_map
+ * Provides: Utilities which do not require jQuery or a browser
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -66,7 +66,7 @@ __NS._makeUtil_ = function ( aMap ) {
     getBasename,  getDirname,   logObj,
     makeGuidStr,  makeTmpltStr, trimStrList
     ;
-  // == END MODULE SCOPE VARIABLES ====================================
+  // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN PREREQ METHODS ==========================================
   // BEGIN Public prereq method /getVarType/
@@ -119,7 +119,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return mainFn;
   }());
-  // END Public prereq method /getVarType/
+  // . END Public prereq method /getVarType/
 
   // BEGIN Public prereq method /castBool/
   // Summary   : castBool( <data>, <alt_data> )
@@ -139,7 +139,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return !! data;
   }
-  // END Public prereq method /castBool/
+  // . END Public prereq method /castBool/
 
   // BEGIN Public prereq method /castFn/
   // Summary   : castFn( <data>, <alt_data> )
@@ -156,7 +156,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var var_type = getVarType( data );
     return ( var_type === '_Function_' ) ? data : alt_data;
   }
-  // END Public prereq method /castFn/
+  // . END Public prereq method /castFn/
 
   // BEGIN Public prereq method /castInt/
   // Summary   : castInt( <data>, <alt_data> )
@@ -181,7 +181,7 @@ __NS._makeUtil_ = function ( aMap ) {
     if ( isNaN( num ) ) { return alt_data; }
     return __floor( num + __d5 );
   }
-  // END Public prereq method /castInt/
+  // . END Public prereq method /castInt/
 
   // BEGIN Public prereq method /castJQ/
   // Summary   : castJQ( <data>, <alt_data> )
@@ -201,7 +201,7 @@ __NS._makeUtil_ = function ( aMap ) {
     /* istanbul ignore next */
     return alt_data;
   }
-  // END Public preq method /castJQ/
+  // . END Public preq method /castJQ/
 
   // BEGIN Public prereq method /castList/
   // Summary   : castList( <data>, <alt_data> )
@@ -218,7 +218,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var var_type = getVarType( data );
     return ( var_type === '_Array_' ) ? data : alt_data;
   }
-  // END Public prereq method /castList/
+  // . END Public prereq method /castList/
 
   // BEGIN Public prereq method /castMap/
   // Summary   : castMap( <data>, <alt_data> )
@@ -235,7 +235,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var var_type = getVarType( data );
     return ( var_type === '_Object_' ) ? data : alt_data;
   }
-  // END Public prereq method /castMap/
+  // . END Public prereq method /castMap/
 
   // BEGIN Public prereq method /castNum/
   // Summary   : castNum( <data>, <alt_data> )
@@ -257,7 +257,7 @@ __NS._makeUtil_ = function ( aMap ) {
       ;
     return isNaN( num ) ? alt_data : num;
   }
-  // END Public prereq method /castNum/
+  // . END Public prereq method /castNum/
 
   // BEGIN Public prereq method /castObj/
   // Summary   : castObj( <obj_type>, <data>, <alt_data> )
@@ -275,7 +275,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var var_type = getVarType( data );
     return var_type === obj_type ? data : alt_data;
   }
-  // END Public prereq method /castObj/
+  // . END Public prereq method /castObj/
 
   // BEGIN Public prereq method /castStr/
   // Summary   : castStr( <data>, <alt_data> )
@@ -295,7 +295,7 @@ __NS._makeUtil_ = function ( aMap ) {
       ? data : var_type === '_Number_'
       ? __Str( data ) : alt_data;
   }
-  // END Public prereq method /castStr/
+  // . END Public prereq method /castStr/
   //
   // BEGIN Public prereq method /cloneData/
   // Summary   : cloneData( <data> )
@@ -314,7 +314,7 @@ __NS._makeUtil_ = function ( aMap ) {
     catch ( ignore_obj ) { clone_data = __undef; }
     return clone_data;
   }
-  // END Public prereq method /cloneData/
+  // . END Public prereq method /cloneData/
 
   // BEGIN Public prereq method /getNowMs/
   // Purpose   : Get timestamp
@@ -337,7 +337,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return return_fn;
   }());
-  // END Public prereq method /getNowMs/
+  // . END Public prereq method /getNowMs/
 
   // BEGIN Public prereq method /getNumSign/
   // Summary   : getNumSign( <data> )
@@ -353,7 +353,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var num = __Num( n );
     return ( ! isNaN( num ) && num < __0 ) ? __n1 : __1;
   }
-  // END Public prereq method /getNumSign/
+  // . END Public prereq method /getNumSign/
 
   // BEGIN Private method /getTzDateObj/
   // Returns   : A date object singleton for use by Tz methods
@@ -364,7 +364,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return topSmap._date_obj_;
   }
-  // END Private method /getTzDateObj/
+  // . END Private method /getTzDateObj/
 
   // BEGIN Public prereq method /makeArgList/
   // Summary   : makeArgList( <arg_obj> )
@@ -392,7 +392,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return solve_list;
   }
-  // END Public prereq method /makeArgList/
+  // . END Public prereq method /makeArgList/
 
   // BEGIN Public prereq method /makePadNumStr/
   // Summary   : makePadNumStr( <number>, <count> )
@@ -430,7 +430,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return num_str;
   }
-  // END Public prereq method /makePadNumStr/
+  // . END Public prereq method /makePadNumStr/
 
   // BEGIN public prereq method /makeEscRxStr/
   // Summary   : makeEscRxStr( <string> ) {
@@ -447,7 +447,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var str = castStr( arg_str, __blank );
     return str.replace( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
   }
-  // END Public prereq method /makeEscRxStr/
+  // . END Public prereq method /makeEscRxStr/
 
   // BEGIN Public prereq method /makeRxObj/
   // Summary   : makeRxObj( <pattern>, <options> )
@@ -470,7 +470,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return new RegExp( pattern_str );
   }
-  // END Public prereq method /makeRxObj/
+  // . END Public prereq method /makeRxObj/
 
   // BEGIN Public prereq method /makeScrubStr/
   function makeScrubStr ( arg_str, arg_do_space ) {
@@ -484,7 +484,7 @@ __NS._makeUtil_ = function ( aMap ) {
     interm_str = interm_str[ vMap._trim_ ]();
     return interm_str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
   }
-  // END Public prereq method /makeScrubStr/
+  // . END Public prereq method /makeScrubStr/
 
   // BEGIN Public prereq method /makeUcFirstStr/
   function makeUcFirstStr ( arg_str ) {
@@ -494,8 +494,8 @@ __NS._makeUtil_ = function ( aMap ) {
       ;
     return uc_str + str[ vMap._substr_ ]( __1 );
   }
-  // END Public prereq method /makeUcFirstStr/
-  // == END PREREQ METHODS ============================================
+  // . END Public prereq method /makeUcFirstStr/
+  // == . END PREREQ METHODS ==========================================
 
   // == BEGIN UTILITY OBJECTS =========================================
   // BEGIN define logObj singleton
@@ -604,8 +604,8 @@ __NS._makeUtil_ = function ( aMap ) {
       _logMsg_      : logMsg
     };
   }());
-  // END define logObj singleton
-  // == END UTILITY METHODS ===========================================
+  // . END define logObj singleton
+  // == . END UTILITY METHODS =========================================
 
   // == BEGIN PUBLIC METHODS ==========================================
   // BEGIN Public method /checkDateStr/
@@ -658,7 +658,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return mainFn;
   }());
-  // END Public method /checkDateStr/
+  // . END Public method /checkDateStr/
 
   // BEGIN public method /makeMetricStr/
   function makeMetricStr( arg_num ) {
@@ -686,7 +686,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return root_num.toPrecision( __3 ) + suffix;
   }
-  // END public method /makeMetricStr/
+  // . END public method /makeMetricStr/
 
   // BEGIN Public method /clearMap/
   function clearMap ( arg_map ) {
@@ -708,7 +708,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return map;
   }
-  // END Public method /clearMap/
+  // . END Public method /clearMap/
 
   // BEGIN Public method /encodeHtml/
   // Purpose : This is single pass encoder for html entities and handles
@@ -749,7 +749,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
     return source_str.replace( match_rx, match_fn );
   }
-  // END Public method /encodeHtml/
+  // . END Public method /encodeHtml/
 
   // BEGIN utilities /getBasename/ and /getDirname/
   // Purpose   : Returns the last bit of a path
@@ -777,7 +777,7 @@ __NS._makeUtil_ = function ( aMap ) {
   }
   getBasename = getBaseDirname[ vMap._bind_ ]( '_base_' );
   getDirname  = getBaseDirname[ vMap._bind_ ]( '_dir_'  );
-  // END utilities /getBasename/ and /getDirname/
+  // . END utilities /getBasename/ and /getDirname/
 
   // BEGIN Public method /getListAttrIdx/
   function getListAttrIdx ( arg_map_list, arg_key, data ) {
@@ -807,7 +807,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return found_idx;
   }
-  // END Public method /getListAttrIdx/
+  // . END Public method /getListAttrIdx/
 
   // BEGIN Public methd /getListAttrMap/
   function getListAttrMap ( arg_list, key_name, key_val ) {
@@ -816,7 +816,7 @@ __NS._makeUtil_ = function ( aMap ) {
       list_idx = getListAttrIdx( list, key_name, key_val );
     return list_idx > __n1 ? list[ list_idx ] : __undef;
   }
-  // END Public method /getListAttrMap/
+  // . END Public method /getListAttrMap/
 
   // BEGIN Public method /getListDiff/
   // Purpose : Find all elements common between two lists.
@@ -847,7 +847,7 @@ __NS._makeUtil_ = function ( aMap ) {
     );
     return list_1[ vMap._concat_ ]( list_2 );
   }
-  // END Public method /getListDiff/
+  // . END Public method /getListDiff/
 
   // BEGIN Public method /getListValCount/
   function getListValCount ( arg_list, arg_data ) {
@@ -863,11 +863,11 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return match_count;
   }
-  // END Public method /getListValCount/
+  // . END Public method /getListValCount/
 
   // BEGIN Public method /getLogObj/
   function getLogObj () { return logObj; }
-  // END Public method /getlogObj/
+  // . END Public method /getlogObj/
 
   // BEGIN Public method /getStructData/
   // Purpose   : Get a deep structure attribute value
@@ -920,7 +920,7 @@ __NS._makeUtil_ = function ( aMap ) {
     if ( is_good ) { return walk_struct; }
     return __undef;
   }
-  // END Public method /getStructData/
+  // . END Public method /getStructData/
 
   // BEGIN Public method /getTzOffsetMs/
   function getTzOffsetMs ( arg_do_recalc ) {
@@ -934,7 +934,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return topSmap._tz_offset_ms_;
   }
-  // END Public method /getTzOffsetMs/
+  // . END Public method /getTzOffsetMs/
 
   // BEGIN Public method /getTzCode/
   function getTzCode () {
@@ -946,7 +946,7 @@ __NS._makeUtil_ = function ( aMap ) {
     return ( match_list && match_list[ __1 ] )
       ? match_list[ __1 ] : __blank;
   }
-  // END Public method /getTzCode/
+  // . END Public method /getTzCode/
 
   // BEGIN Public method /makeClockStr/
   // Purpose   : Create HH:MM:SS time string from UTC time integer in ms
@@ -1020,7 +1020,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
     return time_list[ vMap._join_ ](':');
   }
-  // END Public method /makeClockStr/
+  // . END Public method /makeClockStr/
 
   // BEGIN Public method /makeCommaNumStr/
   // Purpose   : Convert a number into a string optimized for readability
@@ -1075,7 +1075,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return solve_list[ vMap._join_]('.') + solve_suffix;
   }
-  // END Public method /makeCommaNumStr/
+  // . END Public method /makeCommaNumStr/
 
   // BEGIN Public method /makeDateStr/
   // Purpose   : Create a string from a date object
@@ -1156,7 +1156,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
     return time_str ?  date_str + ' ' + time_str : date_str;
   }
-  // END Public method /makeDateStr/
+  // . END Public method /makeDateStr/
 
   // BEGIN Public method /makeDebounceFn/
   // Purpose : Return a function that will fire after
@@ -1184,7 +1184,7 @@ __NS._makeUtil_ = function ( aMap ) {
       }, delay_ms );
     };
   }
-  // END Public method /makeDebounceFn/
+  // . END Public method /makeDebounceFn/
 
   // BEGIN Public method /makeThrottleFn/
   // Purpose : Return a function that will fire once per
@@ -1230,7 +1230,7 @@ __NS._makeUtil_ = function ( aMap ) {
       );
     };
   }
-  // END Public method /makeThrottleFn/
+  // . END Public method /makeThrottleFn/
 
   // BEGIN Public method /makeEllipsisStr/
   // Purpose : Shorten a string to a maximum length and append ellipsis
@@ -1287,7 +1287,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
     return scrub_str.substr(__0, limit_int - __3 ) + '...';
   }
-  // END Public method /makeEllipsisStr/
+  // . END Public method /makeEllipsisStr/
 
   // BEGIN Public method /makeErrorObj/
   // Purpose   : A convenient method to create an error object
@@ -1310,7 +1310,7 @@ __NS._makeUtil_ = function ( aMap ) {
     error_obj.data        = data;
     return error_obj;
   }
-  // END Public method /makeErrorObj/
+  // . END Public method /makeErrorObj/
 
   // BEGIN Public method /makeGuidStr/
   makeGuidStr = (function () {
@@ -1332,7 +1332,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return mainFn;
   }());
-  // END Public method /makeGuidStr/
+  // . END Public method /makeGuidStr/
 
   // BEGIN Public method /makeMapUtilObj/
   // Purpose  : Creates a thread-safe map utility object
@@ -1403,7 +1403,7 @@ __NS._makeUtil_ = function ( aMap ) {
       _invokeFn_     : invokeFn
     };
   }
-  // END Public method /makeMapUtilObj/
+  // . END Public method /makeMapUtilObj/
 
   // BEGIN Public method /makeOptionHtml/
   // Arguments : ( named )
@@ -1439,7 +1439,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return html_str;
   }
-  // END Public method /makeOptionHtml/
+  // . END Public method /makeOptionHtml/
 
   // BEGIN Public method /makePctStr/
   // Purpose   : Convert a decimal ratio into a readable % string
@@ -1459,7 +1459,7 @@ __NS._makeUtil_ = function ( aMap ) {
     dcount = dcount < __0 ? __0 : __floor( dcount );
     return ( ratio * __100 )[ vMap._toFixed_ ]( dcount ) + '%';
   }
-  // END Public method /makePctStr/
+  // . END Public method /makePctStr/
 
   // BEGIN Public method /makeRadioHtml/
   // Purpose : Make an array of checkboxes from a list
@@ -1494,7 +1494,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return html_str;
   }
-  // END Public method /makeRadioHtml/
+  // . END Public method /makeRadioHtml/
 
   // BEGIN Public method /makeReplaceFn/
   // Purpose   : Return a high-performance function that
@@ -1521,7 +1521,7 @@ __NS._makeUtil_ = function ( aMap ) {
       return tmplt[ vMap._replace_ ]( search_rx, value_str );
     };
   }
-  // END Public method /makeReplaceFn/
+  // . END Public method /makeReplaceFn/
 
   // BEGIN Public method /makeSeenMap/
   // Purpose : Convert arg_key_list into a map with each key assigned
@@ -1543,7 +1543,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return solve_map;
   }
-  // END Public method /makeSeenMap/
+  // . END Public method /makeSeenMap/
 
   // BEGIN Public method /makeStrFromMap/
   // Purpose : Concatenate a number of key-values
@@ -1582,7 +1582,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return solve_list[ vMap._join_ ]( delim_str ) + __blank;
   }
-  // END Public method /makeStrFromMap/
+  // . END Public method /makeStrFromMap/
 
   // BEGIN Public method /makeSeriesMap/
   // Purpose   : Create a list of time labels quantitized to match
@@ -1763,7 +1763,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
     return solve_map;
   }
-  // END Public function /makeSeriesMap/
+  // . END Public function /makeSeriesMap/
 
   // BEGIN Public method /makeTmpltStr/
   // Purpose   : Replace symbols in a template surrounded by braces
@@ -1815,7 +1815,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return mainFn;
   }());
-  // END Public method /makeTmpltStr/
+  // . END Public method /makeTmpltStr/
 
   // BEGIN Public method /mergeMaps/
   // Purpose : Merge properties of extend_map into base_map
@@ -1849,7 +1849,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return base_map;
   }
-  // END Public method /mergeMaps/
+  // . END Public method /mergeMaps/
 
   // BEGIN Public method /pollFunction/
   // Purpose : Run the <arg_fn> function every <arg_ms> milliseconds
@@ -1891,7 +1891,7 @@ __NS._makeUtil_ = function ( aMap ) {
     main_fn();
     return __true;
   }
-  // END Public method /pollFunction/
+  // . END Public method /pollFunction/
 
   // BEGIN Public method /pushUniqListVal/
   function pushUniqListVal ( arg_list, data ) {
@@ -1900,7 +1900,7 @@ __NS._makeUtil_ = function ( aMap ) {
       input_list[ __push ]( data );
     }
   }
-  // END Public method /pushUniqListVal/
+  // . END Public method /pushUniqListVal/
 
   // BEGIN Public method /rmListVal/
   function rmListVal ( arg_list, arg_data ) {
@@ -1920,7 +1920,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return rm_count;
   }
-  // END Public method /rmUniqListVal/
+  // . END Public method /rmUniqListVal/
 
   // BEGIN Public method /setStructData/
   // Purpose   : Set a deep structure attribute value
@@ -2006,7 +2006,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return is_good;
   }
-  // END Public method /setStructData/
+  // . END Public method /setStructData/
 
   // BEGIN public method /shuffleList/
   // Purpose : Shuffle elements in an array
@@ -2036,10 +2036,9 @@ __NS._makeUtil_ = function ( aMap ) {
       list[ idx ]     = list[ rnd_idx ];
       list[ rnd_idx ] = swap_data;
     }
-    // End count down...
     return __true;
   }
-  // END public method /shuffleList/
+  // . END public method /shuffleList/
 
   // BEGIN public method /trimStrList/
   trimStrList = ( function () {
@@ -2054,9 +2053,9 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return mainFn;
   }());
-  // END utility /trimStrList/
+  // . END utility /trimStrList/
 
-  // == END PUBLIC METHODS ============================================
+  // == . END PUBLIC METHODS ==========================================
 
   // BEGIN initialize module
   function initModule ()  {
@@ -2128,7 +2127,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
   }
   initModule();
-  // END initialize module
+  // . END initialize module
 
   aMap._util_ = {
     _getVarType_      : getVarType,
@@ -2192,4 +2191,4 @@ __NS._makeUtil_ = function ( aMap ) {
     _trimStrList_     : trimStrList
   };
 };
-// == END MODULE __NS._makeUtil_ ======================================
+// == . END MODULE __NS._makeUtil_ ====================================

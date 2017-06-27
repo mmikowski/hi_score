@@ -1,11 +1,11 @@
 /*
- *    02.fake.js
+ * 02.fake.js
  *
- *    Use     : xhi._makeFake_( app_map );
- *    Synopsis: Add mock _data_ capabilities to app_map
- *    Provides: Shared mock data transfer methods (AJAX, Websockets)
+ * Use     : xhi._makeFake_( app_map );
+ * Synopsis: Add mock _data_ capabilities to app_map
+ * Provides: Shared mock data transfer methods (AJAX, Websockets)
  *
- *    @author Michael S. Mikowski - mike.mikowski@gmail.com
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,
   devel  : true, indent  : 2,    maxerr   : 50,
@@ -34,13 +34,13 @@ __NS._fake_ = function ( aMap ) {
     __logObj = __util._getLogObj_(),
     __logMsg  = __logObj._logMsg_
     ;
-  // == END MODULE SCOPE VARIABLES =====================================
+  // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN UTILITY METHODS ==========================================
-  // == END UTILITY METHODS ============================================
+  // == . END UTILITY METHODS ==========================================
 
   // == BEGIN DOM METHODS ==============================================
-  // == END DOM METHODS ================================================
+  // == . END DOM METHODS ==============================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   function fetchExampleMap () {
@@ -57,6 +57,6 @@ __NS._fake_ = function ( aMap ) {
     _fetchExampleMap_ : fetchExampleMap,
     _configModule_    : configModule
   };
-  // == END PUBLIC METHODS =============================================
+  // == . END PUBLIC METHODS ===========================================
 };
-// == END MODULE __NS._makeFake_ ======================================
+// == . END MODULE __NS._makeFake_ ====================================
