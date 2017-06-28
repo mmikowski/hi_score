@@ -146,6 +146,7 @@
   }
   function on02DeployAssetsFn () {
     console.log( '>> Deploying assets' );
+    console.log( '>> See xhiVendorAssetList' );
     eventObj.emit( '03ApplyPatches' );
   }
   function on03ApplyPatchesFn () {
