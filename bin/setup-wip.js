@@ -5,14 +5,21 @@
  * Use      : $ ./setup.js
  * Synopsis : Setup NodeJS script for hi_score
  * Provides : Copies, patches, and links files for development
- *   1. Wipes and copy vendor libs to the js/vendor, css/vendor, and
- *   font/vendor directories using the current version from package.json.
+ *   1. Delete all vendor directories as directed by
+ *      package.json:xhiVendorAssetList
+ *      We expect vendor assets directories in bin, css, font, img, and js
+ *   2. Copy assets from node_modules to vendor directories with the 
+ *      npm version appended to the names.
  *   2. Install the commit hook if git is detected
+ *   3. Applies any patches (uglifyjs)
  *
  * Planned:
- *   1. Use the same cfg file as buildify / superpack
- *   2. Auto-update links to these files using in index.html
- *   (consider using sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html' )
+ *   1. Use package.json for build process (buildify and superpack)
+ *   2. Integrate more deeply to npm build process (avoid reinvention)
+ *   3. Auto-update links files using version numbers.  This may be accomplished
+ *      using xhi utils templates and read file techniques as shown below.
+ *      This would be similar to using 
+ *       sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html'
  *
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */

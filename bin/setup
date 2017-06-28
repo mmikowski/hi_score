@@ -9,8 +9,9 @@
 ## As we do our own checking
 set -u;
 
-# 1. Wipes and copy vendor libs to the js/vendor, css/vendor, and
-#    font/vendor directories using the current version from package.json.
+# 1. Wipes the directories bin/vendor, css/vendor, font/vendor, 
+#    img/vendor, js/vendor and then copies npm vendor assets to them with
+#    their version numbers appended to their name.
 # 2. Install the commit hook if git is detected.
 # 3. Applies patch to uglifyjs
 #
