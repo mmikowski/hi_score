@@ -1,0 +1,5 @@
+// The following has been disabled as it was causing failure during
+// npm install and is not currently used
+//
+//  "node-inspector" : "0.12.10"
+//

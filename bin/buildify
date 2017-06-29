@@ -266,7 +266,9 @@ _abortFn () {
   if ( ! perl -cw "${_packExe}" >/dev/null 2>&1 ); then
     _argDoVerbose=1;
     _logFn "  ! SuperPack is not valid perl.";
-    _logFn "  ! Please install perl-List-MoreUtils perl-File-Slurp ";
+    _logFn "  ! Please install perl-List-MoreUtils perl-File-Slurp: ";
+    _logfn "  ! sudo apt-get install libfile-slurp-perl \\ ";
+    _logfn "  !  liblist-moreutils-perl libgetopt-mixed-perl ";
     _logFn "  ! and perl-Getopt-Mixed.";
     _abortFn;
   fi
@@ -577,11 +579,11 @@ _abortFn () {
 
     ## BEGIN move over remaining files
     for _pair_str in \
-      "${_js_concat_file}_XX_${_js_out_file}" \
-      "${_css_concat_file}_XX_${_css_out_file}";
+      "${_js_concat_file}|${_js_out_file}" \
+      "${_css_concat_file}|${_css_out_file}";
     do
-      _pair_src_file=$(echo "${_pair_str}" |gawk -F'_XX_' '{print $1}');
-      _pair_dst_file=$(echo "${_pair_str}" |gawk -F'_XX_' '{print $2}');
+      _pair_src_file=$(echo "${_pair_str}" |cut -f1 -d'|');
+      _pair_dst_file=$(echo "${_pair_str}" |cut -f2 -d'|');
 
       if [ -r "${_pair_src_file}" ]; then
         if ! mv "${_pair_src_file}" "${_pair_dst_file}"; then

@@ -321,7 +321,8 @@ MIT
 - (x) Add utils and tests
 
 ### Version 1.2.x
-- (i) Move to all-js installation and build system
+
+- (i) Move towards mostly more JavaScript system scripts
 - (p) Increase complexity of example apps
 
 ## Similar Projects
