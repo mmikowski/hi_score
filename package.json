@@ -33,110 +33,107 @@
   "homepage": "https://github.com/mmikowski/hi_score",
   "dependencies": {},
   "devDependencies": {
+    "clusterjs": "0.7.1",
+    "coveralls": "2.12.0",
+    "express": "4.15.2",
     "font-awesome": "4.7.0",
+    "istanbul": "0.4.5",
     "jquery": "3.2.0",
     "jquery.event.dragscroll": "1.0.0",
     "jquery.event.gevent": "1.1.6",
     "jquery.event.ue": "1.3.2",
     "jquery.scrolli": "1.0.1",
     "jquery.urianchor": "1.3.5",
+    "jsdom": "9.12.0",
+    "jslint": "0.10.3",
+    "mongodb": "2.2.25",
+    "mysql2": "1.2.0",
+    "ncp": "2.0.0",
+    "nodeunit": "0.11.0",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.3.5",
     "taffydb": "2.7.3",
-    "clusterjs": "0.7.1",
-    "express": "4.15.2",
-    "websocket": "1.0.22",
-    "jsdom": "9.12.0",
-    "mongodb": "2.2.25",
-    "mysql2": "1.2.0",
-    "coveralls": "2.12.0",
-    "jslint": "0.10.3",
-    "istanbul": "0.4.5",
-    "nodeunit": "0.11.0",
     "uglifycss": "0.0.25",
     "uglifyjs": "2.4.10",
+    "websocket": "1.0.22",
     "which": "latest"
   },
   "maintainers": [
     "Michael S. Mikowski <mike.mikowski@gmail.com>"
   ],
-  "xhiVendorAssetList": [
+  "xhiVendorAssetGroupTable": [
     {
-      "tgt_dir": "js/vendor",
-      "tgt_ext": "js",
-      "copy_list": [
+      "dest_dir_str": "js/vendor",
+      "dest_ext_str": "js",
+      "asset_list": [
         {
-          "src_pkg": "powercss",
-          "src_file": "dist/pcss.js",
-          "dest_name": "pcss"
+          "dest_name": "pcss",
+          "src_asset_name": "pcss.js",
+          "src_dir_str": "dist",
+          "src_pkg_name": "powercss"
         },
         {
-          "src_pkg": "powercss",
-          "src_file": "dist/pcss.cfg.js",
-          "dest_name": "pcss.cfg"
+          "dest_name": "pcss.cfg",
+          "src_asset_name": "pcss.cfg.js",
+          "src_dir_str": "dist",
+          "src_pkg_name": "powercss"
         },
         {
-          "src_pkg": "taffydb",
-          "src_file": "taffydb/taffy.js",
-          "dest_name": "taffy"
+          "src_asset_name": "taffy.js",
+          "src_dir_str": "taffydb",
+          "src_pkg_name": "taffydb"
         },
         {
-          "src_pkg": "jquery",
-          "src_file": "dist/jquery.js"
+          "src_asset_name": "jquery.js",
+          "src_dir_str": "dist",
+          "src_pkg_name": "jquery"
         },
         {
-          "src_pkg": "jquery.event.dragscroll",
-          "src_file": "dist/jquery.event.dragscroll.js"
+          "src_asset_name": "jquery.event.dragscroll.js",
+          "src_dir_str": "dist",
+          "src_pkg_name": "jquery.event.dragscroll"
         },
         {
-          "src_pkg": "jquery.event.gevent",
-          "src_file": "jquery.event.gevent.js"
+          "src_asset_name": "jquery.event.gevent.js",
+          "src_pkg_name": "jquery.event.gevent"
         },
         {
-          "src_pkg": "jquery.event.ue",
-          "src_file": "jquery.event.ue.js"
+          "src_asset_name": "jquery.event.ue.js",
+          "src_pkg_name": "jquery.event.ue"
         },
         {
-          "src_pkg": "jquery.scrolli",
-          "src_file": "dist/jquery.scrolli.js"
+          "src_pkg_name": "jquery.scrolli",
+          "src_dir_str": "dist",
+          "src_asset_name": "jquery.scrolli.js"
         },
         {
-          "src_pkg": "jquery.urianchor",
-          "src_file": "jquery.uriAnchor.js"
+          "src_asset_name": "jquery.uriAnchor.js",
+          "src_pkg_name": "jquery.urianchor"
         }
       ]
     },
     {
-      "tgt_dir": "css/vendor",
-      "tgt_ext": "css",
-      "copy_list": [
+      "dest_dir_str": "css/vendor",
+      "dest_ext_str": "css",
+      "asset_list": [
         {
-          "src_pkg": "font-awesome",
-          "src_file": "/font-awesome/css/font-awesome.css"
+          "src_asset_name": "font-awesome.css",
+          "src_dir_str": "css",
+          "src_pkg_name": "font-awesome"
         }
       ]
     },
     {
-      "tgt_dir": "css/vendor",
-      "tgt_ext": "css",
-      "copy_list": [
+      "dest_dir_str": "font/vendor",
+      "do_dir_copy": true,
+      "asset_list": [
         {
-          "src_pkg": "font-awesome",
-          "src_file": "css/font-awesome.css"
-        }
-      ]
-    },
-    {
-      "tgt_dir": "font/vendor",
-      "do_dir_mode": true,
-      "copy_list": [
-        {
-          "src_pkg": "font-awesome",
-          "src_dir": "fonts"
+          "src_pkg_name": "font-awesome",
+          "src_dir_str": "fonts"
         },
         {
-          "src_pkg": "open-sans-fontface",
-          "src_dir": "fonts"
+          "src_pkg_name": "open-sans-fontface",
+          "src_dir_str": "fonts"
         }
       ]
     }

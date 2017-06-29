@@ -39,9 +39,11 @@
     // Import capabilities
     EventEmitter = require( 'events'   ).EventEmitter,
     fsObj        = require( 'fs'       ),
+    ncpFn        = require( 'ncp'      ).ncp,
     pathObj      = require( 'path'     ),
     utilObj      = require( 'util'     ),
     whichFn      = require( 'which'    ),
+
     promiseObj   = Promise,
 
     // Convert to promises using magic
@@ -50,39 +52,81 @@
     eventObj         = new EventEmitter(),
 
     // Assign nodejs builtins
-    appLink    = __filename,
-    appName    = pathObj.basename( appLink, '.js' ),
-    binDir     = __dirname,
-    origDir    = process.cwd,
-    versList   = process.versions.node.split('.'),
-    versReqInt = 8,
+    fqAppFilename = __filename,
+    fqBinDirStr   = __dirname,
+
+    appName       = pathObj.basename( fqAppFilename, '.js' ),
+    fqOrigDirStr  = process.cwd,
+    versList      = process.versions.node.split('.'),
+    versReqInt    = 8,
 
     // Initialize
     exePathMap = {},
     // patchStr    = '// BEGIN hi_scope patch line 249',
 
     // Declare
-    appFqDir,
-    pkgMap,     moduleFqDir,
-    npmDir,     patchFile, pkgFile,
-    scopeFile,  uglyDir
+    fqAppDirStr,     fqModuleDirStr,
+    fqNpmDirStr,     fqPatchFilename, fqPkgFileStr,
+    fqScopeFileStr,  fqUglyDirStr,    pkgMap
     // gitDir, versionStr
     ;
 
   // == . END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN UTILITY METHODS ============================================
+  // BEGIN utility /abortFn/
+  function abortFn ( error_data ) {
+    console.warn( error_data );
+    process.exit( 1 );
+  }
+  // . END utility /abortFn/
+
   // BEGIN utility /logFn/
   function logFn( data ) {
     console.log( '>>', data );
   }
   // . END utility /logFn/
 
-  // BEGIN utility /makeEmitFunctionFn/
-  function makeEmitFunctionFn ( event_str ) {
+  function makeRejectFuncFn ( reject_fn ) {
+    return function ( error_data ) { reject_fn( error_data ); };
+  }
+  function makeResolveFuncFn ( resolve_fn ) {
+    return function () { resolve_fn(); };
+  }
+  // BEGIN utility /makeEmitFuncFn/
+  function makeEmitFuncFn ( event_str ) {
     return function () { eventObj.emit( event_str ); };
   }
-  // . END utility /makeEmitFunctionFn/
+  // . END utility /makeEmitFuncFn/
+
+  // BEGIN utility /copyPathFn/
+  function copyPathFn( fq_src_path_str, fq_dest_path_str, do_dir_copy ) {
+    if ( do_dir_copy ) {
+      return new Promise( function ( resolve_fn, reject_fn ) {
+        ncpFn( fq_src_path_str, fq_dest_path_str,
+          function ( error_data ) {
+            if ( error_data ) { return reject_fn(); }
+            resolve_fn();
+          }
+        );
+      });
+    }
+
+    return new Promise( function ( resolve_fn, reject_fn ) {
+      var
+        read_obj         = fsObj.createReadStream(  fq_src_path_str  ),
+        write_obj        = fsObj.createWriteStream( fq_dest_path_str ),
+        full_reject_fn  = makeRejectFuncFn(  reject_fn  ),
+        full_resolve_fn = makeResolveFuncFn( resolve_fn )
+        ;
+
+      read_obj.on(  'error', full_reject_fn  );
+      write_obj.on( 'error', full_reject_fn  );
+      write_obj.on( 'close', full_resolve_fn );
+      read_obj.pipe( write_obj );
+    });
+  }
+  // . END utility /copyPathFn/
 
   // BEGIN utility /storePathFn/
   function storePathFn ( path_str ) {
@@ -90,16 +134,13 @@
       smap    = this || {},
       exe_key = smap._exe_key_;
 
+    if ( ! exe_key ) {
+      abortFn( 'No key provided for ' + path_str );
+    }
+
     exePathMap[ exe_key ] = path_str;
   }
   // . END utility /storePathFn/
-
-  // BEGIN utility /abortFn/
-  function abortFn ( error_data ) {
-    console.warn( error_data );
-    process.exit( 1 );
-  }
-  // . END utility /abortFn/
 
   // BEGIN utility /initModuleVarsFn/
   function initModuleVarsFn () {
@@ -114,20 +155,21 @@
       logFn( 'As of hi_score 1.2+ NodeJS v'
         + versReqInt + ' is required.'
       );
-      logFn( 'NodeJS Version ' + versList.join('.') + ' is installed.'      );
-      logFn( 'Please upgrade NodeJS and try again.'                  );
+      logFn( 'NodeJS Version ' + versList.join('.') + ' is installed.' );
+      logFn( 'Please upgrade NodeJS and try again.'                    );
       process.exit( 1 );
     }
 
     // Assign npm module vars
-    npmDir      = pathObj.dirname( binDir );
+    fqNpmDirStr     = pathObj.dirname( fqBinDirStr );
 
-    appFqDir    = npmDir;
-    moduleFqDir = npmDir      + '/node_modules';
-    pkgFile     = npmDir      + '/package.json';
-    uglyDir     = moduleFqDir + '/uglifyjs';
-    scopeFile   = uglyDir     + '/lib/scope.js';
-    patchFile   = npmDir      + '/patch/uglifyjs-2.4.10.patch';
+    fqAppDirStr     = fqNpmDirStr;
+    fqModuleDirStr  = fqNpmDirStr    + '/node_modules';
+    fqPkgFileStr    = fqNpmDirStr    + '/package.json';
+    fqPatchFilename = fqNpmDirStr    + '/patch/uglifyjs-2.4.10.patch';
+
+    fqUglyDirStr    = fqModuleDirStr + '/uglifyjs';
+    fqScopeFileStr  = fqUglyDirStr   + '/lib/scope.js';
 
     // Assign executable path vars
     for ( idx = 0; idx < exe_count; idx++ ) {
@@ -154,10 +196,67 @@
 
   // BEGIN utility /readPkgFileFn/
   function readPkgFileFn () {
-    fsObj.readFile( pkgFile, 'utf8', storePkgMapFn, abortFn );
+    fsObj.readFile( fqPkgFileStr, 'utf8', storePkgMapFn, abortFn );
   }
   // END utility /readPkgFileFn/
 
+  // BEGIN utility /deployAssetsFn/
+  function deployAssetsFn () {
+    var
+      asset_group_list  = pkgMap.xhiVendorAssetGroupList || [],
+      asset_group_count = asset_group_list.length,
+      promise_list      = [],
+
+      idx, asset_group_map, asset_list, asset_count,
+      fq_dest_dir_str, dest_ext_str, do_dir_copy,
+
+      idj, asset_map, src_asset_name, src_dir_str,
+      src_pkg_name, dest_vers_str, dest_name,
+      fq_src_path_str, fq_dest_path_str, promise_obj
+      ;
+
+    for ( idx = 0; idx < asset_group_count; idx++ ) {
+      asset_group_map = asset_group_list[ idx ];
+
+      asset_list       = asset_group_map.asset_list || [];
+      asset_count      = asset_list.length;
+
+      dest_ext_str     = asset_group_map.dest_ext_str;
+      do_dir_copy      = asset_group_map.do_dir_copy;
+      fq_dest_dir_str  = fqAppDirStr + asset_group_map.dest_dir_str;
+
+      ASSET_MAP: for ( idj = 0; idj < asset_count; idj++ ) {
+        asset_map = asset_list[ idj ];
+        src_asset_name = asset_map.src_asset_name;
+        src_dir_str    = asset_map.src_dir_str || '';
+        src_pkg_name   = asset_map.src_pkg_name;
+
+        dest_vers_str  = pkgMap.devDependencies[ src_pkg_name ];
+
+        if ( ! dest_vers_str ) {
+          logFn( 'WARN: package ' + src_pkg_name + ' not found.');
+          continue ASSET_MAP;
+        }
+        dest_name = asset_map.dest_name || src_pkg_name;
+
+        fq_dest_path_str = fq_dest_dir_str
+          + '/' + dest_name + '-' + dest_vers_str;
+        fq_src_path_str = fqModuleDirStr
+          + '/' + src_dir_str + '/' + src_asset_name;
+
+        if ( ! do_dir_copy ) {
+          fq_dest_path_str += '.' + dest_ext_str;
+        }
+        promise_obj = copyPathFn( fq_src_path_str, fq_dest_path_str, do_dir_copy );
+        promise_list.push( promise_obj );
+      }
+    }
+
+    promiseObj.all( promise_list )
+      .then( function () { eventObj.emit( '03ApplyPatches' ); } )
+      .catch( abortFn );
+  }
+  // . END utility /deployAssetsFn/
   // == END UTILITY METHODS ============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
@@ -172,7 +271,7 @@
   function on02DeployAssetsFn () {
     logFn( 'Deploying assets' );
     logFn( 'See xhiVendorAssetList' );
-    eventObj.emit( '03ApplyPatches' );
+    eventObj.emit(  );
   }
   function on03ApplyPatchesFn () {
     logFn( 'Applying patches' );
@@ -180,7 +279,6 @@
   }
   function on04AddCommitHookFn () {
     logFn( 'Add commit hook' );
-    logFn( pkgMap );
     process.exit( 0 );
   }
   // == . END EVENT HANDLERS ===========================================

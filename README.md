@@ -81,10 +81,11 @@ Everything should just work on recent Ubuntu and derivative distributions like M
 
 ```bash
   # Install development libs
-  sudo apt-get install build-essential openssh-server git pandoc
+  sudo apt-get install build-essential openssh-server git pandoc \
+    libfile-slurp-perl liblist-moreutils-perl libgetopt-mixed-perl
 
   # Install nodejs
-  curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   sudo apt-get install -y nodejs
 
   # Install mongodb

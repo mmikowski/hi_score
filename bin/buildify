@@ -267,9 +267,9 @@ _abortFn () {
     _argDoVerbose=1;
     _logFn "  ! SuperPack is not valid perl.";
     _logFn "  ! Please install perl-List-MoreUtils perl-File-Slurp: ";
-    _logfn "  ! sudo apt-get install libfile-slurp-perl \\ ";
-    _logfn "  !  liblist-moreutils-perl libgetopt-mixed-perl ";
-    _logFn "  ! and perl-Getopt-Mixed.";
+    _logFn "  ! and perl-Getopt-Mixed:";
+    _logfn "  !  \$ sudo apt-get install libfile-slurp-perl \\ ";
+    _logfn "  !    liblist-moreutils-perl libgetopt-mixed-perl ";
     _abortFn;
   fi
   ## END Find SUPERPACK
