@@ -1,7 +1,4 @@
 {
-  "engines": {
-    "node": ">=9.0.0"
-  },
   "name": "hi_score",
   "version": "1.2.0",
   "description": "A 2017 full-life-cycle starter project for SPAs. Hi_Score assembles best-in-class libraries in a feature-module architecture",

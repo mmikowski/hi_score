@@ -8,7 +8,7 @@
  *   1. Delete all vendor directories as directed by
  *      package.json:xhiVendorAssetList
  *      We expect vendor assets directories in bin, css, font, img, and js
- *   2. Copy assets from node_modules to vendor directories with the 
+ *   2. Copy assets from node_modules to vendor directories with the
  *      npm version appended to the names.
  *   2. Install the commit hook if git is detected
  *   3. Applies any patches (uglifyjs)
@@ -18,7 +18,7 @@
  *   2. Integrate more deeply to npm build process (avoid reinvention)
  *   3. Auto-update links files using version numbers.  This may be accomplished
  *      using xhi utils templates and read file techniques as shown below.
- *      This would be similar to using 
+ *      This would be similar to using
  *       sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html'
  *
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
@@ -54,6 +54,8 @@
     appName    = pathObj.basename( appLink, '.js' ),
     binDir     = __dirname,
     origDir    = process.cwd,
+    versList   = process.versions.node.split('.'),
+    versReqInt = 8,
 
     // Initialize
     exePathMap = {},
@@ -70,6 +72,12 @@
   // == . END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN UTILITY METHODS ============================================
+  // BEGIN utility /logFn/
+  function logFn( data ) {
+    console.log( '>>', data );
+  }
+  // . END utility /logFn/
+
   // BEGIN utility /makeEmitFunctionFn/
   function makeEmitFunctionFn ( event_str ) {
     return function () { eventObj.emit( event_str ); };
@@ -100,6 +108,16 @@
       exe_count    = exe_list.length,
       promise_list = [],
       idx, exe_key, bound_fn, promise_obj;
+
+    // Bail if node version < versReqInt
+    if ( Number( versList[0] ) < versReqInt ) {
+      logFn( 'As of hi_score 1.2+ NodeJS v'
+        + versReqInt + ' is required.'
+      );
+      logFn( 'NodeJS Version ' + versList.join('.') + ' is installed.'      );
+      logFn( 'Please upgrade NodeJS and try again.'                  );
+      process.exit( 1 );
+    }
 
     // Assign npm module vars
     npmDir      = pathObj.dirname( binDir );
@@ -144,33 +162,31 @@
 
   // == BEGIN EVENT HANDLERS ===========================================
   function on00InitVarsFn () {
-    console.log( '>> Initializing variable' );
+    logFn( 'Initializing variable' );
     initModuleVarsFn();
   }
   function on01ReadPkgFileFn () {
-    console.log( '>> Reading package file' );
+    logFn( 'Reading package file' );
     readPkgFileFn();
   }
   function on02DeployAssetsFn () {
-    console.log( '>> Deploying assets' );
-    console.log( '>> See xhiVendorAssetList' );
+    logFn( 'Deploying assets' );
+    logFn( 'See xhiVendorAssetList' );
     eventObj.emit( '03ApplyPatches' );
   }
   function on03ApplyPatchesFn () {
-    console.log( '>> Applying patches' );
+    logFn( 'Applying patches' );
     eventObj.emit( '04AddCommitHook' );
   }
   function on04AddCommitHookFn () {
-    console.log( '>> Add commit hook' );
-    console.log( pkgMap );
+    logFn( 'Add commit hook' );
+    logFn( pkgMap );
     process.exit( 0 );
   }
   // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN Main =====================================================
   function mainFn () {
-    console.log( 'Welcome to ' + appName + '!' );
-
     // Layout flow control
     eventObj.on( '00InitVars',       on00InitVarsFn      );
     eventObj.on( '01ReadPkgFile',    on01ReadPkgFileFn   );
