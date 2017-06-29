@@ -31,7 +31,6 @@
  white  : true, todo    : true, unparam  : true
 */
 
-
 // == BEGIN SCRIPT setup.js ==============================================
   // == BEGIN MODULE SCOPE VARIABLES =====================================
   'use strict';
@@ -39,6 +38,7 @@
     // Import capabilities
     EventEmitter = require( 'events'   ).EventEmitter,
     fsObj        = require( 'fs'       ),
+    mkdirpFn     = require( 'mkdirp'   ),
     ncpFn        = require( 'ncp'      ).ncp,
     pathObj      = require( 'path'     ),
     utilObj      = require( 'util'     ),
@@ -82,8 +82,10 @@
   // . END utility /abortFn/
 
   // BEGIN utility /logFn/
-  function logFn( data ) {
-    console.log( '>>', data );
+  function logFn() {
+    var arg_list = Array.from( arguments );
+    arg_list.unshift( '>>' );
+    console.log.apply( null, arg_list );
   }
   // . END utility /logFn/
 
@@ -137,7 +139,6 @@
     if ( ! exe_key ) {
       abortFn( 'No key provided for ' + path_str );
     }
-
     exePathMap[ exe_key ] = path_str;
   }
   // . END utility /storePathFn/
@@ -203,8 +204,8 @@
   // BEGIN utility /deployAssetsFn/
   function deployAssetsFn () {
     var
-      asset_group_list  = pkgMap.xhiVendorAssetGroupList || [],
-      asset_group_count = asset_group_list.length,
+      asset_group_table = pkgMap.xhiVendorAssetGroupTable || [],
+      asset_group_count = asset_group_table.length,
       promise_list      = [],
 
       idx, asset_group_map, asset_list, asset_count,
@@ -212,25 +213,27 @@
 
       idj, asset_map, src_asset_name, src_dir_str,
       src_pkg_name, dest_vers_str, dest_name,
-      fq_src_path_str, fq_dest_path_str, promise_obj
+      fq_src_path_list, fq_src_path_str,
+      fq_dest_path_str, promise_obj
       ;
 
     for ( idx = 0; idx < asset_group_count; idx++ ) {
-      asset_group_map = asset_group_list[ idx ];
+      asset_group_map = asset_group_table[ idx ];
 
-      asset_list       = asset_group_map.asset_list || [];
-      asset_count      = asset_list.length;
+      asset_list  = asset_group_map.asset_list || [];
+      asset_count = asset_list.length;
+
 
       dest_ext_str     = asset_group_map.dest_ext_str;
       do_dir_copy      = asset_group_map.do_dir_copy;
-      fq_dest_dir_str  = fqAppDirStr + asset_group_map.dest_dir_str;
+      fq_dest_dir_str  = fqAppDirStr + '/' + asset_group_map.dest_dir_str;
+      mkdirpFn.sync( fq_dest_dir_str );
 
       ASSET_MAP: for ( idj = 0; idj < asset_count; idj++ ) {
         asset_map = asset_list[ idj ];
         src_asset_name = asset_map.src_asset_name;
         src_dir_str    = asset_map.src_dir_str || '';
         src_pkg_name   = asset_map.src_pkg_name;
-
         dest_vers_str  = pkgMap.devDependencies[ src_pkg_name ];
 
         if ( ! dest_vers_str ) {
@@ -241,8 +244,10 @@
 
         fq_dest_path_str = fq_dest_dir_str
           + '/' + dest_name + '-' + dest_vers_str;
-        fq_src_path_str = fqModuleDirStr
-          + '/' + src_dir_str + '/' + src_asset_name;
+        fq_src_path_list = [ fqModuleDirStr, src_pkg_name, src_asset_name ];
+        if ( src_dir_str ) { fq_src_path_list.splice( 2, 0, src_dir_str ); }
+
+        fq_src_path_str = fq_src_path_list.join( '/' );
 
         if ( ! do_dir_copy ) {
           fq_dest_path_str += '.' + dest_ext_str;
@@ -270,8 +275,7 @@
   }
   function on02DeployAssetsFn () {
     logFn( 'Deploying assets' );
-    logFn( 'See xhiVendorAssetList' );
-    eventObj.emit(  );
+    deployAssetsFn();
   }
   function on03ApplyPatchesFn () {
     logFn( 'Applying patches' );
