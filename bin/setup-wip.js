@@ -60,8 +60,8 @@
     versList      = process.versions.node.split('.'),
 
     // Initialize
-    versReqInt  = 8,
     exePathMap  = {},
+    versReqInt  = 8,
     // patchStr = '// BEGIN hi_score patch line 324',
 
     // Declare
@@ -234,6 +234,7 @@
         src_asset_name = asset_map.src_asset_name;
         src_dir_str    = asset_map.src_dir_str || '';
         src_pkg_name   = asset_map.src_pkg_name;
+
         dest_vers_str  = pkgMap.devDependencies[ src_pkg_name ];
 
         if ( ! dest_vers_str ) {
@@ -262,6 +263,12 @@
       .catch( abortFn );
   }
   // . END utility /deployAssetsFn/
+
+  // BEGIN utility /applyPatchesFn/
+  function applyPatchesFn () {
+    eventObj.emit( '04AddCommitHook' );
+  }
+  // . END utility /applyPatchesFn/
   // == END UTILITY METHODS ============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
@@ -279,7 +286,7 @@
   }
   function on03ApplyPatchesFn () {
     logFn( 'Applying patches' );
-    eventObj.emit( '04AddCommitHook' );
+    applyPatchesFn();
   }
   function on04AddCommitHookFn () {
     logFn( 'Add commit hook' );

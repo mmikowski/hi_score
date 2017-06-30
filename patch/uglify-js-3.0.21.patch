@@ -1,5 +1,5 @@
---- uglify-js/lib/scope.js	2017-06-29 17:40:52.100445914 -0700
-+++ uglify-js-patched/lib/scope.js	2017-06-29 17:47:07.231591838 -0700
+--- node_modules/uglify-js/lib/scope.js	2017-06-29 17:40:52.100445914 -0700
++++ node_modules/uglify-js/lib/scope.js	2017-06-29 17:47:07.231591838 -0700
 @@ -321,27 +321,34 @@
      return symbol.thedef = def;
  });

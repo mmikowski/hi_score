@@ -137,5 +137,8 @@
       ]
     }
   ],
-  "dependencies": {}
+  "dependencies": {
+    "apply-patch": "^0.1.2",
+    "diff": "3.2.0"
+  }
 }
