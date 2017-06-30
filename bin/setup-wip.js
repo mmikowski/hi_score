@@ -58,11 +58,11 @@
     appName       = pathObj.basename( fqAppFilename, '.js' ),
     fqOrigDirStr  = process.cwd,
     versList      = process.versions.node.split('.'),
-    versReqInt    = 8,
 
     // Initialize
-    exePathMap = {},
-    // patchStr    = '// BEGIN hi_scope patch line 249',
+    versReqInt  = 8,
+    exePathMap  = {},
+    // patchStr = '// BEGIN hi_score patch line 324',
 
     // Declare
     fqAppDirStr,     fqModuleDirStr,
@@ -167,7 +167,7 @@
     fqAppDirStr     = fqNpmDirStr;
     fqModuleDirStr  = fqNpmDirStr    + '/node_modules';
     fqPkgFileStr    = fqNpmDirStr    + '/package.json';
-    fqPatchFilename = fqNpmDirStr    + '/patch/uglifyjs-2.4.10.patch';
+    fqPatchFilename = fqNpmDirStr    + '/patch/uglify-js-3.0.21.patch';
 
     fqUglyDirStr    = fqModuleDirStr + '/uglifyjs';
     fqScopeFileStr  = fqUglyDirStr   + '/lib/scope.js';

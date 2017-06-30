@@ -13,7 +13,7 @@ set -u;
 #    img/vendor, js/vendor and then copies npm vendor assets to them with
 #    their version numbers appended to their name.
 # 2. Install the commit hook if git is detected.
-# 3. Applies patch to uglifyjs
+# 3. Applies patch to uglify-js
 #
 # TODO:
 # 1. Use the same cfg file as buildify / superpack
@@ -37,12 +37,12 @@ set -u;
     _moduleFqDir="${_npmDir}/node_modules";
     _appFqDir="${_npmDir}";
     _pkgFile="${_npmDir}/package.json";
-    _uglyDir="${_moduleFqDir}/uglifyjs";
+    _uglyDir="${_moduleFqDir}/uglify-js";
     _scopeFile="${_uglyDir}/lib/scope.js";
 
     _versionStr='';
-    _patchStr='// BEGIN hi_scope patch line 249';
-    _patchFile="${_npmDir}/patch/uglifyjs-2.4.10.patch";
+    _patchStr='// BEGIN hi_score patch line 324';
+    _patchFile="${_npmDir}/patch/uglify-js-3.0.21.patch";
 
     # executables
     _gitExe=$(   which git );
@@ -213,7 +213,7 @@ set -u;
   # http://www.thegeekstuff.com/2014/12/patch-command-examples
   # diff -Naur old_dir new_dir > file.patch
 
-  echo "  >> main / patch uglifyjs";
+  echo "  >> main / patch uglify-js";
     if ( grep -q "${_patchStr}" "${_scopeFile}" ); then
       echo "  ? INFO: Uglify patch already applied.";
     else
@@ -221,7 +221,7 @@ set -u;
       "${_patchExe}" -p0 < "${_patchFile}";
       echo "  ? INFO: Uglify patch applied";
     fi
-  # echo "  << main / patch uglifyjs";
+  # echo "  << main / patch uglify-js";
   echo;
 
   cd "${_origDir}";

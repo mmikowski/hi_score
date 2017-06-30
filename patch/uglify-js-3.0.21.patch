@@ -1,0 +1,54 @@
+--- uglify-js/lib/scope.js	2017-06-29 17:40:52.100445914 -0700
++++ uglify-js-patched/lib/scope.js	2017-06-29 17:47:07.231591838 -0700
+@@ -321,27 +321,34 @@
+     return symbol.thedef = def;
+ });
+ 
+-AST_Scope.DEFMETHOD("next_mangled", function(options){
+-    var ext = this.enclosed;
+-    out: while (true) {
+-        var m = base54(++this.cname);
+-        if (!is_identifier(m)) continue; // skip over "do"
++// BEGIN hi_score patch line 324
++AST_Scope.DEFMETHOD( 'next_mangled', function( options ) {
++    var sym, name, m, n, j, i, ext = this.enclosed;
++    OUT: for ( j = 0; j < 1000; j++ ) {
++        m = base54( ++this.cname );
++        if ( m === '_' ) { continue OUT };
++        n = '_' + m + '_';
+ 
++        if ( ! is_identifier( n ) ) { continue OUT; }
++
+         // https://github.com/mishoo/UglifyJS2/issues/242 -- do not
+         // shadow a name reserved from mangling.
+-        if (options.reserved.indexOf(m) >= 0) continue;
+-
+-        // we must ensure that the mangled name does not shadow a name
+-        // from some parent scope that is referenced in this or in
+-        // inner scopes.
+-        for (var i = ext.length; --i >= 0;) {
+-            var sym = ext[i];
+-            var name = sym.mangled_name || (sym.unmangleable(options) && sym.name);
+-            if (m == name) continue out;
+-        }
+-        return m;
++        if ( options.reserved.indexOf( n ) >= 0 ) { continue OUT; }
++ 
++        // we must ensure that the mangled name does not shadow a name from
++        // some parent scope that is referenced in this or in inner scopes.
++        //
++        for ( i = ext.length; --i >= 0; ) {
++            sym = ext[i];
++            name = sym.mangled_name
++                || ( sym.unmangleable(options) && sym.name );
++            if ( n === name ) { continue OUT; }
++         }
++        return n;
+     }
+-});
++    throw 'Cannot find unique key after 1000 iterations';
++ });
++// . END hi_score patch line 351
+ 
+ AST_Function.DEFMETHOD("next_mangled", function(options, def){
+     // #179, #326
