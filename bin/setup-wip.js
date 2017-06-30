@@ -6,12 +6,12 @@
  * Synopsis : Setup NodeJS script for hi_score
  * Provides : Copies, patches, and links files for development
  *   1. Delete all vendor directories as directed by
- *      package.json:xhiVendorAssetList
- *      We expect vendor assets directories in bin, css, font, img, and js
+ *      package.json:xhiVendorAssetList. We expect vendor assets
+ *      directories in bin, css, font, img, and js
  *   2. Copy assets from node_modules to vendor directories with the
  *      npm version appended to the names.
- *   2. Install the commit hook if git is detected
  *   3. Applies any patches (uglifyjs)
+ *   4. Install the commit hook if git is detected
  *
  * Planned:
  *   1. Use package.json for build process (buildify and superpack)
@@ -37,12 +37,14 @@
   var
     // Import capabilities
     EventEmitter = require( 'events'   ).EventEmitter,
+    applyPatchFn = require( 'apply-patch' ).applyPatch,
     fsObj        = require( 'fs'       ),
     mkdirpFn     = require( 'mkdirp'   ),
     ncpFn        = require( 'ncp'      ).ncp,
     pathObj      = require( 'path'     ),
     utilObj      = require( 'util'     ),
     whichFn      = require( 'which'    ),
+
 
     promiseObj   = Promise,
 
@@ -56,7 +58,7 @@
     fqBinDirStr   = __dirname,
 
     appName       = pathObj.basename( fqAppFilename, '.js' ),
-    fqOrigDirStr  = process.cwd,
+    fqOrigDirStr  = process.cwd(),
     versList      = process.versions.node.split('.'),
 
     // Initialize
@@ -65,9 +67,9 @@
     // patchStr = '// BEGIN hi_score patch line 324',
 
     // Declare
-    fqAppDirStr,     fqModuleDirStr,
-    fqNpmDirStr,     fqPatchFilename, fqPkgFileStr,
-    fqScopeFileStr,  fqUglyDirStr,    pkgMap
+    fqModuleDirStr,  fqProjDirStr,     fqPatchFilename,
+    fqPkgFileStr,    fqScopeFileStr,  fqUglyDirStr,
+    pkgMatrix
     // gitDir, versionStr
     ;
 
@@ -162,12 +164,11 @@
     }
 
     // Assign npm module vars
-    fqNpmDirStr     = pathObj.dirname( fqBinDirStr );
+    fqProjDirStr     = pathObj.dirname( fqBinDirStr );
 
-    fqAppDirStr     = fqNpmDirStr;
-    fqModuleDirStr  = fqNpmDirStr    + '/node_modules';
-    fqPkgFileStr    = fqNpmDirStr    + '/package.json';
-    fqPatchFilename = fqNpmDirStr    + '/patch/uglify-js-3.0.21.patch';
+    fqModuleDirStr  = fqProjDirStr    + '/node_modules';
+    fqPkgFileStr    = fqProjDirStr    + '/package.json';
+    fqPatchFilename = fqProjDirStr    + '/patch/uglify-js-3.0.21.patch';
 
     fqUglyDirStr    = fqModuleDirStr + '/uglifyjs';
     fqScopeFileStr  = fqUglyDirStr   + '/lib/scope.js';
@@ -190,7 +191,7 @@
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
     if ( error_obj ) { return abortFn( error_obj ); }
-    pkgMap = JSON.parse( json_str );
+    pkgMatrix = JSON.parse( json_str );
     eventObj.emit( '02DeployAssets' );
   }
   // . END utility /storePkgMapFn/
@@ -204,9 +205,10 @@
   // BEGIN utility /deployAssetsFn/
   function deployAssetsFn () {
     var
-      asset_group_table = pkgMap.xhiVendorAssetGroupTable || [],
-      asset_group_count = asset_group_table.length,
-      promise_list      = [],
+      asset_group_table  = pkgMatrix.xhiVendorAssetGroupTable || [],
+      dev_dependency_map = pkgMatrix.devDependencies          || {},
+      asset_group_count  = asset_group_table.length,
+      promise_list       = [],
 
       idx, asset_group_map, asset_list, asset_count,
       fq_dest_dir_str, dest_ext_str, do_dir_copy,
@@ -218,15 +220,15 @@
       ;
 
     for ( idx = 0; idx < asset_group_count; idx++ ) {
-      asset_group_map = asset_group_table[ idx ];
+      asset_group_map = asset_group_table[ idx ] || {};
 
-      asset_list  = asset_group_map.asset_list || [];
+      asset_list  = asset_group_map.asset_list   || [];
       asset_count = asset_list.length;
 
 
       dest_ext_str     = asset_group_map.dest_ext_str;
       do_dir_copy      = asset_group_map.do_dir_copy;
-      fq_dest_dir_str  = fqAppDirStr + '/' + asset_group_map.dest_dir_str;
+      fq_dest_dir_str  = fqProjDirStr + '/' + asset_group_map.dest_dir_str;
       mkdirpFn.sync( fq_dest_dir_str );
 
       ASSET_MAP: for ( idj = 0; idj < asset_count; idj++ ) {
@@ -235,7 +237,7 @@
         src_dir_str    = asset_map.src_dir_str || '';
         src_pkg_name   = asset_map.src_pkg_name;
 
-        dest_vers_str  = pkgMap.devDependencies[ src_pkg_name ];
+        dest_vers_str  = dev_dependency_map[ src_pkg_name ];
 
         if ( ! dest_vers_str ) {
           logFn( 'WARN: package ' + src_pkg_name + ' not found.');
@@ -259,16 +261,30 @@
     }
 
     promiseObj.all( promise_list )
-      .then( function () { eventObj.emit( '03ApplyPatches' ); } )
+      .then( function () { eventObj.emit( '03PatchFiles' ); } )
       .catch( abortFn );
   }
   // . END utility /deployAssetsFn/
 
-  // BEGIN utility /applyPatchesFn/
-  function applyPatchesFn () {
+  // BEGIN utility /patchFilesFn/
+  function patchFilesFn () {
+    var
+      patch_matrix     = pkgMatrix.xhiPatchMatrix || {},
+      patch_dir_str    = patch_matrix.patch_dir_str,
+      patch_file_list  = patch_matrix.patch_file_list,
+      patch_file_count = patch_file_list.length,
+      idx, patch_file_str
+      ;
+
+    process.chdir( fqProjDirStr );
+    for ( idx = 0; idx < patch_file_count; idx++ ) {
+      patch_file_str = patch_dir_str + '/' + patch_file_list[ idx ];
+      applyPatchFn( patch_file_str );
+    }
+    process.chdir( fqOrigDirStr );
     eventObj.emit( '04AddCommitHook' );
   }
-  // . END utility /applyPatchesFn/
+  // . END utility /patchFilesFn/
   // == END UTILITY METHODS ============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
@@ -284,9 +300,9 @@
     logFn( 'Deploying assets' );
     deployAssetsFn();
   }
-  function on03ApplyPatchesFn () {
+  function on03PatchFilesFn () {
     logFn( 'Applying patches' );
-    applyPatchesFn();
+    patchFilesFn();
   }
   function on04AddCommitHookFn () {
     logFn( 'Add commit hook' );
@@ -300,7 +316,7 @@
     eventObj.on( '00InitVars',       on00InitVarsFn      );
     eventObj.on( '01ReadPkgFile',    on01ReadPkgFileFn   );
     eventObj.on( '02DeployAssets',   on02DeployAssetsFn  );
-    eventObj.on( '03ApplyPatches',   on03ApplyPatchesFn  );
+    eventObj.on( '03PatchFiles',     on03PatchFilesFn  );
     eventObj.on( '04AddCommitHook',  on04AddCommitHookFn );
 
     // Start execution

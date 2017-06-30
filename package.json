@@ -31,9 +31,12 @@
     "url": "https://github.com/mmikowski/hi_score/issues"
   },
   "homepage": "https://github.com/mmikowski/hi_score",
+  "dependencies": {},
   "devDependencies": {
+    "apply-patch": "^0.1.2",
     "clusterjs": "0.7.1",
     "coveralls": "2.12.0",
+    "diff": "3.2.0",
     "express": "4.15.2",
     "font-awesome": "4.7.0",
     "istanbul": "0.4.5",
@@ -61,6 +64,12 @@
   "maintainers": [
     "Michael S. Mikowski <mike.mikowski@gmail.com>"
   ],
+  "xhiPatchMatrix": {
+    "patch_dir_str": "patch",
+    "patch_file_list": [
+      "uglify-js-3.0.21.patch"
+    ]
+  },
   "xhiVendorAssetGroupTable": [
     {
       "dest_dir_str": "js/vendor",
@@ -136,9 +145,5 @@
         }
       ]
     }
-  ],
-  "dependencies": {
-    "apply-patch": "^0.1.2",
-    "diff": "3.2.0"
-  }
+  ]
 }
