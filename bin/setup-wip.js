@@ -48,8 +48,6 @@
     pathObj      = require( 'path'          ),
     utilObj      = require( 'util'          ),
     whichFn      = require( 'which'         ),
-
-
     promiseObj   = Promise,
 
     // Convert to promises using magic
@@ -71,9 +69,10 @@
     // patchStr = '// BEGIN hi_score patch line 324',
 
     // Declare
-    fqModuleDirStr,  fqProjDirStr,     fqPatchFilename,
-    fqPkgFileStr,    fqScopeFileStr,   fqUglyDirStr,
-    pkgMatrix
+    fqHookFilename,  fqModuleDirStr,
+    fqProjDirStr,    fqPatchFilename,
+    fqPkgFileStr,    fqScopeFileStr,
+    fqUglyDirStr,    pkgMatrix
     ;
 
   // == . END MODULE SCOPE VARIABLES =====================================
@@ -185,11 +184,11 @@
     }
 
     // Assign npm module vars
-    fqProjDirStr     = pathObj.dirname( fqBinDirStr );
+    fqProjDirStr    = pathObj.dirname( fqBinDirStr );
 
-    fqModuleDirStr  = fqProjDirStr    + '/node_modules';
-    fqPkgFileStr    = fqProjDirStr    + '/package.json';
-    fqPatchFilename = fqProjDirStr    + '/patch/uglify-js-3.0.21.patch';
+    fqModuleDirStr  = fqProjDirStr   + '/node_modules';
+    fqPkgFileStr    = fqProjDirStr   + '/package.json';
+    fqPatchFilename = fqProjDirStr   + '/patch/uglify-js-3.0.21.patch';
 
     fqUglyDirStr    = fqModuleDirStr + '/uglifyjs';
     fqScopeFileStr  = fqUglyDirStr   + '/lib/scope.js';
@@ -328,56 +327,36 @@
     Promise.all( promise_list )
       .then( function () {
         process.chdir( fqOrigDirStr );
-        eventObj.emit( '04AddCommitHook' );
+        eventObj.emit( '04UnlinkHook' );
       })
       .catch( abortFn );
   }
   // . END utility /patchFilesFn/
 
-  // BEGIN utility /linkCommitHookFn/
-  function linkCommitHookFn () {
-    // dont this we need this
-    //execFn( exePathMap.git + ' rev-parse --show-toplevel',
-    //  function ( err, stdin, stdout ) {
-    //    logFn( stdin );
-    //  }
-    //);
-    // Example exec
-    // var grep = function(what, where, callback){
-    //   var exec = require('child_process').exec;
-    //
-    //   exec("grep " + what + " " + where + " -nr", function(err, stdin, //stdout){
-    //     var list = {}
-    //
-    //     var results = stdin.split('\n');
-    //
-    //       // remove last element (it’s an empty line)
-    //       results.pop();
-    //       for (var i = 0; i < results.length; i++) {
-    //         var eachPart = results[i].split(':') //file:linenum:line
-    //         list[eachPart[0]] = []
-    //       }
-    //       for (var i = 0; i < results.length; i++) {
-    //         var eachPart = results[i].split(':') //file:linenum:line
-    //         list[eachPart[0]].push({'line_number' : eachPart[1], 'line' : //eachPart[2]})
-    //       }
-    //
-    //
-    //       var results = []
-    //       var files = Object.keys(list)
-    //       for(var i = 0; i < files.length; i++){
-    //         results.push({'file' : files[i], 'results' : list[files[i]]})
-    //       }
-    //
-    //       callback(results)
-    //   });
-    // }
-    // module.exports = grep;
-    eventObj.emit( '05Finish');
+  // BEGIN utility /unlinkHookFn/
+  function unlinkHookFn () {
+    fqHookFilename = fqProjDirStr + '/.git/hooks/pre-commit';
+    fsObj.unlink( fqHookFilename, function ( error_data ) {
+      if ( error_data ) { abortFn( error_data ); }
+      eventObj.emit( '05LinkHook' );
+    });
   }
-  // . END utility /linkCommitHookFn
+  // . END utility /unlinkHookFn/
 
-
+  // BEGIN utility /linkHookFn/
+  function linkHookFn () {
+    process.chdir( fqProjDirStr );
+    fsObj.symLink(
+      '../../bin/git-hook_pre-commit',
+      fqHookFilename,
+      function ( error_data ) {
+        if ( error_data ) { abortFn( error_data ); }
+        process.chdir( fqOrigDirStr );
+        eventObj.emit( '99FinishRun');
+      }
+    );
+  }
+  // . END utility /linkHookFn/
   // == END UTILITY METHODS ============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
@@ -398,11 +377,15 @@
     logFn( 'Applying patches...' );
     patchFilesFn();
   }
-  function on04AddCommitHookFn () {
-    logFn( 'Link commit hook...' );
-    linkCommitHookFn();
+  function on04UnlinkHookFn () {
+    logFn( 'Remove any old commit hook...' );
+    unlinkHookFn();
   }
-  function on05FinishFn () {
+  function on05LinkHookFn () {
+    logFn( 'Linking commit hook...' );
+    linkHookFn();
+  }
+  function on99FinishRunFn () {
     logFn( appName, 'Finished.' );
     process.exit( 0 );
   }
@@ -415,8 +398,8 @@
     eventObj.on( '01ReadPkgFile',    on01ReadPkgFileFn   );
     eventObj.on( '02DeployAssets',   on02DeployAssetsFn  );
     eventObj.on( '03PatchFiles',     on03PatchFilesFn    );
-    eventObj.on( '04AddCommitHook',  on04AddCommitHookFn );
-    eventObj.on( '05Finish',         on05FinishFn        );
+    eventObj.on( '04UnlinkHook',     on04UnlinkHookFn    );
+    eventObj.on( '99FinishRun',      on99FinishRunFn     );
 
     // Start execution
     // Timeout prevents race condition
