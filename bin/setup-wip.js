@@ -14,12 +14,12 @@
  *   4. Install the commit hook if git is detected
  *
  * Planned:
+ *   0. List xhi dependency in core file.
+ *      Load in browser use head.append( '<script src="...">'.
+ *      Load in NodeJS use require( '...' );
  *   1. Use package.json for build process (buildify and superpack)
  *   2. Integrate more deeply to npm build process (avoid reinvention)
- *   3. Auto-update links files using version numbers.  This may be accomplished
- *      using xhi utils templates and read file techniques as shown below.
- *      This would be similar to using
- *       sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html'
+ *   3. Auto-update <script src="..."> links using xhi.util templates
  *
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
@@ -36,14 +36,18 @@
   'use strict';
   var
     // Import capabilities
-    EventEmitter = require( 'events'   ).EventEmitter,
-    applyPatchFn = require( 'apply-patch' ).applyPatch,
-    fsObj        = require( 'fs'       ),
-    mkdirpFn     = require( 'mkdirp'   ),
-    ncpFn        = require( 'ncp'      ).ncp,
-    pathObj      = require( 'path'     ),
-    utilObj      = require( 'util'     ),
-    whichFn      = require( 'which'    ),
+    EventEmitter = require( 'events'        ).EventEmitter,
+    LineReader   = require( 'line-by-line'  ),
+
+    applyPatchFn = require( 'apply-patch'   ).applyPatch,
+
+    execFn       = require( 'child_process' ).exec,
+    fsObj        = require( 'fs'            ),
+    mkdirpFn     = require( 'mkdirp'        ),
+    ncpFn        = require( 'ncp'           ).ncp,
+    pathObj      = require( 'path'          ),
+    utilObj      = require( 'util'          ),
+    whichFn      = require( 'which'         ),
 
 
     promiseObj   = Promise,
@@ -68,9 +72,8 @@
 
     // Declare
     fqModuleDirStr,  fqProjDirStr,     fqPatchFilename,
-    fqPkgFileStr,    fqScopeFileStr,  fqUglyDirStr,
+    fqPkgFileStr,    fqScopeFileStr,   fqUglyDirStr,
     pkgMatrix
-    // gitDir, versionStr
     ;
 
   // == . END MODULE SCOPE VARIABLES =====================================
@@ -78,7 +81,7 @@
   // == BEGIN UTILITY METHODS ============================================
   // BEGIN utility /abortFn/
   function abortFn ( error_data ) {
-    console.warn( error_data );
+    console.warn( 'error', error_data );
     process.exit( 1 );
   }
   // . END utility /abortFn/
@@ -91,17 +94,35 @@
   }
   // . END utility /logFn/
 
+  // BEGIN utlity /grepFileFn/
+  function grepFileFn ( filename, match_str ) {
+    return new Promise( function ( resolve_fn ) {
+      var
+        is_matched    = false,
+        line_read_obj = new LineReader( filename, {skipEmptyLines:true })
+        ;
+
+      line_read_obj.on( 'error', abortFn );
+      line_read_obj.on( 'line',  function ( line_str ) {
+        if ( line_str.indexOf( match_str ) > -1 ) {
+          is_matched = true;
+          line_read_obj.close();
+        }
+      });
+      line_read_obj.on( 'end', function () {
+        resolve_fn( is_matched );
+      });
+    });
+  }
+  // . END utility /grepFileFn/
+
   function makeRejectFuncFn ( reject_fn ) {
     return function ( error_data ) { reject_fn( error_data ); };
   }
+
   function makeResolveFuncFn ( resolve_fn ) {
     return function () { resolve_fn(); };
   }
-  // BEGIN utility /makeEmitFuncFn/
-  function makeEmitFuncFn ( event_str ) {
-    return function () { eventObj.emit( event_str ); };
-  }
-  // . END utility /makeEmitFuncFn/
 
   // BEGIN utility /copyPathFn/
   function copyPathFn( fq_src_path_str, fq_dest_path_str, do_dir_copy ) {
@@ -135,8 +156,8 @@
   // BEGIN utility /storePathFn/
   function storePathFn ( path_str ) {
     var
-      smap    = this || {},
-      exe_key = smap._exe_key_;
+      context_map = this,
+      exe_key = context_map.exe_key;
 
     if ( ! exe_key ) {
       abortFn( 'No key provided for ' + path_str );
@@ -176,7 +197,7 @@
     // Assign executable path vars
     for ( idx = 0; idx < exe_count; idx++ ) {
       exe_key = exe_list[ idx ];
-      bound_fn = storePathFn.bind( { _exe_key_ : exe_key });
+      bound_fn = storePathFn.bind( { exe_key : exe_key });
       promise_obj = makeWhichProm( exe_key );
       promise_obj.then( bound_fn ).catch( abortFn );
       promise_list.push( promise_obj );
@@ -225,7 +246,6 @@
       asset_list  = asset_group_map.asset_list   || [];
       asset_count = asset_list.length;
 
-
       dest_ext_str     = asset_group_map.dest_ext_str;
       do_dir_copy      = asset_group_map.do_dir_copy;
       fq_dest_dir_str  = fqProjDirStr + '/' + asset_group_map.dest_dir_str;
@@ -266,46 +286,124 @@
   }
   // . END utility /deployAssetsFn/
 
+  // BEGIN utility /patchIfNeededFn/
+  function patchIfNeededFn ( is_check_found ) {
+    var context_map = this;
+    if ( is_check_found ) {
+      logFn( 'Patch ' + context_map.relative_name + ' already applied.' );
+    }
+    else {
+      applyPatchFn( context_map.relative_name );
+      logFn( 'Applied patch ' + context_map.relative_name );
+    }
+  }
+  // . END utility /patchIfNeededFn/
+
   // BEGIN utility /patchFilesFn/
   function patchFilesFn () {
     var
       patch_matrix     = pkgMatrix.xhiPatchMatrix || {},
       patch_dir_str    = patch_matrix.patch_dir_str,
-      patch_file_list  = patch_matrix.patch_file_list,
-      patch_file_count = patch_file_list.length,
-      idx, patch_file_str
+      patch_map_list   = patch_matrix.patch_map_list,
+      patch_map_count  = patch_map_list.length,
+      promise_list     = [],
+      idx, patch_map, promise_obj,
+      check_filename, patch_filename,
+      bound_fn
       ;
-
     process.chdir( fqProjDirStr );
-    for ( idx = 0; idx < patch_file_count; idx++ ) {
-      patch_file_str = patch_dir_str + '/' + patch_file_list[ idx ];
-      applyPatchFn( patch_file_str );
+
+    for ( idx = 0; idx < patch_map_count; idx++ ) {
+      patch_map      = patch_map_list[ idx ];
+      check_filename = patch_map.check_filename;
+      patch_filename = patch_map.patch_filename;
+      patch_map.relative_name = patch_dir_str + '/' + patch_filename;
+
+      promise_obj    = grepFileFn( check_filename, patch_map.match_str );
+      bound_fn       = patchIfNeededFn.bind( patch_map );
+      promise_obj.then( bound_fn ).catch( abortFn );
+      promise_list.push( promise_obj );
     }
-    process.chdir( fqOrigDirStr );
-    eventObj.emit( '04AddCommitHook' );
+
+    Promise.all( promise_list )
+      .then( function () {
+        process.chdir( fqOrigDirStr );
+        eventObj.emit( '04AddCommitHook' );
+      })
+      .catch( abortFn );
   }
   // . END utility /patchFilesFn/
+
+  // BEGIN utility /linkCommitHookFn/
+  function linkCommitHookFn () {
+    // dont this we need this
+    //execFn( exePathMap.git + ' rev-parse --show-toplevel',
+    //  function ( err, stdin, stdout ) {
+    //    logFn( stdin );
+    //  }
+    //);
+    // Example exec
+    // var grep = function(what, where, callback){
+    //   var exec = require('child_process').exec;
+    //
+    //   exec("grep " + what + " " + where + " -nr", function(err, stdin, //stdout){
+    //     var list = {}
+    //
+    //     var results = stdin.split('\n');
+    //
+    //       // remove last element (it’s an empty line)
+    //       results.pop();
+    //       for (var i = 0; i < results.length; i++) {
+    //         var eachPart = results[i].split(':') //file:linenum:line
+    //         list[eachPart[0]] = []
+    //       }
+    //       for (var i = 0; i < results.length; i++) {
+    //         var eachPart = results[i].split(':') //file:linenum:line
+    //         list[eachPart[0]].push({'line_number' : eachPart[1], 'line' : //eachPart[2]})
+    //       }
+    //
+    //
+    //       var results = []
+    //       var files = Object.keys(list)
+    //       for(var i = 0; i < files.length; i++){
+    //         results.push({'file' : files[i], 'results' : list[files[i]]})
+    //       }
+    //
+    //       callback(results)
+    //   });
+    // }
+    // module.exports = grep;
+    eventObj.emit( '05Finish');
+  }
+  // . END utility /linkCommitHookFn
+
+
   // == END UTILITY METHODS ============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
   function on00InitVarsFn () {
-    logFn( 'Initializing variable' );
+    logFn( appName, 'Started.' );
+    logFn( 'Initializing variables...' );
     initModuleVarsFn();
   }
   function on01ReadPkgFileFn () {
-    logFn( 'Reading package file' );
+    logFn( 'Reading package file...' );
     readPkgFileFn();
   }
   function on02DeployAssetsFn () {
-    logFn( 'Deploying assets' );
+    logFn( 'Deploying assets...' );
     deployAssetsFn();
   }
   function on03PatchFilesFn () {
-    logFn( 'Applying patches' );
+    logFn( 'Applying patches...' );
     patchFilesFn();
   }
   function on04AddCommitHookFn () {
-    logFn( 'Add commit hook' );
+    logFn( 'Link commit hook...' );
+    linkCommitHookFn();
+  }
+  function on05FinishFn () {
+    logFn( appName, 'Finished.' );
     process.exit( 0 );
   }
   // == . END EVENT HANDLERS ===========================================
@@ -316,11 +414,13 @@
     eventObj.on( '00InitVars',       on00InitVarsFn      );
     eventObj.on( '01ReadPkgFile',    on01ReadPkgFileFn   );
     eventObj.on( '02DeployAssets',   on02DeployAssetsFn  );
-    eventObj.on( '03PatchFiles',     on03PatchFilesFn  );
+    eventObj.on( '03PatchFiles',     on03PatchFilesFn    );
     eventObj.on( '04AddCommitHook',  on04AddCommitHookFn );
+    eventObj.on( '05Finish',         on05FinishFn        );
 
     // Start execution
-    eventObj.emit( '00InitVars' );
+    // Timeout prevents race condition
+    setTimeout( function () { eventObj.emit( '00InitVars' ); }, 0 );
   }
   // == . END Main =======================================================
 
