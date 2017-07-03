@@ -1,0 +1,234 @@
+#!/bin/bash
+
+## See style-guide
+## https://google.github.io/styleguide/shell.xml#Function_Names
+## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
+
+## Exit when encountering undeclared variables
+## The -e check ( exit when encountering a non-zero exit status )
+## As we do our own checking
+set -u;
+
+# 1. Wipes the directories bin/vendor, css/vendor, font/vendor, 
+#    img/vendor, js/vendor and then copies npm vendor assets to them with
+#    their version numbers appended to their name.
+# 2. Install the commit hook if git is detected.
+# 3. Applies patch to uglify-js
+#
+# TODO:
+# 1. Use the same cfg file as buildify / superpack
+# 2. Auto-update links to these files using in index.html
+#    (consider using sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html' )
+#
+
+  ## == BEGIN Layout variables ===============================================
+  _appName=$( basename $0 );
+  _origDir=$( pwd );
+  echo "start ${_appName}";
+  echo "  > layout vars";
+
+    # app path and name
+    _appLink=$( readlink -f -- "${0}" );
+    _binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
+
+    # npm module paths
+    _gitDir=''; # initialize
+    _npmDir=$( dirname "${_binDir}" );
+    _moduleFqDir="${_npmDir}/node_modules";
+    _appFqDir="${_npmDir}";
+    _pkgFile="${_npmDir}/package.json";
+    _uglyDir="${_moduleFqDir}/uglify-js";
+    _scopeFile="${_uglyDir}/lib/scope.js";
+
+    _versionStr='';
+    _patchStr='// BEGIN hi_score patch line 324';
+    _patchFile="${_npmDir}/patch/uglify-js-3.0.21.patch";
+
+    # executables
+    _gitExe=$(   which git );
+    _patchExe=$( which patch );
+
+  # echo "  < layout vars";
+  ## == END Layout variables =================================================
+
+  ## == BEGIN _parsePkgFileFn () - Read package.json and parse ========
+  _parsePkgFileFn () {
+    pushd "${_npmDir}/bin" > /dev/null;
+    _versionStr=$(
+      node -e '
+        var fs = require( "fs" );
+        fs.readFile(
+          "../package.json",
+          "utf8",
+          function( error, json_str ) {
+            var
+              vrs_rx   = /[^\d\.]/g,
+              out_list = [],
+              pkg_map, dev_map, key_list,
+              key_count, idx;
+            if ( error ) { return console.error( error ); }
+            pkg_map = JSON.parse( json_str );
+            dev_map = pkg_map.devDependencies;
+            if ( dev_map ) {
+              key_list  = Object.keys( dev_map );
+              key_count = key_list.length;
+              for ( idx = 0; idx < key_count; idx++ ) {
+                key     = key_list[ idx ];
+                vrs_str = dev_map[ key ].replace( vrs_rx, "" );
+                out_list.push( key + ":" + vrs_str );
+              }
+            }
+            console.log( out_list.join(" ") );
+          }
+        );
+      '
+    );
+    popd > /dev/null;
+  }
+  ## == END _parsePkgFileFn () ========================================
+
+  ## == BEGIN _readPkgVersionFn() - Look up version for requested package ======
+  _readPkgVersionFn () {
+    local IFS='';
+    _match_str="$*";
+    if [ "${_versionStr}" == "" ]; then _parsePkgFileFn; fi;
+    echo "${_versionStr}" |sed -e 's/ /\n/g'| while read _line_str; do
+      _key=$(echo "${_line_str}" |cut -f1 -d':' );
+      _val=$(echo "${_line_str}" |cut -f2 -d':' );
+      if [ "${_key}" == "${_match_str}" ]; then
+        echo -e "${_val}";
+      fi;
+    done
+  }
+  ## == END _readPkgVersionFn() ================================================
+
+  ## == BEGIN main - Copy vendor assets and add commit hook ==================
+  echo "  > main";
+  echo "  >> main / verify env";
+    if [ -x "${_gitExe}" ]; then
+      _topDir=$( ${_gitExe} rev-parse --show-toplevel 2>/dev/null );
+      if [ ! -z "${_topDir}" ]; then
+        _gitDir=$( cd "${_topDir}" && pwd );
+      fi
+    fi
+
+    if [ ! -x "${_patchExe}" ]; then
+      echo "  !! FAIL: Could not find patch executable."
+      echo "       Please install patch."
+      exit 1;
+    fi
+
+    if [ ! -w "${_scopeFile}" ]; then
+      echo "  !! FAIL: Cannot write to ${_scopeFile}.";
+      echo "        Did you forget to run 'npm install' first?";
+      exit 1;
+    fi
+  # echo "  << main / verify env";
+
+  echo "  >> main / copy vendor libs";
+    manifestList=(
+      # Use js/vendor dir with js extensions
+      '!!;js/vendor;js'
+      'powercss;powercss/dist/pcss.js;pcss'
+      'powercss;powercss/dist/pcss.cfg.js;pcss.cfg'
+      'jquery;jquery/dist/jquery.js'
+      'jquery.event.dragscroll;jquery.event.dragscroll/dist/jquery.event.dragscroll.js'
+      'jquery.event.gevent;jquery.event.gevent/jquery.event.gevent.js'
+      'jquery.event.ue;jquery.event.ue/jquery.event.ue.js'
+      'jquery.scrolli;jquery.scrolli/dist/jquery.scrolli.js'
+      'jquery.urianchor;jquery.urianchor/jquery.uriAnchor.js'
+      'taffydb;taffydb/taffy.js;taffy'
+
+      # Use css/vendor dir with css extensions
+      '!!;css/vendor;css'
+      'font-awesome;/font-awesome/css/font-awesome.css'
+
+      # Use font/vendor dir with directory copy
+      '!!;font/vendor;__dir'
+      'font-awesome;font-awesome/fonts'
+      'open-sans-fontface;open-sans-fontface/fonts'
+    );
+
+    for _manifest_line in ${manifestList[@]}; do
+      _field_list=(${_manifest_line//;/ });
+      if [ "${_field_list[0]}" == "!!" ]; then
+        _dest_dir="${_field_list[1]}";
+        _ext_str="${_field_list[2]}";
+        if [ -r "${_appFqDir}" ]; then
+          _fq_dest_dir="${_appFqDir}/${_dest_dir}";
+          if [ -r "${_fq_dest_dir}" ]; then
+            rm -rf "${_fq_dest_dir}";
+          fi
+          mkdir -p "${_fq_dest_dir}";
+        fi
+        continue;
+      fi
+      _pkg_name="${_field_list[0]}";
+      _src_dir="${_field_list[1]}";
+      if [ "${#_field_list[@]}" -lt 3 ]; then
+        _dest_base="${_pkg_name}";
+      else
+        _dest_base="${_field_list[2]}";
+      fi
+
+      _vers_str=$( _readPkgVersionFn "${_pkg_name}" );
+
+      if   [ -z "${_moduleFqDir}" ] \
+        || [ -z "${_src_dir}"     ] \
+        || [ -z "${_pkg_name}"    ] \
+        || [ -z "${_dest_base}"   ] \
+        || [ -z "${_vers_str}"    ]; then
+        echo 'Unexpected error processing manifest';
+        echo "Line ${_manifest_line}"
+        continue;
+      fi
+
+      if [ "${_ext_str}" == "__dir" ]; then
+        cp -a "${_moduleFqDir}/${_src_dir}" \
+          "${_appFqDir}/${_dest_dir}/${_dest_base}-${_vers_str}";
+      else
+        cp "${_moduleFqDir}/${_src_dir}" \
+          "${_appFqDir}/${_dest_dir}/${_dest_base}-${_vers_str}.${_ext_str}"
+      fi
+    done
+  # echo "  << main / copy vendor libs";
+
+  echo "  >> main / add git hook";
+    if [ ! -z "${_gitDir}" ]; then
+      _precommit_file="${_gitDir}/.git/hooks/pre-commit";
+      if [ -L "${_precommit_file}" ]; then
+        rm -f "${_precommit_file}";
+      fi
+
+      cd "${_gitDir}/.git/hooks" \
+        && ln -s "../../bin/git-hook_pre-commit" "./pre-commit" \
+        && echo "  ? INFO installed git hook.";
+    else
+      echo "  ?  INFO : Git hook not installed."
+      echo "            Run 'npm run ${_appName}' again once checked-in to git."
+    fi
+  # echo "  << main / add git hook";
+
+  # Patch reference:
+  # http://www.thegeekstuff.com/2014/12/patch-command-examples
+  # diff -Naur old_dir new_dir > file.patch
+
+  echo "  >> main / patch uglify-js";
+    if ( grep -q "${_patchStr}" "${_scopeFile}" ); then
+      echo "  ? INFO: Uglify patch already applied.";
+    else
+      cd "${_moduleFqDir}";
+      "${_patchExe}" -p0 < "${_patchFile}";
+      echo "  ? INFO: Uglify patch applied";
+    fi
+  # echo "  << main / patch uglify-js";
+  echo;
+
+  cd "${_origDir}";
+  # echo "  <  main"
+  echo "end ${_appName}";
+  echo;
+
+  exit 0;
+## == END main =============================================================
+

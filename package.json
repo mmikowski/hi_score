@@ -16,7 +16,7 @@
   "scripts": {
     "requirements-check": "bin/check-node-version",
     "make": "bin/buildify cfg/*.buildify",
-    "setup": "bin/setup-wip.js",
+    "setup": "bin/setup",
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js",
     "coverage": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
     "publish-coverage": "node_modules/.bin/istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls"
@@ -93,6 +93,7 @@
           "src_pkg_name": "powercss"
         },
         {
+          "dest_name": "taffy",
           "src_asset_name": "taffy.js",
           "src_pkg_name": "taffydb"
         },
