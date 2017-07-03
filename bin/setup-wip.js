@@ -337,7 +337,7 @@
   function unlinkHookFn () {
     fqHookFilename = fqProjDirStr + '/.git/hooks/pre-commit';
     fsObj.unlink( fqHookFilename, function ( error_data ) {
-      if ( error_data ) { abortFn( error_data ); }
+      // Ignore any error
       eventObj.emit( '05LinkHook' );
     });
   }
@@ -346,7 +346,7 @@
   // BEGIN utility /linkHookFn/
   function linkHookFn () {
     process.chdir( fqProjDirStr );
-    fsObj.symLink(
+    fsObj.symlink(
       '../../bin/git-hook_pre-commit',
       fqHookFilename,
       function ( error_data ) {
@@ -399,6 +399,7 @@
     eventObj.on( '02DeployAssets',   on02DeployAssetsFn  );
     eventObj.on( '03PatchFiles',     on03PatchFilesFn    );
     eventObj.on( '04UnlinkHook',     on04UnlinkHookFn    );
+    eventObj.on( '05LinkHook',       on05LinkHookFn      );
     eventObj.on( '99FinishRun',      on99FinishRunFn     );
 
     // Start execution
