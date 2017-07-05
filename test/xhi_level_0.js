@@ -29,8 +29,8 @@ var
     test      : nuFn.bind( 'test'      )
   },
   jsdomObj = require( 'jsdom' ),
-  docRef   = jsdomObj.jsdom(),
-  winRef   = docRef.defaultView,
+  winRef   = new jsdomObj.JSDOM().window,
+  docRef   = winRef.document,
   jQuery   = require( 'jquery' )( winRef ),
 
   aMap, nMap, vMap, __Str, __blank, __false,
@@ -3401,33 +3401,32 @@ function handleResize ( test_obj ) {
   test_obj.done();
 }
 
-// TODO: 2017-06-26 mmikowski - reinstate after fixing for Node8+
-// function showBusy ( test_obj ) {
-//   var
-//     mask_id  = '#' + aKey + '-_lb_mask_' ,
-//     $mask    = $( mask_id ),
-//     off_html = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_" '
-//       + 'style="display: block;"></div>',
-//     on_html  = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_ '
-//       + aKey + '-_x_active_" style="display: block;"></div>',
-//     outer_html;
-//
-//   test_obj.expect( 3 );
-//
-//   __lb._hideLb_();
-//   outer_html = $mask[0].outerHTML;
-//   test_obj.ok( outer_html === off_html, '1. Mask has no active class' );
-//
-//   __lb._showBusy_();
-//   outer_html = $mask[0].outerHTML;
-//   test_obj.ok( outer_html === on_html,  '2. Mask contains active class' );
-//
-//   __lb._hideLb_();
-//   outer_html = $mask[0].outerHTML;
-//   test_obj.ok( outer_html === off_html, '3. Mask has no active class' );
-//
-//   test_obj.done();
-// }
+function showBusy ( test_obj ) {
+  var
+    mask_id  = '#' + aKey + '-_lb_mask_' ,
+    $mask    = $( mask_id ),
+    off_html = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_" '
+      + 'style="display: block;"></div>',
+    on_html  = '<div id="' + aKey + '-_lb_mask_" class="' + aKey + '-_lb_mask_ '
+      + aKey + '-_x_active_" style="display: block;"></div>',
+    outer_html;
+
+  test_obj.expect( 3 );
+
+  __lb._hideLb_();
+  outer_html = $mask[0].outerHTML;
+  test_obj.ok( outer_html === off_html, '1. Mask has no active class' );
+
+  __lb._showBusy_();
+  outer_html = $mask[0].outerHTML;
+  test_obj.ok( outer_html === on_html,  '2. Mask contains active class' );
+
+  __lb._hideLb_();
+  outer_html = $mask[0].outerHTML;
+  test_obj.ok( outer_html === off_html, '3. Mask has no active class' );
+
+  test_obj.done();
+}
 
 function __showSuccessCb ( $lite_box ) {
   var
@@ -3622,7 +3621,7 @@ module.exports = {
   _handleResize_  : handleResize,
 
   // TODO: 2017-06-26 mmikowski - reinstate after fixing for Node8+
-  // _showBusy_      : showBusy,
+  _showBusy_      : showBusy,
   _showSuccess_   : showSuccess
 };
 

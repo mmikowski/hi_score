@@ -146,12 +146,24 @@ We employ `buildify` and `superpack` to prepare the code for production. This is
 This example shows the creation of two simple single-page web apps that share resources (like fonts, libraries, and images) yet the have fully isolated JavaScript namespaces. Yes, we know the examples are lame. We are working on that.
 
 ### Update
-One may update all the npm libraries, assets and the `package.json` file with `npm update -D`. If we want these changes to propagate, we must run `npm run setup` again to update the vendor libraries, and update the `index.html` file to point to the updated versions. We expect to automate the last step in future updates.
+One may update all the npm libraries, assets and the `package.json` file as
+shown below.
+
+```bash
+PATH=$PATH:node_modules/.bin
+
+# Check module versions
+ncu
+
+# Update package and manifest
+ncu -u --packageFile package.json
+
+# Reinstall vendor assets
+npm run setup
+```
 
 ## Namespacing
-Namespacing enables us to provide a suite of web apps that share a great deal of code but have data and styles cleanly isolated. It makes problem resolution much faster and as it makes it much easier to identify code that results in a specific behavior.
-
-When we open our example apps (`google-chrome ex01.html ex02.html`) we see they provide near-identical features. However, they use separate *namespaces* to avoid data collisions.
+When we open our example apps (`google-chrome ex01.html ex02.html`) we see they provide near-identical features. However, they use separate *namespaces* to avoid data collisions. Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. With namespacing, one can trace behaviors to the controlling code faster and with greater accuracy.
 
 When we view the Example 1 app we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac) and enter `ex01` into the JavaScript console to inspect that value. We can see that `ex01` is the single variable that contains all our app code. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 we can see that `ex01` is `undefined` and `ex02` contains all our app code.
 

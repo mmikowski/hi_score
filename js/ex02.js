@@ -41,8 +41,9 @@
     ],
     libCount  = libList.length,
     loadCount = 0,
+    loadDelayMs = 100,
 
-    scriptObj, libIdx, libSrcStr;
+    $, scriptObj, libIdx, libSrcStr;
 
   function main () {
     var app_map = xhi._makeApp_( 'ex02' );
@@ -58,9 +59,21 @@
     });
   }
 
+  function testLoad() {
+    if ( window.$ ) {
+      $ = window.$;
+      $( main );
+    }
+    else {
+      console.warn( 'reload...' );
+      setTimeout( testLoad, loadDelayMs );
+      loadDelayMs *= 1.5;
+    }
+  }
+
   function onLoadInc() {
     loadCount++;
-    if ( loadCount === libCount ) { main (); }
+    if ( loadCount === libCount ) { testLoad(); }
   }
 
   for ( libIdx = 0; libIdx < libCount; libIdx++ ) {
