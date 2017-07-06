@@ -157,7 +157,7 @@ OPTIONS
 REQUIRED PATCH
   Buildify uses Superpack symbol compression.  Superpack requires a patch
   to UglifyJS.  If you have installed **hi\_score** this patch will have
-  been applied when running 'npm run prep-libs' which is the safest means
+  been applied when running 'npm run setup' which is the safest means
   to apply the patch.  If you need to do so manually, this should also work:
 
     \$ cd ${_modDir}
