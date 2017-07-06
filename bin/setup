@@ -41,18 +41,21 @@
 
     applyPatchFn = require( 'apply-patch'   ).applyPatch,
 
-    execFn       = require( 'child_process' ).exec,
+    // Add if needed: execFn = require( 'child_process' ).exec
     fsObj        = require( 'fs'            ),
     mkdirpFn     = require( 'mkdirp'        ),
     ncpFn        = require( 'ncp'           ).ncp,
     pathObj      = require( 'path'          ),
+    rmDirFn      = require( 'rmdir'         ),
     utilObj      = require( 'util'          ),
     whichFn      = require( 'which'         ),
     promiseObj   = Promise,
 
     // Convert to promises using magic
     promisifyFn      = utilObj.promisify,
+    makeRmDirProm    = promisifyFn( rmDirFn ),
     makeWhichProm    = promisifyFn( whichFn ),
+
     eventObj         = new EventEmitter(),
 
     // Assign nodejs builtins
@@ -214,7 +217,7 @@
   function storePkgMapFn ( error_obj, json_str ) {
     if ( error_obj ) { return abortFn( error_obj ); }
     pkgMatrix = JSON.parse( json_str );
-    eventObj.emit( '02CopyVendorFiles' );
+    eventObj.emit( '02RmVendorDirs' );
   }
   // . END utility /storePkgMapFn/
 
@@ -223,6 +226,31 @@
     fsObj.readFile( fqPkgFileStr, 'utf8', storePkgMapFn, abortFn );
   }
   // END utility /readPkgFileFn/
+
+  // BEGIN utility /rmVendorDirsFn/
+  function rmVendorDirsFn () {
+    var
+      asset_group_table  = pkgMatrix.xhiVendorAssetGroupTable || [],
+      asset_group_count  = asset_group_table.length,
+      promise_list       = [],
+
+      idx, asset_group_map, fq_dest_dir_str, promise_obj
+      ;
+
+    for ( idx = 0; idx < asset_group_count; idx++ ) {
+      asset_group_map = asset_group_table[ idx ] || {};
+      fq_dest_dir_str = fqProjDirStr + '/' + asset_group_map.dest_dir_str;
+      mkdirpFn.sync( fq_dest_dir_str );
+
+      promise_obj = makeRmDirProm( fq_dest_dir_str );
+      promise_list.push( promise_obj );
+    }
+
+    promiseObj.all( promise_list )
+      .then( function () { eventObj.emit( '03CopyVendorFiles' ); } )
+      .catch( abortFn );
+  }
+  // . END utility /rmVendorDirsFn/
 
   // BEGIN utility /copyVendorFilesFn/
   function copyVendorFilesFn () {
@@ -252,10 +280,7 @@
       fq_dest_dir_str  = fqProjDirStr + '/' + asset_group_map.dest_dir_str;
 
 
-      // TODO 2017-07-02 warm mmikowski - replace with rmdir and flow
-      // execFn('rm -r ' + fq_dest_dir_str );
       mkdirpFn.sync( fq_dest_dir_str );
-
       ASSET_MAP: for ( idj = 0; idj < asset_count; idj++ ) {
         asset_map = asset_list[ idj ];
         src_asset_name = asset_map.src_asset_name;
@@ -286,7 +311,7 @@
     }
 
     promiseObj.all( promise_list )
-      .then( function () { eventObj.emit( '03PatchFiles' ); } )
+      .then( function () { eventObj.emit( '04PatchFiles' ); } )
       .catch( abortFn );
   }
   // . END utility /copyVendorFilesFn/
@@ -333,7 +358,7 @@
     Promise.all( promise_list )
       .then( function () {
         process.chdir( fqOrigDirStr );
-        eventObj.emit( '04UnlinkHook' );
+        eventObj.emit( '05UnlinkHook' );
       })
       .catch( abortFn );
   }
@@ -344,7 +369,7 @@
     fqHookFilename = fqProjDirStr + '/.git/hooks/pre-commit';
     fsObj.unlink( fqHookFilename, function ( error_data ) {
       // Ignore any error
-      eventObj.emit( '05LinkHook' );
+      eventObj.emit( '06LinkHook' );
     });
   }
   // . END utility /unlinkHookFn/
@@ -375,19 +400,23 @@
     logFn( 'Reading package file...' );
     readPkgFileFn();
   }
-  function on02CopyVendorFilesFn () {
-    logFn( 'Deploying assets...' );
+  function on02RmVendorDirsFn () {
+    logFn( 'Removing vendor directories...' );
+    rmVendorDirsFn();
+  }
+  function on03CopyVendorFilesFn () {
+    logFn( 'Deploying vendor assets...' );
     copyVendorFilesFn();
   }
-  function on03PatchFilesFn () {
+  function on04PatchFilesFn () {
     logFn( 'Applying patches...' );
     patchFilesFn();
   }
-  function on04UnlinkHookFn () {
+  function on05UnlinkHookFn () {
     logFn( 'Remove any old commit hook...' );
     unlinkHookFn();
   }
-  function on05LinkHookFn () {
+  function on06LinkHookFn () {
     logFn( 'Linking commit hook...' );
     linkHookFn();
   }
@@ -402,10 +431,11 @@
     // Layout flow control
     eventObj.on( '00InitVars',         on00InitVarsFn         );
     eventObj.on( '01ReadPkgFile',      on01ReadPkgFileFn      );
-    eventObj.on( '02CopyVendorFiles',  on02CopyVendorFilesFn  );
-    eventObj.on( '03PatchFiles',       on03PatchFilesFn       );
-    eventObj.on( '04UnlinkHook',       on04UnlinkHookFn       );
-    eventObj.on( '05LinkHook',         on05LinkHookFn         );
+    eventObj.on( '02RmVendorDirs',     on02RmVendorDirsFn     );
+    eventObj.on( '03CopyVendorFiles',  on03CopyVendorFilesFn  );
+    eventObj.on( '04PatchFiles',       on04PatchFilesFn       );
+    eventObj.on( '05UnlinkHook',       on05UnlinkHookFn       );
+    eventObj.on( '06LinkHook',         on06LinkHookFn         );
     eventObj.on( '99FinishRun',        on99FinishRunFn        );
 
     // Start execution

@@ -57,11 +57,12 @@
     "npm-check-updates": "^2.12.1",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.3.5",
+    "rmdir": "^1.2.0",
     "taffydb": "2.7.3",
     "uglify-js": "^3.0.23",
     "uglifycss": "0.0.27",
     "websocket": "1.0.24",
-    "which": "latest"
+    "which": "1.2.14"
   },
   "maintainers": [
     "Michael S. Mikowski <mike.mikowski@gmail.com>"
