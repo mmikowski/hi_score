@@ -7,8 +7,6 @@
 This is an SPA starter project that installs best-in-class assets and tools to save time and guide best practice. Install **hi_score** today and start writing Test-driven native JS client code immediately. The project comes with recommended libraries, but feel free to swap them out as needed. [That's the point][_01].
 
 ## Features
-**hi\_score** jump-starts web client development by providing many highly desirable capabilities which can otherwise very difficult to orchestrate. With all the hard stuff resolved out-of-the-box, we can focus on improving things that really matter, like the JavaScript, HTML, CSS and architecture we need for our app. Here are the key features:
-
 - Code coverage at 98.9% per coveralls.io using Istanbul
 - Fractal MVC architecture and proven file structure per the diagram below
 - Vendor asset management (`npm install && npm run setup`) including support for executables, stylesheets, fonts, images, and libraries and automated patching.
@@ -75,7 +73,7 @@ We use model events to broadcast changes to the Shell and Feature modules and we
 ## Browser compatibility
 Our baseline compatibility is IE9+. Those supporting IE 8 have our sympathy.
 
-## Development environment
+## Development and deployment
 ### Ubuntu 16.04, 16.10, 17.04
 Everything should just work on recent Ubuntu and derivative distributions like Mint or Kubuntu. Here are the steps to install prequisites on Ubuntu 17.04:
 
@@ -96,7 +94,7 @@ Everything should just work on recent Ubuntu and derivative distributions like M
   sudo apt-get update && sudo apt-get install -y mongodb-org
 ```
 
-### Other Linux distributions
+### Other Linux
 Other modern Linux distributions should generally work as long as the same tools can be installed as as above. It works fine on CentOS with development libraries installed:
 
 ```bash
@@ -115,9 +113,6 @@ We recommend using a virtual machine if possible. However one should be able to 
 ### Windows
 We recommend using a virtual machine as detailed above. Installation *might* work with the new Linux subsystem on Windows 10 but we don't have any experience with it.
 
-### Contribute
-If you have installed the code on a platform other than Ubuntu we would appreciate a write up so we can add to this document for the benefit of others.
-
 ## Use
 ### Install
 Install **hi\_score** dependencies and then copy vendor libraries as illustrated in the **Quick start** section. One can also use `npm install hi_score` but the git method is preferred. No errors should be reported.
@@ -134,7 +129,7 @@ We use the excellent `Istanbul` code coverage tool along with the JSDOM package.
 When we create a fork we may send reports to coveralls as shown in the [master branch site][_09]. Publish the coverage to the coveralls site using `npm run publish-coverage`. The process to set up coveralls is described in `hi_score/COVERALLS.md`.
 
 ### Build
-We employ `buildify` and `superpack` to prepare the code for production. This is a system has evolved over 10 years and is used on some high-volume sites (100m views per day).
+We use `buildify` to prepare the code for production. This script has been refined over 10 years and is used on some high-volume commerical sites (100m views per day).
 
 ```bash
   cd ~/GitHub/hi_score
@@ -170,12 +165,12 @@ When we view the Example 1 app we can open the browser development tools (press 
 We namespace our CSS classes as well. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module.
 
 ## Vendor assets
-We configure vendor assets by modifying the `devDependencies` map and `xhiVendorAssetList` in `package.json`, and the `bin/setup` script. When we run `npm run setup` the `bin/setup` script uses these data structures to copy assets to the appropriate `vendor` directory. The directory list includes `bin/vendor, css/vendor/`, `font/vendor`, `img/vendor`, and `js/vendor`.
+Vendor assets are deployed to vendor libraries by `npm run setup`. The configration for vendor assets are in `package.json`.  The `devDependencies` map listing the assets, `xhiVendorAssetGroupTable` lists the deployment groups and files.
 
-All the assets are copied to their destination directory with their version number appended to their names. The `.gitignore` file instructs `git` to ignore all these files as their development management is external to our project. **Everytime `npm setup` is run the vendor directories are deleted and recreated**.
+Assets are copied to their destination directory with their version number appended to their names. The `.gitignore` file instructs `git` to ignore all these files as their development management is external to our project. **Everytime `npm setup` is run the vendor directories are deleted and recreated**.
 
 ### Executable assets
-Vendor executables can be copied to the `bin/vendor` directory.
+Vendor executables can copied to the `bin/vendor` directory.
 
 ### Styling assets
 Vendor CSS libraries are copied to the `css/vendor` directory. We copy the Font Awesome CSS files to this directory:
@@ -183,8 +178,7 @@ Vendor CSS libraries are copied to the `css/vendor` directory. We copy the Font 
 - [Font Awesome][_30]: Icon fonts
 
 ### Font assets
-Font files are copied to the `font/vendor` directory. These fonts are
-currently installed:
+Vendor font files are copied to the `font/vendor` directory. These fonts are currently installed:
 
 - [Font Awesome][_30]: Icon fonts
 - [Open Sans][_31]: OSS Font face
@@ -207,7 +201,7 @@ Client libraries are copied to the `js/vendor` directory. This makes them availa
 - [TaffyDB][_17]: Client data management
 
 #### NodeJS libraries
-NodeJS libraries are **not** copied to a `vendor` directory. We expect this to change however, as we wish to deploy to our servers without the use of the ephemeral `node\_modules` directory. The following libraries are installed:
+NodeJS libraries are **not** copied to a `vendor` directory. We may changes this if we decide to create a server distribution. The following libraries are installed:
 
 - [clusterjs][_34]: Server multiplexer
 - [express][_36]: Minimalist Sinatra HTTP server
@@ -216,7 +210,7 @@ NodeJS libraries are **not** copied to a `vendor` directory. We expect this to c
 - [websocket][_37]: Websockets interface
 
 #### Development libraries
-Developent libraries are used for testing a building code. They **are** not copied to a `vendor` directory and probably never will be as they are for development, not deployment. The following libraries are installed: 
+Developent libraries are used for testing a building code. They **are** not copied to a `vendor` directory and probably never will be as they are for development, not deployment. The following libraries are installed:
 
 - [coveralls][_18]: Code coverage reporting
 - [istanbul][_19]: Code coverage
@@ -226,16 +220,24 @@ Developent libraries are used for testing a building code. They **are** not copi
 - [node-inspector][_23]: Debugging
 - [uglifycss][_24]: CSS minification
 - [uglifyjs][_25]: JS minitifcation
-- buildify + superpack: Build system
+- buildify: Build script
 
-## Distribution
-This is where it all comes together. The build system concatenates, compresses, obsufucates, and superpacks JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as below
+## Patch management
+Patches are applied by `npm run setup`. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory.
+
+The patches mechanism allows us to use great tools but tweak them for our needs while maintaining the upstream source. For example, we patch `uglify-js` to support object property name compression and shuffling provided by `superpack`.
+
+## Build system
+We can build a distribution by `npm run make`. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as shown below:
 
 ```bash
   cd ~/GitHub/hi_score
 
+  # Make sure we have built the distribution
+  npm install && npm run setup && npm test && npm run make
+
   # Get disk usage of all development files
-  du -sh . 
+  du -sh .
 
   # Inspect distribution directory
   cd build/dist
@@ -243,9 +245,9 @@ This is where it all comes together. The build system concatenates, compresses, 
   du -sh .
 ```
 
-**Superpack** analyzes symbol use and replaces them with the smallest keys available prioritized by frequency. It reports this frequency which makes further optimizations by pruning code easier. On larger code projects with many object properities **Superpack** has been shown to reduce minimized code by up to an additional 50%.
+The `buildify` build script uses `superpack` to analyze variable names and object properties and replaces them with shuffled keys. The shortest keys are used for the most-used symbols. It reports the symbol-to-key mapping and the frequency of use which makes further optimizations by pruning code easier. Projects with many object properities can be compressed an additional 50% using `superpack`.
 
-Reducing a dozen or so HTTP requests to one for a single, highly compressed JS file can reduce load time to 10% of prior values. The table below shows some of the results:
+Buildify reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
 
 | Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
 |-------------|-----------------:|-----------------:|-----------------:|
@@ -260,7 +262,7 @@ Reducing a dozen or so HTTP requests to one for a single, highly compressed JS f
 
 The load time measurements were made using a local HTTP server which is almost certainly a best-case scenario. We hope to add results for a remote server soon.
 
-## Contribute!
+## Contribute
 Any improvements or suggestions are welcome through the [issues tracker][_29]. Pull requests are especially appreciated.
 
 ## Release Notes
@@ -335,8 +337,14 @@ MIT
 
 ### Version 1.2.x
 
-- (i) Move towards mostly more JavaScript system scripts
-- (p) Increase complexity of example apps
+- (x) Convert bin/setup in JavaScript
+- (x) Configure setup completely in package.json
+
+### TODO
+- (o) Test load time using remote server
+- (o) Convert buildify from Bash to JavaScript
+- (o) Convert superpack from Perl to JavaScript
+- (o) Increase complexity of example apps
 
 ## Similar Projects
 [absurd.js][_26], [responsive.js][_27]
