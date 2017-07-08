@@ -17,7 +17,7 @@ This is an SPA starter project that installs best-in-class assets and tools to s
 - Automatic in-line browsable HTML documentation using markdown and pandoc (`git commit...`)
 - TDD and regression tests using Nodeunit + JSDOM (`npm test`)
 - Type safety with [type-cast][_05] libraries
-- Build compression *including* property keys (`npm run make`)
+- Build compression **including object properties** (`npm run make`)
 - Creation of distribution-ready `build/dist` from build process (`npm run make`)
 - Two simple demo apps that show compression and namespacing (`npm run make`)
 
@@ -114,22 +114,20 @@ We recommend using a virtual machine if possible. However one should be able to 
 We recommend using a virtual machine as detailed above. Installation *might* work with the new Linux subsystem on Windows 10 but we don't have any experience with it.
 
 ## Use
-### Install
-Install **hi\_score** dependencies and then copy vendor libraries as illustrated in the **Quick start** section. One can also use `npm install hi_score` but the git method is preferred. No errors should be reported.
+### Installation
+Use the **Quick start** guide to install **hi\_score** and prepare it for development. One can also use `npm install hi_score` but the `git` method is preferred. No errors should be reported.
 
-### Test
-Run the regression tests using `npm test`. These tests for the `xhi` libraries cover the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`) and the litebox feature module (`06.lb.js`). We plan to expand coverage to include data and models in subsequent releases.
+### Testing
+Use `npm test` to run the regression tests. You may expand tests by adding to the `test/xhi_level_0` file. Tested `xhi` modules include the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`), and the litebox (`06.lb.js`).
 
 ### Coverage
-Check the code coverage by using `npm run coverage`. We can then open the `coverage/lcov-report/index.html` file with a browser to inspect coverage.
-
-We use the excellent `Istanbul` code coverage tool along with the JSDOM package. Previously we had used `nodeunitb` for testing but was unsuccessful in getting usable coverage reports. Current coverage is reported at the top of this document.
+Use `npm run coverage` to calculate code coverage. We can open the `coverage/lcov-report/index.html` file with a browser to inspect coverage.  We use the excellent `Istanbul` code coverage tool along with the JSDOM package. Current coverage is reported at the top of this document.
 
 ### Publish coverage
-When we create a fork we may send reports to coveralls as shown in the [master branch site][_09]. Publish the coverage to the coveralls site using `npm run publish-coverage`. The process to set up coveralls is described in `hi_score/COVERALLS.md`.
+Use `npm run publish-coverage` to publish a report to the coveralls.io website. The process to set up coveralls is described in `hi_score/README.coveralls.md`.
 
 ### Build
-We use `buildify` to prepare the code for production. This script has been refined over 10 years and is used on some high-volume commerical sites (100m views per day).
+Use `npm run make` to create a distribution for deployment. The client deployment files are found in `build/dist`.  We can inspect our sample applications as follows:
 
 ```bash
   cd ~/GitHub/hi_score
@@ -138,11 +136,10 @@ We use `buildify` to prepare the code for production. This script has been refin
   google-chrome ex01.html ex02.html
 ```
 
-This example shows the creation of two simple single-page web apps that share resources (like fonts, libraries, and images) yet the have fully isolated JavaScript namespaces. Yes, we know the examples are lame. We are working on that.
+Yes, we know the examples are lame. We are working on that.
 
 ### Update
-One may update all the npm libraries, assets and the `package.json` file as
-shown below.
+One may update all the npm libraries, assets and the `package.json` file as follows:
 
 ```bash
 PATH=$PATH:node_modules/.bin
@@ -158,24 +155,19 @@ npm run setup
 ```
 
 ## Namespacing
-When we open our example apps (`google-chrome ex01.html ex02.html`) we see they provide near-identical features. However, they use separate *namespaces* to avoid data collisions. Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. With namespacing, one can trace behaviors to the controlling code faster and with greater accuracy.
+When we open our example apps (`google-chrome ex01.html ex02.html`) we see they provide near-identical features and share a great deal of code and assets. However, they use separate *namespaces* to avoid data collisions. Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. With namespacing, one can trace behaviors to the controlling code faster and with greater accuracy.
 
 When we view the Example 1 app we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac) and enter `ex01` into the JavaScript console to inspect that value. We can see that `ex01` is the single variable that contains all our app code. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 we can see that `ex01` is `undefined` and `ex02` contains all our app code.
 
 We namespace our CSS classes as well. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module.
 
 ## Vendor assets
-Vendor assets are deployed to vendor libraries by `npm run setup`. The configration for vendor assets are in `package.json`.  The `devDependencies` map listing the assets, `xhiVendorAssetGroupTable` lists the deployment groups and files.
+Use `npm run setup` to deploy vendor assets. The configration for vendor assets are in `package.json`.  The `devDependencies` map listing the assets, `xhiVendorAssetGroupTable` lists the deployment groups and files.
 
 Assets are copied to their destination directory with their version number appended to their names. The `.gitignore` file instructs `git` to ignore all these files as their development management is external to our project. **Everytime `npm setup` is run the vendor directories are deleted and recreated**.
 
 ### Executable assets
-Vendor executables can copied to the `bin/vendor` directory.
-
-### Styling assets
-Vendor CSS libraries are copied to the `css/vendor` directory. We copy the Font Awesome CSS files to this directory:
-
-- [Font Awesome][_30]: Icon fonts
+Vendor executables are copied to the `bin/vendor` directory.
 
 ### Font assets
 Vendor font files are copied to the `font/vendor` directory. These fonts are currently installed:
@@ -184,10 +176,10 @@ Vendor font files are copied to the `font/vendor` directory. These fonts are cur
 - [Open Sans][_31]: OSS Font face
 
 ### Image assets
-Vendor images can be copied to the `img/vendor` directory.
+Vendor images are be copied to the `img/vendor` directory.
 
-### JavaScript
-#### Client libraries
+### JavaScript assets
+#### Client JS libraries
 Client libraries are copied to the `js/vendor` directory. This makes them available to the web server. The following libraries are installed:
 
 - [jQuery][_10]: DOM manipulation
@@ -200,7 +192,7 @@ Client libraries are copied to the `js/vendor` directory. This makes them availa
 - [SprintF][_32]: Sprintf library
 - [TaffyDB][_17]: Client data management
 
-#### NodeJS libraries
+#### Node JS libraries
 NodeJS libraries are **not** copied to a `vendor` directory. We may changes this if we decide to create a server distribution. The following libraries are installed:
 
 - [clusterjs][_34]: Server multiplexer
@@ -209,7 +201,7 @@ NodeJS libraries are **not** copied to a `vendor` directory. We may changes this
 - [mysql2][_35]: Faster mysql interface
 - [websocket][_37]: Websockets interface
 
-#### Development libraries
+#### Development JS libraries
 Developent libraries are used for testing a building code. They **are** not copied to a `vendor` directory and probably never will be as they are for development, not deployment. The following libraries are installed:
 
 - [coveralls][_18]: Code coverage reporting
@@ -222,13 +214,18 @@ Developent libraries are used for testing a building code. They **are** not copi
 - [uglifyjs][_25]: JS minitifcation
 - buildify: Build script
 
-## Patch management
-Patches are applied by `npm run setup`. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory.
+### Styling assets
+Vendor CSS libraries are copied to the `css/vendor` directory. We copy the Font Awesome CSS files to this directory:
 
-The patches mechanism allows us to use great tools but tweak them for our needs while maintaining the upstream source. For example, we patch `uglify-js` to support object property name compression and shuffling provided by `superpack`.
+- [Font Awesome][_30]: Icon fonts
 
-## Build system
-We can build a distribution by `npm run make`. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as shown below:
+## Apply patches
+Use `npm run setup` to apply patches. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory.
+
+The patches mechanism allows us to use great tools tweaked for our needs while maintaining the upstream source. For example, we patch `uglify-js` to support object property name compression and shuffling by `superpack`.
+
+## Build a distribution
+Use `npm run make` to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
 
 ```bash
   cd ~/GitHub/hi_score
