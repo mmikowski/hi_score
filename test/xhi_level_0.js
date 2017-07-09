@@ -2717,7 +2717,7 @@ function shuffleList ( test_obj ) {
     ],
 
     assert_count  = assert_table.length,
-    expect_count  = assert_count,
+    expect_count  = assert_count + 2,
     shuffle_fn    = __util._shuffleList_,
     test_idx      = __0,
 
@@ -2728,10 +2728,10 @@ function shuffleList ( test_obj ) {
     ;
 
 
-  // Every shuffled list gets an extra test
-  assert_table.filter(
-    function ( list ) { if ( list[ __1 ] ) { expect_count++; } }
-  );
+  // Every shuffled list gets two extra test
+  assert_table.filter( function ( list ) {
+    if ( list[ __1 ] ) { expect_count++; }
+  });
   test_obj.expect( expect_count );
 
   for ( idx = __0; idx < assert_count; idx++ ) {
@@ -2771,6 +2771,10 @@ function shuffleList ( test_obj ) {
         msg_str = __Str( test_idx ) + '. orig_list != shuffle list '
           + 'after ' + __Str( jdx ) + ' shuffles.';
         test_obj.ok( pass_bool, msg_str );
+
+        test_obj.ok( orig_list.length === clone_list.length,
+          'Shuffled list matches original length.'
+        );
         test_idx++;
       }
     }

@@ -2018,22 +2018,21 @@ __NS._makeUtil_ = function ( aMap ) {
   function shuffleList ( arg_list ) {
     var
       list  = castList( arg_list ),
-
-      count,   n,        rnd_idx,
-      idx,     swap_data;
+      count,     idj,       idx,
+      rnd_idx,   swap_data
+      ;
 
     if ( ! list ) { return __false; }
 
+    // Count down from end of array using idx;
+    // Randomly select element from between 0 and idx;
+    // Swap value of selected element with idj element.
     count = list[ __length ];
-    // Count down from end of array + 1
-    for ( n = count; n > nMap._0_; n-- ) {
-      // randomly select from list ( will be between 0 and n - 1 )
-      rnd_idx = __floor( __random() * n );
-      idx = n - __1;
-
-      // swap values ( idx may === rnd_idx )
-      swap_data       = list[ idx ];
-      list[ idx ]     = list[ rnd_idx ];
+    for ( idj = count; idj > nMap._0_; idj-- ) {
+      rnd_idx         = __floor( __random() * idj );
+      idx             = idj - __1;
+      swap_data       = list[ idx     ];
+      list[ idx     ] = list[ rnd_idx ];
       list[ rnd_idx ] = swap_data;
     }
     return __true;
