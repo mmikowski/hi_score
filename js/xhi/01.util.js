@@ -1920,7 +1920,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     return rm_count;
   }
-  // . END Public method /rmUniqListVal/
+  // . END Public method /rmListVal/
 
   // BEGIN Public method /setStructData/
   // Purpose   : Set a deep structure attribute value
@@ -2009,33 +2009,37 @@ __NS._makeUtil_ = function ( aMap ) {
   // . END Public method /setStructData/
 
   // BEGIN public method /shuffleList/
-  // Purpose : Shuffle elements in an array
-  //
+  // Purpose   : Shuffle elements in a list
+  // Example   : shuffleList( [1,2,3,4] ) returns [ 3,1,4,2 ]
+  // Arguments : ( positional )
+  //   0 : arg_list - The list to shuffle
   // Returns : boolean
   //  * true  : Shuffle successful
   //  * false : Shuffle not successful
   //
+  // Method  :
+  //   1. Count down from end of array with last_idx
+  //   2. Randomly pick element from between 0 and last_idx
+  //   3. Swap pick element with last_idx element
+  //
   function shuffleList ( arg_list ) {
     var
       list  = castList( arg_list ),
-      count,     idj,       idx,
-      rnd_idx,   swap_data
+      count,      idj,       pick_idx,
+      last_idx,   swap_data
       ;
 
-    if ( ! list ) { return __false; }
+    if ( ! list ) { return false; }
 
-    // Count down from end of array using idx;
-    // Randomly select element from between 0 and idx;
-    // Swap value of selected element with idj element.
-    count = list[ __length ];
-    for ( idj = count; idj > nMap._0_; idj-- ) {
-      rnd_idx         = __floor( __random() * idj );
-      idx             = idj - __1;
-      swap_data       = list[ idx     ];
-      list[ idx     ] = list[ rnd_idx ];
-      list[ rnd_idx ] = swap_data;
+    count = list.length;
+    for ( idj = count; idj > __0; idj-- ) {
+      pick_idx         = __floor( __random() * idj );
+      last_idx         = idj - __1;
+      swap_data        = list[ last_idx ];
+      list[ last_idx ] = list[ pick_idx ];
+      list[ pick_idx ] = swap_data;
     }
-    return __true;
+    return true;
   }
   // . END public method /shuffleList/
 
