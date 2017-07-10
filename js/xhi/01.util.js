@@ -2012,11 +2012,11 @@ __NS._makeUtil_ = function ( aMap ) {
   // Purpose   : Shuffle elements in a list
   // Example   : shuffleList( [1,2,3,4] ) returns [ 3,1,4,2 ]
   // Arguments : ( positional )
-  //   0 : arg_list - The list to shuffle
+  //   0. arg_list - The list to shuffle
   // Returns : boolean
-  //  * true  : Shuffle successful
-  //  * false : Shuffle not successful
-  //
+  //   true  - Shuffle successful
+  //   false - Shuffle not successful
+  // Throws   : none
   // Method  :
   //   1. Count down from end of array with last_idx
   //   2. Randomly pick element from between 0 and last_idx
@@ -2025,21 +2025,19 @@ __NS._makeUtil_ = function ( aMap ) {
   function shuffleList ( arg_list ) {
     var
       list  = castList( arg_list ),
-      count,      idj,       pick_idx,
-      last_idx,   swap_data
-      ;
+      count, idj, last_idx, pick_idx, swap_data;
 
-    if ( ! list ) { return false; }
+    if ( ! list ) { return __false; }
 
     count = list.length;
     for ( idj = count; idj > __0; idj-- ) {
-      pick_idx         = __floor( __random() * idj );
       last_idx         = idj - __1;
+      pick_idx         = __floor( __random() * idj );
       swap_data        = list[ last_idx ];
       list[ last_idx ] = list[ pick_idx ];
       list[ pick_idx ] = swap_data;
     }
-    return true;
+    return __true;
   }
   // . END public method /shuffleList/
 
