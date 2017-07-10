@@ -32,7 +32,7 @@ __NS._makeCssShell_ = function ( aMap ) {
     __blank = vMap._blank_,
     __p     = __util._makeReplaceFn_( '_p_', aKey ),
 
-    topCmap = {
+    configMap = {
       _selector_list_ : [
         // -- begin {_p_}-_shell_ selectors
         { _selector_str_ : __p('.{_p_}-_shell_head_'),
@@ -403,7 +403,7 @@ __NS._makeCssShell_ = function ( aMap ) {
   // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  aMap._css_shell_ = { _selectorList_ : topCmap._selector_list_ };
+  aMap._css_shell_ = { _selectorList_ : configMap._selector_list_ };
   // == . END PUBLIC METHODS ===========================================
 };
 // == . END MODULE __NS._makeCssShell_ =================================

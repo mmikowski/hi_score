@@ -48,7 +48,7 @@ __NS._makeUtilb_ = function ( aMap ) {
     __castMap  = __util._castMap_,
     __castStr  = __util._castStr_,
 
-    topCmap = {
+    configMap = {
       _textarea_min_ht_px_ : 30,
       _textarea_max_ht_px_ : 400
     },
@@ -242,8 +242,8 @@ __NS._makeUtilb_ = function ( aMap ) {
   //   0: (req) jQuery collection that is the text area
   //   1: (opt) The maximum allowed height in pixels
   // Settings  :
-  //   * topCmap._textarea_max_ht_px_ (default max allowed height)
-  //   * topCmap._textarea_min_ht_px_
+  //   * configMap._textarea_max_ht_px_ (default max allowed height)
+  //   * configMap._textarea_min_ht_px_
   // Returns   : boolean
   //   * true  - resize request processed
   //   * false - not processed ( invalid $textarea )
@@ -251,8 +251,8 @@ __NS._makeUtilb_ = function ( aMap ) {
   function resizeTextarea ( arg_$textarea, arg_max_ht_px ) {
     var
       $textarea = __castJQ( arg_$textarea ),
-      max_ht_px = __castInt( arg_max_ht_px, topCmap._textarea_max_ht_px_ ),
-      min_ht_px = topCmap._textarea_min_ht_px_,
+      max_ht_px = __castInt( arg_max_ht_px, configMap._textarea_max_ht_px_ ),
+      min_ht_px = configMap._textarea_min_ht_px_,
 
       scroll_ht_px, outer_ht_px, solve_ht_px
       ;

@@ -29,8 +29,8 @@ __NS._makeUtil_ = function ( aMap ) {
     vMap   = aMap._vMap_,
     nMap   = aMap._nMap_,
 
-    __j2str   = vMap._JSON_[ vMap._stringify_],
-    __jparse  = vMap._JSON_[ vMap._parse_ ],
+    __j2str   = vMap._JSON_[ vMap._stringify_ ],
+    __jparse  = vMap._JSON_[ vMap._parse_     ],
 
     __Array   = vMap._Array_,
     __Date    = vMap._Date_,
@@ -60,7 +60,7 @@ __NS._makeUtil_ = function ( aMap ) {
     __typeof  = vMap._fnTypeof_,
     __keys    = vMap._fnGetKeyList_,
 
-    topSmap, topCmap, // State and cfg maps are set in initModule
+    configMap, stateMap,  // Set in initModule
 
     checkDateStr, getNowMs,     getVarType,
     getBasename,  getDirname,   logObj,
@@ -195,7 +195,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // Throws    : none
   //
   function castJQ ( data, alt_data ) {
-    if ( topSmap._has_jq_ ) {
+    if ( stateMap._has_jq_ ) {
       return ( data && data instanceof jQuery ) ? data : alt_data;
     }
     /* istanbul ignore next */
@@ -359,10 +359,10 @@ __NS._makeUtil_ = function ( aMap ) {
   // Returns   : A date object singleton for use by Tz methods
   //
   function getTzDateObj () {
-    if ( ! topSmap._date_obj_ ) {
-      topSmap._date_obj_ = new __Date();
+    if ( ! stateMap._date_obj_ ) {
+      stateMap._date_obj_ = new __Date();
     }
-    return topSmap._date_obj_;
+    return stateMap._date_obj_;
   }
   // . END Private method /getTzDateObj/
 
@@ -478,11 +478,11 @@ __NS._makeUtil_ = function ( aMap ) {
       raw_str    = castStr(  arg_str, __blank ),
       do_space   = castBool( arg_do_space ),
       interm_str = do_space
-        ? raw_str[ vMap._replace_ ]( topCmap._tag_end_rx_, ' ' )
+        ? raw_str[ vMap._replace_ ]( configMap._tag_end_rx_, ' ' )
         : raw_str;
 
     interm_str = interm_str[ vMap._trim_ ]();
-    return interm_str[ vMap._replace_ ]( topCmap._tag_rx_, __blank );
+    return interm_str[ vMap._replace_ ]( configMap._tag_rx_, __blank );
   }
   // . END Public prereq method /makeScrubStr/
 
@@ -743,9 +743,9 @@ __NS._makeUtil_ = function ( aMap ) {
       return lookup_map[ key ] /* istanbul ignore next */ || __blank;
     };
 
-    lookup_map = topCmap._encode_html_map_;
+    lookup_map = configMap._encode_html_map_;
     match_rx   = do_exclude_amp
-      ? topCmap._encode_noamp_rx_ : topCmap._encode_html_rx_;
+      ? configMap._encode_noamp_rx_ : configMap._encode_html_rx_;
 
     return source_str.replace( match_rx, match_fn );
   }
@@ -928,11 +928,11 @@ __NS._makeUtil_ = function ( aMap ) {
       do_recalc = castBool( arg_do_recalc, __false ),
       date_obj  = getTzDateObj();
 
-    if ( do_recalc || topSmap._tz_offset_ms_ === __undef ) {
-      topSmap._tz_offset_ms_
-        = date_obj.getTimezoneOffset() * topCmap._min_ms_;
+    if ( do_recalc || stateMap._tz_offset_ms_ === __undef ) {
+      stateMap._tz_offset_ms_
+        = date_obj.getTimezoneOffset() * configMap._min_ms_;
     }
-    return topSmap._tz_offset_ms_;
+    return stateMap._tz_offset_ms_;
   }
   // . END Public method /getTzOffsetMs/
 
@@ -941,7 +941,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var
       date_obj = getTzDateObj(),
       date_str = date_obj[ vMap._toString_ ](),
-      match_list = date_str[ vMap._match_ ]( topCmap._tzcode_rx_ )
+      match_list = date_str[ vMap._match_ ]( configMap._tzcode_rx_ )
       ;
     return ( match_list && match_list[ __1 ] )
       ? match_list[ __1 ] : __blank;
@@ -974,10 +974,10 @@ __NS._makeUtil_ = function ( aMap ) {
       time_idx  = castInt( arg_time_idx, __3 ),
       abs_idx   = vMap._fnGetAbs_( time_idx  ),
 
-      sec_ms    = topCmap._sec_ms_,
-      min_sec   = topCmap._min_sec_,
-      hrs_min   = topCmap._hrs_min_,
-      day_hrs   = topCmap._day_hrs_,
+      sec_ms    = configMap._sec_ms_,
+      min_sec   = configMap._min_sec_,
+      hrs_min   = configMap._hrs_min_,
+      day_hrs   = configMap._day_hrs_,
 
       raw_sec_int = __floor( time_ms / sec_ms + __d5 ),
       sec_int     = raw_sec_int % min_sec,
@@ -1071,7 +1071,7 @@ __NS._makeUtil_ = function ( aMap ) {
     list_count = solve_list[ __length ];
     for ( idx = __0; idx < list_count; idx++ ) {
       solve_list[ idx ] = solve_list[ idx ][
-        vMap._replace_ ]( topCmap._comma_rx_, "$1," );
+        vMap._replace_ ]( configMap._comma_rx_, "$1," );
     }
     return solve_list[ vMap._join_]('.') + solve_suffix;
   }
@@ -1122,7 +1122,7 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     if ( ! date_obj ) { return __blank; }
 
-    yrs_int = __Num( date_obj.getYear()  ) + topCmap._offset_yr_;
+    yrs_int = __Num( date_obj.getYear()  ) + configMap._offset_yr_;
     mon_int = __Num( date_obj.getMonth() ) + __1;
     day_int = __Num( date_obj.getDate()  );
 
@@ -1147,9 +1147,9 @@ __NS._makeUtil_ = function ( aMap ) {
     if ( time_idx === __0 ) { return date_str; }
 
     // time requested
-    time_ms = __Num( date_obj.getHours()   ) * topCmap._hrs_ms_
-            + __Num( date_obj.getMinutes() ) * topCmap._min_ms_
-            + __Num( date_obj.getSeconds() ) * topCmap._sec_ms_
+    time_ms = __Num( date_obj.getHours()   ) * configMap._hrs_ms_
+            + __Num( date_obj.getMinutes() ) * configMap._min_ms_
+            + __Num( date_obj.getSeconds() ) * configMap._sec_ms_
             ;
 
     time_str = makeClockStr( time_ms, time_idx );
@@ -1664,7 +1664,7 @@ __NS._makeUtil_ = function ( aMap ) {
 
     // Get the time span and a list of available units
     span_ms      = max_ms - min_ms;
-    unit_ms_list = topCmap._unit_ms_list_;
+    unit_ms_list = configMap._unit_ms_list_;
     unit_count   = unit_ms_list[ __length ];
 
     // Init for solve loop
@@ -1738,7 +1738,7 @@ __NS._makeUtil_ = function ( aMap ) {
     solve_date_list = [];
     accum_ratio     = __0;
     while ( date_ms < max_ms ) {
-      width_ratio = ( topCmap._day_ms_ - date_offset ) / span_ms;
+      width_ratio = ( configMap._day_ms_ - date_offset ) / span_ms;
       accum_ratio += width_ratio;
       if ( accum_ratio >= __1 ) {
         width_ratio = width_ratio + ( __1 - accum_ratio );
@@ -1748,7 +1748,7 @@ __NS._makeUtil_ = function ( aMap ) {
         _width_ratio_ : width_ratio
       });
       date_offset = __0;
-      date_ms += topCmap._day_ms_;
+      date_ms += configMap._day_ms_;
     }
     solve_map._date_list_ = solve_date_list;
 
@@ -1807,7 +1807,7 @@ __NS._makeUtil_ = function ( aMap ) {
         input_str  = castStr( map._input_str_, __blank  ),
         lookup_map = castMap( map._lookup_map_,      {} ),
 
-        tmplt_rx   = map._tmplt_rx_ || topCmap._tmplt_rx_,
+        tmplt_rx   = map._tmplt_rx_ || configMap._tmplt_rx_,
         bound_fn   = lookupFn.bind( lookup_map )
         ;
 
@@ -2013,11 +2013,9 @@ __NS._makeUtil_ = function ( aMap ) {
   // Example   : shuffleList( [1,2,3,4] ) returns [ 3,1,4,2 ]
   // Arguments : ( positional )
   //   0. arg_list - The list to shuffle
-  // Returns : boolean
-  //   true  - Shuffle successful
-  //   false - Shuffle not successful
-  // Throws   : none
-  // Method  :
+  // Returns   : boolean true on success
+  // Throws    : none
+  // Method    :
   //   1. Count down from end of array with last_idx
   //   2. Randomly pick element from between 0 and last_idx
   //   3. Swap pick element with last_idx element
@@ -2060,12 +2058,12 @@ __NS._makeUtil_ = function ( aMap ) {
 
   // BEGIN initialize module
   function initModule ()  {
-    topSmap = {
+    stateMap = {
       _date_obj_     : __undef,
       _tz_offset_ms_ : __undef
     };
 
-    topCmap = {
+    configMap = {
       _sec_ms_    : 1000,
       _min_sec_   : 60,
       _hrs_min_   : 60,
@@ -2121,10 +2119,10 @@ __NS._makeUtil_ = function ( aMap ) {
     };
     /* istanbul ignore next */
     try {
-      topSmap._has_jq_ = !! jQuery;
+      stateMap._has_jq_ = !! jQuery;
     }
     catch ( error ) {
-      topSmap._has_jq_ = __false;
+      stateMap._has_jq_ = __false;
     }
   }
   initModule();

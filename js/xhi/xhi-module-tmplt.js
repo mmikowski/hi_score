@@ -30,6 +30,8 @@ __NS._makeTmplt_ = function ( aMap ) {
     nMap     = aMap._nMap_,
     __util   = aMap._util_,
 
+    __j2str = vMap._JSON_[ vMap._stringify_ ],
+
     __0      = nMap._0_,
     __1      = nMap._1_,
     __blank  = vMap._blank_,
@@ -37,10 +39,9 @@ __NS._makeTmplt_ = function ( aMap ) {
     __logObj = __util._getLogObj_(),
     __logMsg = __logObj._logMsg_,
 
-    topCmap  = {},
-    topSmap  = {},
-
-    $Map
+    $Map      = {},
+    configMap = {},
+    stateMap  = {}
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
@@ -50,16 +51,17 @@ __NS._makeTmplt_ = function ( aMap ) {
   // == BEGIN DOM METHODS ==============================================
   // BEGIN DOM method /set$Map/
   // Summary   : set$Map( <jquery_obj> );
-  // Purpose   : Set the module jQuery cache
+  // Purpose   : Set the module jQuery cache, $Map
   // Example   : set$Map( $top_box );
   // Arguments : (positional)
-  //   0: $top_box : A jQuery object used to locate DOM elements.
+  //   0. $top_box - A jQuery object used to locate DOM elements.
   // Settings  : Module-scoped $Map is populated by this function.
   // Returns   : undef
   // Throws    : none
+  // Method    : Merges a literal map to the module-scope $Map
   //
   function set$Map ( $top_box ) {
-    $Map = { _$top_box_ : $top_box };
+    __util._mergeMaps_( $Map, { _$top_box_ : $top_box } );
   }
   // . END DOM method /set$Map/
   // == . END DOM METHODS ==============================================
@@ -74,14 +76,14 @@ __NS._makeTmplt_ = function ( aMap ) {
     set$Map( $top_box );
 
     __logMsg( '_info_', $,
-      '\n  __0     === ' + __0,
-      '\n  __1     === ' + __1,
-      '\n  __blank === ' + __blank,
-      '\n  aKey    === ' + aKey,
-      '\n  aMap    === ' + JSON.stringify( aMap ),
-      '\n  topCmap === ' + JSON.stringify( topCmap ),
-      '\n  topSmap === ' + JSON.stringify( topSmap ),
-      '\n  $Map    === ' + JSON.stringify( $Map )
+      '\n  __0       === ' + __0,
+      '\n  __1       === ' + __1,
+      '\n  __blank   === ' + __blank,
+      '\n  aKey      === ' +   aKey,
+      '\n  $Map      === ' + __j2str( $Map      ),
+      '\n  aMap      === ' + __j2str( aMap      ),
+      '\n  configMap === ' + __j2str( configMap ),
+      '\n  stateMap  === ' + __j2str( stateMap  )
     );
   }
   // . END Public method /initModule/

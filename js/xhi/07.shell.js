@@ -30,6 +30,8 @@ __NS._makeShell_ = function ( aMap ) {
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
 
+    __j2str = vMap._JSON_[ vMap._stringify_ ],
+
     __0     = nMap._0_,
     __1     = nMap._1_,
     __blank = vMap._blank_,
@@ -37,11 +39,11 @@ __NS._makeShell_ = function ( aMap ) {
     __logObj = __util._getLogObj_(),
     __logMsg = __logObj._logMsg_,
 
-    topCmap = {
+    configMap = {
       _main_tmplt_ : '<h1>Hello world from |'
         + aKey + '| namespace</h1>'
     },
-    topSmap = {},
+    stateMap = {},
 
     $Map
     ;
@@ -65,19 +67,19 @@ __NS._makeShell_ = function ( aMap ) {
 
     // Initial DOM content using methods above
     // and then set jQuery colection cache
-    $top_box[ vMap._html_ ]( topCmap._main_tmplt_ );
+    $top_box[ vMap._html_ ]( configMap._main_tmplt_ );
     set$Map( $top_box );
 
     // Report debug values
     __logMsg( '_info_', $,
-      '\n  __0     === ' + __0,
-      '\n  __1     === ' + __1,
-      '\n  __blank === ' + __blank,
-      '\n  aKey    === ' + aKey,
-      '\n  aMap    === ' + JSON.stringify( aMap ),
-      '\n  topCmap === ' + JSON.stringify( topCmap ),
-      '\n  topSmap === ' + JSON.stringify( topSmap ),
-      '\n  $Map    === ' + JSON.stringify( $Map )
+      '\n  __0       === ' + __0,
+      '\n  __1       === ' + __1,
+      '\n  __blank   === ' + __blank,
+      '\n  aKey      === ' +   aKey,
+      '\n  $Map      === ' + __j2str( $Map      ),
+      '\n  aMap      === ' + __j2str( aMap      ),
+      '\n  configMap === ' + __j2str( configMap ),
+      '\n  stateMap  === ' + __j2str( stateMap  )
     );
 
     // Bind shell event handlers (taps, drags, long-press, etc)

@@ -30,6 +30,8 @@ __NS._makeData_ = function ( aMap ) {
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
 
+    __j2str = vMap._JSON_[ vMap._stringify_ ],
+
     __0     = nMap._0_,
     __1     = nMap._1_,
     __Num   = vMap._Number_,
@@ -43,8 +45,8 @@ __NS._makeData_ = function ( aMap ) {
     __logObj = __util._getLogObj_(),
     __logMsg  = __logObj._logMsg_,
 
-    topCmap = {},
-    topSmap = {}
+    configMap = {},
+    stateMap  = {}
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
@@ -56,7 +58,7 @@ __NS._makeData_ = function ( aMap ) {
   // BEGIN private method /addJqxhrToList/
   function addJqxhrToList ( jqxhr_obj ) {
     var
-      jqxhr_list = topSmap._active_jqxhr_list_,
+      jqxhr_list = stateMap._active_jqxhr_list_,
       list_idx   = jqxhr_list[ vMap._indexOf_ ]( jqxhr_obj );
 
     if ( list_idx > __n1 ) { return; }
@@ -67,7 +69,7 @@ __NS._makeData_ = function ( aMap ) {
   // BEGIN private method /delJqxhrFromList/
   function delJqxhrFromList ( jqxhr_obj ) {
     var
-      jqxhr_list = topSmap._active_jqxhr_list_,
+      jqxhr_list = stateMap._active_jqxhr_list_,
       list_idx   = jqxhr_list[ vMap._indexOf_ ]( jqxhr_obj );
 
     if ( list_idx === __n1 ) { return; }
@@ -76,7 +78,7 @@ __NS._makeData_ = function ( aMap ) {
 
   function cancelJqxhrList () {
     var
-      jqxhr_list = topSmap._active_jqxhr_list_,
+      jqxhr_list = stateMap._active_jqxhr_list_,
       jqxhr;
 
     while ( jqxhr_list[ vMap._length_ ] > __0 ) {
@@ -130,7 +132,7 @@ __NS._makeData_ = function ( aMap ) {
     var
       data         = arg_map._data_ === __undef ? __blank : arg_map._data_,
       full_url     = arg_map._full_url_,
-      auth_key     = topSmap._auth_key_,
+      auth_key     = stateMap._auth_key_,
       content_type = __blank,
 
       do_data_encode, jqxhr_obj,
@@ -214,13 +216,13 @@ __NS._makeData_ = function ( aMap ) {
   // BEGIN Public method /initModule/
   function initModule () {
     __logMsg( '_info_', $,
-      '\n  __0     === ' + __0,
-      '\n  __1     === ' + __1,
-      '\n  __blank === ' + __blank,
-      '\n  aKey    === ' + aKey,
-      '\n  aMap    === ' + JSON.stringify( aMap ),
-      '\n  topCmap === ' + JSON.stringify( topCmap ),
-      '\n  topSmap === ' + JSON.stringify( topSmap ),
+      '\n  __0       === ' + __0,
+      '\n  __1       === ' + __1,
+      '\n  __blank   === ' + __blank,
+      '\n  aKey      === ' +   aKey,
+      '\n  aMap      === ' + __j2str( aMap      ),
+      '\n  configMap === ' + __j2str( configMap ),
+      '\n  stateMap  === ' + __j2str( stateMap  ),
       encodeUriComp,
       sendHttpGet,  sendHttpDelete,
       sendHttpPost, sendHttpPut
@@ -232,4 +234,3 @@ __NS._makeData_ = function ( aMap ) {
   // == . END PUBLIC METHODS ===========================================
 };
 // == . END MODULE __NS._makeData_ =====================================
-

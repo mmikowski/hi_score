@@ -30,6 +30,8 @@ __NS._makeModel_ = function ( aMap ) {
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
 
+    __j2str = vMap._JSON_[ vMap._stringify_ ],
+
     __0     = nMap._0_,
     __1     = nMap._1_,
     __blank = vMap._blank_,
@@ -37,8 +39,8 @@ __NS._makeModel_ = function ( aMap ) {
     __logObj = __util._getLogObj_(),
     __logMsg  = __logObj._logMsg_,
 
-    topCmap = {},
-    topSmap = {}
+    configMap = {},
+    stateMap  = {}
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
@@ -55,13 +57,13 @@ __NS._makeModel_ = function ( aMap ) {
   // BEGIN Public method /initModule/
   function initModule () {
     __logMsg( '_info_', $,
-      '\n  __0     === ' + __0,
-      '\n  __1     === ' + __1,
-      '\n  __blank === ' + __blank,
-      '\n  aKey    === ' + aKey,
-      '\n  aMap    === ' + JSON.stringify( aMap ),
-      '\n  topCmap === ' + JSON.stringify( topCmap ),
-      '\n  topSmap === ' + JSON.stringify( topSmap )
+      '\n  __0       === ' + __0,
+      '\n  __1       === ' + __1,
+      '\n  __blank   === ' + __blank,
+      '\n  aKey      === ' +   aKey,
+      '\n  aMap      === ' + __j2str( aMap      ),
+      '\n  configMap === ' + __j2str( configMap ),
+      '\n  stateMap  === ' + __j2str( stateMap  )
     );
   }
   // . END Public method /initModule/

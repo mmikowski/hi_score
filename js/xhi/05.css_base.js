@@ -30,7 +30,7 @@ __NS._makeCssBase_ = function ( aMap ) {
     __util  = aMap._util_,
     __p     = __util._makeReplaceFn_( '_p_', aKey ),
 
-    topCmap = {
+    configMap = {
       _global_mixin_map_ : {
         _spc_em_00_ : '.375rem',  // 06px intra-group
         _spc_em_01_ : '.75rem',   // 12px icon-to-label
@@ -421,9 +421,9 @@ __NS._makeCssBase_ = function ( aMap ) {
 
   // == BEGIN PUBLIC METHODS ===========================================
   aMap._css_base_ = {
-    _globalMixinMap_ : topCmap._global_mixin_map_,
-    _selectorList_   : topCmap._selector_list_,
-    _themeMapList_   : topCmap._theme_map_list_
+    _globalMixinMap_ : configMap._global_mixin_map_,
+    _selectorList_   : configMap._selector_list_,
+    _themeMapList_   : configMap._theme_map_list_
   };
   // == . END PUBLIC METHODS ===========================================
 };

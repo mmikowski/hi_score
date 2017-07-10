@@ -56,20 +56,8 @@ __NS._makeLb_ = function ( aMap ) {
     __p        = __util._makeReplaceFn_( '_p_', aKey ),
     __tmplt    = __util._makeTmpltStr_,
 
-    topSmap = {
-      _cleanup_fn_   : __undef,  // Clean up function (bound)
-      _cleanup_toid_ : __undef,  // Clean up timeout id
-      _close_toid_   : __undef,  // Close timeout id
-      _is_masked_    : __false,  // Mask-on flag
-      _is_ready_     : __false,  // Has DOM been initialized?
-      _is_busy_      : __false,  // Is litebox in use?
-      _mod_class_str_: __blank,  // Caller specified class(es) for lb
-      _onclose_fn_   : __undef   // Callback function on close
-    },
-
-    $Map = {},
-
-    topCmap = {
+    $Map      = {},
+    configMap = {
       _trans_ms_ : 350, // transition time
       _active_class_ : aKey + '-_x_active_',
       _main_html_ : __p( __blank
@@ -122,6 +110,16 @@ __NS._makeLb_ = function ( aMap ) {
         )
       }
     },
+    stateMap = {
+      _cleanup_fn_   : __undef,  // Clean up function (bound)
+      _cleanup_toid_ : __undef,  // Clean up timeout id
+      _close_toid_   : __undef,  // Close timeout id
+      _is_masked_    : __false,  // Mask-on flag
+      _is_ready_     : __false,  // Has DOM been initialized?
+      _is_busy_      : __false,  // Is litebox in use?
+      _mod_class_str_: __blank,  // Caller specified class(es) for lb
+      _onclose_fn_   : __undef   // Callback function on close
+    },
     coordDraggable
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
@@ -144,16 +142,16 @@ __NS._makeLb_ = function ( aMap ) {
   // BEGIN DOM method /initModule/
   // Checks to see if we have been initialized; if not, we do so
   function initModule () {
-    if ( topSmap._is_ready_ ) { return; }
+    if ( stateMap._is_ready_ ) { return; }
 
     // Add to DOM
-    $('body')[ vMap._append_ ]( topCmap._main_html_ );
+    $('body')[ vMap._append_ ]( configMap._main_html_ );
 
     // Cache jQuery collections and set state
     set$Map();
     $Map._$litebox_[ vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
     $Map._$mask_[    vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
-    topSmap._is_ready_ = __true;
+    stateMap._is_ready_ = __true;
   }
   // . END DOM method /initModule/
 
@@ -161,7 +159,7 @@ __NS._makeLb_ = function ( aMap ) {
   function addLocalSpin( arg_$box ) {
     var $box = __castJQ( arg_$box );
 
-    if ( $box ) { $box.html( topCmap._local_html_ ); }
+    if ( $box ) { $box.html( configMap._local_html_ ); }
   }
   // . END DOM method /addLocalSpin/
 
@@ -169,7 +167,7 @@ __NS._makeLb_ = function ( aMap ) {
   function cleanUp () {
     var
       smap = this;
-      topSmap._cleanup_toid_ = __undef;
+      stateMap._cleanup_toid_ = __undef;
 
     /* istanbul ignore next */
     if ( ! smap ) { return; }
@@ -195,9 +193,9 @@ __NS._makeLb_ = function ( aMap ) {
     if ( smap._callback_fn_ ) {
       smap._callback_fn_( $Map._$litebox_, $Map._$mask_ );
     }
-    topSmap._is_busy_       = __false;
-    topSmap._mod_class_str_ = __blank;
-    topSmap._is_masked_     = __false;
+    stateMap._is_busy_       = __false;
+    stateMap._mod_class_str_ = __blank;
+    stateMap._is_masked_     = __false;
   }
   // . END DOM method /cleanUp/
 
@@ -206,28 +204,28 @@ __NS._makeLb_ = function ( aMap ) {
   function hideLb ( arg_callback_fn ) {
     var
       callback_fn  = __castFn( arg_callback_fn ),
-      active_class = topCmap._active_class_,
+      active_class = configMap._active_class_,
       clean_smap, clean_fn;
 
     initModule();
 
-    if ( topSmap._close_toid_ ) {
-      __clearTo( topSmap._close_toid_ );
-      topSmap._close_toid_ = __undef;
+    if ( stateMap._close_toid_ ) {
+      __clearTo( stateMap._close_toid_ );
+      stateMap._close_toid_ = __undef;
     }
 
-    if ( topSmap._is_busy_ === __true ) {
+    if ( stateMap._is_busy_ === __true ) {
       clean_smap = {
         _callback_fn_   : callback_fn,
-        _mod_class_str_ : topSmap._mod_class_str_
+        _mod_class_str_ : stateMap._mod_class_str_
       };
 
       $Map._$litebox_[ vMap._removeClass_ ]( active_class );
       $Map._$mask_[    vMap._removeClass_ ]( active_class );
 
       clean_fn               = cleanUp[ vMap._bind_ ]( clean_smap );
-      topSmap._cleanup_fn_   = clean_fn;
-      topSmap._cleanup_toid_ = __setTo( clean_fn, topCmap._trans_ms_ );
+      stateMap._cleanup_fn_   = clean_fn;
+      stateMap._cleanup_toid_ = __setTo( clean_fn, configMap._trans_ms_ );
     }
     return $Map._$litebox_;
   }
@@ -241,8 +239,8 @@ __NS._makeLb_ = function ( aMap ) {
     var is_good;
     initModule();
     // Do not close litebox on falsey return from _onclose_fn_
-    if ( topSmap._onclose_fn_ ) {
-      is_good = topSmap._onclose_fn_( $Map._$litebox_, $Map._$mask_ );
+    if ( stateMap._onclose_fn_ ) {
+      is_good = stateMap._onclose_fn_( $Map._$litebox_, $Map._$mask_ );
       if ( is_good ) { return hideLb(); }
       return $Map._$litebox_;
     }
@@ -252,19 +250,19 @@ __NS._makeLb_ = function ( aMap ) {
 
   // BEGIN method /setCloseFn/
   function setCloseFn ( fn_cb ) {
-    topSmap._onclose_fn_ = __castFn( fn_cb );
+    stateMap._onclose_fn_ = __castFn( fn_cb );
   }
   // . END method /setCloseFn/
 
   // BEGIN method /showBusy/
   function showBusy ( /*msg_str*/ ) {
-    var active_class = topCmap._active_class_;
+    var active_class = configMap._active_class_;
     initModule();
     hideLb();
 
     $Map._$mask_[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
       vMap._addClass_ ]( active_class );
-    topSmap._is_masked_ = __true;
+    stateMap._is_masked_ = __true;
     $Map._$spin_[ vMap._addClass_ ]( active_class );
 
     // TODO: Add this
@@ -285,7 +283,7 @@ __NS._makeLb_ = function ( aMap ) {
       $litebox    = smap._$litebox_,
       $mask       = smap._$mask_,
       onshow_fn   = smap._onshow_fn_,
-      active_class = topCmap._active_class_,
+      active_class = configMap._active_class_,
 
       margin_left_px, margin_top_px, css_map
       ;
@@ -405,7 +403,7 @@ __NS._makeLb_ = function ( aMap ) {
       onclose_fn    = __castFn(   map._onclose_fn_,      __null ),
       onshow_fn     = __castFn(   map._onshow_fn_,       __null ),
 
-      active_class  = topCmap._active_class_,
+      active_class  = configMap._active_class_,
       $litebox      = $Map._$litebox_,
       $mask         = $Map._$mask_,
 
@@ -415,17 +413,17 @@ __NS._makeLb_ = function ( aMap ) {
       ;
 
     // Close previously open lightbox
-    if ( topSmap._is_busy_ ) { hideLb(); }
+    if ( stateMap._is_busy_ ) { hideLb(); }
 
     // Clean-up any lingering fades, etc
-    if ( topSmap._cleanup_toid_ && topSmap._cleanup_fn_ ) {
-      __clearTo( topSmap._cleanup_toid_ );
-      topSmap._cleanup_fn_();
+    if ( stateMap._cleanup_toid_ && stateMap._cleanup_fn_ ) {
+      __clearTo( stateMap._cleanup_toid_ );
+      stateMap._cleanup_fn_();
     }
 
     // Fill litebox content with desired layout
     inner_html = __tmplt({
-      _input_str_ : topCmap._tmplt_map_[ layout_key ],
+      _input_str_ : configMap._tmplt_map_[ layout_key ],
       _lookup_map_ : {
         _close_html_   : close_html,
         _content_html_ : content_html,
@@ -447,7 +445,7 @@ __NS._makeLb_ = function ( aMap ) {
       vMap._addClass_ ]( active_class );
 
     // Store close button function
-    topSmap._onclose_fn_ = onclose_fn;
+    stateMap._onclose_fn_ = onclose_fn;
 
     // Hide or show close button
     if ( close_html ) {
@@ -476,7 +474,7 @@ __NS._makeLb_ = function ( aMap ) {
 
     // Autoclose
     if ( autoclose_ms ) {
-      topSmap._close_toid_ = __setTo( closeLb, autoclose_ms );
+      stateMap._close_toid_ = __setTo( closeLb, autoclose_ms );
     }
 
     // Handle position map
@@ -495,7 +493,7 @@ __NS._makeLb_ = function ( aMap ) {
       mod_class_str = aKey + '-_lb_ ' + mod_class_str;
     }
     $litebox[ vMap._addClass_ ]( mod_class_str );
-    topSmap._mod_class_str_ = mod_class_str;
+    stateMap._mod_class_str_ = mod_class_str;
 
     // Show and (if requested) size litebox
     aftershow_smap = {
@@ -511,7 +509,7 @@ __NS._makeLb_ = function ( aMap ) {
     // Coordinate draggable if requested
     coordDraggable( $title, do_draggable );
 
-    topSmap._is_busy_ = __true;
+    stateMap._is_busy_ = __true;
     return $litebox;
   }
   // . END method /showLb/
@@ -528,7 +526,7 @@ __NS._makeLb_ = function ( aMap ) {
       offset_map = $Map._$litebox_.offset();
 
     $target[ vMap._css_ ]( cssKmap._cursor_, cssVmap._move_ );
-    topSmap._$drag_target_ = $target;
+    stateMap._$drag_target_ = $target;
 
     offset_map[ cssKmap._right_  ] = __blank;
     offset_map[ cssKmap._bottom_ ] = __blank;
@@ -546,11 +544,11 @@ __NS._makeLb_ = function ( aMap ) {
 
   /* istanbul ignore next */
   function onDragend ( /* event_obj */ ) {
-    var $target = topSmap._$drag_target_;
+    var $target = stateMap._$drag_target_;
     if ( $target ) {
       $target[ vMap._css_ ]( cssKmap._cursor_, __blank );
     }
-    topSmap._$drag_target_ = __undef;
+    stateMap._$drag_target_ = __undef;
   }
 
   // BEGIN public method /handleResize/
@@ -571,7 +569,7 @@ __NS._makeLb_ = function ( aMap ) {
 
     if ( ! ( body_h_px && body_w_px && $litebox ) ) { return __false; }
 
-    if ( topSmap._is_masked_ ) {
+    if ( stateMap._is_masked_ ) {
       $litebox = $Map._$litebox_;
       w_px     = $litebox[ cssKmap._width_  ]();
       h_px     = $litebox[ cssKmap._height_ ]();
@@ -585,9 +583,9 @@ __NS._makeLb_ = function ( aMap ) {
         )
       });
     }
-    topSmap._body_w_px_   = body_w_px;
-    topSmap._body_h_px_   = body_h_px;
-    topSmap._resize_toid_ = __undef;
+    stateMap._body_w_px_   = body_w_px;
+    stateMap._body_h_px_   = body_h_px;
+    stateMap._resize_toid_ = __undef;
     return __true;
   }
   // == . END EVENT HANDLERS ==========================================
@@ -618,7 +616,7 @@ __NS._makeLb_ = function ( aMap ) {
     var
       msg_str      = __castStr( arg_str, __blank ),
       content_html = __tmplt({
-        _input_str_  : topCmap._success_tmplt_,
+        _input_str_  : configMap._success_tmplt_,
         _lookup_map_ : {
           _msg_str_ : msg_str,
         }
@@ -645,13 +643,13 @@ __NS._makeLb_ = function ( aMap ) {
       lookup_map = __util._cloneData_( row_map );
 
       rows_html += __tmplt({
-        _input_str_  : topCmap._erow_tmplt_,
+        _input_str_  : configMap._erow_tmplt_,
         _lookup_map_ : lookup_map
       });
     }
 
     content_html = __tmplt({
-      _input_str_  : topCmap._error_tmplt_,
+      _input_str_  : configMap._error_tmplt_,
       _lookup_map_ : {
         _rows_html_ : rows_html || 'unknown error'
       }

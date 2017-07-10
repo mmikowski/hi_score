@@ -29,7 +29,7 @@ __NS._makeCssLb_ = function ( aMap ) {
     __util  = aMap._util_,
     __p     = __util._makeReplaceFn_( '_p_', aKey ),
 
-    topCmap =  {
+    configMap =  {
       _selector_list_ : [
         { _selector_str_ : __p('.{_p_}-_lb_'),
           _rule_map_ : {
@@ -157,7 +157,7 @@ __NS._makeCssLb_ = function ( aMap ) {
   // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  aMap._css_lb_ = { _selectorList_ : topCmap._selector_list_ };
+  aMap._css_lb_ = { _selectorList_ : configMap._selector_list_ };
   // == . END PUBLIC METHODS ===========================================
 };
 // == . END MODULE __NS._makeCssLb_ ====================================
