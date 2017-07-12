@@ -340,6 +340,7 @@ MIT
 ### TODO
 - (o) Test load time using remote server
 - (o) Provide unique build number like build/0001/
+- (o) Move coverage reports to build/xxxx/ directories
 - (o) Convert buildify from Bash to JavaScript
 - (o) Convert superpack from Perl to JavaScript
 - (o) Increase complexity of example apps

@@ -1446,18 +1446,18 @@ __NS._makeUtil_ = function ( aMap ) {
   // Example   :
   //   my_pct = makePctStr( 0.529863, 1 );
   // Arguments : ( positional )
-  //   0 : (required) A ratio, usually less than 1.
-  //   1 : (optional) Number of decimal points to return.
+  //   0 : (required) ratio - Ratio to convert. 1 = 100%.
+  //   1 : (optional) count - Number of digits after decimal.
   //       Default value is 0.
   //
-  function makePctStr ( arg_ratio, arg_dcount ) {
+  function makePctStr ( arg_ratio, arg_count ) {
     var
-      ratio  = castNum( arg_ratio,  __0 ),
-      dcount = castNum( arg_dcount, __0 )
+      ratio = castNum( arg_ratio, __0 ),
+      count = castNum( arg_count, __0 )
       ;
 
-    dcount = dcount < __0 ? __0 : __floor( dcount );
-    return ( ratio * __100 )[ vMap._toFixed_ ]( dcount ) + '%';
+    count = count < __0 ? __0 : __floor( count );
+    return ( ratio * __100 )[ vMap._toFixed_ ]( count ) + '%';
   }
   // . END Public method /makePctStr/
 
@@ -1911,7 +1911,6 @@ __NS._makeUtil_ = function ( aMap ) {
       idx;
 
     for ( idx = input_count; idx; __0 ) {
-      //noinspection IncrementDecrementResultUsedJS
       if ( input_list[ --idx ] === arg_data ) {
         input_list[ vMap._splice_ ]( idx, __1 );
         rm_count++;
