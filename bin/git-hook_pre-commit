@@ -9,7 +9,7 @@
 ##   We omit -e as we do our own checking.
 set -u;
 
-  ## BEGIN Layout variables ==================================================
+  ## == BEGIN Layout variables ==============================================
   _app_name=$( basename $0 );
   _orig_dir=$( pwd );
   echo "start ${_app_name}";
@@ -38,16 +38,16 @@ set -u;
     fi
 
     # more paths
-    _git_dir=$(cd "$(git rev-parse --show-toplevel)" && pwd );
+    _git_dir=$(cd "$(${_git_exe} rev-parse --show-toplevel)" && pwd );
     _nodeunit_file="${_npm_dir}/test/xhi_level_0.js";
     _list_file="/tmp/git-pre-commit.${$}.list.tmp";
     _log_file="/tmp/git-pre-commit.${$}.tmp";
     _scratch_str="";
 
   # echo "  < layout vars";
-  ## == END Layout variables ===============================================
+  ## == . END Layout variables ==============================================
 
-  ## BEGIN Lint JavaScript files =============================================
+  ## BEGIN Lint JavaScript files ============================================
   if [ ! -x "${_jslint_exe}" ]; then
     echo "JSLint executable not found."
     echo "Please execute the following command: "
@@ -58,7 +58,7 @@ set -u;
   cd "${_git_dir}";
   pwd;
 
-  git status \
+  ${_git_exe} status \
     | grep -v '/vendor/' \
     | grep '.js$' \
     | grep '^\s\+\(modified\|new file\)' \
@@ -108,7 +108,7 @@ set -u;
   rm "${_list_file}";
 
   echo;
-  ## == END Lint JavaScript files ===========================================
+  ## == . END Lint JavaScript files =========================================
 
   ## == BEGIN Process changed documents =====================================
   if [ ! -x "${_makedoc_exe}" ]; then
@@ -124,7 +124,7 @@ set -u;
     echo "Please check your installation.";
     exit "${_exit_code}";
   fi
-  ## == END Process changed documents =======================================
+  ## == . END Process changed documents =====================================
 
   ## == BEGIN Run regression tests ==========================================
   if [ ! -x "${_node_exe}" ]; then
@@ -148,5 +148,37 @@ set -u;
 
   echo "Running regression tests";
   "${_nodeunit_exe}" "${_nodeunit_file}"
-  exit $?;
-  ## == END Run regression tests ============================================
+  _exit_int=$?;
+  
+  if [ "${_exit_int}" != 0 ]; then 
+    echo "Regression tests failed.  Please fix and try again.";
+    exit "${_exit_int}";
+  fi
+  ## == . END Run regression tests ==========================================
+
+  ## == BEGIN Report outstanding TODOs ======================================
+  cd "${_npm_dir}"
+
+  echo;
+  echo " == Please review the list of outstanding TODOs ====================";
+  echo " == TODO <YYYY-mm-dd> <username> <urgency>: <Comment> ==============";
+  grep -n TODO $(find ./ -type f -name '*.js' \
+    |grep -v node_modules |grep -v /vendor/) |sort -u
+  echo " ===================================================================";
+  echo
+
+  # Open STDIN - see https://stackoverflow.com/questions/3417896
+  exec < /dev/tty
+  read -p "Proceed [Y/n]? " _reply;
+
+  if ( echo "${_reply}" |grep -i "^n" ); then
+    echo "Commit aborted.";
+    exit 1;
+  fi
+  # Close STDIN
+  exec <&-
+
+  ## == . END Report outstanding TODOs ======================================
+
+  cd "${_orig_dir}"
+  exit 0;

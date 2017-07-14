@@ -265,7 +265,7 @@ __NS._makeLb_ = function ( aMap ) {
     stateMap._is_masked_ = __true;
     $Map._$spin_[ vMap._addClass_ ]( active_class );
 
-    // TODO: Add this
+    // TODO 2017-07-21 mmikowski warn: Add litebox messages
     // if ( msg_str )(
     //   $Map._$msg_[ vMap._text_ ]( msg_str );
     // )

@@ -1,16 +1,17 @@
-.idea
-.git
 *.swp
-npm-debug.log
-node_modules
-coverage
-js-cov
 .coveralls.yml
-img/vendor
-js/vendor
+.git
+.idea
+CODE_OF_CONDUCT.html
+README*.html
+build
+coverage
 css/vendor
 font/vendor
-build
+img/vendor
 index.html
-README*.html
+js-cov
+js/vendor
+node_modules
+npm-debug.log
 

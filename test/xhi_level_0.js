@@ -1035,7 +1035,7 @@ function makeCommaNumStr ( test_obj ) {
 }
 
 function makeDateStr ( test_obj ) {
-  // TODO 2017-04-14 crit - this test is not tz adjusted.
+  // TODO 2017-04-14 crit: Adjust test for timezone
   // The test computer must be set to tz America/Los_Angeles to pass.
   var
     date_obj     = new Date(),
@@ -1934,7 +1934,7 @@ function makeSeenMap ( test_obj ) {
 }
 
 function makeSeriesMap ( test_obj ) {
-  // TODO 2017-04-14 crit - this test is not tz adjusted.
+  // TODO 2017-04-14 crit: Adjust test for timezone
   // The test computer must be set to tz America/Los_Angeles to pass.
   var
     start_ms = 1465452840000,
@@ -3623,8 +3623,6 @@ module.exports = {
   _showErrorList_ : showErrorList,
   _showLb_        : showLb,
   _handleResize_  : handleResize,
-
-  // TODO: 2017-06-26 mmikowski - reinstate after fixing for Node8+
   _showBusy_      : showBusy,
   _showSuccess_   : showSuccess
 };

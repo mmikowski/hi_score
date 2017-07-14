@@ -26,8 +26,11 @@ __NS = __global.xhi;
 __NS._makeApp_ = function ( app_key ) {
   'use strict';
 
-  // TODO 2017-02-27 mikem warn: provide user capability to define
-  // desired modules through manual listing or pre-defined groups.
+  // TODO 2017-02-27 mikem warn: Provide configuration options.
+  // Calling routine should  be able to list modules or select
+  // a pre-defined group that does not include everything.
+  //
+  // TODO 2017-07-13 mikem warn: Include library loader here?
   //
   var app_map = __NS._makeRoot_( app_key );
   __NS._makeUtil_(     app_map );

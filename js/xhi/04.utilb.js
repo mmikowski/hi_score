@@ -24,7 +24,7 @@ catch ( e1 ) { __NS = window[ __ns ]; }
 __NS._makeUtilb_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
-  // TODO: add when needed: aKey  = aMap._aKey_
+  // Add when needed: aKey  = aMap._aKey_
   var
     nMap     = aMap._nMap_,
     vMap     = aMap._vMap_,
