@@ -150,12 +150,10 @@ __NS._makeData_ = function ( aMap ) {
       do_data_encode = __true;
     }
 
-    // TODO 2016-06-13 mikem info:
-    // The done callback of ajax can now take an array of functions,
-    // which will be executed in order.  Real cool!
+    // TODO 2016-06-13 mikem info: Callback can take list of fns
+    // to be executed in order. Real cool!
     //
-    // TODO 2016-06-13 mikem warn:
-    // Consider auth signature as shown here
+    // TODO 2016-06-13 mikem warn: Auth signature as shown here?
     // beforeSend  : function (jqxhr_obj) {
     //  prepareXhrSignature(jqxhr_obj, arg_map._full_url_);
     // }

@@ -54,16 +54,17 @@
     // Convert to promises using magic
     promisifyFn      = utilObj.promisify,
     makeRmDirProm    = promisifyFn( rmDirFn ),
+    makeStatProm     = promisifyFn( fsObj.stat ),
     makeWhichProm    = promisifyFn( whichFn ),
 
     eventObj         = new EventEmitter(),
 
     // Assign nodejs builtins
     fqAppFilename = __filename,
-    fqBinDirStr   = __dirname,
+    fqBinDirname  = __dirname,
 
     appName       = pathObj.basename( fqAppFilename, '.js' ),
-    fqOrigDirStr  = process.cwd(),
+    fqOrigDirname = process.cwd(),
     versList      = process.versions.node.split('.'),
 
     // Initialize
@@ -72,10 +73,11 @@
     // patchStr = '// BEGIN hi_score patch line 324',
 
     // Declare
-    fqHookFilename,  fqModuleDirStr,
-    fqProjDirStr,    fqPatchFilename,
-    fqPkgFileStr,    fqScopeFileStr,
-    fqUglyDirStr,    pkgMatrix
+    fqGitDirname,
+    fqHookFilename,  fqModuleDirname,
+    fqProjDirname,   fqPatchFilename,
+    fqPkgFilename,   fqScopeFileStr,
+    fqUglyDirname,   pkgMatrix
     ;
 
   // == . END MODULE SCOPE VARIABLES =====================================
@@ -189,14 +191,15 @@
     }
 
     // Assign npm module vars
-    fqProjDirStr    = pathObj.dirname( fqBinDirStr );
+    fqProjDirname   = pathObj.dirname( fqBinDirname );
 
-    fqModuleDirStr  = fqProjDirStr   + '/node_modules';
-    fqPkgFileStr    = fqProjDirStr   + '/package.json';
-    fqPatchFilename = fqProjDirStr   + '/patch/uglify-js-3.0.21.patch';
+    fqGitDirname    = fqProjDirname   + '/.git';
+    fqModuleDirname = fqProjDirname   + '/node_modules';
+    fqPkgFilename   = fqProjDirname   + '/package.json';
+    fqPatchFilename = fqProjDirname   + '/patch/uglify-js-3.0.21.patch';
 
-    fqUglyDirStr    = fqModuleDirStr + '/uglifyjs';
-    fqScopeFileStr  = fqUglyDirStr   + '/lib/scope.js';
+    fqUglyDirname   = fqModuleDirname + '/uglifyjs';
+    fqScopeFileStr  = fqUglyDirname   + '/lib/scope.js';
 
     // Assign executable path vars
     for ( idx = 0; idx < exe_count; idx++ ) {
@@ -223,7 +226,7 @@
 
   // BEGIN utility /readPkgFileFn/
   function readPkgFileFn () {
-    fsObj.readFile( fqPkgFileStr, 'utf8', storePkgMapFn, abortFn );
+    fsObj.readFile( fqPkgFilename, 'utf8', storePkgMapFn, abortFn );
   }
   // END utility /readPkgFileFn/
 
@@ -239,7 +242,7 @@
 
     for ( idx = 0; idx < asset_group_count; idx++ ) {
       asset_group_map = asset_group_table[ idx ] || {};
-      fq_dest_dir_str = fqProjDirStr + '/' + asset_group_map.dest_dir_str;
+      fq_dest_dir_str = fqProjDirname + '/' + asset_group_map.dest_dir_str;
       mkdirpFn.sync( fq_dest_dir_str );
 
       promise_obj = makeRmDirProm( fq_dest_dir_str );
@@ -277,7 +280,7 @@
 
       dest_ext_str     = asset_group_map.dest_ext_str;
       do_dir_copy      = asset_group_map.do_dir_copy;
-      fq_dest_dir_str  = fqProjDirStr + '/' + asset_group_map.dest_dir_str;
+      fq_dest_dir_str  = fqProjDirname + '/' + asset_group_map.dest_dir_str;
 
 
       mkdirpFn.sync( fq_dest_dir_str );
@@ -297,7 +300,7 @@
 
         fq_dest_path_str = fq_dest_dir_str
           + '/' + dest_name + '-' + dest_vers_str;
-        fq_src_path_list = [ fqModuleDirStr, src_pkg_name, src_asset_name ];
+        fq_src_path_list = [ fqModuleDirname, src_pkg_name, src_asset_name ];
         if ( src_dir_str ) { fq_src_path_list.splice( 2, 0, src_dir_str ); }
 
         fq_src_path_str = fq_src_path_list.join( '/' );
@@ -341,7 +344,7 @@
       check_filename, patch_filename,
       bound_fn
       ;
-    process.chdir( fqProjDirStr );
+    process.chdir( fqProjDirname );
 
     for ( idx = 0; idx < patch_map_count; idx++ ) {
       patch_map      = patch_map_list[ idx ];
@@ -357,32 +360,48 @@
 
     Promise.all( promise_list )
       .then( function () {
-        process.chdir( fqOrigDirStr );
-        eventObj.emit( '05UnlinkHook' );
+        process.chdir( fqOrigDirname );
+        eventObj.emit( '05CheckGitInstall' );
       })
       .catch( abortFn );
   }
   // . END utility /patchFilesFn/
 
+  // BEGIN utility /checkGitInstallFn/
+  function checkGitInstallFn () {
+    var promise_obj = makeStatProm( fqGitDirname );
+    promise_obj.then( function () {
+      logFn( 'Git directory ' + fqGitDirname + ' found.');
+      logFn( 'Installing commit hook...' );
+      eventObj.emit( '06UnLinkHook' );
+    })
+    .catch( function () {
+      logFn( 'Git directory ' + fqGitDirname + ' NOT found.');
+      logFn( 'Please "npm run setup" if you add code to a git repo.' );
+      eventObj.emit( '99FinishRun');
+    });
+  }
+  // . END utility /checkGitInstallFn/
+
   // BEGIN utility /unlinkHookFn/
   function unlinkHookFn () {
-    fqHookFilename = fqProjDirStr + '/.git/hooks/pre-commit';
+    fqHookFilename = fqProjDirname + '/.git/hooks/pre-commit';
     fsObj.unlink( fqHookFilename, function ( error_data ) {
       // Ignore any error
-      eventObj.emit( '06LinkHook' );
+      eventObj.emit( '07LinkHook' );
     });
   }
   // . END utility /unlinkHookFn/
 
   // BEGIN utility /linkHookFn/
   function linkHookFn () {
-    process.chdir( fqProjDirStr );
+    process.chdir( fqProjDirname );
     fsObj.symlink(
       '../../bin/git-hook_pre-commit',
       fqHookFilename,
       function ( error_data ) {
         if ( error_data ) { abortFn( error_data ); }
-        process.chdir( fqOrigDirStr );
+        process.chdir( fqOrigDirname );
         eventObj.emit( '99FinishRun');
       }
     );
@@ -412,11 +431,15 @@
     logFn( 'Applying patches...' );
     patchFilesFn();
   }
-  function on05UnlinkHookFn () {
+  function on05CheckGitInstallFn () {
+    logFn( 'Checking for git installation...' );
+    checkGitInstallFn();
+  }
+  function on06UnlinkHookFn () {
     logFn( 'Remove any old commit hook...' );
     unlinkHookFn();
   }
-  function on06LinkHookFn () {
+  function on07LinkHookFn () {
     logFn( 'Linking commit hook...' );
     linkHookFn();
   }
@@ -434,8 +457,9 @@
     eventObj.on( '02RmVendorDirs',     on02RmVendorDirsFn     );
     eventObj.on( '03CopyVendorFiles',  on03CopyVendorFilesFn  );
     eventObj.on( '04PatchFiles',       on04PatchFilesFn       );
-    eventObj.on( '05UnlinkHook',       on05UnlinkHookFn       );
-    eventObj.on( '06LinkHook',         on06LinkHookFn         );
+    eventObj.on( '05CheckGitInstall',  on05CheckGitInstallFn  );
+    eventObj.on( '06UnlinkHook',       on06UnlinkHookFn       );
+    eventObj.on( '07LinkHook',         on07LinkHookFn         );
     eventObj.on( '99FinishRun',        on99FinishRunFn        );
 
     // Start execution
