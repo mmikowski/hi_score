@@ -3,7 +3,7 @@
 
 If you create a fork you may submit your coverage report to coveralls.io.
 However, you will need to point coveralls to your own coveralls page in 
-the .coveralls.yml file and then run the `covera` script to publish your 
+the .coveralls.yml file and then run the `publish-coverage` script to publish your 
 results.
 
 ```bash

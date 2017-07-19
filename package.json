@@ -72,9 +72,9 @@
     "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
     "requirements-check": "bin/check-node-version",
     "setup": "bin/setup",
-    "test": "nodeunit test/xhi_level_0.js"
+    "test": "node_modules/.bin/nodeunit test/xhi_level_0.js"
   },
-  "version": "1.2.7",
+  "version": "1.2.8",
   "xhiPatchMatrix": {
     "patch_dir_str": "patch",
     "patch_map_list": [
