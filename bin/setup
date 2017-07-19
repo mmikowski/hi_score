@@ -1,10 +1,11 @@
 #!/usr/bin/node
-/*
+/* vim: set ft=javascript: */
+/* 
  * setup.js
  *
  * Use      : $ ./setup.js
- * Synopsis : Setup NodeJS script for hi_score
- * Provides : Copies, patches, and links files for development
+ * Synopsis : Setup project using package.json as manifest.
+ * Provides : Deletes, copies, and patches files. Install commit hook.
  *   1. Delete all vendor directories as directed by
  *      package.json:xhiVendorAssetList. We expect vendor assets
  *      directories in bin, css, font, img, and js
@@ -14,9 +15,6 @@
  *   4. Install the commit hook if git is detected
  *
  * Planned:
- *   0. List xhi dependency in core file.
- *      Load in browser use head.append( '<script src="...">'.
- *      Load in NodeJS use require( '...' );
  *   1. Use package.json for build process (buildify and superpack)
  *   2. Integrate more deeply to npm build process (avoid reinvention)
  *   3. Auto-update <script src="..."> links using xhi.util templates
@@ -64,7 +62,7 @@
     fqBinDirname  = __dirname,
 
     appName       = pathObj.basename( fqAppFilename, '.js' ),
-    fqOrigDirname = process.cwd(),
+    fqOrigDirname = process.cwd(), // or pathObj.resolve()
     versList      = process.versions.node.split('.'),
 
     // Initialize
@@ -466,6 +464,6 @@
     // Timeout prevents race condition
     setTimeout( function () { eventObj.emit( '00InitVars' ); }, 0 );
   }
-  // == . END Main =======================================================
+  // == . END Main =====================================================
 
   mainFn();

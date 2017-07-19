@@ -37,7 +37,7 @@
     "powercss": "1.3.5",
     "rmdir": "^1.2.0",
     "taffydb": "2.7.3",
-    "uglify-js": "^3.0.23",
+    "uglify-js": "^3.0.25",
     "uglifycss": "0.0.27",
     "websocket": "1.0.24",
     "which": "1.2.14"
@@ -72,9 +72,9 @@
     "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
     "requirements-check": "bin/check-node-version",
     "setup": "bin/setup",
-    "test": "nodeunit test/xhi_level_0.js"
+    "test": "node_modules/.bin/nodeunit test/xhi_level_0.js"
   },
-  "version": "1.2.7",
+  "version": "1.2.8",
   "xhiPatchMatrix": {
     "patch_dir_str": "patch",
     "patch_map_list": [
