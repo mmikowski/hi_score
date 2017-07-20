@@ -44,8 +44,8 @@ global.document = docRef;
 global.jQuery   = jQuery;
 global.$        = jQuery;
 
-global.pcss = require( libDir + 'vendor/pcss-1.3.5.js' ).pcss;
-require( libDir + 'vendor/pcss.cfg-1.3.5.js' );
+global.pcss = require( libDir + 'vendor/pcss-1.4.1.js' );
+require( libDir + 'vendor/pcss.cfg-1.4.1.js' );
 
 global[ __ns ] = require( libPrefix + '00.js' );
 require( libPrefix + '01.util.js'  );

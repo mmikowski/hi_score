@@ -16,9 +16,9 @@
   var
     libList = [
       'js/vendor/taffy-2.7.3.js',
-      'js/vendor/jquery-3.2.0.js',
-      'js/vendor/pcss-1.3.5.js',
-      'js/vendor/pcss.cfg-1.3.5.js',
+      'js/vendor/jquery-3.2.1.js',
+      'js/vendor/pcss-1.4.1.js',
+      'js/vendor/pcss.cfg-1.4.1.js',
       'js/plugin/jquery.deferred.whenAll-1.0.0.js',
       'js/vendor/jquery.event.dragscroll-1.0.0.js',
       'js/vendor/jquery.event.gevent-1.1.6.js',
@@ -37,7 +37,7 @@
       'js/xhi/06.css.js',
       'js/xhi/06.lb.js',
       'js/xhi/07.shell.js',
-      'js/xhi/08.app.js',
+      'js/xhi/08.app.js'
     ],
     libCount  = libList.length,
     loadCount = 0,

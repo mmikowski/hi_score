@@ -333,17 +333,17 @@ MIT
 - (x) Add utils and tests
 
 ### Version 1.2.x
-
 - (x) Convert bin/setup in JavaScript
 - (x) Configure setup completely in package.json
 
 ### TODO
 - (o) Test load time using remote server
 - (o) Provide unique build number like build/0001/
+- (o) Add deploy capability
 - (o) Move coverage reports to build/xxxx/ directories
-- (o) Convert buildify from Bash to JavaScript
-- (o) Convert superpack from Perl to JavaScript
-- (o) Increase complexity of example apps
+- (o) Convert buildify from Bash to JavaScript using package.json manifest
+- (o) Convert superpack from Perl to JavaScript using package.json manifest
+- (o) Increase richness of example app
 
 ## Similar Projects
 [absurd.js][_26], [responsive.js][_27]
