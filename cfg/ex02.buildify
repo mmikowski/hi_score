@@ -1,7 +1,7 @@
 sourcetype:js
   ../js/vendor/taffy-2.7.3.js
-  ../js/vendor/pcss-1.3.5.js
-  ../js/vendor/pcss.cfg-1.3.5.js
+  ../js/vendor/pcss-1.4.1.js
+  ../js/vendor/pcss.cfg-1.4.1.js
   ../js/vendor/jquery-3.2.1.js
   ../js/plugin/jquery.deferred.whenAll-1.0.0.js
   ../js/vendor/jquery.event.dragscroll-1.0.0.js
@@ -26,7 +26,7 @@ sourcetype:js
 
 sourcetype:css
   ../css/xhi-fonts.css
-  ../css/font-awesome-4.7.0-mod.css
+  ../css/vendor/font-awesome-4.7.0.css
 
 sourcetype:copy
   _STAGE_/ex02-sp.js   _DIST_/js/ex02.js

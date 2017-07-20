@@ -163,7 +163,7 @@ set -u;
   echo " == Please review the list of outstanding TODOs ====================";
   echo " == TODO <YYYY-mm-dd> <username> <urgency>: <Comment> ==============";
   grep -n TODO $(find ./ -type f -name '*.js' \
-    |grep -v node_modules |grep -v /vendor/) |sort -u
+    |grep -v node_modules |grep -v /vendor/ |grep -v /build/ ) |sort -u
   echo " ===================================================================";
   echo
 

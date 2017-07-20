@@ -334,8 +334,8 @@
   function patchFilesFn () {
     var
       patch_matrix     = pkgMatrix.xhiPatchMatrix || {},
-      patch_dir_str    = patch_matrix.patch_dir_str,
-      patch_map_list   = patch_matrix.patch_map_list,
+      patch_dir_str    = patch_matrix.patch_dir_str || '',
+      patch_map_list   = patch_matrix.patch_map_list|| [],
       patch_map_count  = patch_map_list.length,
       promise_list     = [],
       idx, patch_map, promise_obj,
