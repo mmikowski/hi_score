@@ -1,9 +1,9 @@
 #!/usr/bin/node
 /* vim: set ft=javascript: */
 /* 
- * setup.js
+ * setup
  *
- * Use      : $ ./setup.js
+ * Use      : $ ./setup
  * Synopsis : Setup project using package.json as manifest.
  * Provides : Deletes, copies, and patches files. Install commit hook.
  *   1. Delete all vendor directories as directed by
@@ -34,28 +34,27 @@
   'use strict';
   var
     // Import capabilities
-    EventEmitter = require( 'events'        ).EventEmitter,
-    LineReader   = require( 'line-by-line'  ),
-
-    applyPatchFn = require( 'apply-patch'   ).applyPatch,
-
     // Add if needed: execFn = require( 'child_process' ).exec
-    fsObj        = require( 'fs'            ),
-    mkdirpFn     = require( 'mkdirp'        ),
-    ncpFn        = require( 'ncp'           ).ncp,
-    pathObj      = require( 'path'          ),
-    rmDirFn      = require( 'rmdir'         ),
-    utilObj      = require( 'util'          ),
-    whichFn      = require( 'which'         ),
+    EventEmitter = require( 'events'       ).EventEmitter,
+    LineReader   = require( 'line-by-line' ),
+
+    applyPatchFn = require( 'apply-patch'  ).applyPatch,
+    fsObj        = require( 'fs'           ),
+    mkdirpFn     = require( 'mkdirp'       ),
+    ncpFn        = require( 'ncp'          ).ncp,
+    pathObj      = require( 'path'         ),
+    rmDirFn      = require( 'rmdir'        ),
+    utilObj      = require( 'util'         ),
+    whichFn      = require( 'which'        ),
     promiseObj   = Promise,
 
-    // Convert to promises using magic
-    promisifyFn      = utilObj.promisify,
-    makeRmDirProm    = promisifyFn( rmDirFn ),
-    makeStatProm     = promisifyFn( fsObj.stat ),
-    makeWhichProm    = promisifyFn( whichFn ),
+    // Convert to promises using promisfy
+    promisifyFn   = utilObj.promisify,
+    makeRmDirProm = promisifyFn( rmDirFn ),
+    makeStatProm  = promisifyFn( fsObj.stat ),
+    makeWhichProm = promisifyFn( whichFn ),
 
-    eventObj         = new EventEmitter(),
+    eventObj      = new EventEmitter(),
 
     // Assign nodejs builtins
     fqAppFilename = __filename,
@@ -75,7 +74,8 @@
     fqHookFilename,  fqModuleDirname,
     fqProjDirname,   fqPatchFilename,
     fqPkgFilename,   fqScopeFileStr,
-    fqUglyDirname,   pkgMatrix
+    fqUglyDirname,   pkgMatrix,
+    setupMatrix
     ;
 
   // == . END MODULE SCOPE VARIABLES =====================================
@@ -83,7 +83,7 @@
   // == BEGIN UTILITY METHODS ============================================
   // BEGIN utility /abortFn/
   function abortFn ( error_data ) {
-    console.warn( 'error', error_data );
+    console.warn( '>> Abort', error_data );
     process.exit( 1 );
   }
   // . END utility /abortFn/
@@ -217,7 +217,11 @@
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
     if ( error_obj ) { return abortFn( error_obj ); }
-    pkgMatrix = JSON.parse( json_str );
+    pkgMatrix   = JSON.parse( json_str ) || [];
+    setupMatrix = pkgMatrix.xhiSetupMatrix;
+    if ( ! setupMatrix ) {
+      abortFn( 'SetupMatrix not set in package.json' );
+    }
     eventObj.emit( '02RmVendorDirs' );
   }
   // . END utility /storePkgMapFn/
@@ -231,7 +235,7 @@
   // BEGIN utility /rmVendorDirsFn/
   function rmVendorDirsFn () {
     var
-      asset_group_table  = pkgMatrix.xhiVendorAssetGroupTable || [],
+      asset_group_table  = setupMatrix.asset_group_table,
       asset_group_count  = asset_group_table.length,
       promise_list       = [],
 
@@ -256,8 +260,8 @@
   // BEGIN utility /copyVendorFilesFn/
   function copyVendorFilesFn () {
     var
-      asset_group_table  = pkgMatrix.xhiVendorAssetGroupTable || [],
-      dev_dependency_map = pkgMatrix.devDependencies          || {},
+      asset_group_table  = setupMatrix.asset_group_table || [],
+      dev_dependency_map = pkgMatrix.devDependencies     || {},
       asset_group_count  = asset_group_table.length,
       promise_list       = [],
 
@@ -333,7 +337,7 @@
   // BEGIN utility /patchFilesFn/
   function patchFilesFn () {
     var
-      patch_matrix     = pkgMatrix.xhiPatchMatrix || {},
+      patch_matrix     = setupMatrix.patch_matrix   || {},
       patch_dir_str    = patch_matrix.patch_dir_str || '',
       patch_map_list   = patch_matrix.patch_map_list|| [],
       patch_map_count  = patch_map_list.length,

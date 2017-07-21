@@ -7,6 +7,68 @@
 This SPA starter project that uses package.json and NPM as the confiuration and management tool respectively for each stage software product development and deployment.  The project comes with best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap them out as needed. [That's the point][_01].
 
 
+## Quick start
+```bash
+  cd hi_score
+  npm install && npm run setup && npm run coverage && npm run make
+  google-chrome build/dist/last/dist/ex01.html
+```
+
+## Benefits
+- `npm install`: Install all dependencies including best-in-class libraries
+  and fonts in seconds.
+- `npm run setup`: Cleanly setup patch all dependencies (including monkey
+  patches) and install a commit-hook in a seconds.
+- `npm test`: Run over 1,400 regression tests on the `xhi` libs. Learn how to
+   to write your own nodunite + jsdom test with hundreds of examples.
+- `npm run coverage`: See detailed test reports in seconds. Use these reports
+   to improve the coverage and quality of your own code.
+- `git commit`: Update in-line doc and perform numerous quality checks
+  everytime your check-in your code. Checks include regression tests, JSLint,
+  whitespace, `use strict`, and `TODO` comment reviews!
+
+- `xhi` utlities including [type-casting](_05) and
+
+- All `xhi` code adhere strictly to the [Code standard][_03]
+  ([Quick-reference][_04]) as do many supporting libraries.
+
+### Develop: Study
+- Browse inline, auto-generated HTML docs
+- Explore the example app
+- Reference the recommended architecture diagram in this document
+### Develop: Design
+- Store blueprints in wireframes directory
+### Develop: Test
+- Run `npm test` to check regression tests // using nodeunit and jsdom
+- `npm coverage` creates coverage reports (currently at 98%)
+### Develop: Collaborate
+- `git commit`
+  - Generate HTML from Markdown docs in all dirs (`make_doc`)
+  - Run regression tests with `npm test`
+  - Check coverage with `npm run coverage`
+  - JSLint on all changed JS files
+  - Check whitespace on changed JS files
+  - Check use-strict on changed JS files
+  - Check and reports TODO comments
+### Develop: Implement
+- Use XHI libraries to rapidly develop well-tested and ready-to-deploy apps
+- Ensure type safety with [type-cast][_05] libraries
+- Add tests using NodeUnit and JSDOM
+### Build
+- `npm run make` creates distribution
+  - Concatenates CSS and JS assets
+  - Compresses and obsfucates variables **and object properties**
+  - Copies assets for deployment
+  - Processes templates for deployment
+- Creates deploy/build/xxxx
+### Deploy
+- Planned: `npm run deploy xxxx` to deploy a build to a site
+
+### Monitor and feedback
+- Considered: `npm run feedback` to collect statistics
+
+
+===============================================
 ### Installation
 - Run `npm install` to install all dependencies from the NPM repository.
 
@@ -50,21 +112,14 @@ This SPA starter project that uses package.json and NPM as the confiuration and 
   - Processes templates for deployment
 - Creates deploy/build/xxxx
 ### Deploy
-- (TODO) `npm run deploy xxxx` will deploy a distribution to a configured site.
+- Planned: `npm run deploy xxxx` to deploy a build to a site
 
 ### Monitor and feedback
-- (TODO) `npm run feedback` will collect feedback?
-  
+- Considered: `npm run feedback` to collect statistics
 
 
-## Quick start
-```bash
-  mkdir -p ~/GitHub
-  cd ~/GitHub
-  git clone git@github.com:mmikowski/hi_score.git
-  cd hi_score
-  npm install && npm run setup
-```
+
+
 
 ## Code Style
 We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
@@ -134,7 +189,7 @@ Everything should just work on recent Ubuntu and derivative distributions like M
 Other modern Linux distributions should generally work as long as the same tools can be installed as as above. It works fine on CentOS with development libraries installed:
 
 ```bash
- yum install gcc gcc-c++ make openssl-devel
+yum install gcc gcc-c++ make openssl-devel
 ```
 
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
@@ -153,7 +208,7 @@ We recommend using a virtual machine as detailed above. Installation *might* wor
 ### Installation
 Use the **Quick start** guide to install **hi\_score** and prepare it for development. One can also use `npm install hi_score` but the `git` method is preferred. No errors should be reported.
 
-### Testing
+### Test
 Use `npm test` to run the regression tests. You may expand tests by adding to the `test/xhi_level_0` file. Tested `xhi` modules include the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`), and the litebox (`06.lb.js`).
 
 ### Coverage

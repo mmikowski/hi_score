@@ -75,91 +75,134 @@
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js"
   },
   "version": "1.2.10",
-  "xhiPatchMatrix": {
-    "patch_dir_str": "patch",
-    "patch_map_list": [
+  "xhiBuildTable": [
+    {
+      "build_id": "ex01",
+      "do_isolate": false,
+      "asis_make_map": {
+        "do_include_vendor": true
+      },
+      "css_make_map": {
+        "do_compress": true,
+        "do_vendor": true,
+        "target_file": "ex01.css - should be reundant"
+      },
+      "js_make_map": {
+        "asset_list": [
+          "js/xhi/00.js",
+          "js/xhi/01.util.js",
+          "js/xhi/02.data.js",
+          "js/xhi/02.fake.js",
+          "js/xhi/03.model.js",
+          "js/xhi/04.utilb.js",
+          "js/xhi/05.css_base.js",
+          "js/xhi/05.css_lb.js",
+          "js/xhi/05.css_shell.js",
+          "js/xhi/06.css.js",
+          "js/xhi/06.lb.js",
+          "js/xhi/07.shell.js",
+          "js/xhi/08.app.js",
+          "js/ex02-build.js"
+        ],
+        "do_compress": true,
+        "do_vendor": true,
+        "target_file": "ex01.js - should be redundant"
+      },
+      "tmplt_make_list": [
+        "TODO: determine template reqs"
+      ]
+    }
+  ],
+  "xhiSetupMatrix": {
+    "asset_group_table": [
       {
-        "check_filename": "node_modules/uglify-js/lib/scope.js",
-        "patch_filename": "uglify-js-3.0.21.patch",
-        "match_str": "// BEGIN hi_score patch line 324"
+        "asset_type": "css",
+        "asset_list": [
+          {
+            "src_asset_name": "font-awesome.css",
+            "src_dir_str": "css",
+            "src_pkg_name": "font-awesome"
+          }
+        ],
+        "dest_dir_str": "css/vendor",
+        "dest_ext_str": "css"
+      },
+      {
+        "asset_type": "js",
+        "asset_list": [
+          {
+            "dest_name": "pcss",
+            "src_asset_name": "pcss.js",
+            "src_dir_str": "dist",
+            "src_pkg_name": "powercss"
+          },
+          {
+            "dest_name": "pcss.cfg",
+            "src_asset_name": "pcss.cfg.js",
+            "src_dir_str": "dist",
+            "src_pkg_name": "powercss"
+          },
+          {
+            "dest_name": "taffy",
+            "src_asset_name": "taffy.js",
+            "src_pkg_name": "taffydb"
+          },
+          {
+            "src_asset_name": "jquery.js",
+            "src_dir_str": "dist",
+            "src_pkg_name": "jquery"
+          },
+          {
+            "src_asset_name": "jquery.event.dragscroll.js",
+            "src_dir_str": "dist",
+            "src_pkg_name": "jquery.event.dragscroll"
+          },
+          {
+            "src_asset_name": "jquery.event.gevent.js",
+            "src_pkg_name": "jquery.event.gevent"
+          },
+          {
+            "src_asset_name": "jquery.event.ue.js",
+            "src_pkg_name": "jquery.event.ue"
+          },
+          {
+            "src_pkg_name": "jquery.scrolli",
+            "src_dir_str": "dist",
+            "src_asset_name": "jquery.scrolli.js"
+          },
+          {
+            "src_asset_name": "jquery.uriAnchor.js",
+            "src_pkg_name": "jquery.urianchor"
+          }
+        ],
+        "dest_dir_str": "js/vendor",
+        "dest_ext_str": "js"
+      },
+      {
+        "asset_id": "asis",
+        "asset_list": [
+          {
+            "src_pkg_name": "font-awesome",
+            "src_dir_str": "fonts"
+          },
+          {
+            "src_pkg_name": "open-sans-fontface",
+            "src_dir_str": "fonts"
+          }
+        ],
+        "dest_dir_str": "font/vendor",
+        "do_dir_copy": true
       }
-    ]
-  },
-  "xhiVendorAssetGroupTable": [
-    {
-      "dest_dir_str": "js/vendor",
-      "dest_ext_str": "js",
-      "asset_list": [
+    ],
+    "patch_matrix": {
+      "patch_dir_str": "patch",
+      "patch_map_list": [
         {
-          "dest_name": "pcss",
-          "src_asset_name": "pcss.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "powercss"
-        },
-        {
-          "dest_name": "pcss.cfg",
-          "src_asset_name": "pcss.cfg.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "powercss"
-        },
-        {
-          "dest_name": "taffy",
-          "src_asset_name": "taffy.js",
-          "src_pkg_name": "taffydb"
-        },
-        {
-          "src_asset_name": "jquery.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "jquery"
-        },
-        {
-          "src_asset_name": "jquery.event.dragscroll.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "jquery.event.dragscroll"
-        },
-        {
-          "src_asset_name": "jquery.event.gevent.js",
-          "src_pkg_name": "jquery.event.gevent"
-        },
-        {
-          "src_asset_name": "jquery.event.ue.js",
-          "src_pkg_name": "jquery.event.ue"
-        },
-        {
-          "src_pkg_name": "jquery.scrolli",
-          "src_dir_str": "dist",
-          "src_asset_name": "jquery.scrolli.js"
-        },
-        {
-          "src_asset_name": "jquery.uriAnchor.js",
-          "src_pkg_name": "jquery.urianchor"
-        }
-      ]
-    },
-    {
-      "dest_dir_str": "css/vendor",
-      "dest_ext_str": "css",
-      "asset_list": [
-        {
-          "src_asset_name": "font-awesome.css",
-          "src_dir_str": "css",
-          "src_pkg_name": "font-awesome"
-        }
-      ]
-    },
-    {
-      "dest_dir_str": "font/vendor",
-      "do_dir_copy": true,
-      "asset_list": [
-        {
-          "src_pkg_name": "font-awesome",
-          "src_dir_str": "fonts"
-        },
-        {
-          "src_pkg_name": "open-sans-fontface",
-          "src_dir_str": "fonts"
+          "check_filename": "node_modules/uglify-js/lib/scope.js",
+          "patch_filename": "uglify-js-3.0.21.patch",
+          "match_str": "// BEGIN hi_score patch line 324"
         }
       ]
     }
-  ]
+  }
 }
