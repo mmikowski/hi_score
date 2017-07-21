@@ -4,41 +4,44 @@
 *A modern full-life-cycle starter project for SPAs*
 
 ## Overview
-This is an SPA starter project that installs best-in-class assets and tools to save time and guide best practice. Install **hi_score** today and start writing Test-driven native JS client code immediately. The project comes with recommended libraries, but feel free to swap them out as needed. [That's the point][_01].
+This SPA starter project that uses package.json and NPM as the confiuration and management tool respectively for each stage software product development and deployment.  The project comes with best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap them out as needed. [That's the point][_01].
 
-Lifecycle management with NPM.
-## Features by lifecycle
-### Install
-- `npm install` installs all dependencies
+
+### Installation
+- Run `npm install` to install all dependencies from the NPM repository.
+
 ### Setup
-- `npm run setup`
-  - Deletes all vendor directories
-  - Copies vendor assets as directed by package.json.
-  - Patches vendor assets as directed by package.json.
-  - Installs commit hook if needed
-  - Gitignore exludes vendor assets from repository.
+- Run `npm run setup` to configure and distribute assets required for development.
+  - Delete all vendor directories.
+  - Copy vendor assets as directed by package.json.
+  - Patch vendor assets as directed by package.json.
+  - Install commit hook.
+// Gitignore exludes vendor assets from repository.
+// Install best-in-class fonts, images, JS and CSS libraries
+### Develop: Study
+- Browse inline, auto-generated HTML docs
+- Review the [Code standard][_03] applied across this and many support libs.
+  [Quick-reference][_04] also available.
+- Explore the example app
+- Reference the recommended architecture diagram in this document
 ### Develop: Design
 - Store blueprints in wireframes directory
 ### Develop: Test
-- `npm test` runs regression tests using nodeunit and jsdom
+- Run `npm test` to check regression tests // using nodeunit and jsdom
 - `npm coverage` creates coverage reports (currently at 98%)
+### Develop: Collaborate
 - `git commit`
-  - Generates HTML from Markdown docs in all dirs (`make_doc`)
-  - Runs regression tests as per `npm test`
+  - Generate HTML from Markdown docs in all dirs (`make_doc`)
+  - Run regression tests with `npm test`
+  - Check coverage with `npm run coverage`
   - JSLint on all changed JS files
-  - Checks whitespace on changed JS files
-  - Checks use-strict on changed JS files
-  - Checks and reports TODO comments
-### Develop: Study
-- Browse inline, auto-generated HTML docs
-- [Code standard][_03] applied across this and many support libs.
-  [Quick-reference][_04] also available.
-- Review example app prior to build
+  - Check whitespace on changed JS files
+  - Check use-strict on changed JS files
+  - Check and reports TODO comments
 ### Develop: Implement
-- Acheive type safety with [type-cast][_05] libraries
+- Use XHI libraries to rapidly develop well-tested and ready-to-deploy apps
+- Ensure type safety with [type-cast][_05] libraries
 - Add tests using NodeUnit and JSDOM
-- Use MVC architecture and file structure per diagram
-- Use hi\_score standard libs to quickly apps
 ### Build
 - `npm run make` creates distribution
   - Concatenates CSS and JS assets
@@ -53,15 +56,6 @@ Lifecycle management with NPM.
 - (TODO) `npm run feedback` will collect feedback?
   
 
-
-## Features
-# Libraries written to exacting [standards][_03] to ensure readability and modularity
-# Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
-# Automatic commit-hook linting using JSLint, whitespace check, and strict checks (`git commit...`)
-# Automatic in-line browsable HTML documentation using markdown and pandoc (`git commit...`)
-# TDD and regression tests using Nodeunit + JSDOM (`npm test`)
-# Build compression **including object properties** (`npm run make`)
-# Two simple demo apps that show compression and namespacing (`npm run make`)
 
 ## Quick start
 ```bash
