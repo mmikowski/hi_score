@@ -6,20 +6,62 @@
 ## Overview
 This is an SPA starter project that installs best-in-class assets and tools to save time and guide best practice. Install **hi_score** today and start writing Test-driven native JS client code immediately. The project comes with recommended libraries, but feel free to swap them out as needed. [That's the point][_01].
 
+Lifecycle management with NPM.
+## Features by lifecycle
+### Install
+- `npm install` installs all dependencies
+### Setup
+- `npm run setup`
+  - Deletes all vendor directories
+  - Copies vendor assets as directed by package.json.
+  - Patches vendor assets as directed by package.json.
+  - Installs commit hook if needed
+  - Gitignore exludes vendor assets from repository.
+### Develop: Design
+- Store blueprints in wireframes directory
+### Develop: Test
+- `npm test` runs regression tests using nodeunit and jsdom
+- `npm coverage` creates coverage reports (currently at 98%)
+- `git commit`
+  - Generates HTML from Markdown docs in all dirs (`make_doc`)
+  - Runs regression tests as per `npm test`
+  - JSLint on all changed JS files
+  - Checks whitespace on changed JS files
+  - Checks use-strict on changed JS files
+  - Checks and reports TODO comments
+### Develop: Study
+- Browse inline, auto-generated HTML docs
+- [Code standard][_03] applied across this and many support libs.
+  [Quick-reference][_04] also available.
+- Review example app prior to build
+### Develop: Implement
+- Acheive type safety with [type-cast][_05] libraries
+- Add tests using NodeUnit and JSDOM
+- Use MVC architecture and file structure per diagram
+- Use hi\_score standard libs to quickly apps
+### Build
+- `npm run make` creates distribution
+  - Concatenates CSS and JS assets
+  - Compresses and obsfucates variables **and object properties**
+  - Copies assets for deployment
+  - Processes templates for deployment
+- Creates deploy/build/xxxx
+### Deploy
+- (TODO) `npm run deploy xxxx` will deploy a distribution to a configured site.
+
+### Monitor and feedback
+- (TODO) `npm run feedback` will collect feedback?
+  
+
+
 ## Features
-- Code coverage at 98.9% per coveralls.io using Istanbul
-- Fractal MVC architecture and proven file structure per the diagram below
-- Vendor asset management (`npm install && npm run setup`) including support for executables, stylesheets, fonts, images, and libraries and automated patching.
-- Libraries written to exacting [standards][_03] to ensure readability and modularity
-- Full code [standard][_03] and [quick-reference guides][_04] included
-- Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
-- Automatic commit-hook linting using JSLint, whitespace check, and strict checks (`git commit...`)
-- Automatic in-line browsable HTML documentation using markdown and pandoc (`git commit...`)
-- TDD and regression tests using Nodeunit + JSDOM (`npm test`)
-- Type safety with [type-cast][_05] libraries
-- Build compression **including object properties** (`npm run make`)
-- Creation of distribution-ready `build/dist` from build process (`npm run make`)
-- Two simple demo apps that show compression and namespacing (`npm run make`)
+# Libraries written to exacting [standards][_03] to ensure readability and modularity
+# Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
+# Automatic commit-hook linting using JSLint, whitespace check, and strict checks (`git commit...`)
+# Automatic in-line browsable HTML documentation using markdown and pandoc (`git commit...`)
+# TDD and regression tests using Nodeunit + JSDOM (`npm test`)
+# Build compression **including object properties** (`npm run make`)
+# Two simple demo apps that show compression and namespacing (`npm run make`)
 
 ## Quick start
 ```bash
