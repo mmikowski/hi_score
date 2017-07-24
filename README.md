@@ -14,18 +14,31 @@ This SPA starter project that uses package.json and NPM as the confiuration and 
   google-chrome build/dist/last/dist/ex01.html
 ```
 
+## Life cycle stages
+The following numbers are used for each stage of the SPA product lifecycle.
+- 00 Help
+- 01 Install
+- 02 Setup
+- 03 Design
+- 04 Develop - Lint
+- 05 Develop - Test
+- 06 Develop - Coverage
+- 07 Develop - Commit
+- 08 Develop - Publish coverage
+- 09 Build
+- 10 Deploy
+- 11 Feedback
+
 ## Benefits
-- `npm install`: Install all dependencies including best-in-class libraries
+- `npm 000-install`: Install all dependencies including best-in-class libraries
   and fonts in seconds.
-- `npm run setup`: Cleanly setup patch all dependencies (including monkey
+- `npm run 010-setup`: Cleanly setup patch all dependencies (including monkey
   patches) and install a commit-hook in a seconds.
-- `npm test`: Run over 1,400 regression tests on the `xhi` libs. Learn how to
-   to write your own nodunite + jsdom test with hundreds of examples.
-- `npm run coverage`: See detailed test reports in seconds. Use these reports
-   to improve the coverage and quality of your own code.
-- `git commit`: Update in-line doc and perform numerous quality checks
-  everytime your check-in your code. Checks include regression tests, JSLint,
-  whitespace, `use strict`, and `TODO` comment reviews!
+- `npm run 020-design` : Review architecture and design documents
+- `npm run 030-lint`: Run JSLint + TODO, whitespace, and strict check
+- `npm run 040-test`: Run over 1,400 regression tests on the `xhi` libs. Learn how to to write your own nodunite + jsdom test with hundreds of examples.
+- `npm run 050-coverage`: See detailed test reports in seconds. Use these reports to improve the coverage and quality of your own code.
+- `npm run 060-commit`: Update in-line doc and perform numerous quality checks everytime your check-in your code. Checks include regression tests, JSLint, whitespace, `use strict`, and `TODO` comment reviews!
 
 - `xhi` utlities including [type-casting](_05) and
 

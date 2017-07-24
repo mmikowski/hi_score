@@ -67,6 +67,18 @@
     "url": "git+https://github.com/mmikowski/hi_score.git"
   },
   "scripts": {
+    "00" : "bin/00-help",
+    "01" : "bin/01-install",
+    "02" : "bin/02-setup",
+    "03" : "bin/03-design",
+    "04" : "bin/04-develop-lint",
+    "05" : "bin/05-develop-test",
+    "06" : "bin/06-develop-coverage",
+    "07" : "bin/07-develop-commit",
+    "08" : "bin/08-publish-coverage",
+    "09" : "bin/09-build",
+    "10" : "bin/10-deploy",
+    "11" : "bin/11-feedback",
     "coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
     "make": "bin/buildify cfg/*.buildify",
     "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
@@ -75,44 +87,6 @@
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js"
   },
   "version": "1.2.10",
-  "xhiBuildTable": [
-    {
-      "build_id": "ex01",
-      "do_isolate": false,
-      "asis_make_map": {
-        "do_include_vendor": true
-      },
-      "css_make_map": {
-        "do_compress": true,
-        "do_vendor": true,
-        "target_file": "ex01.css - should be reundant"
-      },
-      "js_make_map": {
-        "asset_list": [
-          "js/xhi/00.js",
-          "js/xhi/01.util.js",
-          "js/xhi/02.data.js",
-          "js/xhi/02.fake.js",
-          "js/xhi/03.model.js",
-          "js/xhi/04.utilb.js",
-          "js/xhi/05.css_base.js",
-          "js/xhi/05.css_lb.js",
-          "js/xhi/05.css_shell.js",
-          "js/xhi/06.css.js",
-          "js/xhi/06.lb.js",
-          "js/xhi/07.shell.js",
-          "js/xhi/08.app.js",
-          "js/ex02-build.js"
-        ],
-        "do_compress": true,
-        "do_vendor": true,
-        "target_file": "ex01.js - should be redundant"
-      },
-      "tmplt_make_list": [
-        "TODO: determine template reqs"
-      ]
-    }
-  ],
   "xhiSetupMatrix": {
     "asset_group_table": [
       {
@@ -204,5 +178,43 @@
         }
       ]
     }
-  }
+  },
+  "xhi_080_BuildTable": [
+    {
+      "build_id": "ex01",
+      "do_isolate": false,
+      "asis_make_map": {
+        "do_include_vendor": true
+      },
+      "css_make_map": {
+        "do_compress": true,
+        "do_vendor": true,
+        "target_file": "ex01.css - should be reundant"
+      },
+      "js_make_map": {
+        "asset_list": [
+          "js/xhi/00.js",
+          "js/xhi/01.util.js",
+          "js/xhi/02.data.js",
+          "js/xhi/02.fake.js",
+          "js/xhi/03.model.js",
+          "js/xhi/04.utilb.js",
+          "js/xhi/05.css_base.js",
+          "js/xhi/05.css_lb.js",
+          "js/xhi/05.css_shell.js",
+          "js/xhi/06.css.js",
+          "js/xhi/06.lb.js",
+          "js/xhi/07.shell.js",
+          "js/xhi/08.app.js",
+          "js/ex02-build.js"
+        ],
+        "do_compress": true,
+        "do_vendor": true,
+        "target_file": "ex01.js - should be redundant"
+      },
+      "tmplt_make_list": [
+        "TODO: determine template reqs"
+      ]
+    }
+  ]
 }

@@ -3,8 +3,9 @@
 /*
  * buildify.js
  *
- * Use      : $ ./buildify
- * Synopsis : Prepare a distribution using package.json as manifest.
+ * Synopsis : ./buildify [options]
+ * Example  : $ ./buildify
+ * Purpose  : Prepare a distribution using package.json as manifest.
  * Provides :
  *
  * Planned:
@@ -72,6 +73,185 @@
   // == . END MODULE SCOPE VARIABLES =====================================
 
   // == BEGIN UTILITY METHODS ============================================
+  function showHelpFn () {
+    console.log( 'Help - WIP' );
+  }
+
+// Stages
+// 000 Install
+// 010 Setup (this should run make-doc)
+// 020 Design and study
+// 030 Develop - Lint
+// 040 Develop - Test
+// 050 Develop - Coverage
+// 060 Develop - Commit (remove make-doc?)
+// 070 Develop - Publish coverage
+// 080 Build
+// 090 Deploy
+// 100 Feedback
+//
+// Name        : buildify.js
+// Synopsis    : ./buildify.js [ options ]
+// Description :
+//   Builds a production-ready web site from manifests listed
+//   in the package.json file
+//   The output files are placed in build/<serial_num>
+//   and the latest build is linked to build/last
+//
+//      build/
+//        last -> build/<serial_num>
+//        <serial_num>/
+//          dist/
+//          stage/
+//
+// Examples
+//   package.json
+//    { "devDependencies" : { "taffydb": "2.7.3", .... },
+//      "xhi_010_SetupMatrix"  : {
+//        "asset_group_table": [
+//         { "asset_type" : "js",
+//            "asset_list": [
+//              {
+//                "dest_name": "taffy",
+//                "src_asset_name": "taffy.js",
+//                "src_pkg_name": "taffydb"
+//              }
+//            ]
+//        }
+//        "dest_dir_str": "js/vendor",
+//        "dest_ext_str": "js"
+//      },
+//      "xhiBuildTable": [
+//        {
+//          "build_id": "ex01",
+//          "do_isolate": false,
+//          "asis_make_map": {
+//            "do_include_vendor": true
+//          },
+//          "css_make_map": {
+//            "do_compress": true,
+//            "do_vendor": true,
+//            "target_file": "ex01.css - should be reundant"
+//          },
+//          "js_make_map": {
+//            "asset_list": [
+//              "js/xhi/00.js",
+//              "js/xhi/01.util.js",
+//              "js/xhi/02.data.js",
+//              "js/xhi/02.fake.js",
+//              "js/xhi/03.model.js",
+//              "js/xhi/04.utilb.js",
+//              "js/xhi/05.css_base.js",
+//              "js/xhi/05.css_lb.js",
+//              "js/xhi/05.css_shell.js",
+//              "js/xhi/06.css.js",
+//              "js/xhi/06.lb.js",
+//              "js/xhi/07.shell.js",
+//              "js/xhi/08.app.js",
+//              "js/ex02-build.js"
+//            ],
+//            "do_compress": true,
+//            "do_vendor": true,
+//            "target_file": "ex01.js - should be redundant"
+//          },
+//          "tmplt_make_list": [
+//            "TODO: determine template reqs"
+//          ]
+//        }
+//      ]
+//    }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//       ==============
+//       source:js
+//       js/foo.js
+//       ==============
+//
+//   Then running the following ...
+//
+//       $ ${_appName} ./ex01.${_appName}
+//
+//   ... results in the following files in ${_stageDir}:
+//
+//       js/ex01-min.js  # uglified JS
+//       js/ex01-raw.js  # concatenated JS
+//       js/ex01-sp.diag # superpack diagnostics
+//       js/ex01-sp.js   # superpacked JS
+//
+//
+//   (2) If the file ex02.${_appName} looks like so:
+//       ==============
+//       source:js
+//       js/foo.js
+//
+//       source:css
+//       css/foo.css
+//       ==============
+//
+//   Then running the following ...
+//
+//       $ ${_appName} ./ex02.${_appName}
+//
+//   results in the following files in ${_stageDir}:
+//       js/ex02-min.js  # uglified JS
+//       js/ex02-raw.js  # concatenated JS
+//       js/ex02-sp.diag # superpack diagnostics
+//       js/ex02-sp.js   # superpacked JS
+//
+//       css/ex02-min.css # uglified CSS
+//       css/ex02-raw.css # concatenated CSS
+//
+// ARGUMENTS
+//   manifest_1, manifest_2, ... (REQUIRED)
+//     Manifests to process.  Each manifest lists the source files to
+//     process. It may have multiple sections delineated by a source-type header.
+//     ${_appName} expects all paths to be relative to the referencing
+//     manifest file path.
+//
+//        sourcetype:js   # for javascript files, and
+//        # ... js files here ...
+//        sourcetype:css # for css and source files
+//        # ... css files here .... (relative to manifest path)
+//
+//     Blank lines, comment lines, and trailing comments are ignored.
+//
+// OPTIONS
+//   * -h | --help | --usage (OPTIONAL)
+//     Sends short help text to STDERR (usually the terminal) and exits.
+//     When combined with the -v option, long help is presented.
+//
+//   * -n | --nocompress (OPTIONAL)
+//     By default ${_appName} concatenates and minifies CSS and JS files.
+//     It also SuperPacks JS files.  This option turns off this behavior.
+//
+//   * -v | --verbose (OPTIONAL)
+//     Be noisy when processing
+//
+// REQUIRED PATCH
+//   Buildify uses Superpack symbol compression.  Superpack requires a patch
+//   to UglifyJS.  If you have installed **hi\_score** this patch will have
+//   been applied when running 'npm run setup' which is the safest means
+//   to apply the patch.  If you need to do so manually, this should also work:
+//
+//     \$ cd ${_modDir}
+//     \$ patch -p0 < ../patch/uglifyjs-2.4.10.patch
+//
+// SEE ALSO
+//   * UglifyJS
+//   * UglifyCSS
+//
+// AUTHOR and COPYRIGHT
+//   Michael S. Mikowski (c) 2008-2016
+//
+//   exit 1;
   // BEGIN utility /abortFn/
   function abortFn ( error_data ) {
     console.warn( '>> Abort', error_data );
@@ -463,118 +643,6 @@
 
   mainFn();
 
-// _showHelpFn () {
-//   _logStderrFn "
-// NAME : ${_appName}
-//
-// Synopsis
-//   ${_appName} [ options ]
-// ";
-//
-//   [ "${_argDoVerbose}" -lt 1 ] && _logStderrFn "
-// Employ the -v or --verbose switch to see more detailed help.
-// ";
-//
-//   [ "${_argDoVerbose}" -gt 0 ] && _logStderrFn "
-// DESCRIPTION
-//   ${_appName} builds a production-ready web site from manifests listed
-//   in the package.json file
-//   . The output files are placed in ${_buildDir}
-//   under the following subdirectories:
-//
-//     - ${_stageDir} - Staging area
-//     - ${_distDir}  - Distribution area
-//
-//
-//
-//   The output files will have the same basename as the source manifest
-//   file.  Therefore, '${_appName} ex01.${_appName}' will output
-//   the files with the ex01 prefix as illustrated in the examples.
-//
-// EXAMPLES
-//   (1) If the file ex01.${_appName} looks like so:
-//       ==============
-//       source:js
-//       js/foo.js
-//       ==============
-//
-//   Then running the following ...
-//
-//       $ ${_appName} ./ex01.${_appName}
-//
-//   ... results in the following files in ${_stageDir}:
-//
-//       js/ex01-min.js  # uglified JS
-//       js/ex01-raw.js  # concatenated JS
-//       js/ex01-sp.diag # superpack diagnostics
-//       js/ex01-sp.js   # superpacked JS
-//
-//
-//   (2) If the file ex02.${_appName} looks like so:
-//       ==============
-//       source:js
-//       js/foo.js
-//
-//       source:css
-//       css/foo.css
-//       ==============
-//
-//   Then running the following ...
-//
-//       $ ${_appName} ./ex02.${_appName}
-//
-//   results in the following files in ${_stageDir}:
-//       js/ex02-min.js  # uglified JS
-//       js/ex02-raw.js  # concatenated JS
-//       js/ex02-sp.diag # superpack diagnostics
-//       js/ex02-sp.js   # superpacked JS
-//
-//       css/ex02-min.css # uglified CSS
-//       css/ex02-raw.css # concatenated CSS
-//
-// ARGUMENTS
-//   manifest_1, manifest_2, ... (REQUIRED)
-//     Manifests to process.  Each manifest lists the source files to
-//     process. It may have multiple sections delineated by a source-type header.
-//     ${_appName} expects all paths to be relative to the referencing
-//     manifest file path.
-//
-//        sourcetype:js   # for javascript files, and
-//        # ... js files here ...
-//        sourcetype:css # for css and source files
-//        # ... css files here .... (relative to manifest path)
-//
-//     Blank lines, comment lines, and trailing comments are ignored.
-//
-// OPTIONS
-//   * -h | --help | --usage (OPTIONAL)
-//     Sends short help text to STDERR (usually the terminal) and exits.
-//     When combined with the -v option, long help is presented.
-//
-//   * -n | --nocompress (OPTIONAL)
-//     By default ${_appName} concatenates and minifies CSS and JS files.
-//     It also SuperPacks JS files.  This option turns off this behavior.
-//
-//   * -v | --verbose (OPTIONAL)
-//     Be noisy when processing
-//
-// REQUIRED PATCH
-//   Buildify uses Superpack symbol compression.  Superpack requires a patch
-//   to UglifyJS.  If you have installed **hi\_score** this patch will have
-//   been applied when running 'npm run setup' which is the safest means
-//   to apply the patch.  If you need to do so manually, this should also work:
-//
-//     \$ cd ${_modDir}
-//     \$ patch -p0 < ../patch/uglifyjs-2.4.10.patch
-//
-// SEE ALSO
-//   * UglifyJS
-//   * UglifyCSS
-//
-// AUTHOR and COPYRIGHT
-//   Michael S. Mikowski (c) 2008-2016
-//
-//   exit 1;
 
 // ## Function to echo to STDERR
 // ## Function to print usage

@@ -6,8 +6,7 @@
  * Use      : $ ./setup
  * Synopsis : Setup project using package.json as manifest.
  * Provides : Deletes, copies, and patches files. Install commit hook.
- *   1. Delete all vendor directories as directed by
- *      package.json:xhiVendorAssetList. We expect vendor assets
+ *   1. Delete all vendor directories as directed by config.
  *      directories in bin, css, font, img, and js
  *   2. Copy assets from node_modules to vendor directories with the
  *      npm version appended to the names.
@@ -218,7 +217,7 @@
   function storePkgMapFn ( error_obj, json_str ) {
     if ( error_obj ) { return abortFn( error_obj ); }
     pkgMatrix   = JSON.parse( json_str ) || [];
-    setupMatrix = pkgMatrix.xhiSetupMatrix;
+    setupMatrix = pkgMatrix.xhi_010_SetupMatrix;
     if ( ! setupMatrix ) {
       abortFn( 'SetupMatrix not set in package.json' );
     }
