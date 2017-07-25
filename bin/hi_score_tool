@@ -1,43 +1,51 @@
 #!/usr/bin/node
 /* vim: set ft=javascript: */
-/* 
- * setup
+
+/*
+ * Public script /hi-score-tool/
+ * Purpose   : Run a helper script for lifecycle step
+ * Example   : hi-score-tool 00
+ * Arguments : (positional)
+ *   0. The life cycle number as presented below.  The default is '00'.
+ *     - 00 Help    (see 00-hi-score-help   )
+ *     - 01 Install (see 01-hi-score-install)
+ *     - 02 Setup
+ *     - 03 Design
+ *     - 04 Develop - Lint
+ *     - 05 Develop - Test
+ *     - 06 Develop - Coverage
+ *     - 07 Develop - Commit
+ *     - 08 Develop - Publish coverage
+ *     - 09 Build
+ *     - 10 Deploy
+ *     - 11 Feedback
+ * Throws    : Exit status is non-zero on failure
+ * Method    :
+ *   1. Parses command-line agument and extracts step number
+ *      (Uses '00' if number cannot be determined).
+ *   2. Runs associated script.
  *
- * Use      : $ ./setup
- * Synopsis : Setup project using package.json as manifest.
- * Provides : Deletes, copies, and patches files. Install commit hook.
- *   1. Delete all vendor directories as directed by config.
- *      directories in bin, css, font, img, and js
- *   2. Copy assets from node_modules to vendor directories with the
- *      npm version appended to the names.
- *   3. Applies any patches (uglifyjs)
- *   4. Install the commit hook if git is detected
+ * @author   : Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Planned:
- *   1. Use package.json for build process (buildify and superpack)
- *   2. Integrate more deeply to npm build process (avoid reinvention)
- *   3. Auto-update <script src="..."> links using xhi.util templates
- *
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*global Promise */
 /*jslint         node   : true, continue : true,
  devel  : true, indent  : 2,    maxerr   : 50,
  newcap : true, nomen   : true, plusplus : true,
  regexp : true, sloppy  : true, vars     : false,
  white  : true, todo    : true, unparam  : true
 */
+/*global Promise */
 
-// == BEGIN SCRIPT setup.js ==============================================
-  // == BEGIN MODULE SCOPE VARIABLES =====================================
+// == BEGIN SCRIPT hi-score-tool ======================================
+  // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
     // Import capabilities
-    // Add if needed: execFn = require( 'child_process' ).exec
     EventEmitter = require( 'events'       ).EventEmitter,
     LineReader   = require( 'line-by-line' ),
 
     applyPatchFn = require( 'apply-patch'  ).applyPatch,
+    execFn       = require( 'child_process' ).exec,
     fsObj        = require( 'fs'           ),
     mkdirpFn     = require( 'mkdirp'       ),
     ncpFn        = require( 'ncp'          ).ncp,
@@ -59,31 +67,40 @@
     fqAppFilename = __filename,
     fqBinDirname  = __dirname,
 
+    // Get environment values
     appName       = pathObj.basename( fqAppFilename, '.js' ),
+    argList       = process.argv,
     fqOrigDirname = process.cwd(), // or pathObj.resolve()
     versList      = process.versions.node.split('.'),
 
-    // Initialize
-    exePathMap  = {},
-    versReqInt  = 8,
-    // patchStr = '// BEGIN hi_score patch line 324',
+    // Set paths
+    fqProjDirname   = pathObj.dirname( fqBinDirname ),
+    fqGitDirname    = fqProjDirname   + '/.git',
+    fqModuleDirname = fqProjDirname   + '/node_modules',
+    fqPkgFilename   = fqProjDirname   + '/package.json',
+    fqPatchFilename = fqProjDirname   + '/patch/uglify-js-3.0.21.patch',
 
-    // Declare
-    fqGitDirname,
-    fqHookFilename,  fqModuleDirname,
-    fqProjDirname,   fqPatchFilename,
-    fqPkgFilename,   fqScopeFileStr,
-    fqUglyDirname,   pkgMatrix,
-    setupMatrix
+    fqUglyDirname   = fqModuleDirname + '/uglifyjs',
+    fqScopeFileStr  = fqUglyDirname   + '/lib/scope.js',
+
+    // Set minimum Node verion number and init empty map
+    minVersionInt  = 8,
+    exePathMap     = {},
+
+    fqHookFilename, pkgMatrix, setupMatrix, toolMap
     ;
+  // == . END MODULE SCOPE VARIABLES ==================================
 
-  // == . END MODULE SCOPE VARIABLES =====================================
-
-  // == BEGIN UTILITY METHODS ============================================
+  // == BEGIN UTILITY METHODS =========================================
+  function exitGoodFn () { process.exit( 0 ); }
+  function exitBadFn  () { process.exit( 1 ); }
+  
   // BEGIN utility /abortFn/
-  function abortFn ( error_data ) {
-    console.warn( '>> Abort', error_data );
-    process.exit( 1 );
+  function abortFn () {
+    var arg_list = Array.from( arguments );
+    arg_list.unshift( '>> ABORT' );
+    console.warn.apply( arg_list );
+    exitBadFn();
   }
   // . END utility /abortFn/
 
@@ -177,27 +194,6 @@
       promise_list = [],
       idx, exe_key, bound_fn, promise_obj;
 
-    // Bail if node version < versReqInt
-    if ( Number( versList[0] ) < versReqInt ) {
-      logFn( 'As of hi_score 1.2+ NodeJS v'
-        + versReqInt + ' is required.'
-      );
-      logFn( 'NodeJS Version ' + versList.join('.') + ' is installed.' );
-      logFn( 'Please upgrade NodeJS and try again.'                    );
-      process.exit( 1 );
-    }
-
-    // Assign npm module vars
-    fqProjDirname   = pathObj.dirname( fqBinDirname );
-
-    fqGitDirname    = fqProjDirname   + '/.git';
-    fqModuleDirname = fqProjDirname   + '/node_modules';
-    fqPkgFilename   = fqProjDirname   + '/package.json';
-    fqPatchFilename = fqProjDirname   + '/patch/uglify-js-3.0.21.patch';
-
-    fqUglyDirname   = fqModuleDirname + '/uglifyjs';
-    fqScopeFileStr  = fqUglyDirname   + '/lib/scope.js';
-
     // Assign executable path vars
     for ( idx = 0; idx < exe_count; idx++ ) {
       exe_key = exe_list[ idx ];
@@ -217,9 +213,9 @@
   function storePkgMapFn ( error_obj, json_str ) {
     if ( error_obj ) { return abortFn( error_obj ); }
     pkgMatrix   = JSON.parse( json_str ) || [];
-    setupMatrix = pkgMatrix.xhi_010_SetupMatrix;
+    setupMatrix = pkgMatrix.xhi_02SetupMatrix;
     if ( ! setupMatrix ) {
-      abortFn( 'SetupMatrix not set in package.json' );
+      abortFn( 'xhi_02SetupMatrix not set in package.json' );
     }
     eventObj.emit( '02RmVendorDirs' );
   }
@@ -446,12 +442,64 @@
   }
   function on99FinishRunFn () {
     logFn( appName, 'Finished.' );
-    process.exit( 0 );
+    exitGoodFn();
   }
-  // == . END EVENT HANDLERS ===========================================
+  // == . END EVENT HANDLERS ==========================================
 
-  // == BEGIN Main =====================================================
-  function mainFn () {
+  // == BEGIN PUBLIC METHOD /a00HelpFn/ ===============================
+  function a00HelpFn () {
+    var help_str
+      = 'Name      : hi_score_tool\n'
+      + '  Purpose   : Run script for lifecycle step\n'
+      + '  Example   : hi_score_tool 00\n'
+      + '  Arguments : (positional)\n'
+      + '    0. The life cycle number as presented below.\n'
+      + '       The default is 00.\n'
+      + '      - 00 Help    (see 00-hi-score-help   )\n'
+      + '      - 01 Install (see 01-hi-score-install)\n'
+      + '      - 02 Setup\n'
+      + '      - 03 Design\n'
+      + '      - 04 Develop - Lint\n'
+      + '      - 05 Develop - Test\n'
+      + '      - 06 Develop - Coverage\n'
+      + '      - 07 Develop - Commit\n'
+      + '      - 08 Develop - Publish coverage\n'
+      + '      - 09 Build\n'
+      + '      - 10 Deploy\n'
+      + '      - 11 Feedback\n'
+      + '  Returns   : Exit status is 0 on success.\n'
+      + '  Throws    : Errors result in non-zero exit status.\n'
+      + '  Method    :\n'
+      + '    1. Parses command-line agument and extracts step number\n'
+      + '    2. Runs associated script.\n'
+      + '\n';
+
+    logFn( help_str );
+    exitGoodFn();
+  }
+  // == . END PUBLIC METHOD /a00HelpFn/ ===============================
+
+  // == BEGIN PUBLIC METHOD /a02SetupFn/ ==============================
+  // Purpose   : Delete, copies, and patches files. Install commit hook.
+  // Example   : hi_score_tool 02
+  // Returns   : boolean true on success
+  // Throws    : none
+  // Method    :
+  //   1. Count down from end of array with last_idx
+  //   2. Randomly pick element from between 0 and last_idx
+  //   3. Swap pick element with last_idx element
+  //
+  //
+  // Synopsis : Setup project using package.json as manifest.
+  // Provides : Deletes, copies, and patches files. Install commit hook.
+  //   1. Delete all vendor directories as directed by config.
+  //      directories in bin, css, font, img, and js
+  //   2. Copy assets from node_modules to vendor directories with the
+  //      npm version appended to the names.
+  //   3. Applies any patches (uglifyjs)
+  //   4. Install the commit hook if git is detected
+  //
+  function a02SetupFn () {
     // Layout flow control
     eventObj.on( '00InitVars',         on00InitVarsFn         );
     eventObj.on( '01ReadPkgFile',      on01ReadPkgFileFn      );
@@ -467,6 +515,58 @@
     // Timeout prevents race condition
     setTimeout( function () { eventObj.emit( '00InitVars' ); }, 0 );
   }
-  // == . END Main =====================================================
+  // == . END PUBLIC METHOD /a02SetupFn/ ==============================
 
-  mainFn();
+  // == BEGIN PUBLIC METHOD /a06CoverageFn/ ===========================
+  function a06CoverageFn () {
+    execFn( fqModuleDirname + '/.bin/istanbul cover -x \'**/vendor/**\' '
+      + fqModuleDirname     + '/.bin/nodeunit '
+      + fqProjDirname       + '/test/xhi_level_0.js',
+
+      function ( error_data, stdout_str, stderr_str ) {
+        if ( error_data ) {
+          abortFn( error_data, stdout_str, stderr_str );
+        }
+        else { exitGoodFn(); }
+      }
+    );
+  }
+  // == . END PUBLIC METHOD /a06CoverageFn/ ===========================
+
+  toolMap = {
+    '00' : a00HelpFn,
+    '02' : a02SetupFn,
+    '06' : a06CoverageFn
+  };
+
+  // == BEGIN PUBLIC METHOD /mainFn/ ==================================
+  // Purpose   : Parse command line and dispatch to requested tool.
+  //
+  function mainFn( arg_list ) {
+    var
+      node_path   = arg_list.shift(),
+      script_path = arg_list.shift(),
+      tool_id     = arg_list.shift(),
+      tool_fn
+      ;
+
+    // Bail if node version < minVersionInt
+    if ( Number( versList[0] ) < minVersionInt ) {
+      logFn( 'As of hi_score 1.2+ NodeJS v'
+        + minVersionInt + ' is required.'
+      );
+      logFn( 'NodeJS Version ' + versList.join('.') + ' is installed.' );
+      abortFn( 'Please upgrade NodeJS and try again.'                  );
+    }
+
+    tool_fn = toolMap[ tool_id ];
+    if ( ! tool_fn ) {
+      console.warn( 'Tool step ' + tool_id + ' not found.' );
+      tool_fn = toolMap[ '00' ];
+    }
+    tool_fn( arg_list );
+  }
+  // == . END PUBLIC METHOD /mainFn/ ==================================
+
+  mainFn( argList );
+// == END SCRIPT hi-score-tool ========================================

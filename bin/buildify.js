@@ -155,7 +155,7 @@
 //            "target_file": "ex01.js - should be redundant"
 //          },
 //          "tmplt_make_list": [
-//            "TODO: determine template reqs"
+//            "TODO 2017-07-24 mmikowski warn: determine template reqs"
 //          ]
 //        }
 //      ]

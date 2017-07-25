@@ -4,7 +4,7 @@
 *A modern full-life-cycle starter project for SPAs*
 
 ## Overview
-This SPA starter project that uses package.json and NPM as the confiuration and management tool respectively for each stage software product development and deployment.  The project comes with best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap them out as needed. [That's the point][_01].
+The SPA starter project that uses package.json and NPM as the configuration and management tool respectively for each stage of a software product life. The project comes with best-in-class assets, libraries, documentation, and tools to help guide best practice. Please do swap assets and libraries as required. [That's the point][_01].
 
 
 ## Quick start
@@ -14,165 +14,38 @@ This SPA starter project that uses package.json and NPM as the confiuration and 
   google-chrome build/dist/last/dist/ex01.html
 ```
 
-## Life cycle stages
-The following numbers are used for each stage of the SPA product lifecycle.
-- 00 Help
-- 01 Install
-- 02 Setup
-- 03 Design
-- 04 Develop - Lint
-- 05 Develop - Test
-- 06 Develop - Coverage
-- 07 Develop - Commit
-- 08 Develop - Publish coverage
-- 09 Build
-- 10 Deploy
-- 11 Feedback
+## Tools for every stage of life
+Use `npm run` followed by a number to execute a tool for a stage in the product lifecycle as shown below. Any argument after the number is ignored.
+
+- `00 Help`: Get help on hi\_score commands and purpose.
+- `01 Install`: Install all dependencies including currated libraries and fonts.
+- `02 Setup`: Setup and patch all dependencies for development. Add a `git` commit-hook to prevent unacceptable code from entering the repo.
+- `03 Design`: Generate from source HTML architecture and design documents.
+- `04 Develop - Lint`: Scan all changed JavaScript with JSLint. Review TODO comments. Check for whitespace and strictness violations.
+- `05 Develop - Test`: Run 1,413 regression tests. Use these as examples to add your own.
+- `06 Develop - Coverage`: Inspect code coverage (currently 99.7%).
+- `07 Develop - Commit`: Check-in code after passing checks.
+- `08 Develop - Publish`: Publish to coveralls and NPM.
+- `09 Build` - Extract, compress, obsfucate, and otherwise prepare application for distribution
+- `10 Deploy`: Deploy application to configured servers
+- `11 Feedback`: Gather feedback from deployed sites.
 
 ## Benefits
-- `npm 000-install`: Install all dependencies including best-in-class libraries
-  and fonts in seconds.
-- `npm run 010-setup`: Cleanly setup patch all dependencies (including monkey
-  patches) and install a commit-hook in a seconds.
-- `npm run 020-design` : Review architecture and design documents
-- `npm run 030-lint`: Run JSLint + TODO, whitespace, and strict check
-- `npm run 040-test`: Run over 1,400 regression tests on the `xhi` libs. Learn how to to write your own nodunite + jsdom test with hundreds of examples.
-- `npm run 050-coverage`: See detailed test reports in seconds. Use these reports to improve the coverage and quality of your own code.
-- `npm run 060-commit`: Update in-line doc and perform numerous quality checks everytime your check-in your code. Checks include regression tests, JSLint, whitespace, `use strict`, and `TODO` comment reviews!
-
-- `xhi` utlities including [type-casting](_05) and
-
+- Tools for every stage of the SPA product lifecycle through a single manifest
+  (`package.json`) and a single tool (`npm`).
+- `xhi` utlities include dozens of useful utilties, a litebox, and
+   and [type-casting](_05) tools.
 - All `xhi` code adhere strictly to the [Code standard][_03]
   ([Quick-reference][_04]) as do many supporting libraries.
-
-### Develop: Study
-- Browse inline, auto-generated HTML docs
-- Explore the example app
-- Reference the recommended architecture diagram in this document
-### Develop: Design
-- Store blueprints in wireframes directory
-### Develop: Test
-- Run `npm test` to check regression tests // using nodeunit and jsdom
-- `npm coverage` creates coverage reports (currently at 98%)
-### Develop: Collaborate
-- `git commit`
-  - Generate HTML from Markdown docs in all dirs (`make_doc`)
-  - Run regression tests with `npm test`
-  - Check coverage with `npm run coverage`
-  - JSLint on all changed JS files
-  - Check whitespace on changed JS files
-  - Check use-strict on changed JS files
-  - Check and reports TODO comments
-### Develop: Implement
-- Use XHI libraries to rapidly develop well-tested and ready-to-deploy apps
-- Ensure type safety with [type-cast][_05] libraries
-- Add tests using NodeUnit and JSDOM
-### Build
-- `npm run make` creates distribution
-  - Concatenates CSS and JS assets
-  - Compresses and obsfucates variables **and object properties**
-  - Copies assets for deployment
-  - Processes templates for deployment
-- Creates deploy/build/xxxx
-### Deploy
-- Planned: `npm run deploy xxxx` to deploy a build to a site
-
-### Monitor and feedback
-- Considered: `npm run feedback` to collect statistics
-
-
-===============================================
-### Installation
-- Run `npm install` to install all dependencies from the NPM repository.
-
-### Setup
-- Run `npm run setup` to configure and distribute assets required for development.
-  - Delete all vendor directories.
-  - Copy vendor assets as directed by package.json.
-  - Patch vendor assets as directed by package.json.
-  - Install commit hook.
-// Gitignore exludes vendor assets from repository.
-// Install best-in-class fonts, images, JS and CSS libraries
-### Develop: Study
-- Browse inline, auto-generated HTML docs
-- Review the [Code standard][_03] applied across this and many support libs.
-  [Quick-reference][_04] also available.
-- Explore the example app
-- Reference the recommended architecture diagram in this document
-### Develop: Design
-- Store blueprints in wireframes directory
-### Develop: Test
-- Run `npm test` to check regression tests // using nodeunit and jsdom
-- `npm coverage` creates coverage reports (currently at 98%)
-### Develop: Collaborate
-- `git commit`
-  - Generate HTML from Markdown docs in all dirs (`make_doc`)
-  - Run regression tests with `npm test`
-  - Check coverage with `npm run coverage`
-  - JSLint on all changed JS files
-  - Check whitespace on changed JS files
-  - Check use-strict on changed JS files
-  - Check and reports TODO comments
-### Develop: Implement
-- Use XHI libraries to rapidly develop well-tested and ready-to-deploy apps
-- Ensure type safety with [type-cast][_05] libraries
-- Add tests using NodeUnit and JSDOM
-### Build
-- `npm run make` creates distribution
-  - Concatenates CSS and JS assets
-  - Compresses and obsfucates variables **and object properties**
-  - Copies assets for deployment
-  - Processes templates for deployment
-- Creates deploy/build/xxxx
-### Deploy
-- Planned: `npm run deploy xxxx` to deploy a build to a site
-
-### Monitor and feedback
-- Considered: `npm run feedback` to collect statistics
-
-
-
-
+- Included sample example application ready for immediate build and study.
+- Core `xhi` libs currently have 98% coverage.
+- Automation of many best practices.
+- Add tools easily to `jsdom` + `nodeunit` test suite.
+- Make process (TODO: add build numbers!) creates distribution-ready
+  directory with selected assets and compressed object keys.
 
 ## Code Style
 We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
-
-## Architecture
-The `xhi` libraries are structured to facilitate loose coupling but strict call precidence. For example the `xhi/00.js` library must be loaded to the browser before any other `xhi` code, and it may not call any library with a higher precidence number. The `08.app.js`, in comparison, must be loaded after all the `00-07` libraries, but it may call any library of the same or lower precidence:
-
-```
-  /|                                                       //////
- +  ======================== API CALLS =========================
-  \|                                                       \\\\\\
-
-  +---------+    +----------+                       +----------+
-  | 02.data |    | 03.model |<--+-------------------|  Shell   |
-  |  Data   |<---|  Model   | ..... events .....))) | 07.shell |
-  |  Fetch  |    +----------+            :          +----------+
-  +---------+      |                     :                    |
-       |           |                     :      +---------+   |
-       |           |                     :      | 06.lb   |   |
-       |           |                     :..))) | litebox |<--+
-       |           |  +----------+       :      | feature |   |
-       v           |  | Browser  |<--+----------+---------+   |
-  +---------+      |  |  Utils   |   |   :                    |
-  | 01.util |      |  | 04.utilb |   |   :      +---------+   |
-  |  Utils  |<-----+--+----------+   |   :      | 06.*    |   |
-  +---------+                        |   ...))) | feature |<--+
-        |                            |          | modules |   |
-        v                            +----------+---------+   |
-  +-----------+                      |                        |
-  |   00.js   |                      |      +-------------+   |
-  | namespace |                      |      | 05.css_*    |   |
-  +-----------+                      |      | 06.css      |<--+
-                                     |      | feature css |
-                                     +------+-------------+
- \\\\\\                                                       |\
-  ========================== DATA FLOW =======================| +
- //////                                                       |/
-```
-
-We use model events to broadcast changes to the Shell and Feature modules and we keep our feature modules isolated from each other. This enhances portability and quality.
 
 ## Browser compatibility
 Our baseline compatibility is IE9+. Those supporting IE 8 have our sympathy.

@@ -67,18 +67,19 @@
     "url": "git+https://github.com/mmikowski/hi_score.git"
   },
   "scripts": {
-    "00" : "bin/00-help",
-    "01" : "bin/01-install",
-    "02" : "bin/02-setup",
-    "03" : "bin/03-design",
-    "04" : "bin/04-develop-lint",
-    "05" : "bin/05-develop-test",
-    "06" : "bin/06-develop-coverage",
-    "07" : "bin/07-develop-commit",
-    "08" : "bin/08-publish-coverage",
-    "09" : "bin/09-build",
-    "10" : "bin/10-deploy",
-    "11" : "bin/11-feedback",
+    "00" : "bin/hi_score_tool 00 help",
+    "01" : "bin/hi_score_tool 01 install",
+    "02" : "bin/hi_score_tool 02 setup",
+    "03" : "bin/hi_score_tool 03 design cat /doc/spa-arch.md",
+    "04" : "bin/hi_score_tool 04 develop-lint",
+    "05" : "bin/hi_score_tool 05 develop-test",
+    "06" : "bin/hi_score_tool 06 develop-coverage",
+    "07" : "bin/hi_score_tool 07 develop-commit",
+    "08" : "bin/hi_score_tool 08 publish-coverage",
+    "09" : "bin/hi_score_tool 09 build",
+    "10" : "bin/hi_score_tool 10 deploy",
+    "11" : "bin/hi_score_tool 11 feedback",
+
     "coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
     "make": "bin/buildify cfg/*.buildify",
     "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
@@ -87,7 +88,7 @@
     "test": "node_modules/.bin/nodeunit test/xhi_level_0.js"
   },
   "version": "1.2.10",
-  "xhiSetupMatrix": {
+  "xhi_02SetupMatrix": {
     "asset_group_table": [
       {
         "asset_type": "css",
