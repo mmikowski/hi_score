@@ -4,45 +4,69 @@
 *A modern full-life-cycle starter project for SPAs*
 
 ## Overview
-The SPA starter project that uses package.json and NPM as the configuration and management tool respectively for each stage of a software product life. The project comes with best-in-class assets, libraries, documentation, and tools to help guide best practice. Please do swap assets and libraries as required. [That's the point][_01].
+An SPA starter project that uses `npm` as the single configuration and management tool for every stage of the lifecycle. `hi_score` provides best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap assets and libraries as required. [That's the point][_01].
 
 
 ## Quick start
 ```bash
-  cd hi_score
-  npm install && npm run setup && npm run coverage && npm run make
-  google-chrome build/dist/last/dist/ex01.html
+  cd hi_score;
+  npm run 01 install \
+    && npm run 02 setup \
+    && npm run 06 coverage \
+    && npm run 09 build \
+    && google-chrome build/dist/last/dist/ex01.html
 ```
 
 ## Tools for every stage of life
-Use `npm run` followed by a number to execute a tool for a stage in the product lifecycle as shown below. Any argument after the number is ignored.
+Use `npm run` followed by a a lifecycle stage number as shown below. Any argument after the number is ignored.
 
 - `00 Help`: Get help on hi\_score commands and purpose.
-- `01 Install`: Install all dependencies including currated libraries and fonts.
-- `02 Setup`: Setup and patch all dependencies for development. Add a `git` commit-hook to prevent unacceptable code from entering the repo.
+- `01 Install`: Download all dependencies including libraries and fonts.
+- `02 Setup`: Distribute and patch all dependencies as required for development. Add a `git` commit-hook.
 - `03 Design`: Generate from source HTML architecture and design documents.
-- `04 Develop - Lint`: Scan all changed JavaScript with JSLint. Review TODO comments. Check for whitespace and strictness violations.
-- `05 Develop - Test`: Run 1,413 regression tests. Use these as examples to add your own.
+- `04 Develop - Lint`: Check all changed JavaScript with JSLint. Review TODO comments. Check for whitespace and strictness violations.
+- `05 Develop - Test`: Run 1,413 regression tests. Use the the examples to add your own.
 - `06 Develop - Coverage`: Inspect code coverage (currently 99.7%).
 - `07 Develop - Commit`: Check-in code after passing checks.
-- `08 Develop - Publish`: Publish to coveralls and NPM.
-- `09 Build` - Extract, compress, obsfucate, and otherwise prepare application for distribution
+- `08 Build` - Extract, compress, obsfucate, and otherwise prepare application for distribution
+- `09 Publish`: Publish to coveralls and NPM.
 - `10 Deploy`: Deploy application to configured servers
 - `11 Feedback`: Gather feedback from deployed sites.
 
 ## Benefits
-- Tools for every stage of the SPA product lifecycle through a single manifest
-  (`package.json`) and a single tool (`npm`).
-- `xhi` utlities include dozens of useful utilties, a litebox, and
-   and [type-casting](_05) tools.
-- All `xhi` code adhere strictly to the [Code standard][_03]
-  ([Quick-reference][_04]) as do many supporting libraries.
-- Included sample example application ready for immediate build and study.
-- Core `xhi` libs currently have 98% coverage.
 - Automation of many best practices.
+- Tools for every stage of the SPA product lifecycle through a single manifest (`package.json`) and a single tool (`npm`).
+- `xhi` utlities include dozens of useful, well-test utilties and [type-casting](_05) tools.
+- All `xhi` code adheres strictly to the [Code standard][_03] ([Quick-reference][_04]) as do many supporting libraries.
+- Core `xhi` libs currently have 98% coverage.
+- Sample example application ready for immediate build and study.
 - Add tools easily to `jsdom` + `nodeunit` test suite.
-- Make process (TODO: add build numbers!) creates distribution-ready
-  directory with selected assets and compressed object keys.
+- Make process creates distribution for 
+
+## Notes on each step
+###
+### 00 Help
+Get help on hi\_score commands and purpose.
+### 01 Install
+Download all dependencies including libraries and fonts.
+### 02 Setup
+### 02 Setup
+Distribute and patch all dependencies as required for development. Add a `git` commit-hook.
+### 03 Design
+Generate from source HTML architecture and design documents.
+### 04 Develop - Lint
+Check all changed JavaScript with JSLint. Review TODO comments. Check for whitespace and strictness violations.
+### 05 Develop
+Test Run 1,413 regression tests. Use these as examples to add your own.
+### 06 Develop - Coverage
+Inspect code coverage (currently 99.7%).
+### 07 Develop - Commit
+Check-in code after passing checks.
+### 08 Build
+Extract, compress, obsfucate, and otherwise prepare application for distribution
+### 09 Publish`: Publish to coveralls and NPM.
+### 10 Deploy`: Deploy application to configured servers
+### 11 Feedback`: Gather feedback from deployed sites.
 
 ## Code Style
 We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
@@ -50,9 +74,12 @@ We use the code style presented in [Single Page Web Applications - JavaScript en
 ## Browser compatibility
 Our baseline compatibility is IE9+. Those supporting IE 8 have our sympathy.
 
-## Development and deployment
+## Server platforms
+The server component of **hi\_score** is designed to run on industry-standard hardware, cloud instances like Amazon EC2, and containers. Our primary server platform is Ubuntu 16.04 LTS although future versions have also been shown to work well. Other Linux distributions such as CentOS are also recommended. See the **Development Platforms** section for the list of prerequisites.
+
+## Development platforms
 ### Ubuntu 16.04, 16.10, 17.04
-Everything should just work on recent Ubuntu and derivative distributions like Mint or Kubuntu. Here are the steps to install prequisites on Ubuntu 17.04:
+Everything should just work on recent Ubuntu and derivative distributions like Mint or Kubuntu. Here are the steps to install all required libraries:
 
 ```bash
   # Install development libs
@@ -72,50 +99,24 @@ Everything should just work on recent Ubuntu and derivative distributions like M
 ```
 
 ### Other Linux
-Other modern Linux distributions should generally work as long as the same tools can be installed as as above. It works fine on CentOS with development libraries installed:
+Other Linux distributions should generally work as long as the same libraries can be installed with Ubuntu. It works fine on current versions of CentOS.  Development libraries should be installed as shown below.
 
 ```bash
 yum install gcc gcc-c++ make openssl-devel
 ```
 
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
-### Virtual Machine
-Use AWS or a Virtual Box image using Ubuntu 16.04 Server using the the same steps above.
 
-This is probably the best way to get familiar with the project. Any work here will pay off during deployment as **hi\_score** is designed to run on industry-standard Ubuntu servers, cloud instances like Amazon EC2, and containers.
+### Virtual Machine
+Use AWS or a Virtual Box image using Ubuntu 16.04 Server using the the same steps above. This is the recommended approach for MacOS or Windows users.
 
 ### Mac
-We recommend using a virtual machine if possible. However one should be able to develop natively on Mac. At the very least one will need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
+We have not been able to test developing natively on a Mac but it should be possible.  At the very least one would need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
 
 ### Windows
-We recommend using a virtual machine as detailed above. Installation *might* work with the new Linux subsystem on Windows 10 but we don't have any experience with it.
+We recommend using a virtual machine as detailed above.
 
-## Use
-### Installation
-Use the **Quick start** guide to install **hi\_score** and prepare it for development. One can also use `npm install hi_score` but the `git` method is preferred. No errors should be reported.
-
-### Test
-Use `npm test` to run the regression tests. You may expand tests by adding to the `test/xhi_level_0` file. Tested `xhi` modules include the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`), and the litebox (`06.lb.js`).
-
-### Coverage
-Use `npm run coverage` to calculate code coverage. We can open the `coverage/lcov-report/index.html` file with a browser to inspect coverage.  We use the excellent `Istanbul` code coverage tool along with the JSDOM package. Current coverage is reported at the top of this document.
-
-### Publish coverage
-Use `npm run publish-coverage` to publish a report to the coveralls.io website. The process to set up coveralls is described in `hi_score/README.coveralls.md`.
-
-### Build
-Use `npm run make` to create a distribution for deployment. The client deployment files are found in `build/dist`.  We can inspect our sample applications as follows:
-
-```bash
-  cd ~/GitHub/hi_score
-  npm run make
-  cd build/dist
-  google-chrome ex01.html ex02.html
-```
-
-Yes, we know the examples are lame. We are working on that.
-
-### Update
+## Updating libraries
 One may update all the npm libraries, assets and the `package.json` file as follows:
 
 ```bash
@@ -130,6 +131,18 @@ ncu -u --packageFile package.json
 # Reinstall vendor assets
 npm run setup
 ```
+
+### Build
+Use `npm run make` to create a distribution for deployment. The client deployment files are found in `build/dist`.  We can inspect our sample applications as follows:
+
+```bash
+  cd ~/GitHub/hi_score
+  npm run make
+  cd build/dist
+  google-chrome ex01.html ex02.html
+```
+
+Yes, we know the examples are lame. We are working on that.
 
 ## Namespacing
 When we open our example apps (`google-chrome ex01.html ex02.html`) we see they provide near-identical features and share a great deal of code and assets. However, they use separate *namespaces* to avoid data collisions. Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. With namespacing, one can trace behaviors to the controlling code faster and with greater accuracy.
