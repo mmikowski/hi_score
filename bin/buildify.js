@@ -77,18 +77,26 @@
     console.log( 'Help - WIP' );
   }
 
-// Stages
-// 000 Install
-// 010 Setup (this should run make-doc)
-// 020 Design and study
-// 030 Develop - Lint
-// 040 Develop - Test
-// 050 Develop - Coverage
-// 060 Develop - Commit (remove make-doc?)
-// 070 Develop - Publish coverage
-// 080 Build
-// 090 Deploy
-// 100 Feedback
+// Lifecycle Stages
+// 00 Help
+// 01 Install
+// 02 Setup
+// 03 Design
+// 04 Devserver-start
+// 05 Develop-lint
+// 06 Develop-test
+// 07 Develop-coverage
+// 08 Develop-commit
+// 09 Build
+// 10 Publish
+// 11 Devserver-restart
+// 12 Devserver-stop
+// 13 Deploy
+// 14 Prodserver-start
+// 15 Prodserver-restart
+// 16 Prodserver-stop
+// 17 Feedback
+// 18 Uninstall
 //
 // Name        : buildify.js
 // Synopsis    : ./buildify.js [ options ]
@@ -104,71 +112,62 @@
 //          dist/
 //          stage/
 //
-// Examples
-//   package.json
-//    { "devDependencies" : { "taffydb": "2.7.3", .... },
-//      "xhi_010_SetupMatrix"  : {
-//        "asset_group_table": [
-//         { "asset_type" : "js",
-//            "asset_list": [
-//              {
-//                "dest_name": "taffy",
-//                "src_asset_name": "taffy.js",
-//                "src_pkg_name": "taffydb"
-//              }
-//            ]
-//        }
-//        "dest_dir_str": "js/vendor",
-//        "dest_ext_str": "js"
-//      },
-//      "xhiBuildTable": [
-//        {
-//          "build_id": "ex01",
-//          "do_isolate": false,
-//          "asis_make_map": {
-//            "do_include_vendor": true
-//          },
-//          "css_make_map": {
-//            "do_compress": true,
-//            "do_vendor": true,
-//            "target_file": "ex01.css - should be reundant"
-//          },
-//          "js_make_map": {
-//            "asset_list": [
-//              "js/xhi/00.js",
-//              "js/xhi/01.util.js",
-//              "js/xhi/02.data.js",
-//              "js/xhi/02.fake.js",
-//              "js/xhi/03.model.js",
-//              "js/xhi/04.utilb.js",
-//              "js/xhi/05.css_base.js",
-//              "js/xhi/05.css_lb.js",
-//              "js/xhi/05.css_shell.js",
-//              "js/xhi/06.css.js",
-//              "js/xhi/06.lb.js",
-//              "js/xhi/07.shell.js",
-//              "js/xhi/08.app.js",
-//              "js/ex02-build.js"
-//            ],
-//            "do_compress": true,
-//            "do_vendor": true,
-//            "target_file": "ex01.js - should be redundant"
-//          },
-//          "tmplt_make_list": [
-//            "TODO 2017-07-24 mmikowski warn: determine template reqs"
-//          ]
-//        }
-//      ]
-//    }
-//
-//
-//
-//
-//
-//
-//
-//
-//
+// Examples   :
+//   IN PACKAGE.JSON
+//   { "devDependencies" : { "taffydb": "2.7.3", .... },
+//     "xhi_010_SetupMatrix"  : {
+//       "asset_group_table": [
+//        { "asset_type" : "js",
+//           "asset_list": [
+//             {
+//               "dest_name": "taffy",
+//               "src_asset_name": "taffy.js",
+//               "src_pkg_name": "taffydb"
+//             }
+//           ]
+//       }
+//       "dest_dir_str": "js/vendor",
+//       "dest_ext_str": "js"
+//     },
+//     "xhiBuildTable": [
+//       {
+//         "build_id": "ex01",
+//         "do_isolate": false,
+//         "asis_make_map": {
+//           "do_include_vendor": true
+//         },
+//         "css_make_map": {
+//           "do_compress": true,
+//           "do_vendor": true,
+//           "target_file": "ex01.css - should be reundant"
+//         },
+//         "js_make_map": {
+//           "asset_list": [
+//             "js/xhi/00.js",
+//             "js/xhi/01.util.js",
+//             "js/xhi/02.data.js",
+//             "js/xhi/02.fake.js",
+//             "js/xhi/03.model.js",
+//             "js/xhi/04.utilb.js",
+//             "js/xhi/05.css_base.js",
+//             "js/xhi/05.css_lb.js",
+//             "js/xhi/05.css_shell.js",
+//             "js/xhi/06.css.js",
+//             "js/xhi/06.lb.js",
+//             "js/xhi/07.shell.js",
+//             "js/xhi/08.app.js",
+//             "js/ex02-build.js"
+//           ],
+//           "do_compress": true,
+//           "do_vendor": true,
+//           "target_file": "ex01.js - should be redundant"
+//         },
+//         // TODO 2017-07-24 mmikowski warn: determine template reqs
+//         "tmplt_make_list": [
+//         ]
+//       }
+//     ]
+//   }
 //
 //       ==============
 //       source:js

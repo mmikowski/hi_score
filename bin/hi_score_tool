@@ -2,30 +2,9 @@
 /* vim: set ft=javascript: */
 
 /*
- * Public script /hi-score-tool/
- * Purpose   : Run a helper script for lifecycle step
- * Example   : hi-score-tool 00
- * Arguments : (positional)
- *   0. The life cycle number as presented below.  The default is '00'.
- *     - 00 Help    (see 00-hi-score-help   )
- *     - 01 Install (see 01-hi-score-install)
- *     - 02 Setup
- *     - 03 Design
- *     - 04 Develop - Lint
- *     - 05 Develop - Test
- *     - 06 Develop - Coverage
- *     - 07 Develop - Commit
- *     - 08 Develop - Publish coverage
- *     - 09 Build
- *     - 10 Deploy
- *     - 11 Feedback
- * Throws    : Exit status is non-zero on failure
- * Method    :
- *   1. Parses command-line agument and extracts step number
- *      (Uses '00' if number cannot be determined).
- *   2. Runs associated script.
- *
- * @author   : Michael S. Mikowski - mike.mikowski@gmail.com
+ * Purpose   : Run a hi_score lifecycle step
+ * Example   : See hi_score_tool 00 (_00HelpFn)
+ * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
 /*jslint         node   : true, continue : true,
@@ -87,6 +66,8 @@
     minVersionInt  = 8,
     exePathMap     = {},
 
+    // Curried functions
+    abortFn, logFn, warnFn,
     fqHookFilename, pkgMatrix, setupMatrix, toolMap
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
@@ -94,23 +75,36 @@
   // == BEGIN UTILITY METHODS =========================================
   function exitGoodFn () { process.exit( 0 ); }
   function exitBadFn  () { process.exit( 1 ); }
-  
-  // BEGIN utility /abortFn/
-  function abortFn () {
-    var arg_list = Array.from( arguments );
-    arg_list.unshift( '>> ABORT' );
-    console.warn.apply( arg_list );
-    exitBadFn();
-  }
-  // . END utility /abortFn/
 
-  // BEGIN utility /logFn/
-  function logFn() {
-    var arg_list = Array.from( arguments );
-    arg_list.unshift( '>>' );
-    console.log.apply( null, arg_list );
+  // BEGIN utility /_outFn/
+  // Purpose: provides abortFn, logFn, and warnFn
+  function _outFn() {
+    var
+      config_map = this,
+      method_str = this._method_str_,
+      prompt_str = this._prompt_str_ || '>>',
+      arg_list   = Array.from( arguments )
+      ;
+
+    arg_list.unshift( prompt_str );
+    console[ method_str ].apply( null, arg_list );
+    if ( config_map._do_abort ) { exitBadFn(); }
   }
-  // . END utility /logFn/
+
+  abortFn = _outFn.bind({
+    _method_str_ : 'warn',
+    _prompt_str_ : 'hi_score ABORT >> ',
+    _do_abort_   : true
+  });
+  logFn   = _outFn.bind({
+    _method_str_ : 'log',
+    _prompt_str_ : 'hi_score >> '
+  });
+  warnFn  = _outFn.bind({
+    _method_str_ : 'warn',
+    _prompt_str_ : 'hi_score warn >> '
+  });
+  // . END utility /_outFn/
 
   // BEGIN utlity /grepFileFn/
   function grepFileFn ( filename, match_str ) {
@@ -446,40 +440,47 @@
   }
   // == . END EVENT HANDLERS ==========================================
 
-  // == BEGIN PUBLIC METHOD /a00HelpFn/ ===============================
-  function a00HelpFn () {
+  // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
+  function _00HelpFn () {
     var help_str
-      = 'Name      : hi_score_tool\n'
+      = 'Name      : ' + appName + '\n'
       + '  Purpose   : Run script for lifecycle step\n'
-      + '  Example   : hi_score_tool 00\n'
+      + '  Example   : ' + appName + ' 00\n'
       + '  Arguments : (positional)\n'
-      + '    0. The life cycle number as presented below.\n'
-      + '       The default is 00.\n'
-      + '      - 00 Help    (see 00-hi-score-help   )\n'
-      + '      - 01 Install (see 01-hi-score-install)\n'
-      + '      - 02 Setup\n'
-      + '      - 03 Design\n'
-      + '      - 04 Develop - Lint\n'
-      + '      - 05 Develop - Test\n'
-      + '      - 06 Develop - Coverage\n'
-      + '      - 07 Develop - Commit\n'
-      + '      - 08 Develop - Publish coverage\n'
-      + '      - 09 Build\n'
-      + '      - 10 Deploy\n'
-      + '      - 11 Feedback\n'
-      + '  Returns   : Exit status is 0 on success.\n'
-      + '  Throws    : Errors result in non-zero exit status.\n'
-      + '  Method    :\n'
-      + '    1. Parses command-line agument and extracts step number\n'
-      + '    2. Runs associated script.\n'
-      + '\n';
-
+      + '    <range> || help <range> || help all\n\n'
+      + '    <range> may be:\n'
+      + '    1. A single stage number, e.g. 01.\n'
+      + '    2. A list of stage numbers, e.g. 01 02 06.\n'
+      + '    3. A range of stage numbers, e.g. 00 - 09.\n'
+      + '    The life cycle number as presented below.\n'
+      + '     The default is 00.\n'
+      + '  More examples:\n'
+      + '    ' + appName + ' help all      // Describe all stages'
+      + '    ' + appName + ' help 01       // describe stage 01\n'
+      + '    ' + appName + ' help 01 02 06 // describe 3 stages\n'
+      + '    ' + appName + ' help 00 - 09  // describe 10 stages\n'
+      + '    ' + appName + ' 01 02 06      // runs 3 stages\n'
+      + '    ' + appName + ' 00 - 09       // run 10 stages\n'
     logFn( help_str );
     exitGoodFn();
   }
-  // == . END PUBLIC METHOD /a00HelpFn/ ===============================
+  // == . END PUBLIC METHOD /_00HelpFn/ ===============================
 
-  // == BEGIN PUBLIC METHOD /a02SetupFn/ ==============================
+  // == BEGIN PUBLIC METHOD /_01InstallFn/ ============================
+  function _01InstallFn () {
+    // Add goodies here
+    exitGoodFn();
+  }
+  // == . END PUBLIC METHOD /_01InstallFn/ ============================
+
+  // == BEGIN PUBLIC METHOD /_01InstallFn/ ============================
+  function _01InstallFn () {
+    // Add goodies here
+    exitGoodFn();
+  }
+  // == . END PUBLIC METHOD /_01InstallFn/ ============================
+
+  // == BEGIN PUBLIC METHOD /_02SetupFn/ ==============================
   // Purpose   : Delete, copies, and patches files. Install commit hook.
   // Example   : hi_score_tool 02
   // Returns   : boolean true on success
@@ -499,7 +500,7 @@
   //   3. Applies any patches (uglifyjs)
   //   4. Install the commit hook if git is detected
   //
-  function a02SetupFn () {
+  function _02SetupFn () {
     // Layout flow control
     eventObj.on( '00InitVars',         on00InitVarsFn         );
     eventObj.on( '01ReadPkgFile',      on01ReadPkgFileFn      );
@@ -515,10 +516,13 @@
     // Timeout prevents race condition
     setTimeout( function () { eventObj.emit( '00InitVars' ); }, 0 );
   }
-  // == . END PUBLIC METHOD /a02SetupFn/ ==============================
-
-  // == BEGIN PUBLIC METHOD /a06CoverageFn/ ===========================
-  function a06CoverageFn () {
+  // == . END PUBLIC METHOD /_02SetupFn/ ==============================
+  function _03ShowArchFn () {}
+  function _04DWebStartFn () {}
+  function _05LintFn () {}
+  function _06TestFn () {}
+  // == BEGIN PUBLIC METHOD /_07MakeCoverFn/ ==========================
+  function _07MakeCoverFn () {
     execFn( fqModuleDirname + '/.bin/istanbul cover -x \'**/vendor/**\' '
       + fqModuleDirname     + '/.bin/nodeunit '
       + fqProjDirname       + '/test/xhi_level_0.js',
@@ -531,12 +535,42 @@
       }
     );
   }
-  // == . END PUBLIC METHOD /a06CoverageFn/ ===========================
+  // == . END PUBLIC METHOD /_07MakeCoverFn/ ==========================
+  function _08CheckIn () {}
+  function _09BuildFn () {}
+  function _10PublishFn () {}
+  function _11DWebcycleFn () {}
+  function _12DWebStopFn () {}
+  function _13DeployFn () {}
+  function _14ProdStartFn () {}
+  function _15ProdCycleFn () {}
+  function _16ProdStopFn () {}
+  function _17FetchFeedbackFn () {}
+  function _18UninstallFn () {}
+  function describeFn (){} 
 
-  toolMap = {
-    '00' : a00HelpFn,
-    '02' : a02SetupFn,
-    '06' : a06CoverageFn
+
+  commandMatrix = {
+    '00' : [ 'Help: Get overview of ' + appName + ' use.', _00HelpFn          ],
+    '01' : [ 'Install: Download and install npm modules',  _01InstallFn       ],
+    '02' : [ 'Setup: Distribute and patch assets for dev', _02SetupFn         ],
+    '03' : [ 'Design: Show architecture docs',             _03ShowArchFn      ],
+    '04' : [ 'Devserve-start: Start a local web server',   _04DWebStartFn     ],
+    '05' : [ 'Develop-lint: Lint JS, TODOs, whitespace',   _05LintFn          ],
+    '06' : [ 'Develop-test: Run regression tests',         _06TestFn          ],
+    '07' : [ 'Develop-coverage: Create coverage reports',  _07MakeCoverFn     ],
+    '08' : [ 'Develop-commit: Save validate code to repo', _08CheckIn         ],
+    '09' : [ 'Build: Create app distro',                   _09BuildFn         ],
+    '10' : [ 'Publish: Share to NPM and Coveralls',        _10PublishFn       ],
+    '11' : [ 'Devserve-cycle: Cycle local web server',     _11DWebcycleFn     ],
+    '12' : [ 'Devserve-stop: Stop development server',     _12DWebStopFn      ],
+    '13' : [ 'Deploy: Distribute package to servers',      _13DeployFn        ],
+    '14' : [ 'Prodserve-start: Start production process',  _14ProdStartFn     ],
+    '15' : [ 'Prodserve-cycle: Cycle production process',  _15ProdCycleFn     ],
+    '16' : [ 'Prodserve-stop: Stop production process',    _16ProdStopFn      ],
+    '17' : [ 'Feedback: Gather feedback from production',  _17FetchFeedbackFn ],
+    '18' : [ 'Uninstall: Removed ' + appName,              _18UninstallFn     ],
+    help : [ 'Describe: help 01, help 01 06, help 01-09', describeFn        ]
   };
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
@@ -547,21 +581,26 @@
       node_path   = arg_list.shift(),
       script_path = arg_list.shift(),
       tool_id     = arg_list.shift(),
-      tool_fn
+      abort_str, tool_fn
       ;
 
-    // Bail if node version < minVersionInt
+    // DEBUB
+    warnFn( 'ARG LIST', [ tool_id ].concat( arg_list ) );
+
+    // Abort if node version < minVersionInt
     if ( Number( versList[0] ) < minVersionInt ) {
-      logFn( 'As of hi_score 1.2+ NodeJS v'
-        + minVersionInt + ' is required.'
-      );
-      logFn( 'NodeJS Version ' + versList.join('.') + ' is installed.' );
-      abortFn( 'Please upgrade NodeJS and try again.'                  );
+      abort_str
+        = 'NodeJS Version ' + versList.join('.') + ' is installed.\n'
+        + 'As of ' + appName + '1.2 NodeJS v'
+        + minVersionInt + ' is required.\n'
+        + 'Please upgrade NodeJS and try again.'
+        ;
+      abortFn( abort_str );
     }
 
     tool_fn = toolMap[ tool_id ];
     if ( ! tool_fn ) {
-      console.warn( 'Tool step ' + tool_id + ' not found.' );
+      warnFn( 'Tool step ' + tool_id + ' not found.' );
       tool_fn = toolMap[ '00' ];
     }
     tool_fn( arg_list );

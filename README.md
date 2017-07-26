@@ -4,21 +4,35 @@
 *A modern full-life-cycle starter project for SPAs*
 
 ## Overview
-An SPA starter project that uses `npm` as the single configuration and management tool for every stage of the lifecycle. `hi_score` provides best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap assets and libraries as required. [That's the point][_01].
-
+This SPA starter project provides best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap assets and libraries as required. [That's the point][_01].
 
 ## Quick start
 ```bash
-  cd hi_score;
-  npm run 01 install \
-    && npm run 02 setup \
-    && npm run 06 coverage \
-    && npm run 09 build \
+  cd hi_score && npm run 01 - 09 \
     && google-chrome build/dist/last/dist/ex01.html
 ```
 
 ## Tools for every stage of life
-Use `npm run` followed by a a lifecycle stage number as shown below. Any argument after the number is ignored.
+- 00 : Help: Get overview of `hi_score_tool` usage
+- 01 : Install: Download and install npm modules
+- 02 : Setup: Distribute and patch assets for dev
+- 03 : Design: Show architecture docs
+- 04 : Devserve-start: Start a local web server
+- 05 : Develop-lint: Lint JS, TODOs, whitespace
+- 06 : Develop-test: Run regression tests
+- 07 : Develop-coverage: Create coverage reports
+- 08 : Develop-commit: Save validate code to repo
+- 09 : Build: Create a distribution
+- 10 : Publish: Share to NPM and Coveralls
+- 11 : Devserve-cycle: cycle local web server
+- 12 : Devserve-stop: Stop local web server'
+- 13 : Deploy: Distribute package to servers
+- 14 : Prodserve-start: Start production server
+- 15 : Prodserve-cycle: Cycle production server
+- 16 : Prodserve-stop: Stop production server
+- 17 : Feedback: Gather feedback from production
+- 18 : Uninstall: Remove `hi_score`
+- help : Describe any number of stages
 
 - `00 Help`: Get help on hi\_score commands and purpose.
 - `01 Install`: Download all dependencies including libraries and fonts.
@@ -28,20 +42,22 @@ Use `npm run` followed by a a lifecycle stage number as shown below. Any argumen
 - `05 Develop - Test`: Run 1,413 regression tests. Use the the examples to add your own.
 - `06 Develop - Coverage`: Inspect code coverage (currently 99.7%).
 - `07 Develop - Commit`: Check-in code after passing checks.
-- `08 Build` - Extract, compress, obsfucate, and otherwise prepare application for distribution
+- `08 Build`: Extract, compress, obsfucate, and otherwise prepare application for distribution
 - `09 Publish`: Publish to coveralls and NPM.
 - `10 Deploy`: Deploy application to configured servers
 - `11 Feedback`: Gather feedback from deployed sites.
 
 ## Benefits
-- Automation of many best practices.
-- Tools for every stage of the SPA product lifecycle through a single manifest (`package.json`) and a single tool (`npm`).
-- `xhi` utlities include dozens of useful, well-test utilties and [type-casting](_05) tools.
-- All `xhi` code adheres strictly to the [Code standard][_03] ([Quick-reference][_04]) as do many supporting libraries.
-- Core `xhi` libs currently have 98% coverage.
-- Sample example application ready for immediate build and study.
-- Add tools easily to `jsdom` + `nodeunit` test suite.
-- Make process creates distribution for 
+- Get demonstrated best practice immediately
+- Block bad practice through linting tools
+- Get recommended libraries and assets for most components of an SPA
+- Use `package.json` to configure and manage every stage of the product life.
+- Exploit highly-test utilities with 98% code coverage
+- Get type safety by using simple [type-casting](_05) tools instead of an overbearing
+  framework.
+- Evaluate the value of a uniformly applied [Code standard][_03] ([Quick-reference][_04]) libraries in the `xhi` libraries.
+- Add tests as required to test.d drop-directory
+- Build example application using the examples provided
 
 ## Notes on each step
 ###
