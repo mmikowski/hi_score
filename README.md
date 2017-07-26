@@ -13,7 +13,7 @@ This SPA starter project provides best-in-class assets, libraries, documentation
 ```
 
 ## Tools for every stage of life
-- 00 : Help: Get overview of `hi_score_tool` usage
+- 00 : Help: Get overview of `xhi_tool` usage
 - 01 : Install: Download and install npm modules
 - 02 : Setup: Distribute and patch assets for dev
 - 03 : Design: Show architecture docs

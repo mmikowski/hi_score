@@ -3,7 +3,7 @@
 
 /*
  * Purpose   : Run a hi_score lifecycle step
- * Example   : See hi_score_tool 00 (_00HelpFn)
+ * Example   : See xhi_tool 00 (_00HelpFn)
  * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
@@ -21,24 +21,16 @@
   var
     // Import capabilities
     EventEmitter = require( 'events'       ).EventEmitter,
-    LineReader   = require( 'line-by-line' ),
 
-    applyPatchFn = require( 'apply-patch'  ).applyPatch,
     execFn       = require( 'child_process' ).exec,
     fsObj        = require( 'fs'           ),
-    mkdirpFn     = require( 'mkdirp'       ),
-    ncpFn        = require( 'ncp'          ).ncp,
     pathObj      = require( 'path'         ),
-    rmDirFn      = require( 'rmdir'        ),
     utilObj      = require( 'util'         ),
-    whichFn      = require( 'which'        ),
     promiseObj   = Promise,
 
     // Convert to promises using promisfy
     promisifyFn   = utilObj.promisify,
-    makeRmDirProm = promisifyFn( rmDirFn ),
     makeStatProm  = promisifyFn( fsObj.stat ),
-    makeWhichProm = promisifyFn( whichFn ),
 
     eventObj      = new EventEmitter(),
 
@@ -66,9 +58,21 @@
     minVersionInt  = 8,
     exePathMap     = {},
 
+    // Convenience
+    __0 = 0,
+    __1 = 1,
+
     // Curried functions
     abortFn, logFn, warnFn,
-    fqHookFilename, pkgMatrix, setupMatrix, toolMap
+
+    // Config data
+    fqHookFilename, pkgMatrix, setupMatrix, commandMatrix,
+
+    // After-install-variables
+    LineReader, applyPatchFn,  mkdirpFn,
+    ncpFn,      rmDirFn,       whichFn,
+    makeWhichProm,
+    makeRmDirProm 
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -93,16 +97,16 @@
 
   abortFn = _outFn.bind({
     _method_str_ : 'warn',
-    _prompt_str_ : 'hi_score ABORT >> ',
+    _prompt_str_ : 'xhi ABORT >> ',
     _do_abort_   : true
   });
   logFn   = _outFn.bind({
     _method_str_ : 'log',
-    _prompt_str_ : 'hi_score >> '
+    _prompt_str_ : 'xhi >> '
   });
   warnFn  = _outFn.bind({
     _method_str_ : 'warn',
-    _prompt_str_ : 'hi_score warn >> '
+    _prompt_str_ : 'xhi warn >> '
   });
   // . END utility /_outFn/
 
@@ -187,6 +191,17 @@
       exe_count    = exe_list.length,
       promise_list = [],
       idx, exe_key, bound_fn, promise_obj;
+
+    // Load after-install-packages
+    LineReader   = require( 'line-by-line' );
+    applyPatchFn = require( 'apply-patch'  ).applyPatch;
+    mkdirpFn     = require( 'mkdirp'       );
+    ncpFn        = require( 'ncp'          ).ncp;
+    rmDirFn      = require( 'rmdir'        );
+    whichFn      = require( 'which'        );
+
+    makeRmDirProm = promisifyFn( rmDirFn   );
+    makeWhichProm = promisifyFn( whichFn   );
 
     // Assign executable path vars
     for ( idx = 0; idx < exe_count; idx++ ) {
@@ -455,12 +470,14 @@
       + '    The life cycle number as presented below.\n'
       + '     The default is 00.\n'
       + '  More examples:\n'
-      + '    ' + appName + ' help all      // Describe all stages'
+      + '    ' + appName + ' help all      // Describe all stages\n'
       + '    ' + appName + ' help 01       // describe stage 01\n'
       + '    ' + appName + ' help 01 02 06 // describe 3 stages\n'
       + '    ' + appName + ' help 00 - 09  // describe 10 stages\n'
       + '    ' + appName + ' 01 02 06      // runs 3 stages\n'
       + '    ' + appName + ' 00 - 09       // run 10 stages\n'
+      ;
+
     logFn( help_str );
     exitGoodFn();
   }
@@ -482,7 +499,7 @@
 
   // == BEGIN PUBLIC METHOD /_02SetupFn/ ==============================
   // Purpose   : Delete, copies, and patches files. Install commit hook.
-  // Example   : hi_score_tool 02
+  // Example   : xhi_tool 02
   // Returns   : boolean true on success
   // Throws    : none
   // Method    :
@@ -549,7 +566,6 @@
   function _18UninstallFn () {}
   function describeFn (){} 
 
-
   commandMatrix = {
     '00' : [ 'Help: Get overview of ' + appName + ' use.', _00HelpFn          ],
     '01' : [ 'Install: Download and install npm modules',  _01InstallFn       ],
@@ -574,18 +590,19 @@
   };
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
-  // Purpose   : Parse command line and dispatch to requested tool.
+  // Purpose   : Parse command line and dispatch to requested command(s)
   //
   function mainFn( arg_list ) {
     var
       node_path   = arg_list.shift(),
       script_path = arg_list.shift(),
-      tool_id     = arg_list.shift(),
-      abort_str, tool_fn
+      command_id  = arg_list.shift(),
+      abort_str,   command_row, 
+      command_fn,  command_descr
       ;
 
     // DEBUB
-    warnFn( 'ARG LIST', [ tool_id ].concat( arg_list ) );
+    warnFn( 'ARG LIST', [ command_id ].concat( arg_list ) );
 
     // Abort if node version < minVersionInt
     if ( Number( versList[0] ) < minVersionInt ) {
@@ -598,12 +615,17 @@
       abortFn( abort_str );
     }
 
-    tool_fn = toolMap[ tool_id ];
-    if ( ! tool_fn ) {
-      warnFn( 'Tool step ' + tool_id + ' not found.' );
-      tool_fn = toolMap[ '00' ];
+    while ( true ) {
+      command_row = commandMatrix[ command_id ];
+      if ( command_row ) { break; }
+      warnFn( 'Command id |' + command_id + '| not found.' );
+      command_id = '00';
     }
-    tool_fn( arg_list );
+
+    command_descr = command_row[ __0 ];
+    command_fn    = command_row[ __1 ];
+
+    command_fn( arg_list );
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
