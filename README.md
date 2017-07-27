@@ -142,7 +142,7 @@ PATH=$PATH:node_modules/.bin
 ncu
 
 # Update package and manifest
-ncu -u --packageFile package.json
+ncu -u
 
 # Reinstall vendor assets
 npm run setup

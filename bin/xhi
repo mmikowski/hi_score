@@ -457,10 +457,10 @@
 
   // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
   function _00HelpFn () {
-    var help_str
-      = 'Name      : ' + appName + '\n'
+    var help_str = '\n'
+      + '  Name      : ' + appName + '\n'
       + '  Purpose   : Run script for lifecycle step\n'
-      + '  Example   : ' + appName + ' 00\n'
+      + '  Example   : npm run 00\n'
       + '  Arguments : (positional)\n'
       + '    <range> || help <range> || help all\n\n'
       + '    <range> may be:\n'
@@ -470,12 +470,12 @@
       + '    The life cycle number as presented below.\n'
       + '     The default is 00.\n'
       + '  More examples:\n'
-      + '    ' + appName + ' help all      // Describe all stages\n'
-      + '    ' + appName + ' help 01       // describe stage 01\n'
-      + '    ' + appName + ' help 01 02 06 // describe 3 stages\n'
-      + '    ' + appName + ' help 00 - 09  // describe 10 stages\n'
-      + '    ' + appName + ' 01 02 06      // runs 3 stages\n'
-      + '    ' + appName + ' 00 - 09       // run 10 stages\n'
+      + '    npm run help all      // Describe all stages\n'
+      + '    npm run help 01       // describe stage 01\n'
+      + '    npm run help 01 02 06 // describe 3 stages\n'
+      + '    npm run help 00 - 09  // describe 10 stages\n'
+      + '    npm run 01 02 06      // runs 3 stages\n'
+      + '    npm run 00 - 09       // run 10 stages\n\n'
       ;
 
     logFn( help_str );
