@@ -66,7 +66,7 @@
     abortFn, logFn, warnFn,
 
     // Config data
-    fqHookFilename, pkgMatrix, setupMatrix, commandMatrix,
+    fqHookFilename, pkgMatrix, setupMatrix, commandTable,
 
     // After-install-variables
     LineReader, applyPatchFn,  mkdirpFn,
@@ -534,12 +534,12 @@
     setTimeout( function () { eventObj.emit( '00InitVars' ); }, 0 );
   }
   // == . END PUBLIC METHOD /_02SetupFn/ ==============================
-  function _03ShowArchFn () {}
+  function _03DesignShowFn () {}
   function _04DWebStartFn () {}
-  function _05LintFn () {}
-  function _06TestFn () {}
-  // == BEGIN PUBLIC METHOD /_07MakeCoverFn/ ==========================
-  function _07MakeCoverFn () {
+  function _06DevLintFn () {}
+  function _07DevTestFn () {}
+  // == BEGIN PUBLIC METHOD /_08DevCoverFn/ ==========================
+  function _08DevCoverFn () {
     execFn( fqModuleDirname + '/.bin/istanbul cover -x \'**/vendor/**\' '
       + fqModuleDirname     + '/.bin/nodeunit '
       + fqProjDirname       + '/test/xhi_level_0.js',
@@ -552,7 +552,7 @@
       }
     );
   }
-  // == . END PUBLIC METHOD /_07MakeCoverFn/ ==========================
+  // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
   function _08CheckIn () {}
   function _09BuildFn () {}
   function _10PublishFn () {}
@@ -566,28 +566,40 @@
   function _18UninstallFn () {}
   function describeFn (){} 
 
-  commandMatrix = {
-    '00' : [ 'Help: Get overview of ' + appName + ' use.', _00HelpFn          ],
-    '01' : [ 'Install: Download and install npm modules',  _01InstallFn       ],
-    '02' : [ 'Setup: Distribute and patch assets for dev', _02SetupFn         ],
-    '03' : [ 'Design: Show architecture docs',             _03ShowArchFn      ],
-    '04' : [ 'Devserve-start: Start a local web server',   _04DWebStartFn     ],
-    '05' : [ 'Develop-lint: Lint JS, TODOs, whitespace',   _05LintFn          ],
-    '06' : [ 'Develop-test: Run regression tests',         _06TestFn          ],
-    '07' : [ 'Develop-coverage: Create coverage reports',  _07MakeCoverFn     ],
-    '08' : [ 'Develop-commit: Save validate code to repo', _08CheckIn         ],
-    '09' : [ 'Build: Create app distro',                   _09BuildFn         ],
-    '10' : [ 'Publish: Share to NPM and Coveralls',        _10PublishFn       ],
-    '11' : [ 'Devserve-cycle: Cycle local web server',     _11DWebcycleFn     ],
-    '12' : [ 'Devserve-stop: Stop development server',     _12DWebStopFn      ],
-    '13' : [ 'Deploy: Distribute package to servers',      _13DeployFn        ],
-    '14' : [ 'Prodserve-start: Start production process',  _14ProdStartFn     ],
-    '15' : [ 'Prodserve-cycle: Cycle production process',  _15ProdCycleFn     ],
-    '16' : [ 'Prodserve-stop: Stop production process',    _16ProdStopFn      ],
-    '17' : [ 'Feedback: Gather feedback from production',  _17FetchFeedbackFn ],
-    '18' : [ 'Uninstall: Removed ' + appName,              _18UninstallFn     ],
+  commandTable = [
+    [ 'id', 'descr_str', 'command_fn', 'alias_list' ],
+    [ '00', 'Get overview of ' + appName + ' use.',
+      _00HelpFn, [ 'help' ] ],
+    [ '01', 'Download and install npm modules',
+      _01InstallFn, [ 'install'] ],
+    [ '02', 'Distribute and patch assets for dev',
+      _02SetupFn, [ 'setup' ] ],
+    [ '03', 'Show architecture docs',
+      _03DesignShowFn, [ 'design-show' ] ],
+    [ '04', 'Start a local web server',
+      _04DWebStartFn, [ 'dev-web-start' ] ],
+    [ '05', 'Pull updates from Git and sync libs',
+      _05DevPullFn, [ 'dev-pull' ] ],
+    [ '06', 'Lint JS, TODOs, whitespace',
+      _06DevLintFn, [ 'dev-lint' ] ],
+    [ '07', 'Develop-test: Run regression tests',
+      _07DevTestFn, [ 'dev-test' ] ],
+    [ '08', 'Develop-coverage: Create coverage reports',
+      _08DevCoverFn, [ 'dev-cover' ] ],
+    [ '09', 'Develop-commit: Save validate code to repo',
+      _08CheckIn         ],
+    [ '10', 'Build: Create app distro',                   _09BuildFn         ],
+    [ '11', 'Publish: Share to NPM and Coveralls',        _10PublishFn       ],
+    [ '12', 'Devserve-cycle: Cycle local web server',     _11DWebcycleFn     ],
+    [ '13', 'Devserve-stop: Stop development server',     _12DWebStopFn      ],
+    [ '14', 'Deploy: Distribute package to servers',      _13DeployFn        ],
+    [ '15', 'Prodserve-start: Start production process',  _14ProdStartFn     ],
+    [ '16', 'Prodserve-cycle: Cycle production process',  _15ProdCycleFn     ],
+    [ '17', 'Prodserve-stop: Stop production process',    _16ProdStopFn      ],
+    [ '18', 'Feedback: Gather feedback from production',  _17FetchFeedbackFn ],
+    [ '19', 'Uninstall: Removed ' + appName,              _18UninstallFn     ],
     help : [ 'Describe: help 01, help 01 06, help 01-09', describeFn        ]
-  };
+  ];
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)
@@ -616,7 +628,7 @@
     }
 
     while ( true ) {
-      command_row = commandMatrix[ command_id ];
+      command_row = commandTable[ command_id ];
       if ( command_row ) { break; }
       warnFn( 'Command id |' + command_id + '| not found.' );
       command_id = '00';
