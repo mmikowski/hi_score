@@ -1,9 +1,8 @@
 #!/usr/bin/node
 /* vim: set ft=javascript: */
-
 /*
  * Purpose   : Run a hi_score lifecycle step
- * Example   : See xhi_tool 00 (_00HelpFn)
+ * Example   : See xhi help (_00HelpFn)
  * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
@@ -22,11 +21,14 @@
     // Import capabilities
     EventEmitter = require( 'events'       ).EventEmitter,
 
-    execFn       = require( 'child_process' ).exec,
-    fsObj        = require( 'fs'           ),
-    pathObj      = require( 'path'         ),
-    utilObj      = require( 'util'         ),
+    childProcObj = require( 'child_process' ),
+    fsObj        = require( 'fs'            ),
+    pathObj      = require( 'path'          ),
+    utilObj      = require( 'util'          ),
     promiseObj   = Promise,
+
+    execFn       = childProcObj.exec,
+    makeSpawnObj = childProcObj.spawn,
 
     // Convert to promises using promisfy
     promisifyFn   = utilObj.promisify,
@@ -80,6 +82,56 @@
   function exitGoodFn () { process.exit( 0 ); }
   function exitBadFn  () { process.exit( 1 ); }
 
+  // BEGIN utility /getTableRow/
+  // Purpose: Gets a row from the commandTable
+  function getTableRowIdx ( arg_map ) {
+    var
+      field_key   = arg_map.field_key,
+      field_data  = arg_map.field_data,
+      input_table = arg_map.input_table,
+      match_type  = arg_map.match_type,
+      row_count   = input_table.length,
+
+      head_row    = input_table[0],
+      field_count = head_row.length,
+      field_idx   = head_row.indexOf( field_key ),
+      found_idx   = -1,
+
+      found_row, inner_list,
+      idx, row, solve_map
+      ;
+
+    if ( field_idx === -1 ) { return; }
+
+    ROW: for ( idx = 1; idx < row_count; idx++ ) {
+      row = input_table[ idx ];
+      switch ( match_type ) {
+        case 'in-list':
+          inner_list = row[ field_idx ];
+          if ( inner_list.indexOf( field_data ) > -1 ) {
+            found_idx = idx;
+            found_row = row;
+            break ROW;
+          }
+          break;
+        default:
+        if ( row[ field_idx ] === field_data ) {
+          found_idx = idx;
+          found_row = row;
+          break ROW;
+        }
+      }
+    }
+
+    if ( found_idx > -1 ) {
+      solve_map = { idx : found_idx };
+      for ( idx = 0; idx < field_count; idx++ ) {
+        solve_map[ head_row[ idx ] ] = found_row[ idx ];
+      }
+    }
+    return solve_map;
+  }
+
   // BEGIN utility /_outFn/
   // Purpose: provides abortFn, logFn, and warnFn
   function _outFn() {
@@ -111,7 +163,7 @@
   // . END utility /_outFn/
 
   // BEGIN utlity /grepFileFn/
-  function grepFileFn ( filename, match_str ) {
+  function grepFileFn ( filename, pattern_str ) {
     return new Promise( function ( resolve_fn ) {
       var
         is_matched    = false,
@@ -120,7 +172,7 @@
 
       line_read_obj.on( 'error', abortFn );
       line_read_obj.on( 'line',  function ( line_str ) {
-        if ( line_str.indexOf( match_str ) > -1 ) {
+        if ( line_str.indexOf( pattern_str ) > -1 ) {
           is_matched = true;
           line_read_obj.close();
         }
@@ -358,7 +410,7 @@
       patch_filename = patch_map.patch_filename;
       patch_map.relative_name = patch_dir_str + '/' + patch_filename;
 
-      promise_obj    = grepFileFn( check_filename, patch_map.match_str );
+      promise_obj    = grepFileFn( check_filename, patch_map.pattern_str );
       bound_fn       = patchIfNeededFn.bind( patch_map );
       promise_obj.then( bound_fn ).catch( abortFn );
       promise_list.push( promise_obj );
@@ -535,7 +587,8 @@
   }
   // == . END PUBLIC METHOD /_02SetupFn/ ==============================
   function _03DesignShowFn () {}
-  function _04DWebStartFn () {}
+  function _04DevPullFn () {}
+  function _05DevStartFn () {}
   function _06DevLintFn () {}
   function _07DevTestFn () {}
   // == BEGIN PUBLIC METHOD /_08DevCoverFn/ ==========================
@@ -553,93 +606,91 @@
     );
   }
   // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
-  function _08CheckIn () {}
-  function _09BuildFn () {}
-  function _10PublishFn () {}
-  function _11DWebcycleFn () {}
-  function _12DWebStopFn () {}
-  function _13DeployFn () {}
-  function _14ProdStartFn () {}
-  function _15ProdCycleFn () {}
-  function _16ProdStopFn () {}
-  function _17FetchFeedbackFn () {}
-  function _18UninstallFn () {}
+  function _09CommitFn () {}
+  function _10BuildFn () {}
+  function _11PublishFn () {}
+  function _12DevRestartFn () {}
+  function _13DevStopFn () {}
+  function _14DeployFn () {}
+  function _15ProdStartFn () {}
+  function _16ProdRestartFn () {}
+  function _17ProdStopFn () {}
+  function _18FetchInfoFn () {}
+  function _19UninstallFn () {}
   function describeFn (){} 
 
   commandTable = [
-    [ 'id', 'descr_str', 'command_fn', 'alias_list' ],
-    [ '00', 'Get overview of ' + appName + ' use.',
-      _00HelpFn, [ 'help' ] ],
-    [ '01', 'Download and install npm modules',
-      _01InstallFn, [ 'install'] ],
-    [ '02', 'Distribute and patch assets for dev',
-      _02SetupFn, [ 'setup' ] ],
-    [ '03', 'Show architecture docs',
-      _03DesignShowFn, [ 'design-show' ] ],
-    [ '04', 'Start a local web server',
-      _04DWebStartFn, [ 'dev-web-start' ] ],
-    [ '05', 'Pull updates from Git and sync libs',
-      _05DevPullFn, [ 'dev-pull' ] ],
-    [ '06', 'Lint JS, TODOs, whitespace',
-      _06DevLintFn, [ 'dev-lint' ] ],
-    [ '07', 'Develop-test: Run regression tests',
-      _07DevTestFn, [ 'dev-test' ] ],
-    [ '08', 'Develop-coverage: Create coverage reports',
-      _08DevCoverFn, [ 'dev-cover' ] ],
-    [ '09', 'Develop-commit: Save validate code to repo',
-      _08CheckIn         ],
-    [ '10', 'Build: Create app distro',                   _09BuildFn         ],
-    [ '11', 'Publish: Share to NPM and Coveralls',        _10PublishFn       ],
-    [ '12', 'Devserve-cycle: Cycle local web server',     _11DWebcycleFn     ],
-    [ '13', 'Devserve-stop: Stop development server',     _12DWebStopFn      ],
-    [ '14', 'Deploy: Distribute package to servers',      _13DeployFn        ],
-    [ '15', 'Prodserve-start: Start production process',  _14ProdStartFn     ],
-    [ '16', 'Prodserve-cycle: Cycle production process',  _15ProdCycleFn     ],
-    [ '17', 'Prodserve-stop: Stop production process',    _16ProdStopFn      ],
-    [ '18', 'Feedback: Gather feedback from production',  _17FetchFeedbackFn ],
-    [ '19', 'Uninstall: Removed ' + appName,              _18UninstallFn     ],
-    help : [ 'Describe: help 01, help 01 06, help 01-09', describeFn        ]
+    [ 'command_fn',    'alias_list',     'descr_str'                       ],
+    [ _00HelpFn,       [ 'help'          ], 'Overview of use.'             ],
+    [ _01InstallFn,    [ 'install'       ], 'Download+install npm modules' ],
+    [ _02SetupFn,      [ 'setup'         ], 'Patch+copy dev assets'        ],
+    [ _03DesignShowFn, [ 'design-show'   ], 'Show architecture docs'       ],
+    [ _04DevPullFn,    [ 'dev-pull'      ], 'Pull from Git and sync libs'  ],
+    [ _05DevStartFn,   [ 'dev-start'     ], 'Start local web services'     ],
+    [ _06DevLintFn,    [ 'dev-lint'      ], 'Lint changed code'            ],
+    [ _07DevTestFn,    [ 'dev-test'      ], 'Run regression tests'         ],
+    [ _08DevCoverFn,   [ 'dev-cover'     ], 'Create coverage reports'      ],
+    [ _09CommitFn,     [ 'dev-commit'    ], 'Save validate code to repo'   ],
+    [ _10BuildFn,      [ 'build', 'make' ], 'Create app distribution'      ],
+    [ _11PublishFn,    [ 'publish'       ], 'Upload to NPM and Coveralls'  ],
+    [ _12DevRestartFn, [ 'dev-restart'   ], 'Cycle local web server'       ],
+    [ _13DevStopFn,    [ 'dev-stop'      ], 'Stop development server'      ],
+    [ _14DeployFn,     [ 'deploy'        ], 'Upload distro to servers'     ],
+    [ _15ProdStartFn,  [ 'prod-start'    ], 'Start prod web services'      ],
+    [ _16ProdRestartFn,[ 'prod-restart'  ], 'Cycle production process'     ],
+    [ _17ProdStopFn ,  [ 'prod-stop'     ], 'Stop production process'      ],
+    [ _18FetchInfoFn,  [ 'fetch-info'    ], 'Fetch prod info'              ],
+    [ _19UninstallFn , [ 'uninstall'     ], 'Remove ' + appName            ]
   ];
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)
   //
-  function mainFn( arg_list ) {
-    var
-      node_path   = arg_list.shift(),
-      script_path = arg_list.shift(),
-      command_id  = arg_list.shift(),
-      abort_str,   command_row, 
-      command_fn,  command_descr
-      ;
-
-    // DEBUB
-    warnFn( 'ARG LIST', [ command_id ].concat( arg_list ) );
-
-    // Abort if node version < minVersionInt
-    if ( Number( versList[0] ) < minVersionInt ) {
-      abort_str
-        = 'NodeJS Version ' + versList.join('.') + ' is installed.\n'
-        + 'As of ' + appName + '1.2 NodeJS v'
-        + minVersionInt + ' is required.\n'
-        + 'Please upgrade NodeJS and try again.'
-        ;
-      abortFn( abort_str );
-    }
-
-    while ( true ) {
-      command_row = commandTable[ command_id ];
-      if ( command_row ) { break; }
-      warnFn( 'Command id |' + command_id + '| not found.' );
-      command_id = '00';
-    }
-
-    command_descr = command_row[ __0 ];
-    command_fn    = command_row[ __1 ];
-
-    command_fn( arg_list );
-  }
+  // function mainFn( arg_list ) {
+  //   var
+  //     node_path   = arg_list.shift(),
+  //     script_path = arg_list.shift(),
+  //     input_id    = arg_list.shift(),
+  //     abort_str,   command_row,
+  //     command_fn,  alias_list, 
+  //     command_descr
+  //     ;
+  //
+  //   // DEBUB
+  //   warnFn( 'ARG LIST', [ command_id ].concat( arg_list ) );
+  //
+  //   // Abort if node version < minVersionInt
+  //   if ( Number( versList[0] ) < minVersionInt ) {
+  //     abort_str
+  //       = 'NodeJS Version ' + versList.join('.') + ' is installed.\n'
+  //       + 'As of ' + appName + '1.2 NodeJS v'
+  //       + minVersionInt + ' is required.\n'
+  //       + 'Please upgrade NodeJS and try again.'
+  //       ;
+  //     abortFn( abort_str );
+  //   }
+  //
+  //   while ( true ) {
+  //     command_row = commandTable[ command_id ];
+  //     if ( command_row ) { break; }
+  //     warnFn( 'Command id |' + command_id + '| not found.' );
+  //     command_id = '00';
+  //   }
+  //
+  //   command_descr = command_row[ __0 ];
+  //   command_fn    = command_row[ __1 ];
+  //
+  //   command_fn( arg_list );
+  // }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
-  mainFn( argList );
+  var row = getTableRowIdx({
+    input_table : commandTable,
+    field_key   : 'alias_list', 
+    field_data  : 'build',
+    match_type  : 'in-list'
+  });
+  console.log( row );
+
+  // mainFn( argList );
 // == END SCRIPT hi-score-tool ========================================

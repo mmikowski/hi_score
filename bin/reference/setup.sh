@@ -90,12 +90,12 @@ set -u;
   ## == BEGIN _readPkgVersionFn() - Look up version for requested package ======
   _readPkgVersionFn () {
     local IFS='';
-    _match_str="$*";
+    _pattern_str="$*";
     if [ "${_versionStr}" == "" ]; then _parsePkgFileFn; fi;
     echo "${_versionStr}" |sed -e 's/ /\n/g'| while read _line_str; do
       _key=$(echo "${_line_str}" |cut -f1 -d':' );
       _val=$(echo "${_line_str}" |cut -f2 -d':' );
-      if [ "${_key}" == "${_match_str}" ]; then
+      if [ "${_key}" == "${_pattern_str}" ]; then
         echo -e "${_val}";
       fi;
     done
