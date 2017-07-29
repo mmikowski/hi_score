@@ -13,15 +13,10 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global */
+/*global xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeCssShell_ =================================
-__NS._makeCssShell_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeCssShell_ =================================
+xhi._makeCssShell_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -406,5 +401,5 @@ __NS._makeCssShell_ = function ( aMap ) {
   aMap._css_shell_ = { _selectorList_ : configMap._selector_list_ };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeCssShell_ =================================
+// == . END MODULE xhi._makeCssShell_ =================================
 

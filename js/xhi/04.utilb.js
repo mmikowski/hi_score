@@ -13,15 +13,10 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global pcss, $ */
+/*global $, pcss, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeUtilb_ ===================================
-__NS._makeUtilb_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeUtilb_ ====================================
+xhi._makeUtilb_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   // Add when needed: aKey  = aMap._aKey_
@@ -284,5 +279,5 @@ __NS._makeUtilb_ = function ( aMap ) {
   };
   // == . END PUBLIC METHODS ==========================================
 };
-// == . END MODULE __NS._makeUtilb_ ===================================
+// == . END MODULE xhi._makeUtilb_ ====================================
 

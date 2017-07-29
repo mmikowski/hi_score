@@ -13,15 +13,10 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global $ */
+/*global $, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeFake_ ====================================
-__NS._fake_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeFake_ =====================================
+xhi._fake_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   //noinspection MagicNumberJS
@@ -59,4 +54,4 @@ __NS._fake_ = function ( aMap ) {
   };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeFake_ ====================================
+// == . END MODULE xhi._makeFake_ ======================================

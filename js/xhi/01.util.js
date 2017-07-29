@@ -13,15 +13,10 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global jQuery */
+/*global jQuery, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeUtil_ ====================================
-__NS._makeUtil_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeUtil_ =====================================
+xhi._makeUtil_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -433,7 +428,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // . END Public prereq method /makePadNumStr/
 
   // BEGIN public prereq method /makeEscRxStr/
-  // Summary   : makeEscRxStr( <string> ) {
+  // Summary   : makeEscRxStr( <string> )
   // Purpose   : Escapes a regular expression string
   // Example   : makeEscRxStr( '[]' ) // returns '\[\]\'
   // Arguments : <string> to escape
@@ -2189,4 +2184,4 @@ __NS._makeUtil_ = function ( aMap ) {
     _trimStrList_     : trimStrList
   };
 };
-// == . END MODULE __NS._makeUtil_ ====================================
+// == . END MODULE xhi._makeUtil_ =====================================
