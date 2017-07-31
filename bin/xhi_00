@@ -1,12 +1,9 @@
-/*jslint         node   : true, continue : true,
- devel  : true, indent  : 2,    maxerr   : 50,
- newcap : true, nomen   : true, plusplus : true,
- regexp : true, sloppy  : true, vars     : false,
- white  : true, todo    : true, unparam  : true
-*/
-// == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
-function _00HelpFn ( context_map ) {
+/*jslint node : true */
+/* vim: set ft=javascript: */
+// == BEGIN PUBLIC METHOD /helpFn/ ====================================
+function helpFn () {
   var 
+    context_map = this,
     app_name    = context_map.appName,
     help_str    = '\n'
       + '  Name      : ' + app_name + '\n'
@@ -32,5 +29,5 @@ function _00HelpFn ( context_map ) {
   context_map.logFn( help_str );
   context_map.exitGoodFn();
 }
-// == . END PUBLIC METHOD /_00HelpFn/ ===============================
-module.exports = _00HelpFn;
+// == . END PUBLIC METHOD /helpFn/ ====================================
+module.exports = helpFn;

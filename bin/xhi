@@ -551,17 +551,43 @@
   //   return function () { eventObj.emit( signal_str ); };
   // }
   // == . END EVENT HANDLERS ==========================================
- 
+  function makeXhiObj () {
+    return {
+      abortFn           : abortFn,
+      appName           : appName,
+      checkExeList      : checkExeList,
+      checkGitInstallFn : checkGitInstallFn,
+      copyVendorFilesFn : copyVendorFilesFn,
+      exitGoodFn        : exitGoodFn,
+      flowObj           : flowObj,
+      fqOrigDirname     : fqOrigDirname,
+      fqProjDirname     : fqProjDirname,
+      linkHookFn        : linkHookFn,
+      logFn             : logFn,
+      makeSpawnObj      : makeSpawnObj,
+      patchFilesFn      : patchFilesFn,
+      readPkgFileFn     : readPkgFileFn,
+      rmVendorDirsFn    : rmVendorDirsFn,
+      unlinkHookFn      : unlinkHookFn,
+      warnFn            : warnFn
+    };
+  }
   // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
   function _00HelpFn () {
-    var help_fn = require( './xhi_00' );
-    help_fn({
-      abortFn    : abortFn,
-      appName    : appName,
-      exitGoodFn : exitGoodFn,
-      logFn      : logFn,
-      warnFn     : warnFn
-    });
+    var 
+      help_fn = require( fqBinDirname + '/xhi_00' ),
+      xhi_obj = makeXhiObj()
+      ;
+
+    help_fn.call( xhi_obj );
+    
+    // help_fn({
+    //   abortFn    : abortFn,
+    //   appName    : appName,
+    //   exitGoodFn : exitGoodFn,
+    //   logFn      : logFn,
+    //   warnFn     : warnFn
+    // });
     // var help_str = '\n'
     //   + '  Name      : ' + appName + '\n'
     //   + '  Purpose   : Run hi_score lifecycle tools\n'
@@ -590,26 +616,33 @@
 
   // == BEGIN PUBLIC METHOD /_01InstallFn/ ============================
   function _01InstallFn () {
-    var context_obj, stream_obj;
+    var 
+      install_fn = require( fqBinDirname + '/xhi_01' ),
+      xhi_obj    = makeXhiObj()
+      ;
 
-    context_obj = this;
-    logFn( 'Install dependencies using "npm install"...' );
-
-    stream_obj = makeSpawnObj( 'npm', ['install'] );
-    stream_obj.stdout.on( 'data', function ( data ) { logFn(  data.toString() ); } );
-    stream_obj.stderr.on( 'data', function ( data ) { warnFn( data.toString() ); } );
-    stream_obj.on( 'close',
-      function ( exit_code ) {
-        if ( exit_code === 0 ) {
-          logFn( 'Success!' );
-        }
-        else {
-          warnFn( 'The install did not work as expected.' );
-          warnFn( 'Please run "npm install" to diagnose.' );
-        }
-        process.exit( exit_code );
-      }
-    );
+    install_fn.call( xhi_obj );
+    
+    // var context_obj, stream_obj;
+    //
+    // context_obj = this;
+    // logFn( 'Install dependencies using "npm install"...' );
+    //
+    // stream_obj = makeSpawnObj( 'npm', ['install'] );
+    // stream_obj.stdout.on( 'data', function ( data ) { logFn(  data.toString() ); } );
+    // stream_obj.stderr.on( 'data', function ( data ) { warnFn( data.toString() ); } );
+    // stream_obj.on( 'close',
+    //   function ( exit_code ) {
+    //     if ( exit_code === 0 ) {
+    //       logFn( 'Success!' );
+    //     }
+    //     else {
+    //       warnFn( 'The install did not work as expected.' );
+    //       warnFn( 'Please run "npm install" to diagnose.' );
+    //     }
+    //     process.exit( exit_code );
+    //   }
+    // );
   }
   // == . END PUBLIC METHOD /_01InstallFn/ ============================
 
@@ -634,62 +667,68 @@
   //   4. Install the commit hook if git is detected
   //
   function _02SetupFn () {
+    var setup_fn, xhi_obj;
+
     loadPostInstallFn();
-    flowObj.exec(
-      function _02_00InitVarsFn () {
-        logFn( appName + ' stage 02 Setup start.' );
-        logFn( appName + ' stage 02 step 00: Init variables...' );
-        process.chdir( fqProjDirname );
-        checkExeList.call({ then_fn  : this, catch_fn : abortFn });
-      },
-      function _02_01ReadPkgFileFn () {
-        logFn( appName + ' stage 02 step 01: Read package file...' );
-        readPkgFileFn.call({ then_fn  : this, catch_fn : abortFn });
-      },
-      function _02_02RmVendorDirsFn () {
-        logFn( appName + ' stage 02 step 02: Remove vendor directories...' );
-        rmVendorDirsFn.call({ then_fn  : this, catch_fn : abortFn });
-      },
-      function _02_03CopyVendorFilesFn () {
-        logFn( appName + ' stage 02 step 03: Deploy vendor assets...' );
-        copyVendorFilesFn.call({ then_fn  : this, catch_fn : abortFn });
-      },
-      function _02_04PatchFilesFn () {
-        logFn( appName + ' stage 02 step 04: Apply patches...' );
-        patchFilesFn.call({ then_fn  : this, catch_fn : abortFn });
-      },
-      function _02_05CheckGitInstallFn () {
-        logFn( appName + ' stage 02 step 05: Check for git installation...' );
-        checkGitInstallFn.call({
-          then_fn  : this,
-          catch_fn : function () {
-            logFn( 'Exiting without installing git commit hook.' );
-            logFn( 'Please run this step again if you add git.' );
-            process.chdir( fqOrigDirname );
-            exitGoodFn();
-          }
-        });
-      },
-      function _02_06UnlinkHookFn () {
-        logFn( appName + ' stage 02 step 06: Remove prior commit hook...' );
-        unlinkHookFn.call({
-          then_fn  : this,
-          catch_fn : abortFn
-        });
-      },
-      function _02_07LinkHookFn () {
-        logFn( appName + ' stage 02 Add latest commit hook...' );
-        linkHookFn.call({
-          then_fn  : this,
-          catch_fn : abortFn
-        });
-      },
-      function _02_99FinishRunFn () {
-        logFn( appName + ' stage 02 Setup finish.' );
-        process.chdir( fqOrigDirname );
-        exitGoodFn();
-      }
-    );
+    xhi_obj  = makeXhiObj();
+    setup_fn = require( fqBinDirname + '/xhi_02' );
+    setup_fn.call( xhi_obj );
+
+    // flowObj.exec(
+    //   function _02_00InitVarsFn () {
+    //     logFn( appName + ' stage 02 Setup start.' );
+    //     logFn( appName + ' stage 02 step 00: Init variables...' );
+    //     process.chdir( fqProjDirname );
+    //     checkExeList.call({ then_fn  : this, catch_fn : abortFn });
+    //   },
+    //   function _02_01ReadPkgFileFn () {
+    //     logFn( appName + ' stage 02 step 01: Read package file...' );
+    //     readPkgFileFn.call({ then_fn  : this, catch_fn : abortFn });
+    //   },
+    //   function _02_02RmVendorDirsFn () {
+    //     logFn( appName + ' stage 02 step 02: Remove vendor directories...' );
+    //     rmVendorDirsFn.call({ then_fn  : this, catch_fn : abortFn });
+    //   },
+    //   function _02_03CopyVendorFilesFn () {
+    //     logFn( appName + ' stage 02 step 03: Deploy vendor assets...' );
+    //     copyVendorFilesFn.call({ then_fn  : this, catch_fn : abortFn });
+    //   },
+    //   function _02_04PatchFilesFn () {
+    //     logFn( appName + ' stage 02 step 04: Apply patches...' );
+    //     patchFilesFn.call({ then_fn  : this, catch_fn : abortFn });
+    //   },
+    //   function _02_05CheckGitInstallFn () {
+    //     logFn( appName + ' stage 02 step 05: Check for git installation...' );
+    //     checkGitInstallFn.call({
+    //       then_fn  : this,
+    //       catch_fn : function () {
+    //         logFn( 'Exiting without installing git commit hook.' );
+    //         logFn( 'Please run this step again if you add git.' );
+    //         process.chdir( fqOrigDirname );
+    //         exitGoodFn();
+    //       }
+    //     });
+    //   },
+    //   function _02_06UnlinkHookFn () {
+    //     logFn( appName + ' stage 02 step 06: Remove prior commit hook...' );
+    //     unlinkHookFn.call({
+    //       then_fn  : this,
+    //       catch_fn : abortFn
+    //     });
+    //   },
+    //   function _02_07LinkHookFn () {
+    //     logFn( appName + ' stage 02 Add latest commit hook...' );
+    //     linkHookFn.call({
+    //       then_fn  : this,
+    //       catch_fn : abortFn
+    //     });
+    //   },
+    //   function _02_99FinishRunFn () {
+    //     logFn( appName + ' stage 02 Setup finish.' );
+    //     process.chdir( fqOrigDirname );
+    //     exitGoodFn();
+    //   }
+    // );
   }
   // == . END PUBLIC METHOD /_02SetupFn/ ==============================
   function _03ShowArchFn () {}

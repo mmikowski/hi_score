@@ -1,0 +1,35 @@
+/*jslint node : true */
+/* vim: set ft=javascript: */
+// == BEGIN PUBLIC METHOD /installFn/ =================================
+function installFn () {
+  var
+    context_map = this,
+    stream_obj
+    ;
+
+  context_map.logFn( 'Install dependencies using "npm install"...' );
+
+  process.chdir( fqProjDirname );
+  stream_obj = context_map.makeSpawnObj( 'npm', ['install'] );
+  stream_obj.stdout.on( 'data', function ( data ) {
+    context_map.logFn(  data.toString() ); }
+  );
+  stream_obj.stderr.on( 'data', function ( data ) { 
+    context_map.warnFn( data.toString() ); }
+  );
+  stream_obj.on( 'close',
+    function ( exit_code ) {
+      if ( exit_code === 0 ) {
+        context_map.logFn( 'Success!' );
+      }
+      else {
+        context_map.warnFn( 'The install did not work as expected.' );
+        context_map.warnFn( 'Please run "npm install" to diagnose.' );
+      }
+      process.exit( exit_code );
+    }
+  );
+  process.chdir( fqOrigDirname );
+}
+// == . END PUBLIC METHOD /installFn/ =================================
+module.exports = installFn;
