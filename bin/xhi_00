@@ -1,0 +1,37 @@
+/*jslint         node   : true, continue : true,
+ devel  : true, indent  : 2,    maxerr   : 50,
+ newcap : true, nomen   : true, plusplus : true,
+ regexp : true, sloppy  : true, vars     : false,
+ white  : true, todo    : true, unparam  : true
+*/
+// == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
+function _00HelpFn () {
+  var 
+    context_map = this,
+    app_name    = context_map.appName,
+    help_str    = '\n'
+      + '  Name      : ' + appName + '\n'
+      + '  Purpose   : Run hi_score lifecycle tools\n'
+      + '  Example   : xhi 00 # or xhi help\n'
+      + '  Arguments : (positional)\n'
+      + '    <range> || help <range> || help all\n\n'
+      + '    <range> may be:\n'
+      + '    1. A single stage number, e.g. 01.\n'
+      + '    2. A list of stage numbers, e.g. 01 02 06.\n'
+      + '    3. A range of stage numbers, e.g. 00 - 09.\n'
+      + '    The life cycle number as presented below.\n'
+      + '     The default is 00.\n'
+      + '  More examples:\n'
+      + '    ' + app_name + ' help all      // Describe all stages\n'
+      + '    ' + app_name + ' help 01       // describe stage 01\n'
+      + '    ' + app_name + ' help 01 02 06 // describe 3 stages\n'
+      + '    ' + app_name + ' help 00 - 09  // describe 10 stages\n'
+      + '    ' + app_name + ' 01 02 06      // runs 3 stages\n'
+      + '    ' + app_name + ' 00 - 09       // run 10 stages\n\n'
+      ;
+
+  context_map.logFn( help_str );
+  context_map.exitGoodFn();
+}
+// == . END PUBLIC METHOD /_00HelpFn/ ===============================
+module.exports = _00HelpFn;

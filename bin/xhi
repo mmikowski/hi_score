@@ -6,12 +6,7 @@
  * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
-/*jslint         node   : true, continue : true,
- devel  : true, indent  : 2,    maxerr   : 50,
- newcap : true, nomen   : true, plusplus : true,
- regexp : true, sloppy  : true, vars     : false,
- white  : true, todo    : true, unparam  : true
-*/
+/*jslint node : true */
 /*global Promise */
 
 // TODO move all npm script to xhi helper
@@ -156,18 +151,18 @@
   // Purpose: provides abortFn, logFn, and warnFn
   function _outFn() {
     var
-      config_map = this,
-      method_str = this._method_str_,
-      prompt_str = this._prompt_str_ || '>',
+      context_map = this || {},
+      method_str = context_map._method_str_ || 'log',
+      prompt_str = context_map._prompt_str_ || appName + 'info> ',
       arg_list   = Array.from( arguments )
       ;
 
     arg_list.unshift( prompt_str );
     console[ method_str ].apply( null, arg_list );
-    if ( config_map._cwd_name_ ) {
-      process.chdir( config_map._cwd_name_ );
+    if ( context_map._cwd_name_ ) {
+      process.chdir( context_map._cwd_name_ );
     }
-    if ( config_map._do_abort ) { exitBadFn(); }
+    if ( context_map._do_abort ) { exitBadFn(); }
   }
 
   abortFn = _outFn.bind({
@@ -176,10 +171,7 @@
     _method_str_ : 'warn',
     _prompt_str_ : appName + '-abort> ',
   });
-  logFn   = _outFn.bind({
-    _method_str_ : 'log',
-    _prompt_str_ : appName + '-info> '
-  });
+  logFn   = _outFn.bind();
   warnFn  = _outFn.bind({
     _method_str_ : 'warn',
     _prompt_str_ : appName + '-warn> '
