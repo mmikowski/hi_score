@@ -14,6 +14,76 @@
 */
 /*global Promise */
 
+// TODO move all npm script to xhi helper
+//
+// Stages correlated wth npm
+// "00": "bin/xhi 00",
+// "00_.": "=== HELP",
+// "01": "bin/xhi 01",
+// "01_.": "=== INSTALL",
+// "01_a": "...node preinstall: Run BEFORE the pkg is installed",
+// "02": "bin/xhi 02",
+// "02_.": "=== SETUP",
+// "02_a": "...node install, postinstall: Run AFTER the pkg is installed.",
+// "03": "bin/xhi 03",
+// "03_.": "=== DESIGN",
+// "03__": "...synonym cat /doc/spa-arch.md",
+// "04": "bin/xhi 04",
+// "04_.": "=== DEVSERVER-START",
+// "04_1": "...node start",
+// "04_2": "...node poststart",
+// "04_a": "...node prestart",
+// "05": "bin/xhi 05",
+// "05_.": "=== GIT PULL",
+// "06": "bin/xhi 06",
+// "06_.": "=== DEVELOP-LINT",
+// "07": "bin/xhi 07",
+// "07_.": "=== DEVELOP-TEST",
+// "07_a": "...node pretest, test, posttest: Run by the npm test command.",
+// "08": "bin/xhi 08",
+// "08_.": "=== DEVELOP-COVERAGE",
+// "09": "bin/xhi 09",
+// "09_.": "=== DEVELOP-COMMIT",
+// "09_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
+// "09_a": "...node preversion: Run BEFORE bumping the pkg version.",
+// "09_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
+// "10": "bin/xhi 10",
+// "10_.": "=== BUILD",
+// "10_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
+// "11": "bin/xhi 11",
+// "11_.": "=== PUBLISH",
+// "11_1": "...node publish",
+// "11_2": "...node postpublish: Run AFTER the pkg is published.",
+// "11_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
+// "11_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
+// "12": "bin/xhi 12",
+// "12_.": "=== DEVSERVER-RESTART",
+// "12_1": "...node restart",
+// "12_2": "...node postrestart",
+// "12_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
+// "12_a": "...node prerestart",
+// "13": "bin/xhi 13",
+// "13_.": "=== DEVSERVER-STOP",
+// "13_1": "...node stop",
+// "13_2": "...node poststop",
+// "13_a": "...node prestop",
+// "14": "bin/xhi 14",
+// "14_.": "=== DEPLOY",
+// "14_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
+// "14_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
+// "14_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
+// "15": "bin/xhi 15",
+// "15_.": "=== PRODSERVER-START",
+// "16": "bin/xhi 16",
+// "16_.": "=== PRODSERVER-RESTART",
+// "17": "bin/xhi 17",
+// "17_.": "=== PRODSERVER-STOP",
+// "18": "bin/xhi 18",
+// "18_.": "=== FEEDBACK",
+// "19": "bin/xhi 19",
+// "19_.": "=== UNINSTALL",
+// "19_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
+// "19_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
 // == BEGIN SCRIPT xhi - the hi_score cli tool ========================
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
@@ -35,9 +105,8 @@
     promisifyFn   = utilObj.promisify,
     makeStatProm  = promisifyFn( fsObj.stat ),
 
-    eventObj      = new EventEmitter(),
-
     // Assign nodejs builtins
+    eventObj      = new EventEmitter(),
     fqAppFilename = __filename,
     fqBinDirname  = __dirname,
 
@@ -61,21 +130,21 @@
     minVersionInt  = 8,
     exePathMap     = {},
 
-    // Convenience
+    // Set convenience vars
     __0 = 0,
     __1 = 1,
 
-    // Curried functions
+    // Declare curried functions
     abortFn, logFn, warnFn,
 
-    // Config data
+    // Declare config data
     fqHookFilename,  pkgMatrix,    setupMatrix,
     rawCommandTable, commandTable,
 
-    // After-install-variables
-    LineReader, applyPatchFn,  mkdirpFn,
-    ncpFn,      rmDirFn,       whichFn,
-    makeWhichProm, makeRmDirProm
+    // Declare after-install-variables
+    LineReader, applyPatchFn,  flowObj, 
+    mkdirpFn,   ncpFn,         rmDirFn,
+    whichFn,    makeWhichProm, makeRmDirProm
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -89,27 +158,31 @@
     var
       config_map = this,
       method_str = this._method_str_,
-      prompt_str = this._prompt_str_ || '>>',
+      prompt_str = this._prompt_str_ || '>',
       arg_list   = Array.from( arguments )
       ;
 
     arg_list.unshift( prompt_str );
     console[ method_str ].apply( null, arg_list );
+    if ( config_map._cwd_name_ ) {
+      process.chdir( config_map._cwd_name_ );
+    }
     if ( config_map._do_abort ) { exitBadFn(); }
   }
 
   abortFn = _outFn.bind({
+    _cwd_name_   : fqOrigDirname,
+    _do_abort_   : true,
     _method_str_ : 'warn',
-    _prompt_str_ : 'xhi ABORT >> ',
-    _do_abort_   : true
+    _prompt_str_ : appName + '-abort> ',
   });
   logFn   = _outFn.bind({
     _method_str_ : 'log',
-    _prompt_str_ : 'xhi >> '
+    _prompt_str_ : appName + '-info> '
   });
   warnFn  = _outFn.bind({
     _method_str_ : 'warn',
-    _prompt_str_ : 'xhi warn >> '
+    _prompt_str_ : appName + '-warn> '
   });
   // . END utility /_outFn/
 
@@ -234,17 +307,25 @@
   }
   // . END utility /storePathFn/
 
-  // BEGIN utility /initModuleVarsFn/
-  function initModuleVarsFn () {
-    var
-      exe_list     = [ 'git', 'patch' ],
-      exe_count    = exe_list.length,
-      promise_list = [],
-      idx, exe_key, bound_fn, promise_obj;
+  // BEGIN utility /patchIfNeededFn/
+  function patchIfNeededFn ( is_check_found ) {
+    var context_map = this;
+    if ( is_check_found ) {
+      logFn( 'Patch ' + context_map.relative_name + ' already applied.' );
+    }
+    else {
+      applyPatchFn( context_map.relative_name );
+      logFn( 'Applied patch ' + context_map.relative_name );
+    }
+  }
+  // . END utility /patchIfNeededFn/
 
-    // Load after-install-packages
+  // BEGIN utility /loadPostInstallfn/
+  // Loads libraries after stage 01 (install) is complete
+  function loadPostInstallFn () {
     LineReader   = require( 'line-by-line' );
     applyPatchFn = require( 'apply-patch'  ).applyPatch;
+    flowObj      = require( 'flow'         ); 
     mkdirpFn     = require( 'mkdirp'       );
     ncpFn        = require( 'ncp'          ).ncp;
     rmDirFn      = require( 'rmdir'        );
@@ -252,43 +333,60 @@
 
     makeRmDirProm = promisifyFn( rmDirFn   );
     makeWhichProm = promisifyFn( whichFn   );
+  }
+  // . END utility /loadPostInstallFn/
+
+  // BEGIN utility /checkExeList/
+  function checkExeList () {
+    var
+      context_map  = this,
+      exe_list     = [ 'git', 'patch' ],
+      exe_count    = exe_list.length,
+      promise_list = [],
+
+      idx, exe_key, bound_fn, promise_obj;
 
     // Assign executable path vars
     for ( idx = 0; idx < exe_count; idx++ ) {
-      exe_key = exe_list[ idx ];
-      bound_fn = storePathFn.bind( { exe_key : exe_key });
+      exe_key     = exe_list[ idx ];
+      bound_fn    = storePathFn.bind( { exe_key : exe_key });
       promise_obj = makeWhichProm( exe_key );
       promise_obj.then( bound_fn ).catch( abortFn );
       promise_list.push( promise_obj );
     }
 
     promiseObj.all( promise_list )
-      .then( function () { eventObj.emit( '01ReadPkgFile' ); } )
-      .catch( abortFn );
+      .then(   context_map.then_fn )
+      .catch( context_map.catch_fn )
+      ;
   }
-  // . END utility /initModuleVarsFn/
+  // . END utility /checkExeList/
 
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
+    var context_map = this;
     if ( error_obj ) { return abortFn( error_obj ); }
     pkgMatrix   = JSON.parse( json_str ) || [];
-    setupMatrix = pkgMatrix.xhi_02SetupMatrix;
+    setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
     if ( ! setupMatrix ) {
-      abortFn( 'xhi_02SetupMatrix not set in package.json' );
+      abortFn( 'xhi_02_SetupMatrix not set in package.json' );
     }
-    eventObj.emit( '02RmVendorDirs' );
+    context_map.then_fn();
   }
   // . END utility /storePkgMapFn/
 
   // BEGIN utility /readPkgFileFn/
   function readPkgFileFn () {
-    fsObj.readFile( fqPkgFilename, 'utf8', storePkgMapFn, abortFn );
+    var context_map = this;
+    fsObj.readFile( fqPkgFilename, 'utf8',
+    storePkgMapFn.bind( context_map ), abortFn );
   }
   // END utility /readPkgFileFn/
 
   // BEGIN utility /rmVendorDirsFn/
   function rmVendorDirsFn () {
     var
+      context_map        = this,
       asset_group_table  = setupMatrix.asset_group_table,
       asset_group_count  = asset_group_table.length,
       promise_list       = [],
@@ -306,14 +404,16 @@
     }
 
     promiseObj.all( promise_list )
-      .then( function () { eventObj.emit( '03CopyVendorFiles' ); } )
-      .catch( abortFn );
+      .then(  context_map.then_fn )
+      .catch( context_map.catch_fn )
+      ;
   }
   // . END utility /rmVendorDirsFn/
 
   // BEGIN utility /copyVendorFilesFn/
   function copyVendorFilesFn () {
     var
+      context_map        = this,
       asset_group_table  = setupMatrix.asset_group_table || [],
       dev_dependency_map = pkgMatrix.devDependencies     || {},
       asset_group_count  = asset_group_table.length,
@@ -336,12 +436,12 @@
 
       dest_ext_str     = asset_group_map.dest_ext_str;
       do_dir_copy      = asset_group_map.do_dir_copy;
-      fq_dest_dir_str  = fqProjDirname + '/' + asset_group_map.dest_dir_str;
-
+      fq_dest_dir_str  = fqProjDirname + '/'
+        + asset_group_map.dest_dir_str;
 
       mkdirpFn.sync( fq_dest_dir_str );
       ASSET_MAP: for ( idj = 0; idj < asset_count; idj++ ) {
-        asset_map = asset_list[ idj ];
+        asset_map      = asset_list[ idj ];
         src_asset_name = asset_map.src_asset_name;
         src_dir_str    = asset_map.src_dir_str || '';
         src_pkg_name   = asset_map.src_pkg_name;
@@ -364,33 +464,24 @@
         if ( ! do_dir_copy ) {
           fq_dest_path_str += '.' + dest_ext_str;
         }
-        promise_obj = copyPathFn( fq_src_path_str, fq_dest_path_str, do_dir_copy );
+        promise_obj = copyPathFn(
+          fq_src_path_str, fq_dest_path_str, do_dir_copy
+        );
         promise_list.push( promise_obj );
       }
     }
 
     promiseObj.all( promise_list )
-      .then( function () { eventObj.emit( '04PatchFiles' ); } )
-      .catch( abortFn );
+      .then(  context_map.then_fn  )
+      .catch( context_map.catch_fn );
   }
   // . END utility /copyVendorFilesFn/
 
-  // BEGIN utility /patchIfNeededFn/
-  function patchIfNeededFn ( is_check_found ) {
-    var context_map = this;
-    if ( is_check_found ) {
-      logFn( 'Patch ' + context_map.relative_name + ' already applied.' );
-    }
-    else {
-      applyPatchFn( context_map.relative_name );
-      logFn( 'Applied patch ' + context_map.relative_name );
-    }
-  }
-  // . END utility /patchIfNeededFn/
-
   // BEGIN utility /patchFilesFn/
+  // This function requires CWD to be fqProjDirname
   function patchFilesFn () {
     var
+      context_map      = this,
       patch_matrix     = setupMatrix.patch_matrix   || {},
       patch_dir_str    = patch_matrix.patch_dir_str || '',
       patch_map_list   = patch_matrix.patch_map_list|| [],
@@ -400,7 +491,6 @@
       check_filename, patch_filename,
       bound_fn
       ;
-    process.chdir( fqProjDirname );
 
     for ( idx = 0; idx < patch_map_count; idx++ ) {
       patch_map      = patch_map_list[ idx ];
@@ -415,49 +505,50 @@
     }
 
     Promise.all( promise_list )
-      .then( function () {
-        process.chdir( fqOrigDirname );
-        eventObj.emit( '05CheckGitInstall' );
-      })
-      .catch( abortFn );
+      .then(  context_map.then_fn  )
+      .catch( context_map.catch_fn )
+      ;
   }
   // . END utility /patchFilesFn/
 
   // BEGIN utility /checkGitInstallFn/
   function checkGitInstallFn () {
-    var promise_obj = makeStatProm( fqGitDirname );
-    promise_obj.then( function () {
-      logFn( 'Git directory ' + fqGitDirname + ' found.');
-      eventObj.emit( '06UnlinkHook' );
-    })
-    .catch( function () {
-      logFn( 'Git directory ' + fqGitDirname + ' NOT found.');
-      logFn( 'Please "npm run setup" if you add code to a git repo.' );
-      eventObj.emit( '99FinishRun');
-    });
+    var
+      context_map = this,
+      promise_obj = makeStatProm( fqGitDirname )
+      ;
+
+    promise_obj
+      .then( function () {
+        logFn( 'Git directory ' + fqGitDirname + ' found.');
+        context_map.then_fn();
+      })
+      .catch( function () {
+        logFn( 'Git directory ' + fqGitDirname + ' NOT found.');
+        context_map.catch_fn();
+      });
   }
   // . END utility /checkGitInstallFn/
 
   // BEGIN utility /unlinkHookFn/
+  // This ignores any error
   function unlinkHookFn () {
+    var context_map = this;
     fqHookFilename = fqProjDirname + '/.git/hooks/pre-commit';
-    fsObj.unlink( fqHookFilename, function ( error_data ) {
-      // Ignore any error
-      eventObj.emit( '07LinkHook' );
-    });
+    fsObj.unlink( fqHookFilename, context_map.then_fn );
   }
   // . END utility /unlinkHookFn/
 
   // BEGIN utility /linkHookFn/
+  // This function requires CWD to be fqProjDirname
   function linkHookFn () {
-    process.chdir( fqProjDirname );
+    var context_map = this;
     fsObj.symlink(
       '../../bin/git-hook_pre-commit',
       fqHookFilename,
       function ( error_data ) {
         if ( error_data ) { abortFn( error_data ); }
-        process.chdir( fqOrigDirname );
-        eventObj.emit( '99FinishRun');
+        context_map.then_fn();
       }
     );
   }
@@ -465,43 +556,9 @@
   // == END UTILITY METHODS ============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
-  function on00InitVarsFn () {
-    logFn( appName + 'stage 02 (setup) Started.' );
-    logFn( 'Initializing variables...' );
-    initModuleVarsFn();
-  }
-  function on01ReadPkgFileFn () {
-    logFn( 'Reading package file...' );
-    readPkgFileFn();
-  }
-  function on02RmVendorDirsFn () {
-    logFn( 'Removing vendor directories...' );
-    rmVendorDirsFn();
-  }
-  function on03CopyVendorFilesFn () {
-    logFn( 'Deploying vendor assets...' );
-    copyVendorFilesFn();
-  }
-  function on04PatchFilesFn () {
-    logFn( 'Applying patches...' );
-    patchFilesFn();
-  }
-  function on05CheckGitInstallFn () {
-    logFn( 'Checking for git installation...' );
-    checkGitInstallFn();
-  }
-  function on06UnlinkHookFn () {
-    logFn( 'Remove any old commit hook...' );
-    unlinkHookFn();
-  }
-  function on07LinkHookFn () {
-    logFn( 'Linking commit hook...' );
-    linkHookFn();
-  }
-  function on99FinishRunFn () {
-    logFn( appName + 'stage 02 (setup) Finished.' );
-    exitGoodFn();
-  }
+  // function makeBoundEmitFn ( signal_str ) {
+  //   return function () { eventObj.emit( signal_str ); };
+  // }
   // == . END EVENT HANDLERS ==========================================
 
   // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
@@ -534,11 +591,25 @@
 
   // == BEGIN PUBLIC METHOD /_01InstallFn/ ============================
   function _01InstallFn () {
-    var streamObj = makeSpawnObj( 'npm', ['install'] );
-    streamObj.stdout.on( 'data', function ( data ) { logFn(  data.toString() ); } );
-    streamObj.stderr.on( 'data', function ( data ) { warnFn( data.toString() ); } );
-    streamObj.on( 'close', 
-      function ( exit_code ) { process.exit( exit_code ); }
+    var context_obj, stream_obj;
+
+    context_obj = this;
+    logFn( 'Install dependencies using "npm install"...' );
+
+    stream_obj = makeSpawnObj( 'npm', ['install'] );
+    stream_obj.stdout.on( 'data', function ( data ) { logFn(  data.toString() ); } );
+    stream_obj.stderr.on( 'data', function ( data ) { warnFn( data.toString() ); } );
+    stream_obj.on( 'close',
+      function ( exit_code ) {
+        if ( exit_code === 0 ) {
+          logFn( 'Success!' );
+        }
+        else {
+          warnFn( 'The install did not work as expected.' );
+          warnFn( 'Please run "npm install" to diagnose.' );
+        }
+        process.exit( exit_code );
+      }
     );
   }
   // == . END PUBLIC METHOD /_01InstallFn/ ============================
@@ -564,20 +635,62 @@
   //   4. Install the commit hook if git is detected
   //
   function _02SetupFn () {
-    // Layout flow control
-    eventObj.on( '00InitVars',         on00InitVarsFn         );
-    eventObj.on( '01ReadPkgFile',      on01ReadPkgFileFn      );
-    eventObj.on( '02RmVendorDirs',     on02RmVendorDirsFn     );
-    eventObj.on( '03CopyVendorFiles',  on03CopyVendorFilesFn  );
-    eventObj.on( '04PatchFiles',       on04PatchFilesFn       );
-    eventObj.on( '05CheckGitInstall',  on05CheckGitInstallFn  );
-    eventObj.on( '06UnlinkHook',       on06UnlinkHookFn       );
-    eventObj.on( '07LinkHook',         on07LinkHookFn         );
-    eventObj.on( '99FinishRun',        on99FinishRunFn        );
-
-    // Start execution
-    // Timeout prevents race condition
-    setTimeout( function () { eventObj.emit( '00InitVars' ); }, 0 );
+    loadPostInstallFn();
+    flowObj.exec(
+      function _02_00InitVarsFn () {
+        logFn( appName + ' stage 02 Setup start.' );
+        logFn( appName + ' stage 02 step 00: Init variables...' );
+        process.chdir( fqProjDirname );
+        checkExeList.call({ then_fn  : this, catch_fn : abortFn });
+      },
+      function _02_01ReadPkgFileFn () {
+        logFn( appName + ' stage 02 step 01: Read package file...' );
+        readPkgFileFn.call({ then_fn  : this, catch_fn : abortFn });
+      },
+      function _02_02RmVendorDirsFn () {
+        logFn( appName + ' stage 02 step 02: Remove vendor directories...' );
+        rmVendorDirsFn.call({ then_fn  : this, catch_fn : abortFn });
+      },
+      function _02_03CopyVendorFilesFn () {
+        logFn( appName + ' stage 02 step 03: Deploy vendor assets...' );
+        copyVendorFilesFn.call({ then_fn  : this, catch_fn : abortFn });
+      },
+      function _02_04PatchFilesFn () {
+        logFn( appName + ' stage 02 step 04: Apply patches...' );
+        patchFilesFn.call({ then_fn  : this, catch_fn : abortFn });
+      },
+      function _02_05CheckGitInstallFn () {
+        logFn( appName + ' stage 02 step 05: Check for git installation...' );
+        checkGitInstallFn.call({
+          then_fn  : this,
+          catch_fn : function () {
+            logFn( 'Exiting without installing git commit hook.' );
+            logFn( 'Please run this step again if you add git.' );
+            process.chdir( fqOrigDirname );
+            exitGoodFn();
+          }
+        });
+      },
+      function _02_06UnlinkHookFn () {
+        logFn( appName + ' stage 02 step 06: Remove prior commit hook...' );
+        unlinkHookFn.call({
+          then_fn  : this,
+          catch_fn : abortFn
+        });
+      },
+      function _02_07LinkHookFn () {
+        logFn( appName + ' stage 02 Add latest commit hook...' );
+        linkHookFn.call({
+          then_fn  : this,
+          catch_fn : abortFn
+        });
+      },
+      function _02_99FinishRunFn () {
+        logFn( appName + ' stage 02 Setup finish.' );
+        process.chdir( fqOrigDirname );
+        exitGoodFn();
+      }
+    );
   }
   // == . END PUBLIC METHOD /_02SetupFn/ ==============================
   function _03ShowArchFn () {}
@@ -601,7 +714,8 @@
   }
   // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
   function _09CommitFn () {}
-  function _10BuildFn () {}
+  function _10BuildFn  () {
+  }
   function _11PublishFn () {}
   function _12DevRestartFn () {}
   function _13DevStopFn () {}

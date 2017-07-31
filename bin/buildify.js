@@ -115,7 +115,7 @@
 // Examples   :
 //   IN PACKAGE.JSON
 //   { "devDependencies" : { "taffydb": "2.7.3", .... },
-//     "xhi_010_SetupMatrix"  : {
+//     "xhi_02_SetupMatrix"  : {
 //       "asset_group_table": [
 //        { "asset_type" : "js",
 //           "asset_list": [
@@ -129,7 +129,7 @@
 //       "dest_dir_str": "js/vendor",
 //       "dest_ext_str": "js"
 //     },
-//     "xhiBuildTable": [
+//     "xhi_10_BuildTable": [
 //       {
 //         "build_id": "ex01",
 //         "do_isolate": false,
