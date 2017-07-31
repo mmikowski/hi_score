@@ -5,15 +5,11 @@
  * Synopsis: Add _model_ capabilities to app_map
  * Provides: Business logic methods
  *
+ * JSLint settings found in cfg/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global $, xhi */
+/*jslint browser : true */
+/*global xhi */
 
 // == BEGIN MODULE xhi._makeModel_ =====================================
 xhi._makeModel_ = function ( aMap ) {
@@ -51,7 +47,7 @@ xhi._makeModel_ = function ( aMap ) {
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModule/
   function initModule () {
-    __logMsg( '_info_', $,
+    __logMsg( '_info_',
       '\n  __0       === ' + __0,
       '\n  __1       === ' + __1,
       '\n  __blank   === ' + __blank,

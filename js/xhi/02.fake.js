@@ -5,15 +5,11 @@
  * Synopsis: Add mock _data_ capabilities to app_map
  * Provides: Shared mock data transfer methods (AJAX, Websockets)
  *
+ * JSLint settings found in cfg/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global $, xhi */
+/*jslint browser : true */
+/*global xhi */
 
 // == BEGIN MODULE xhi._makeFake_ =====================================
 xhi._fake_ = function ( aMap ) {

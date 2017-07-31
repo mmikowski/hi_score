@@ -1,18 +1,14 @@
 /*
  * xhi-module-tmplt.js
  *
- * Use: $ cp xhi-module-tmplt.js 07.<newfeature>.js
+ * Use: cp xhi-module-tmplt.js 07.<newfeature>.js
  * Synopsis: Feature module template
  * Provides: A template that embodies best practice
  *
+ * JSLint settings found in cfg/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
+/*jslint browser : true */
 /*global $, xhi */
 
 // == BEGIN MODULE xhi._makeTmplt_ =====================================

@@ -68,7 +68,9 @@ set -u;
   echo "Tests of updated or new *.js files ...";
   cat "${_list_file}" | while read _loop_file; do
     echo "====> ${_loop_file}";
-    _scratch_str=$(${_jslint_exe} "${_loop_file}");
+    _scratch_str=$( ${_jslint_exe} \
+      --config "${_npm_dir}/cfg/jslint.conf" "${_loop_file}" \
+    );
     _exit_code=$?;
     if [ "${_exit_code}" -gt 0 ]; then
       echo "  JSLint check FAILED";

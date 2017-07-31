@@ -5,6 +5,7 @@
  * It is also useful as a reference.
  * It should *NOT* be included in production code.
  *
+ * JSLint settings found in cfg/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint         browser : true, continue : true,

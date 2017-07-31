@@ -657,8 +657,8 @@
 //   ## Find UglifyCSS
 //   ## Validiate input files
 //   ## Validate and create build dir and move global log to it
-//   ##    TODO: 2017-07-21 Put these under a build number in builddir
-//   ##    TODO: 2017-07-21 Link latest build builddir/xxx -> last
+//   ##  TODO: 2017-07-21 warn: Put these under a build number in builddir
+//   ##  TODO: 2017-07-21 warn: Link latest build builddir/xxx -> last
 //   ## BEGIN process each manifest in turn
 //     ## Get path of manifest and determine output names
 //     ## Read manifest and append sources to arrays copy / css / js / copy_dir
