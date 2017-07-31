@@ -5,12 +5,11 @@
  white  : true, todo    : true, unparam  : true
 */
 // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
-function _00HelpFn () {
+function _00HelpFn ( context_map ) {
   var 
-    context_map = this,
     app_name    = context_map.appName,
     help_str    = '\n'
-      + '  Name      : ' + appName + '\n'
+      + '  Name      : ' + app_name + '\n'
       + '  Purpose   : Run hi_score lifecycle tools\n'
       + '  Example   : xhi 00 # or xhi help\n'
       + '  Arguments : (positional)\n'

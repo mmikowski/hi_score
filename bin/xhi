@@ -85,7 +85,6 @@
   var
     // Import capabilities
     EventEmitter = require( 'events' ).EventEmitter,
-
     childProcObj = require( 'child_process' ),
     fsObj        = require( 'fs'            ),
     npmObj       = require( 'npm'           ),
@@ -153,7 +152,7 @@
     var
       context_map = this || {},
       method_str = context_map._method_str_ || 'log',
-      prompt_str = context_map._prompt_str_ || appName + 'info> ',
+      prompt_str = context_map._prompt_str_ || appName + '-info> ',
       arg_list   = Array.from( arguments )
       ;
 
@@ -552,32 +551,40 @@
   //   return function () { eventObj.emit( signal_str ); };
   // }
   // == . END EVENT HANDLERS ==========================================
-
+ 
   // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
   function _00HelpFn () {
-    var help_str = '\n'
-      + '  Name      : ' + appName + '\n'
-      + '  Purpose   : Run hi_score lifecycle tools\n'
-      + '  Example   : xhi 00 # or xhi help\n'
-      + '  Arguments : (positional)\n'
-      + '    <range> || help <range> || help all\n\n'
-      + '    <range> may be:\n'
-      + '    1. A single stage number, e.g. 01.\n'
-      + '    2. A list of stage numbers, e.g. 01 02 06.\n'
-      + '    3. A range of stage numbers, e.g. 00 - 09.\n'
-      + '    The life cycle number as presented below.\n'
-      + '     The default is 00.\n'
-      + '  More examples:\n'
-      + '    ' + appName + ' help all      // Describe all stages\n'
-      + '    ' + appName + ' help 01       // describe stage 01\n'
-      + '    ' + appName + ' help 01 02 06 // describe 3 stages\n'
-      + '    ' + appName + ' help 00 - 09  // describe 10 stages\n'
-      + '    ' + appName + ' 01 02 06      // runs 3 stages\n'
-      + '    ' + appName + ' 00 - 09       // run 10 stages\n\n'
-      ;
-
-    logFn( help_str );
-    exitGoodFn();
+    var help_fn = require( './xhi_00' );
+    help_fn({
+      abortFn    : abortFn,
+      appName    : appName,
+      exitGoodFn : exitGoodFn,
+      logFn      : logFn,
+      warnFn     : warnFn
+    });
+    // var help_str = '\n'
+    //   + '  Name      : ' + appName + '\n'
+    //   + '  Purpose   : Run hi_score lifecycle tools\n'
+    //   + '  Example   : xhi 00 # or xhi help\n'
+    //   + '  Arguments : (positional)\n'
+    //   + '    <range> || help <range> || help all\n\n'
+    //   + '    <range> may be:\n'
+    //   + '    1. A single stage number, e.g. 01.\n'
+    //   + '    2. A list of stage numbers, e.g. 01 02 06.\n'
+    //   + '    3. A range of stage numbers, e.g. 00 - 09.\n'
+    //   + '    The life cycle number as presented below.\n'
+    //   + '     The default is 00.\n'
+    //   + '  More examples:\n'
+    //   + '    ' + appName + ' help all      // Describe all stages\n'
+    //   + '    ' + appName + ' help 01       // describe stage 01\n'
+    //   + '    ' + appName + ' help 01 02 06 // describe 3 stages\n'
+    //   + '    ' + appName + ' help 00 - 09  // describe 10 stages\n'
+    //   + '    ' + appName + ' 01 02 06      // runs 3 stages\n'
+    //   + '    ' + appName + ' 00 - 09       // run 10 stages\n\n'
+    //   ;
+    //
+    // logFn( help_str );
+    // exitGoodFn();
   }
   // == . END PUBLIC METHOD /_00HelpFn/ ===============================
 
