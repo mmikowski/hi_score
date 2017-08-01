@@ -1,10 +1,11 @@
 /*jslint node : true */
 /* vim: set ft=javascript: */
+
 // == BEGIN PUBLIC METHOD /helpFn/ ====================================
 function helpFn () {
   var 
-    context_map = this,
-    app_name    = context_map.appName,
+    context_obj = this,
+    app_name    = context_obj.appName,
     help_str    = '\n'
       + '  Name      : ' + app_name + '\n'
       + '  Purpose   : Run hi_score lifecycle tools\n'
@@ -26,8 +27,8 @@ function helpFn () {
       + '    ' + app_name + ' 00 - 09       // run 10 stages\n\n'
       ;
 
-  context_map.logFn( help_str );
-  context_map.exitGoodFn();
+  context_obj.logFn( help_str );
+  context_obj.exitGoodFn();
 }
 // == . END PUBLIC METHOD /helpFn/ ====================================
 module.exports = helpFn;

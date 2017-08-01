@@ -136,7 +136,7 @@
     rawCommandTable, commandTable,
 
     // Declare after-install-variables
-    LineReader, applyPatchFn,  flowObj, 
+    LineReader, applyPatchFn,  flowObj,
     mkdirpFn,   ncpFn,         rmDirFn,
     whichFn,    makeWhichProm, makeRmDirProm
     ;
@@ -150,18 +150,18 @@
   // Purpose: provides abortFn, logFn, and warnFn
   function _outFn() {
     var
-      context_map = this || {},
-      method_str = context_map._method_str_ || 'log',
-      prompt_str = context_map._prompt_str_ || appName + '-info> ',
+      context_obj = this || {},
+      method_str = context_obj._method_str_ || 'log',
+      prompt_str = context_obj._prompt_str_ || appName + '-info> ',
       arg_list   = Array.from( arguments )
       ;
 
     arg_list.unshift( prompt_str );
     console[ method_str ].apply( null, arg_list );
-    if ( context_map._cwd_name_ ) {
-      process.chdir( context_map._cwd_name_ );
+    if ( context_obj._cwd_name_ ) {
+      process.chdir( context_obj._cwd_name_ );
     }
-    if ( context_map._do_abort ) { exitBadFn(); }
+    if ( context_obj._do_abort ) { exitBadFn(); }
   }
 
   abortFn = _outFn.bind({
@@ -288,8 +288,8 @@
   // BEGIN utility /storePathFn/
   function storePathFn ( path_str ) {
     var
-      context_map = this,
-      exe_key = context_map.exe_key;
+      context_obj = this,
+      exe_key = context_obj.exe_key;
 
     if ( ! exe_key ) {
       abortFn( 'No key provided for ' + path_str );
@@ -300,13 +300,13 @@
 
   // BEGIN utility /patchIfNeededFn/
   function patchIfNeededFn ( is_check_found ) {
-    var context_map = this;
+    var context_obj = this;
     if ( is_check_found ) {
-      logFn( 'Patch ' + context_map.relative_name + ' already applied.' );
+      logFn( 'Patch ' + context_obj.relative_name + ' already applied.' );
     }
     else {
-      applyPatchFn( context_map.relative_name );
-      logFn( 'Applied patch ' + context_map.relative_name );
+      applyPatchFn( context_obj.relative_name );
+      logFn( 'Applied patch ' + context_obj.relative_name );
     }
   }
   // . END utility /patchIfNeededFn/
@@ -316,7 +316,7 @@
   function loadPostInstallFn () {
     LineReader   = require( 'line-by-line' );
     applyPatchFn = require( 'apply-patch'  ).applyPatch;
-    flowObj      = require( 'flow'         ); 
+    flowObj      = require( 'flow'         );
     mkdirpFn     = require( 'mkdirp'       );
     ncpFn        = require( 'ncp'          ).ncp;
     rmDirFn      = require( 'rmdir'        );
@@ -330,7 +330,7 @@
   // BEGIN utility /checkExeList/
   function checkExeList () {
     var
-      context_map  = this,
+      context_obj  = this,
       exe_list     = [ 'git', 'patch' ],
       exe_count    = exe_list.length,
       promise_list = [],
@@ -347,37 +347,37 @@
     }
 
     promiseObj.all( promise_list )
-      .then(   context_map.then_fn )
-      .catch( context_map.catch_fn )
+      .then(   context_obj.then_fn )
+      .catch( context_obj.catch_fn )
       ;
   }
   // . END utility /checkExeList/
 
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
-    var context_map = this;
+    var context_obj = this;
     if ( error_obj ) { return abortFn( error_obj ); }
     pkgMatrix   = JSON.parse( json_str ) || [];
     setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
     if ( ! setupMatrix ) {
       abortFn( 'xhi_02_SetupMatrix not set in package.json' );
     }
-    context_map.then_fn();
+    context_obj.then_fn();
   }
   // . END utility /storePkgMapFn/
 
   // BEGIN utility /readPkgFileFn/
   function readPkgFileFn () {
-    var context_map = this;
+    var context_obj = this;
     fsObj.readFile( fqPkgFilename, 'utf8',
-    storePkgMapFn.bind( context_map ), abortFn );
+    storePkgMapFn.bind( context_obj ), abortFn );
   }
   // END utility /readPkgFileFn/
 
   // BEGIN utility /rmVendorDirsFn/
   function rmVendorDirsFn () {
     var
-      context_map        = this,
+      context_obj        = this,
       asset_group_table  = setupMatrix.asset_group_table,
       asset_group_count  = asset_group_table.length,
       promise_list       = [],
@@ -395,8 +395,8 @@
     }
 
     promiseObj.all( promise_list )
-      .then(  context_map.then_fn )
-      .catch( context_map.catch_fn )
+      .then(  context_obj.then_fn )
+      .catch( context_obj.catch_fn )
       ;
   }
   // . END utility /rmVendorDirsFn/
@@ -404,7 +404,7 @@
   // BEGIN utility /copyVendorFilesFn/
   function copyVendorFilesFn () {
     var
-      context_map        = this,
+      context_obj        = this,
       asset_group_table  = setupMatrix.asset_group_table || [],
       dev_dependency_map = pkgMatrix.devDependencies     || {},
       asset_group_count  = asset_group_table.length,
@@ -463,8 +463,8 @@
     }
 
     promiseObj.all( promise_list )
-      .then(  context_map.then_fn  )
-      .catch( context_map.catch_fn );
+      .then(  context_obj.then_fn  )
+      .catch( context_obj.catch_fn );
   }
   // . END utility /copyVendorFilesFn/
 
@@ -472,7 +472,7 @@
   // This function requires CWD to be fqProjDirname
   function patchFilesFn () {
     var
-      context_map      = this,
+      context_obj      = this,
       patch_matrix     = setupMatrix.patch_matrix   || {},
       patch_dir_str    = patch_matrix.patch_dir_str || '',
       patch_map_list   = patch_matrix.patch_map_list|| [],
@@ -496,8 +496,8 @@
     }
 
     Promise.all( promise_list )
-      .then(  context_map.then_fn  )
-      .catch( context_map.catch_fn )
+      .then(  context_obj.then_fn  )
+      .catch( context_obj.catch_fn )
       ;
   }
   // . END utility /patchFilesFn/
@@ -505,18 +505,18 @@
   // BEGIN utility /checkGitInstallFn/
   function checkGitInstallFn () {
     var
-      context_map = this,
+      context_obj = this,
       promise_obj = makeStatProm( fqGitDirname )
       ;
 
     promise_obj
       .then( function () {
         logFn( 'Git directory ' + fqGitDirname + ' found.');
-        context_map.then_fn();
+        context_obj.then_fn();
       })
       .catch( function () {
         logFn( 'Git directory ' + fqGitDirname + ' NOT found.');
-        context_map.catch_fn();
+        context_obj.catch_fn();
       });
   }
   // . END utility /checkGitInstallFn/
@@ -524,22 +524,22 @@
   // BEGIN utility /unlinkHookFn/
   // This ignores any error
   function unlinkHookFn () {
-    var context_map = this;
+    var context_obj = this;
     fqHookFilename = fqProjDirname + '/.git/hooks/pre-commit';
-    fsObj.unlink( fqHookFilename, context_map.then_fn );
+    fsObj.unlink( fqHookFilename, context_obj.then_fn );
   }
   // . END utility /unlinkHookFn/
 
   // BEGIN utility /linkHookFn/
   // This function requires CWD to be fqProjDirname
   function linkHookFn () {
-    var context_map = this;
+    var context_obj = this;
     fsObj.symlink(
       '../../bin/git-hook_pre-commit',
       fqHookFilename,
       function ( error_data ) {
         if ( error_data ) { abortFn( error_data ); }
-        context_map.then_fn();
+        context_obj.then_fn();
       }
     );
   }
@@ -558,6 +558,7 @@
       checkExeList      : checkExeList,
       checkGitInstallFn : checkGitInstallFn,
       copyVendorFilesFn : copyVendorFilesFn,
+      execFn            : execFn,
       exitGoodFn        : exitGoodFn,
       flowObj           : flowObj,
       fqOrigDirname     : fqOrigDirname,
@@ -574,13 +575,13 @@
   }
   // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
   function _00HelpFn () {
-    var 
+    var
       help_fn = require( fqBinDirname + '/xhi_00' ),
       xhi_obj = makeXhiObj()
       ;
 
     help_fn.call( xhi_obj );
-    
+
     // help_fn({
     //   abortFn    : abortFn,
     //   appName    : appName,
@@ -616,13 +617,13 @@
 
   // == BEGIN PUBLIC METHOD /_01InstallFn/ ============================
   function _01InstallFn () {
-    var 
+    var
       install_fn = require( fqBinDirname + '/xhi_01' ),
       xhi_obj    = makeXhiObj()
       ;
 
     install_fn.call( xhi_obj );
-    
+
     // var context_obj, stream_obj;
     //
     // context_obj = this;
@@ -738,17 +739,24 @@
   function _07DevTestFn  () {}
   // == BEGIN PUBLIC METHOD /_08DevCoverFn/ ==========================
   function _08DevCoverFn () {
-    execFn( fqModuleDirname + '/.bin/istanbul cover -x \'**/vendor/**\' '
-      + fqModuleDirname     + '/.bin/nodeunit '
-      + fqProjDirname       + '/test/xhi_level_0.js',
+    var cover_fn, xhi_obj;
 
-      function ( error_data, stdout_str, stderr_str ) {
-        if ( error_data ) {
-          abortFn( error_data, stdout_str, stderr_str );
-        }
-        else { exitGoodFn(); }
-      }
-    );
+    loadPostInstallFn();
+    xhi_obj  = makeXhiObj();
+    cover_fn = require( fqBinDirname + '/xhi_08' );
+    cover_fn.call( xhi_obj );
+
+  // execFn( fqModuleDirname + '/.bin/istanbul cover -x \'**/vendor/**\' '
+  //   + fqModuleDirname     + '/.bin/nodeunit '
+  //   + fqProjDirname       + '/test/xhi_level_0.js',
+  //
+  //   function ( error_data, stdout_str, stderr_str ) {
+  //     if ( error_data ) {
+  //       abortFn( error_data, stdout_str, stderr_str );
+  //     }
+  //     else { exitGoodFn(); }
+  //   }
+  // );
   }
   // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
   function _09CommitFn () {}
