@@ -1,0 +1,19 @@
+/*jslint node : true */
+/* vim: set ft=javascript: */
+
+// == BEGIN PUBLIC METHOD /_08DevCoverFn/ ==========================
+function coverFn () {
+  var context_obj = this;
+
+  process.chdir( context_obj.fqProjDirname );
+  context_obj.exeCpeFn(
+    context_obj.fqModuleDirname + '/.bin/istanbul',
+    [ 'cover','-x','**/vendor/**',
+       context_obj.fqModuleDirname + '/.bin/nodeunit',
+       context_obj.fqProjDirname   + '/test/xhi_level_0.js'
+    ]
+  );
+  process.chdir( context_obj.fqOrigDirname );
+}
+// == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
+module.exports = coverFn;

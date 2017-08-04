@@ -92,7 +92,7 @@
     utilObj      = require( 'util'          ),
     promiseObj   = Promise,
 
-    execFn       = childProcObj.exec,
+    // execFn       = childProcObj.exec,
     makeSpawnObj = childProcObj.spawn,
 
     // Convert to promises using promisfy
@@ -136,9 +136,10 @@
     rawCommandTable, commandTable,
 
     // Declare after-install-variables
-    LineReader, applyPatchFn,  flowObj,
-    mkdirpFn,   ncpFn,         rmDirFn,
-    whichFn,    makeWhichProm, makeRmDirProm
+    LineReader,    applyPatchFn,  exeCpeFn,
+    flowObj,       mkdirpFn,      ncpFn,
+    rmDirFn,       whichFn,       makeWhichProm,
+    makeRmDirProm  
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -271,8 +272,8 @@
 
     return new Promise( function ( resolve_fn, reject_fn ) {
       var
-        read_obj         = fsObj.createReadStream(  fq_src_path_str  ),
-        write_obj        = fsObj.createWriteStream( fq_dest_path_str ),
+        read_obj        = fsObj.createReadStream(  fq_src_path_str  ),
+        write_obj       = fsObj.createWriteStream( fq_dest_path_str ),
         full_reject_fn  = makeRejectFuncFn(  reject_fn  ),
         full_resolve_fn = makeResolveFuncFn( resolve_fn )
         ;
@@ -316,6 +317,7 @@
   function loadPostInstallFn () {
     LineReader   = require( 'line-by-line' );
     applyPatchFn = require( 'apply-patch'  ).applyPatch;
+    exeCpeFn     = require( 'execpe'       );
     flowObj      = require( 'flow'         );
     mkdirpFn     = require( 'mkdirp'       );
     ncpFn        = require( 'ncp'          ).ncp;
@@ -558,9 +560,10 @@
       checkExeList      : checkExeList,
       checkGitInstallFn : checkGitInstallFn,
       copyVendorFilesFn : copyVendorFilesFn,
-      execFn            : execFn,
+      exeCpeFn          : exeCpeFn,
       exitGoodFn        : exitGoodFn,
       flowObj           : flowObj,
+      fqModuleDirname   : fqModuleDirname,
       fqOrigDirname     : fqOrigDirname,
       fqProjDirname     : fqProjDirname,
       linkHookFn        : linkHookFn,
@@ -760,8 +763,7 @@
   }
   // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
   function _09CommitFn () {}
-  function _10BuildFn  () {
-  }
+  function _10BuildFn  () {}
   function _11PublishFn () {}
   function _12DevRestartFn () {}
   function _13DevStopFn () {}
