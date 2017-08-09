@@ -2,7 +2,7 @@
 /* vim: set ft=javascript: */
 
 // == BEGIN PUBLIC METHOD /helpFn/ ====================================
-function helpFn () {
+function helpFn ( arg_list ) {
   var 
     context_obj = this,
     app_name    = context_obj.appName,
@@ -14,17 +14,44 @@ function helpFn () {
       + '    <range> || help <range> || help all\n\n'
       + '    <range> may be:\n'
       + '    1. A single stage number, e.g. 01.\n'
-      + '    2. A list of stage numbers, e.g. 01 02 06.\n'
-      + '    3. A range of stage numbers, e.g. 00 - 09.\n'
+      + '    2. A list of stage numbers, e.g. 1,2,3,6.\n'
+      + '    3. A range of stage numbers, e.g. 0-9 or all.\n'
       + '    The life cycle number as presented below.\n'
       + '     The default is 00.\n'
       + '  More examples:\n'
-      + '    ' + app_name + ' help all      // Describe all stages\n'
-      + '    ' + app_name + ' help 01       // describe stage 01\n'
-      + '    ' + app_name + ' help 01 02 06 // describe 3 stages\n'
-      + '    ' + app_name + ' help 00 - 09  // describe 10 stages\n'
-      + '    ' + app_name + ' 01 02 06      // runs 3 stages\n'
-      + '    ' + app_name + ' 00 - 09       // run 10 stages\n\n'
+      + '    Generic help\n'
+      + '    ' + app_name + ' 00                // Short help \n'
+      + '    ' + app_name + ' help              // Ditto\n'
+      + '    ' + app_name + ' 00 -v             // Verbose help\n'
+      + '    ' + app_name + ' help -v           // Ditto\n\n'
+
+      + '  Help on single stage\n'
+      + '    ' + app_name + ' 00 01           // Short help stage 01\n'
+      + '    ' + app_name + ' help 01         // Ditto\n'
+      + '    ' + app_name + ' help install    // Ditto\n'
+      + '    ' + app_name + ' 00   01 -v      // Verbose help on stage 01\n'
+      + '    ' + app_name + ' 00 install -v   // Ditto\n'
+      + '    ' + app_name + ' help install -v // Ditto\n'
+
+      + '  Help on multiple stages\n'
+      + '  ' + app_name + ' 00 0,4              // Short help on stages 0 and 4\n'
+      + '  ' + app_name + ' help help,dev_pull  // Ditto\n'
+      + '  ' + app_name + ' 00 0,4 -v           // Verbose help on stages 0 and 4\n'
+      + '  ' + app_name + ' 00 help,dev_pull -v // Ditto\n'
+
+      + 'Help on stage range\n'
+      + '  ' + app_name + ' 00 0-8                 // Short help on stages 0-8\n'
+      + '  ' + app_name + ' 00 install-dev_cover   // Ditto\n'
+      + '  ' + app_name + ' help 0-8               // Ditto\n'
+      + '  ' + app_name + ' help install-dev_cover // Ditto\n'
+
+      + '  ' + app_name + ' 00 all                 // Short help on all stages\n'
+      + '  ' + app_name + ' help all               // Ditto\n'
+      + '  ' + app_name + ' 00 all -v              // Long help on all stages\n'
+      + '  ' + app_name + ' help all -v            // Ditto\n'
+      + '    ' + app_name + ' 1,2,6       // run 3 stages\n'
+      + '    ' + app_name + ' 1-9         // run 10 stages\n'
+      + '    ' + app_name + ' all         // run all stages\n\n'
       ;
 
   context_obj.logFn( help_str );

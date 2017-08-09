@@ -183,20 +183,26 @@
   function makeCommandTable ( raw_table ) {
     var
       row_count   = raw_table.length,
-      head_row    = raw_table[0],
+      head_row    = raw_table.shift,
       field_count = head_row.length,
 
       solve_table = [],
-      src_list, row_map, idx, jdx
+      src_list, row_map
       ;
+
+    raw_table.forEach( ( src_list, row_idx ) => {
+      row_id  = String( row_idx );
+      if ( row_id.length < 2 ) { row_id = '0' + row_id; }
+      row_map = { id : row_id, idx : row_idx };
+      head_row.forEach( ( head_val, head_idx ) => {
+        row_map[ head_val ] = src_list[ head_idx ];
+      });
+      solve_table.push( row_map );
+    });
 
     for ( idx = 1; idx < row_count; idx++ ) {
       src_list = raw_table[ idx ];
       row_map = { idx : idx };
-      for ( jdx = 0; jdx < field_count; jdx++ ) {
-        row_map[ head_row[ jdx ] ] = src_list[ jdx ];
-      }
-      solve_table.push( row_map );
     }
     return solve_table;
   }
@@ -553,12 +559,18 @@
   //   return function () { eventObj.emit( signal_str ); };
   // }
   // == . END EVENT HANDLERS ==========================================
-  function makeXhiObj () {
+
+  // BEGIN utility /makeXhiObj/
+  // Purpose: Creates context_obj for module libraries
+  //
+  function makeXhiObj ( arg_list ) {
     return {
       abortFn           : abortFn,
       appName           : appName,
+      argList           : arg_list,
       checkExeList      : checkExeList,
       checkGitInstallFn : checkGitInstallFn,
+      commandTable      : commandTable,
       copyVendorFilesFn : copyVendorFilesFn,
       exeCpeFn          : exeCpeFn,
       exitGoodFn        : exitGoodFn,
@@ -576,77 +588,38 @@
       warnFn            : warnFn
     };
   }
-  // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
-  function _00HelpFn () {
+  // . END utility /makeXhiObj/
+
+  // == BEGIN PUBLIC METHOD /dispatchFn/ ==============================
+  function dispatchFn ( arg_list, stage_idx ) {
     var
-      help_fn = require( fqBinDirname + '/xhi_00' ),
-      xhi_obj = makeXhiObj()
+      help_fn = require( fqBinDirname + '/xhi_' + String( stage_idx ) ),
+      xhi_obj = makeXhiObj( arg_list )
       ;
 
     help_fn.call( xhi_obj );
+  }
+  // == . END PUBLIC METHOD /dispatchFn/ ==============================
 
-    // help_fn({
-    //   abortFn    : abortFn,
-    //   appName    : appName,
-    //   exitGoodFn : exitGoodFn,
-    //   logFn      : logFn,
-    //   warnFn     : warnFn
-    // });
-    // var help_str = '\n'
-    //   + '  Name      : ' + appName + '\n'
-    //   + '  Purpose   : Run hi_score lifecycle tools\n'
-    //   + '  Example   : xhi 00 # or xhi help\n'
-    //   + '  Arguments : (positional)\n'
-    //   + '    <range> || help <range> || help all\n\n'
-    //   + '    <range> may be:\n'
-    //   + '    1. A single stage number, e.g. 01.\n'
-    //   + '    2. A list of stage numbers, e.g. 01 02 06.\n'
-    //   + '    3. A range of stage numbers, e.g. 00 - 09.\n'
-    //   + '    The life cycle number as presented below.\n'
-    //   + '     The default is 00.\n'
-    //   + '  More examples:\n'
-    //   + '    ' + appName + ' help all      // Describe all stages\n'
-    //   + '    ' + appName + ' help 01       // describe stage 01\n'
-    //   + '    ' + appName + ' help 01 02 06 // describe 3 stages\n'
-    //   + '    ' + appName + ' help 00 - 09  // describe 10 stages\n'
-    //   + '    ' + appName + ' 01 02 06      // runs 3 stages\n'
-    //   + '    ' + appName + ' 00 - 09       // run 10 stages\n\n'
-    //   ;
-    //
-    // logFn( help_str );
-    // exitGoodFn();
+  // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
+  function _00HelpFn ( arg_list ) {
+    var
+      help_fn = require( fqBinDirname + '/xhi_00' ),
+      xhi_obj = makeXhiObj( arg_list )
+      ;
+
+    help_fn.call( xhi_obj );
   }
   // == . END PUBLIC METHOD /_00HelpFn/ ===============================
 
   // == BEGIN PUBLIC METHOD /_01InstallFn/ ============================
-  function _01InstallFn () {
+  function _01InstallFn ( arg_list ) {
     var
       install_fn = require( fqBinDirname + '/xhi_01' ),
-      xhi_obj    = makeXhiObj()
+      xhi_obj    = makeXhiObj( arg_list )
       ;
 
     install_fn.call( xhi_obj );
-
-    // var context_obj, stream_obj;
-    //
-    // context_obj = this;
-    // logFn( 'Install dependencies using "npm install"...' );
-    //
-    // stream_obj = makeSpawnObj( 'npm', ['install'] );
-    // stream_obj.stdout.on( 'data', function ( data ) { logFn(  data.toString() ); } );
-    // stream_obj.stderr.on( 'data', function ( data ) { warnFn( data.toString() ); } );
-    // stream_obj.on( 'close',
-    //   function ( exit_code ) {
-    //     if ( exit_code === 0 ) {
-    //       logFn( 'Success!' );
-    //     }
-    //     else {
-    //       warnFn( 'The install did not work as expected.' );
-    //       warnFn( 'Please run "npm install" to diagnose.' );
-    //     }
-    //     process.exit( exit_code );
-    //   }
-    // );
   }
   // == . END PUBLIC METHOD /_01InstallFn/ ============================
 
@@ -777,38 +750,26 @@
 
   commandTable = makeCommandTable([
     [ 'fn',              'alias_list',      'descr_str',  'help_list' ],
-    [ _00HelpFn,       [ 'help'          ], 'Describe capability. '
-      + 'Use "help help" for more detail.',
-      [ '',              'Show stage and short info.',
-        'long',          'Show stage and long general info.',
-        'all',           'Show all stages available.',
-        'install',       'Show stage and info on "install"',
-        '01',            'same as above',
-        'install deploy','show help for two steps',
-        '01,14',         'same as above',
-        '01-10',         'Show stages and info on 01 through 09',
-        'install-build', 'Show stages and info from install to build',
-      ]
-    ],
+    [ dispatchFn,      [ 'help'          ],  'Describe capability. '  ],
     [ _01InstallFn,    [ 'install'       ], 'Download+install npm mods',
       [ 'install', 'Runs npm install' ] ],
     [ _02SetupFn,      [ 'setup'         ], 'Patch+copy dev assets'     ],
     [ _03ShowArchFn,   [ 'design'        ], 'Show architecture docs'    ],
-    [ _04DevPullFn,    [ 'dev-pull'      ], 'Pull from Git, sync libs'  ],
-    [ _05DevStartFn,   [ 'dev-start'     ], 'Start local web services'  ],
-    [ _06DevLintFn,    [ 'dev-lint'      ], 'Lint changed code'         ],
-    [ _07DevTestFn,    [ 'dev-test'      ], 'Run regression tests'      ],
-    [ _08DevCoverFn,   [ 'dev-cover'     ], 'Create coverage reports'   ],
-    [ _09CommitFn,     [ 'dev-commit'    ], 'Save validate code to repo'],
+    [ _04DevPullFn,    [ 'dev_pull'      ], 'Pull from Git, sync libs'  ],
+    [ _05DevStartFn,   [ 'dev_start'     ], 'Start local web services'  ],
+    [ _06DevLintFn,    [ 'dev_lint'      ], 'Lint changed code'         ],
+    [ _07DevTestFn,    [ 'dev_test'      ], 'Run regression tests'      ],
+    [ _08DevCoverFn,   [ 'dev_cover'     ], 'Create coverage reports'   ],
+    [ _09CommitFn,     [ 'dev_commit'    ], 'Save validate code to repo'],
     [ _10BuildFn,      [ 'build', 'make' ], 'Create app distribution'   ],
     [ _11PublishFn,    [ 'publish'       ], 'Upload to NPM, Coveralls'  ],
-    [ _12DevRestartFn, [ 'dev-restart'   ], 'Cycle local web server'    ],
-    [ _13DevStopFn,    [ 'dev-stop'      ], 'Stop development server'   ],
+    [ _12DevRestartFn, [ 'dev_restart'   ], 'Cycle local web server'    ],
+    [ _13DevStopFn,    [ 'dev_stop'      ], 'Stop development server'   ],
     [ _14DeployFn,     [ 'deploy'        ], 'Upload distro to servers'  ],
-    [ _15ProdStartFn,  [ 'prod-start'    ], 'Start prod web services'   ],
-    [ _16ProdRestartFn,[ 'prod-restart'  ], 'Cycle production process'  ],
-    [ _17ProdStopFn ,  [ 'prod-stop'     ], 'Stop production process'   ],
-    [ _18FetchInfoFn,  [ 'fetch-info'    ], 'Fetch prod info'           ],
+    [ _15ProdStartFn,  [ 'prod_start'    ], 'Start prod web services'   ],
+    [ _16ProdRestartFn,[ 'prod_restart'  ], 'Cycle production process'  ],
+    [ _17ProdStopFn ,  [ 'prod_stop'     ], 'Stop production process'   ],
+    [ _18FetchInfoFn,  [ 'fetch_info'    ], 'Fetch prod info'           ],
     [ _19UninstallFn , [ 'uninstall'     ], 'Remove ' + appName         ]
   ]);
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
@@ -836,8 +797,7 @@
     command_row = getTableRow( param1_str ) || getTableRow( 0 );
 
     if ( ! command_row ) { abortFn( 'Cannot run!' ); }
-    if ( command_row.idx === 0 ) { return _00HelpFn( param_list ); }
-    command_row.fn( param_list );
+    command_row.fn.call( command_row, param_list);
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
