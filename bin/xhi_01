@@ -10,7 +10,7 @@ function installFn () {
 
   context_obj.logFn( 'Install dependencies using "npm install"...' );
 
-  process.chdir( fqProjDirname );
+  process.chdir( context_obj.fqProjDirname );
   stream_obj = context_obj.makeSpawnObj( 'npm', ['install'] );
   stream_obj.stdout.on( 'data', function ( data ) {
     context_obj.logFn(  data.toString() ); }
@@ -30,7 +30,8 @@ function installFn () {
       process.exit( exit_code );
     }
   );
-  process.chdir( fqOrigDirname );
+  process.chdir( context_obj.fqOrigDirname );
 }
 // == . END PUBLIC METHOD /installFn/ =================================
 module.exports = installFn;
+

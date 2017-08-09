@@ -800,9 +800,9 @@ function getTzOffsetMs ( test_obj ) {
 
     solve_int = get_offset_fn.apply( __undef, arg_list );
     msg_str    = __Str( idx ) + '. '
-      + __Str( solve_int ) + ' === /^\\d\\d*$/';
+      + __Str( solve_int ) + ' === /^-?\\d\\d*$/';
 
-    test_obj.ok( __Str(solve_int).match( /^\d\d*$/ ), msg_str );
+    test_obj.ok( __Str(solve_int).match( /^-?\d\d*$/ ), msg_str );
   }
   test_obj.done();
 }
@@ -1035,110 +1035,89 @@ function makeCommaNumStr ( test_obj ) {
 }
 
 function makeDateStr ( test_obj ) {
-  // TODO 2017-04-14 crit: Adjust test for timezone
-  // The test computer must be set to tz America/Los_Angeles to pass.
   var
-    date_obj     = new Date(),
+    date_obj      = new Date(),
+    tz_offset_ms  = __util._getTzOffsetMs_(),
     assert_table  = [
       // [ arg_map, expect_data ]
       [ __null, __blank ],
       [ { foo : '_bar_' }, __blank ],
-      [ { _date_ms_ : 1474323404010 }, '2016-09-19' ],
-      [ { _date_ms_ : 1474323404020, _time_idx_ : 0 },
-        '2016-09-19' ],
-      [ { _date_ms_ : 1474323404498, _time_idx_ : 1 },
-        '2016-09-19 15' ],
-      [ { _date_ms_ : 1474323404498, _time_idx_ : 2 },
-        '2016-09-19 15:16' ],
-      [ { _date_ms_ : 1474323404498, _time_idx_ : 3 },
-        '2016-09-19 15:16:44' ],
-      [ { _date_ms_ : 1274323404500 }, '2010-05-19' ],
-      [ { _date_ms_ : 1274323404999, _time_idx_ : 0 },
-        '2010-05-19' ],
-      [ { _date_ms_ : 1274323404999, _time_idx_ : 1 },
-        '2010-05-19 19' ],
-      [ { _date_ms_ : 1274323404999, _time_idx_ : 2 },
-        '2010-05-19 19:43' ],
-      [ { _date_ms_ : 1274323405000, _time_idx_ : 3  },
-        '2010-05-19 19:43:25' ],
+      [ { _date_ms_ : 1474323404498 }, '2016-09-19' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 0 }, '2016-09-19' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 1 }, '2016-09-19 22' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 2 }, '2016-09-19 22:16' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 3 }, '2016-09-19 22:16:44' ],
+      [ { _date_ms_ : 1274323404500 }, '2010-05-20' ],
+      [ { _date_ms_ : 1274323404999, _time_idx_ : 0 }, '2010-05-20' ],
+      [ { _date_ms_ : 1274323404999, _time_idx_ : 1 }, '2010-05-20 02' ],
+      [ { _date_ms_ : 1274323404999, _time_idx_ : 2 }, '2010-05-20 02:43' ],
+      [ { _date_ms_ : 1274323405000, _time_idx_ : 3 }, '2010-05-20 02:43:25' ],
       [ { _date_obj_ : date_obj }, '2013-07-20' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 0 },
-        '2013-07-20' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 1 },
-        '2013-07-20 05' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 2 },
-        '2013-07-20 05:30' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 3 },
-        '2013-07-20 05:30:05' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 4 },
-        '2013-07-20' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 0 },
-        '2013-07-20' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 1 },
-        '2013-07-20 05' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 2 },
-        '2013-07-20 05:30' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 3 },
-        '2013-07-20 05:30:05' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 4 },
-        '2013-07-20' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : -1 },
-        '2013-07-20 05h' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : -2 },
-        '2013-07-20 05h:30m' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : -3 },
-        '2013-07-20 05h:30m:05s' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : -4 },
-        '2013-07-20' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 0 }, '2013-07-20' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 1 }, '2013-07-20 12' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 2 }, '2013-07-20 12:30' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 3 }, '2013-07-20 12:30:05' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 4 }, '2013-07-20' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 0 }, '2013-07-20' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 1 }, '2013-07-20 12' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 2 }, '2013-07-20 12:30' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 3 }, '2013-07-20 12:30:05' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 4 }, '2013-07-20' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : -1 }, '2013-07-20 12h' ],
+
+      [ { _date_ms_ : 1374323405099, _time_idx_ : -2 }, '2013-07-20 12h:30m' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : -3 }, '2013-07-20 12h:30m:05s' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : -4 }, '2013-07-20' ],
 
       // US format test
       [ { _date_ms_ : 1474323404010, _order_str_ : '_us_' }, '09/19/2016' ],
       [ { _date_ms_ : 1474323404020, _order_str_ : '_us_', _time_idx_ : 0 },
         '09/19/2016' ],
       [ { _date_ms_ : 1474323404498, _order_str_ : '_us_', _time_idx_ : 1 },
-        '09/19/2016 15' ],
+        '09/19/2016 22' ],
       [ { _date_ms_ : 1474323404498, _order_str_ : '_us_', _time_idx_ : 2 },
-        '09/19/2016 15:16' ],
+        '09/19/2016 22:16' ],
       [ { _date_ms_ : 1474323404498, _order_str_ : '_us_', _time_idx_ : 3 },
-        '09/19/2016 15:16:44' ],
-      [ { _date_ms_ : 1274323404500, _order_str_ : '_us_' }, '05/19/2010' ],
+        '09/19/2016 22:16:44' ],
+      [ { _date_ms_ : 1274323404500, _order_str_ : '_us_' }, '05/20/2010' ],
       [ { _date_ms_ : 1274323404999, _order_str_ : '_us_', _time_idx_ : 0 },
-        '05/19/2010' ],
+        '05/20/2010' ],
       [ { _date_ms_ : 1274323404999, _order_str_ : '_us_', _time_idx_ : 1 },
-        '05/19/2010 19' ],
+        '05/20/2010 02' ],
       [ { _date_ms_ : 1274323404999, _order_str_ : '_us_', _time_idx_ : 2 },
-        '05/19/2010 19:43' ],
+        '05/20/2010 02:43' ],
       [ { _date_ms_ : 1274323405000, _order_str_ : '_us_', _time_idx_ : 3  },
-        '05/19/2010 19:43:25' ],
-      [ { _date_obj_ : date_obj , _order_str_ : '_us_' }, '07/20/2013' ],
-      [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : 0 },
+        '05/20/2010 02:43:25' ],
+
+      [ { _date_obj_ : date_obj, _order_str_ : '_us_' }, '07/20/2013' ],
+      [ { _date_obj_ : date_obj, _order_str_ : '_us_', _time_idx_ : 0 },
         '07/20/2013' ],
-      [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : 1 },
-        '07/20/2013 05' ],
-      [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : 2 },
-        '07/20/2013 05:30' ],
-      [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : 3 },
-        '07/20/2013 05:30:05' ],
-      [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : 4 },
+      [ { _date_obj_ : date_obj, _order_str_ : '_us_', _time_idx_ : 1 },
+        '07/20/2013 12' ],
+      [ { _date_obj_ : date_obj, _order_str_ : '_us_', _time_idx_ : 2 },
+        '07/20/2013 12:30' ],
+      [ { _date_obj_ : date_obj, _order_str_ : '_us_', _time_idx_ : 3 },
+        '07/20/2013 12:30:05' ],
+      [ { _date_obj_ : date_obj, _order_str_ : '_us_', _time_idx_ : 4 },
         '07/20/2013' ],
+
       [ { _date_ms_ : 1374323405099, _order_str_ : '_us_', _time_idx_ : 0 },
         '07/20/2013' ],
       [ { _date_ms_ : 1374323405099, _order_str_ : '_us_', _time_idx_ : 1 },
-        '07/20/2013 05' ],
+        '07/20/2013 12' ],
       [ { _date_ms_ : 1374323405099, _order_str_ : '_us_', _time_idx_ : 2 },
-        '07/20/2013 05:30' ],
+        '07/20/2013 12:30' ],
       [ { _date_ms_ : 1374323405099, _order_str_ : '_us_', _time_idx_ : 3 },
-        '07/20/2013 05:30:05' ],
-      [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : 4 },
-        '07/20/2013' ],
+        '07/20/2013 12:30:05' ],
+
       [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : -1 },
-        '07/20/2013 05h' ],
+        '07/20/2013 12h' ],
       [ { _date_ms_ : 1374323405099, _order_str_ : '_us_', _time_idx_ : -2 },
-        '07/20/2013 05h:30m' ],
+        '07/20/2013 12h:30m' ],
       [ { _date_ms_ : 1374323405099, _order_str_ : '_us_', _time_idx_ : -3 },
-        '07/20/2013 05h:30m:05s' ],
+        '07/20/2013 12h:30m:05s' ],
       [ { _date_obj_ : date_obj, _order_str_ : '_us_',     _time_idx_ : -4 },
-        '07/20/2013' ]
+      '07/20/2013' ]
     ],
 
     assert_count = assert_table.length,
@@ -1147,12 +1126,16 @@ function makeDateStr ( test_obj ) {
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
 
-  date_obj.setTime( 1374323405099 );
+  date_obj.setTime( 1374323405099 + tz_offset_ms );
+
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list  = assert_table[ idx ];
     arg_map      = expect_list[ __0 ];
     expect_str   = expect_list[ __1 ];
+    if ( arg_map && arg_map._date_ms_ ) {
+      arg_map._date_ms_ += tz_offset_ms;
+    }
 
     solve_str   = make_str_fn( arg_map );
     msg_str     = __Str( idx ) + '. '
