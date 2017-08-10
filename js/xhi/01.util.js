@@ -943,7 +943,7 @@ xhi._makeUtil_ = function ( aMap ) {
   // Purpose   : Create HH:MM:SS time string from UTC time integer in ms
   // Example   : clock_str = makeClockStr( 1465621376000 ); // '05:02:56'
   // Arguments : ( positional )
-  //   0 - int (required) time_ms  UTC time in milliseconds
+  //   0 - int (required) time_ms UTC time in milliseconds
   //   1 - int (default 3) time_idx Precision
   //     -3 === [DDd:]HHh:MMm:SSs
   //     -3 === [DDd:]HHh:MMm
@@ -957,7 +957,7 @@ xhi._makeUtil_ = function ( aMap ) {
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
   //       tz_offset_ms = aMap._util_._getTzOffsetMs_(),
-  //       local_ms     = raw_utc_ms - tz_offset_ms;
+  //       local_ms     = raw_utc_ms + tz_offset_ms;
   //
   function makeClockStr ( arg_time_ms, arg_time_idx ) {
     var
@@ -1078,7 +1078,6 @@ xhi._makeUtil_ = function ( aMap ) {
   //    Returns a string like '2016-09-18 12:45:52'
   // 3. makeDateStr({ _date_ms_ : 1474311626050 })
   //    Returns '2016-09-19'
-  //
   // Arguments :
   //   * _date_obj_ : A valid date object.
   //   * _date_ms_  : A date time in ms.
@@ -1090,6 +1089,11 @@ xhi._makeUtil_ = function ( aMap ) {
   //       the clock string format
   //   * _order_str_ (default ''):
   //       Request '_us_' results in stupid-format: mm/dd/yyyy hh:mm:ss.
+  // Cautions  :
+  //   Remember to use your local timezone offset if you want to
+  //   show local time. Example:
+  //       tz_offset_ms = aMap._util_._getTzOffsetMs_(),
+  //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
   function makeDateStr ( arg_map ) {
     var
@@ -1582,14 +1586,12 @@ xhi._makeUtil_ = function ( aMap ) {
   //   series_map = makeSeriesMap({
   //     _max_ms_       : 1465459980000,
   //     _min_ms_       : 1465452840000,
-  //     _tgt_count_    : 12,
-  //     _tz_offset_ms_ : 25200000
+  //     _tgt_count_    : 12
   //   });
   // Arguments :
-  //   _max_ms_       : (req) int start UTC time in milliseconds
-  //   _min_ms_       : (req) int end UTC time in milliseconds
+  //   _max_ms_       : (req) int start local-time milliseconds
+  //   _min_ms_       : (req) int end local-time in milliseconds
   //   _tgt_count_    : (req) int desired number of divisions (+/- 50%)
-  //   _tz_offset_ms_ : (req) int UTC offset for timezone
   //
   //  Returns
   //   A map useful for plotting a quantized time series like so:
@@ -1629,15 +1631,12 @@ xhi._makeUtil_ = function ( aMap ) {
   //
   function makeSeriesMap( arg_map ) {
     var
-      map          = castMap( arg_map, {} ),
-      tz_offset_ms = castInt( map._tz_offset_ms_, __0 ),
-      max_ms       = castInt( map._max_ms_ - tz_offset_ms, __0 ),
-      min_ms       = castInt( map._min_ms_ - tz_offset_ms, __0 ),
-      tgt_count    = castInt( map._tgt_count_ ),
+      map       = castMap( arg_map, {}       ),
+      max_ms    = castInt( map._max_ms_, __0 ),
+      min_ms    = castInt( map._min_ms_, __0 ),
+      tgt_count = castInt( map._tgt_count_   ),
 
-      date_obj     = new __Date(),
-      offset_str   = makeClockStr( tz_offset_ms ),
-      offset_list  = offset_str[ vMap._split_ ](':'),
+      date_obj  = new __Date(),
 
       span_ms,         unit_ms_list, unit_count,
       btm_idx,         top_idx,      last_btm_idx,
@@ -1649,8 +1648,8 @@ xhi._makeUtil_ = function ( aMap ) {
       width_ratio,     left_ratio,   accum_ratio,
       date_ms,         date_offset,
 
-      solve_map,       solve_ms,     solve_str,
-      solve_time_list, solve_date_list
+      solve_map,       solve_ms,        time_ms,
+      solve_str,       solve_time_list, solve_date_list
       ;
 
     // Get the time span and a list of available units
@@ -1719,10 +1718,8 @@ xhi._makeUtil_ = function ( aMap ) {
     solve_map._unit_ratio_ = solve_map._unit_ms_ / span_ms;
 
     // Create date list
-    date_obj.setTime( min_ms );
-    date_obj.setHours(
-      -offset_list[ __0 ], -offset_list[ __1], -offset_list[__2]
-    );
+    date_obj.setTime( min_ms   );
+    date_obj.setHours( 0, 0, 0 );
     date_ms     = date_obj.getTime();
     date_offset = min_ms - date_ms;
 
@@ -1746,7 +1743,13 @@ xhi._makeUtil_ = function ( aMap ) {
     solve_time_list = [];
     while ( left_ratio < __1 ) {
       solve_ms  = __floor( left_ratio * span_ms ) + min_ms;
-      solve_str = makeClockStr( solve_ms, solve_map._time_idx_ );
+      date_obj.setTime( solve_ms );
+      time_ms = __Num( date_obj.getHours()   ) * configMap._hrs_ms_
+        +       __Num( date_obj.getMinutes() ) * configMap._min_ms_
+        +       __Num( date_obj.getSeconds() ) * configMap._sec_ms_
+        ;
+
+      solve_str = makeClockStr( time_ms, solve_map._time_idx_ );
       solve_time_list[ __push ]( solve_str );
       left_ratio += solve_map._unit_ratio_;
     }
