@@ -20,13 +20,13 @@ var
   aKey        = 'test',
   libDir      = '../js/',
   libPrefix   = libDir + __ns + '/',
-  nuFn        = function () { console.log( aKey + '.' + this , arguments ); },
+  mockFn      = function () { console.log( aKey + '.' + this , arguments ); },
   mockTestObj = {
-    deepEqual : nuFn.bind( 'deepEqual' ),
-    done      : nuFn.bind( 'done'      ),
-    expect    : nuFn.bind( 'expect'    ),
-    ok        : nuFn.bind( 'ok'        ),
-    test      : nuFn.bind( 'test'      )
+    deepEqual : mockFn.bind( 'deepEqual' ),
+    done      : mockFn.bind( 'done'      ),
+    expect    : mockFn.bind( 'expect'    ),
+    ok        : mockFn.bind( 'ok'        ),
+    test      : mockFn.bind( 'test'      )
   },
   jsdomObj = require( 'jsdom' ),
   winRef   = new jsdomObj.JSDOM().window,
@@ -1924,7 +1924,7 @@ function makeSeriesMap ( test_obj ) {
     delta_list = [
       1000,         // 1s
       5000,         // 5s
-      // 20000,        // 20s
+      20000,        // 20s
       // 40000,        // 40s
       // 140000,       // 2.3m
       // 3540000,      // 5.9m
@@ -1973,22 +1973,22 @@ function makeSeriesMap ( test_obj ) {
        {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00","06:14:00","06:14:00","06:14:01","06:14:01","06:14:01","06:14:01","06:14:01","06:14:02","06:14:02","06:14:02","06:14:03","06:14:03","06:14:03","06:14:03","06:14:04","06:14:04","06:14:04","06:14:04"]},
        {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00","06:14:00","06:14:00","06:14:01","06:14:01","06:14:01","06:14:01","06:14:01","06:14:02","06:14:02","06:14:02","06:14:03","06:14:03","06:14:03","06:14:03","06:14:04","06:14:04","06:14:04","06:14:04"]},
        // end 5s expect list
-  //
-  //       // begin 20s expect list
-  //       {"_time_idx_":3,"_unit_count_":2,"_unit_ms_":10000,"_unit_name_":"10s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:10"]},
-  //       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15"]},
-  //       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15"]},
-  //       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:05","23:14:10","23:14:15"]},
-  //       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
-  //       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
-  //       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
-  //       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:03","23:14:05","23:14:08","23:14:10","23:14:13","23:14:15","23:14:18"]},
-  //       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:01","23:14:02","23:14:03","23:14:04","23:14:05","23:14:06","23:14:07","23:14:08","23:14:09","23:14:10","23:14:11","23:14:12","23:14:13","23:14:14","23:14:15","23:14:16","23:14:17","23:14:18","23:14:19"]},
-  //       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:01","23:14:02","23:14:03","23:14:04","23:14:05","23:14:06","23:14:07","23:14:08","23:14:09","23:14:10","23:14:11","23:14:12","23:14:13","23:14:14","23:14:15","23:14:16","23:14:17","23:14:18","23:14:19"]},
-  //       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:01","23:14:02","23:14:03","23:14:04","23:14:05","23:14:06","23:14:07","23:14:08","23:14:09","23:14:10","23:14:11","23:14:12","23:14:13","23:14:14","23:14:15","23:14:16","23:14:17","23:14:18","23:14:19"]},
-  //       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:01","23:14:02","23:14:03","23:14:04","23:14:05","23:14:06","23:14:07","23:14:08","23:14:09","23:14:10","23:14:11","23:14:12","23:14:13","23:14:14","23:14:15","23:14:16","23:14:17","23:14:18","23:14:19"]},
-  //       // end 20s expect list
-  //
+
+       // begin 20s expect list
+       {"_time_idx_":3,"_unit_count_":2,"_unit_ms_":10000,"_unit_name_":"10s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:10"]},
+       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:05","06:14:10","06:14:15"]},
+       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:05","06:14:10","06:14:15"]},
+       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":5000,"_unit_name_":"5s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:05","06:14:10","06:14:15"]},
+       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:02","06:14:05","06:14:07","06:14:10","06:14:12","06:14:15","06:14:17"]},
+       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:02","06:14:05","06:14:07","06:14:10","06:14:12","06:14:15","06:14:17"]},
+       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:02","06:14:05","06:14:07","06:14:10","06:14:12","06:14:15","06:14:17"]},
+       {"_time_idx_":3,"_unit_count_":8,"_unit_ms_":2500,"_unit_name_":"2.5s","_left_ratio_":0.125,"_unit_ratio_":0.125,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:02","06:14:05","06:14:07","06:14:10","06:14:12","06:14:15","06:14:17"]},
+       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:01","06:14:02","06:14:03","06:14:04","06:14:05","06:14:06","06:14:07","06:14:07","06:14:09","06:14:09","06:14:10","06:14:12","06:14:13","06:14:14","06:14:15","06:14:16","06:14:17","06:14:18","06:14:19"]},
+       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:01","06:14:02","06:14:03","06:14:04","06:14:05","06:14:06","06:14:07","06:14:07","06:14:09","06:14:09","06:14:10","06:14:12","06:14:13","06:14:14","06:14:15","06:14:16","06:14:17","06:14:18","06:14:19"]},
+       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:01","06:14:02","06:14:03","06:14:04","06:14:05","06:14:06","06:14:07","06:14:07","06:14:09","06:14:09","06:14:10","06:14:12","06:14:13","06:14:14","06:14:15","06:14:16","06:14:17","06:14:18","06:14:19"]},
+       {"_time_idx_":3,"_unit_count_":20,"_unit_ms_":1000,"_unit_name_":"1s","_left_ratio_":0.05,"_unit_ratio_":0.05,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:01","06:14:02","06:14:03","06:14:04","06:14:05","06:14:06","06:14:07","06:14:07","06:14:09","06:14:09","06:14:10","06:14:12","06:14:13","06:14:14","06:14:15","06:14:16","06:14:17","06:14:18","06:14:19"]},
+       // end 20s expect list
+
   //       // begin 40s expect list
   //       {"_time_idx_":3,"_unit_count_":3,"_unit_ms_":15000,"_unit_name_":"15s","_left_ratio_":0.375,"_unit_ratio_":0.375,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:15","23:14:30"]},
   //       {"_time_idx_":3,"_unit_count_":3,"_unit_ms_":15000,"_unit_name_":"15s","_left_ratio_":0.375,"_unit_ratio_":0.375,"_date_list_":[{"_date_str_":"06/07/2016","_width_ratio_":1}],"_time_list_":["23:14:15","23:14:30"]},
