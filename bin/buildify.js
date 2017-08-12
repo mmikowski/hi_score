@@ -162,9 +162,8 @@
 //           "do_vendor": true,
 //           "target_file": "ex01.js - should be redundant"
 //         },
-//         // TODO 2017-07-24 mmikowski warn: determine template reqs
-//         "tmplt_make_list": [
-//         ]
+//         // TODO 2017-07-24 mmikowski warn: add tmplt reqs
+//         "tmplt_make_list": []
 //       }
 //     ]
 //   }
@@ -657,8 +656,9 @@
 //   ## Find UglifyCSS
 //   ## Validiate input files
 //   ## Validate and create build dir and move global log to it
-//   ##  TODO: 2017-07-21 warn: Put these under a build number in builddir
-//   ##  TODO: 2017-07-21 warn: Link latest build builddir/xxx -> last
+//   ##  TODO 2017-07-21 mmikowski warn:
+//   ##    1. Put these under a build number in builddir
+//   ##    2. Link latest build builddir/xxx -> last
 //   ## BEGIN process each manifest in turn
 //     ## Get path of manifest and determine output names
 //     ## Read manifest and append sources to arrays copy / css / js / copy_dir

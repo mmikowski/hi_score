@@ -13,11 +13,11 @@
 xhi._makeApp_ = function ( app_key ) {
   'use strict';
 
-  // TODO 2017-02-27 mikem warn: Provide configuration options.
+  // TODO 2017-02-27 mmikowski warn: Provide configuration options.
   // Calling routine should  be able to list modules or select
   // a pre-defined group that does not include everything.
   //
-  // TODO 2017-07-13 mikem warn: Include library loader here?
+  // TODO 2017-07-13 mmikowski warn: Include library loader here?
   //
   var app_map = xhi._makeRoot_( app_key );
   xhi._makeUtil_(     app_map );
