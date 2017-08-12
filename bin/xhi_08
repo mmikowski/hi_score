@@ -2,11 +2,31 @@
 /* vim: set ft=javascript: */
 
 // == BEGIN PUBLIC METHOD /_08DevCoverFn/ ==========================
-function coverFn () {
-  var context_obj = this;
+// == Prior implementation (this works, but single-stage only)
+// function coverFn () {
+//   var context_obj = this;
+//
+//   process.chdir( context_obj.fqProjDirname );
+//   context_obj.exeCpeFn(
+//     context_obj.fqModuleDirname + '/.bin/istanbul',
+//     [ 'cover','-x','**/vendor/**',
+//        context_obj.fqModuleDirname + '/.bin/nodeunit',
+//        context_obj.fqProjDirname   + '/test/xhi_level_0.js'
+//     ]
+//   );
+//   process.chdir( context_obj.fqOrigDirname );
+// }
+// == End Prior implementation
 
+function coverFn () {
+  var
+    context_obj = this,
+    stream_obj
+    ;
+
+  context_obj.logFn( 'Start Istanbul coverage check.' );
   process.chdir( context_obj.fqProjDirname );
-  context_obj.exeCpeFn(
+  stream_obj = context_obj.makeSpawnObj( 
     context_obj.fqModuleDirname + '/.bin/istanbul',
     [ 'cover','-x','**/vendor/**',
        context_obj.fqModuleDirname + '/.bin/nodeunit',
@@ -14,6 +34,25 @@ function coverFn () {
     ]
   );
   process.chdir( context_obj.fqOrigDirname );
+
+  stream_obj.stdout.on( 'data', function ( data ) {
+    context_obj.logFn(  data.toString() ); }
+  );
+  stream_obj.stderr.on( 'data', function ( data ) { 
+    context_obj.warnFn( data.toString() ); }
+  );
+  stream_obj.on( 'close',
+    function ( exit_code ) {
+      if ( exit_code === 0 ) {
+        context_obj.nextFn( 'End Istanbul coverage check.' );
+      }
+      else {
+        context_obj.abortFn( 
+          'Abort Istanbul coverage check.\n'
+        );
+      }
+    }
+  );
 }
 // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
 module.exports = coverFn;

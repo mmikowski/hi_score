@@ -15,11 +15,11 @@
 //
 function setupFn () {
   var
-    context_obj  = this,
-    abort_fn     = context_obj.abortFn,
-    app_name     = context_obj.appName,
-    exit_good_fn = context_obj.exitGoodFn,
-    log_fn       = context_obj.logFn
+    context_obj = this,
+    abort_fn    = context_obj.abortFn,
+    app_name    = context_obj.appName,
+    next_fn     = context_obj.nextFn,
+    log_fn      = context_obj.logFn
     ;
 
   context_obj.flowObj.exec(
@@ -50,10 +50,10 @@ function setupFn () {
       context_obj.checkGitInstallFn.call({
         then_fn  : this,
         catch_fn : function () {
-          log_fn( 'Exiting without installing git commit hook.' );
-          log_fn( 'Please run this step again if you add git.' );
-          process.chdir( context_obj.fqOrigDirname );
-          exit_good_fn();
+          next_fn(
+            'Exiting without installing git commit hook.\n'
+            + 'Please run this step again if you add git.'
+          );
         }
       });
     },
@@ -72,9 +72,7 @@ function setupFn () {
       });
     },
     function _02_99FinishRunFn () {
-      log_fn( app_name + ' stage 02 step 99: Setup finish.' );
-      process.chdir( context_obj.fqOrigDirname );
-      exit_good_fn();
+      next_fn( app_name + ' stage 02 step 99: Setup finish.' );
     }
   );
 }

@@ -3,59 +3,39 @@
 
 // == BEGIN PUBLIC METHOD /helpFn/ ====================================
 function helpFn ( arg_list ) {
-  var 
-    context_obj = this,
-    app_name    = context_obj.appName,
-    help_str    = '\n'
+  var
+    xhi_obj  = this,
+    app_name = xhi_obj.appName,
+    next_fn  = xhi_obj.next_fn,
+    pad_name = '      ' + app_name,
+    help_str = '\n'
+      + app_name + ' help -v\n'
       + '  Name      : ' + app_name + '\n'
       + '  Purpose   : Run hi_score lifecycle tools\n'
-      + '  Example   : xhi 00 # or xhi help\n'
+      + '  Example   : xhi help\n'
       + '  Arguments : (positional)\n'
-      + '    <range> || help <range> || help all\n\n'
+      + '    [ help ] <range> [ -v ]\n'
       + '    <range> may be:\n'
-      + '    1. A single stage number, e.g. 01.\n'
-      + '    2. A list of stage numbers, e.g. 1,2,3,6.\n'
-      + '    3. A range of stage numbers, e.g. 0-9 or all.\n'
-      + '    The life cycle number as presented below.\n'
-      + '     The default is 00.\n'
+      + '    1. A single stage number or name.    Ex: 01.\n'
+      + '    2. A list of stage numbers or names. Ex: 1,2,3,6.\n'
+      + '    3. A range of stages                 Ex: 1-5 or all\n'
+      + '    See ' + app_name + ' help all to list stages.\n'
       + '  More examples:\n'
+      + '    Run stage range\n'
+      + pad_name + ' dev_pull        // run stage 04\n'
+      + pad_name + ' 1,2,6           // run 3 stages\n'
+      + pad_name + ' 1-9             // run 9 stages in range\n'
       + '    Generic help\n'
-      + '    ' + app_name + ' 00                // Short help \n'
-      + '    ' + app_name + ' help              // Ditto\n'
-      + '    ' + app_name + ' 00 -v             // Verbose help\n'
-      + '    ' + app_name + ' help -v           // Ditto\n\n'
-
-      + '  Help on single stage\n'
-      + '    ' + app_name + ' 00 01           // Short help stage 01\n'
-      + '    ' + app_name + ' help 01         // Ditto\n'
-      + '    ' + app_name + ' help install    // Ditto\n'
-      + '    ' + app_name + ' 00   01 -v      // Verbose help on stage 01\n'
-      + '    ' + app_name + ' 00 install -v   // Ditto\n'
-      + '    ' + app_name + ' help install -v // Ditto\n'
-
-      + '  Help on multiple stages\n'
-      + '  ' + app_name + ' 00 0,4              // Short help on stages 0 and 4\n'
-      + '  ' + app_name + ' help help,dev_pull  // Ditto\n'
-      + '  ' + app_name + ' 00 0,4 -v           // Verbose help on stages 0 and 4\n'
-      + '  ' + app_name + ' 00 help,dev_pull -v // Ditto\n'
-
-      + 'Help on stage range\n'
-      + '  ' + app_name + ' 00 0-8                 // Short help on stages 0-8\n'
-      + '  ' + app_name + ' 00 install-dev_cover   // Ditto\n'
-      + '  ' + app_name + ' help 0-8               // Ditto\n'
-      + '  ' + app_name + ' help install-dev_cover // Ditto\n'
-
-      + '  ' + app_name + ' 00 all                 // Short help on all stages\n'
-      + '  ' + app_name + ' help all               // Ditto\n'
-      + '  ' + app_name + ' 00 all -v              // Long help on all stages\n'
-      + '  ' + app_name + ' help all -v            // Ditto\n'
-      + '    ' + app_name + ' 1,2,6       // run 3 stages\n'
-      + '    ' + app_name + ' 1-9         // run 10 stages\n'
-      + '    ' + app_name + ' all         // run all stages\n\n'
+      + pad_name + ' help            // Short help \n'
+      + '    Help stage range\n'
+      + pad_name + ' help 01         // Short help on stage 01\n'
+      + pad_name + ' help install    // Same\n'
+      + pad_name + ' help all -v     // Long help on all stages\n'
+      + pad_name + ' help 1,4        // Short help on stages 1,4\n'
+      + pad_name + ' help help,dev_pull -v // Long help on stages 1,4\n'
       ;
 
-  context_obj.logFn( help_str );
-  context_obj.exitGoodFn();
+  next_fn( help_str );
 }
 // == . END PUBLIC METHOD /helpFn/ ====================================
 module.exports = helpFn;

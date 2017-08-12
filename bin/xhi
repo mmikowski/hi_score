@@ -129,7 +129,7 @@
     __1 = 1,
 
     // Declare curried functions
-    abortFn, logFn, warnFn,
+    abortFn, exitFn, logFn, warnFn,
 
     // Declare config data
     fqHookFilename,  pkgMatrix,    setupMatrix,
@@ -144,11 +144,8 @@
   // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
-  function exitGoodFn () { process.exit( 0 ); }
-  function exitBadFn  () { process.exit( 1 ); }
-
   // BEGIN utility /_outFn/
-  // Purpose: provides abortFn, logFn, and warnFn
+  // Purpose: provides abortFn, exitFn, logFn, and warnFn
   function _outFn() {
     var
       context_obj = this || {},
@@ -157,19 +154,26 @@
       arg_list   = Array.from( arguments )
       ;
 
-    arg_list.unshift( prompt_str );
-    console[ method_str ].apply( null, arg_list );
+    if ( arg_list.length > 0 ) {
+      arg_list.unshift( prompt_str );
+      console[ method_str ].apply( null, arg_list );
+    }
     if ( context_obj._cwd_name_ ) {
       process.chdir( context_obj._cwd_name_ );
     }
-    if ( context_obj._do_abort ) { exitBadFn(); }
+    if ( context_obj._do_abort ) { process.exit( 1 ); }
+    if ( context_obj._do_exit  ) { process.exit( 0 ); }
   }
-
   abortFn = _outFn.bind({
     _cwd_name_   : fqOrigDirname,
     _do_abort_   : true,
     _method_str_ : 'warn',
     _prompt_str_ : appName + '-abort> ',
+  });
+  exitFn = _outFn.bind({
+    _cwd_name_   : fqOrigDirname,
+    _do_exit_    : true,
+    _prompt_str_ : appName + '-exit> ',
   });
   logFn   = _outFn.bind();
   warnFn  = _outFn.bind({
@@ -178,32 +182,70 @@
   });
   // . END utility /_outFn/
 
+  // BEGIN utility /makeParamMap/
+  // Purpose: return a map like
+  //   { range_list : [ 0,1,2,3,4 ], do_verbose : true }
+  function makeParamMap ( param_list ) {
+    var 
+      do_verbose = false,
+      i, edge_list, range_list
+      ;
+
+    param_list.forEach( function ( str, idx ) {
+      if ( str === '-v' ) {
+        do_verbose = true;
+        return;
+      }
+
+      // skip range list if already defined
+      if ( range_list ) { return true; } 
+
+      if ( str.match(/-/) ) {
+        edge_list  = str.split( '-', 2 );
+        range_list = [];
+
+        for ( i = Number( edge_list[ 0 ] ); i <= Number( edge_list[ 1 ] ); i++ ) {
+          range_list.push( i );
+        }
+        return;
+      }
+
+      if ( str.match(/,/) ) {
+        range_list = str.spit(',');
+        range_list.forEach( function ( data, idx ) {
+          range_list[ idx ] = Number( data );
+        });
+        return;
+      }
+
+      if ( ! isNaN( Number( str ) ) ) {
+        range_list = [ Number( str ) ];
+      }
+    });
+
+    return {
+      do_verbose : do_verbose,
+      range_list : range_list
+    };
+  }
+  // . END utility /makeParamMap/
 
   // BEGIN utility /makeCommandTable/
   function makeCommandTable ( raw_table ) {
     var
-      row_count   = raw_table.length,
-      head_row    = raw_table.shift,
-      field_count = head_row.length,
-
-      solve_table = [],
-      src_list, row_map
+      head_row    = raw_table.shift(),
+      solve_table = []
       ;
 
-    raw_table.forEach( ( src_list, row_idx ) => {
-      row_id  = String( row_idx );
+    raw_table.forEach( function ( src_list, row_idx ) {
+      var row_id = String( row_idx ), row_map;
       if ( row_id.length < 2 ) { row_id = '0' + row_id; }
       row_map = { id : row_id, idx : row_idx };
-      head_row.forEach( ( head_val, head_idx ) => {
+      head_row.forEach( function ( head_val, head_idx ) {
         row_map[ head_val ] = src_list[ head_idx ];
       });
       solve_table.push( row_map );
     });
-
-    for ( idx = 1; idx < row_count; idx++ ) {
-      src_list = raw_table[ idx ];
-      row_map = { idx : idx };
-    }
     return solve_table;
   }
   // . END utility /makeCommandTable/
@@ -214,8 +256,8 @@
   }
   // . END utility /filterByAlias/
 
-  // BEGIN utility /getTableRow/
-  function getTableRow ( row_id ) {
+  // BEGIN utility /getTableRowMap/
+  function getTableRowMap ( row_id ) {
     var
       idx = parseInt( row_id, 10 ),
       filter_list
@@ -229,7 +271,7 @@
     }
     return filter_list[ 0 ];
   }
-  // . END utility /getTableRow/
+  // . END utility /getTableRowMap/
 
   // BEGIN utlity /grepFileFn/
   function grepFileFn ( filename, pattern_str ) {
@@ -360,6 +402,21 @@
       ;
   }
   // . END utility /checkExeList/
+
+  // BEGIN utility /checkNodeVersion/
+  function checkNodeVersion () {
+    var abort_str;
+    if ( Number( versList[0] ) < minVersionInt ) {
+      abort_str
+        = 'NodeJS Version ' + versList.join('.') + ' is installed.\n'
+        + 'As of ' + appName + '1.2 NodeJS v'
+        + minVersionInt + ' is required.\n'
+        + 'Please upgrade NodeJS and try again.'
+        ;
+      abortFn( abort_str );
+    }
+  }
+  // . END utility /checkNodeVersion/
 
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
@@ -563,17 +620,23 @@
   // BEGIN utility /makeXhiObj/
   // Purpose: Creates context_obj for module libraries
   //
-  function makeXhiObj ( arg_list ) {
+  function makeXhiObj ( arg_map ) {
     return {
+      catch_fn    : arg_map.catch_fn,
+      command_map : arg_map.command_map,
+      next_fn     : arg_map.next_fn,
+      param_map   : arg_map.param_map,
+
+      // TODO remove these in favor of catch_fn and next_fn
       abortFn           : abortFn,
+      exitFn            : exitFn,
+
       appName           : appName,
-      argList           : arg_list,
       checkExeList      : checkExeList,
       checkGitInstallFn : checkGitInstallFn,
       commandTable      : commandTable,
       copyVendorFilesFn : copyVendorFilesFn,
       exeCpeFn          : exeCpeFn,
-      exitGoodFn        : exitGoodFn,
       flowObj           : flowObj,
       fqModuleDirname   : fqModuleDirname,
       fqOrigDirname     : fqOrigDirname,
@@ -585,21 +648,10 @@
       readPkgFileFn     : readPkgFileFn,
       rmVendorDirsFn    : rmVendorDirsFn,
       unlinkHookFn      : unlinkHookFn,
-      warnFn            : warnFn
+      warnFn            : warnFn,
     };
   }
   // . END utility /makeXhiObj/
-
-  // == BEGIN PUBLIC METHOD /dispatchFn/ ==============================
-  function dispatchFn ( arg_list, stage_idx ) {
-    var
-      help_fn = require( fqBinDirname + '/xhi_' + String( stage_idx ) ),
-      xhi_obj = makeXhiObj( arg_list )
-      ;
-
-    help_fn.call( xhi_obj );
-  }
-  // == . END PUBLIC METHOD /dispatchFn/ ==============================
 
   // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
   function _00HelpFn ( arg_list ) {
@@ -721,18 +773,6 @@
     xhi_obj  = makeXhiObj();
     cover_fn = require( fqBinDirname + '/xhi_08' );
     cover_fn.call( xhi_obj );
-
-  // execFn( fqModuleDirname + '/.bin/istanbul cover -x \'**/vendor/**\' '
-  //   + fqModuleDirname     + '/.bin/nodeunit '
-  //   + fqProjDirname       + '/test/xhi_level_0.js',
-  //
-  //   function ( error_data, stdout_str, stderr_str ) {
-  //     if ( error_data ) {
-  //       abortFn( error_data, stdout_str, stderr_str );
-  //     }
-  //     else { exitGoodFn(); }
-  //   }
-  // );
   }
   // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
   function _09CommitFn () {}
@@ -750,7 +790,7 @@
 
   commandTable = makeCommandTable([
     [ 'fn',              'alias_list',      'descr_str',  'help_list' ],
-    [ dispatchFn,      [ 'help'          ],  'Describe capability. '  ],
+    [ _00HelpFn,       [ 'help'          ],  'Describe capability. '  ],
     [ _01InstallFn,    [ 'install'       ], 'Download+install npm mods',
       [ 'install', 'Runs npm install' ] ],
     [ _02SetupFn,      [ 'setup'         ], 'Patch+copy dev assets'     ],
@@ -777,27 +817,51 @@
   function mainFn( arg_param_list ) {
     var
       param_list  = arg_param_list.slice(2),
-      param1_str  = param_list.shift(),
-      abort_str,     command_row
+      param0_str  = param_list[ 0 ],
+      command_map, param_map, stage_fn, stage_list, xhi_obj
       ;
 
-    // DEBUG
-    // warnFn( 'ARG LIST', [ command_id ].concat( param_list ) );
     // Abort if node version < minVersionInt
-    if ( Number( versList[0] ) < minVersionInt ) {
-      abort_str
-        = 'NodeJS Version ' + versList.join('.') + ' is installed.\n'
-        + 'As of ' + appName + '1.2 NodeJS v'
-        + minVersionInt + ' is required.\n'
-        + 'Please upgrade NodeJS and try again.'
-        ;
-      abortFn( abort_str );
+    checkNodeVersion();
+
+    // Sepcial case: help
+    // { range_list : [ 0,1,2,3,4 ]do, do_verbose : true }
+    if ( param0_str === 'help' || Number( param0_str ) === 0 ) {
+      param_list.shift();
+      param_map   = makeParamMap( param_list );
+      command_map = getTableRowMap( 0 );
+      xhi_obj     = makeXhiObj({
+        catch_fn    : abortFn,
+        command_map : command_map,
+        next_fn     : exitFn,
+        param_map   : param_map
+      });
+      stage_fn = require( fqBinDirname + '/xhi_00' ),
+      stage_fn.call( xhi_obj );
     }
 
-    command_row = getTableRow( param1_str ) || getTableRow( 0 );
-
-    if ( ! command_row ) { abortFn( 'Cannot run!' ); }
-    command_row.fn.call( command_row, param_list);
+    // TODO: Walk backward through range and bind functions.
+    // The last function should have next_fn set to exitFn.
+    // The second-to-last function should have next_fn set to 
+    //   the last function.
+    // The third-to-last function should have next_fn set to
+    //   the second-to-last function, etc.
+    //
+    // param_map = makeParamMap( param_list );
+    // param_map.range_list.forEach( function ( stage_idx, idx ) {
+    //   var stage_id = String( stage_idx );
+    //   if ( stage_id.length === 1 ) {
+    //     stage_id = '0' + stage_id;
+    //   }
+    //
+    //   command_map = getTableRowMap( stage_id );
+    //   if ( ! command_map ) {
+    //     abortFn( 'Cannot find stage ' + stage_id );
+    //   }
+    //   exit_int = command_map.fn.call( 
+    //     command_map, param_map.do_verbose
+    //   );
+    // });
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 

@@ -9,9 +9,10 @@ function installFn () {
     ;
 
   context_obj.logFn( 'Install dependencies using "npm install"...' );
-
   process.chdir( context_obj.fqProjDirname );
   stream_obj = context_obj.makeSpawnObj( 'npm', ['install'] );
+  process.chdir( context_obj.fqOrigDirname );
+
   stream_obj.stdout.on( 'data', function ( data ) {
     context_obj.logFn(  data.toString() ); }
   );
@@ -21,16 +22,16 @@ function installFn () {
   stream_obj.on( 'close',
     function ( exit_code ) {
       if ( exit_code === 0 ) {
-        context_obj.logFn( 'Success!' );
+        context_obj.nextFn( 'xhi install complete.' );
       }
       else {
-        context_obj.warnFn( 'The install did not work as expected.' );
-        context_obj.warnFn( 'Please run "npm install" to diagnose.' );
+        context_obj.abortFn( 
+          'The install did not work as expected.\n'
+          + 'Please run "npm install" to diagnose.'
+        );
       }
-      process.exit( exit_code );
     }
   );
-  process.chdir( context_obj.fqOrigDirname );
 }
 // == . END PUBLIC METHOD /installFn/ =================================
 module.exports = installFn;
