@@ -8,78 +8,7 @@
 */
 /*jslint node : true */
 /*global Promise */
-
-// TODO move all npm script to xhi helper
-//
-// Stages correlated wth npm
-// "00": "bin/xhi 00",
-// "00_.": "=== HELP",
-// "01": "bin/xhi 01",
-// "01_.": "=== INSTALL",
-// "01_a": "...node preinstall: Run BEFORE the pkg is installed",
-// "02": "bin/xhi 02",
-// "02_.": "=== SETUP",
-// "02_a": "...node install, postinstall: Run AFTER the pkg is installed.",
-// "03": "bin/xhi 03",
-// "03_.": "=== DESIGN",
-// "03__": "...synonym cat /doc/spa-arch.md",
-// "04": "bin/xhi 04",
-// "04_.": "=== DEVSERVER-START",
-// "04_1": "...node start",
-// "04_2": "...node poststart",
-// "04_a": "...node prestart",
-// "05": "bin/xhi 05",
-// "05_.": "=== GIT PULL",
-// "06": "bin/xhi 06",
-// "06_.": "=== DEVELOP-LINT",
-// "07": "bin/xhi 07",
-// "07_.": "=== DEVELOP-TEST",
-// "07_a": "...node pretest, test, posttest: Run by the npm test command.",
-// "08": "bin/xhi 08",
-// "08_.": "=== DEVELOP-COVERAGE",
-// "09": "bin/xhi 09",
-// "09_.": "=== DEVELOP-COMMIT",
-// "09_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
-// "09_a": "...node preversion: Run BEFORE bumping the pkg version.",
-// "09_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
-// "10": "bin/xhi 10",
-// "10_.": "=== BUILD",
-// "10_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
-// "11": "bin/xhi 11",
-// "11_.": "=== PUBLISH",
-// "11_1": "...node publish",
-// "11_2": "...node postpublish: Run AFTER the pkg is published.",
-// "11_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
-// "11_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
-// "12": "bin/xhi 12",
-// "12_.": "=== DEVSERVER-RESTART",
-// "12_1": "...node restart",
-// "12_2": "...node postrestart",
-// "12_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
-// "12_a": "...node prerestart",
-// "13": "bin/xhi 13",
-// "13_.": "=== DEVSERVER-STOP",
-// "13_1": "...node stop",
-// "13_2": "...node poststop",
-// "13_a": "...node prestop",
-// "14": "bin/xhi 14",
-// "14_.": "=== DEPLOY",
-// "14_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
-// "14_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
-// "14_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
-// "15": "bin/xhi 15",
-// "15_.": "=== PRODSERVER-START",
-// "16": "bin/xhi 16",
-// "16_.": "=== PRODSERVER-RESTART",
-// "17": "bin/xhi 17",
-// "17_.": "=== PRODSERVER-STOP",
-// "18": "bin/xhi 18",
-// "18_.": "=== FEEDBACK",
-// "19": "bin/xhi 19",
-// "19_.": "=== UNINSTALL",
-// "19_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
-// "19_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
-// == BEGIN SCRIPT xhi - the hi_score cli tool ========================
+// == BEGIN SCRIPT xhi - the hi_score cli life-stage tool =============
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -108,6 +37,7 @@
     appName       = pathObj.basename( fqAppFilename, '.js' ),
     argList       = process.argv,
     fqOrigDirname = process.cwd(), // or pathObj.resolve()
+    padName       = '      ' + appName,
     versList      = process.versions.node.split('.'),
 
     // Set paths
@@ -133,17 +63,29 @@
 
     // Declare config data
     fqHookFilename,  pkgMatrix,    setupMatrix,
-    rawCommandTable, commandTable,
+    commandTable,
 
     // Declare after-install-variables
     LineReader,    applyPatchFn,  exeCpeFn,
     flowObj,       mkdirpFn,      ncpFn,
     rmDirFn,       whichFn,       makeWhichProm,
-    makeRmDirProm  
+    makeRmDirProm
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
+  // BEGIN uttility /makeRightPadStr/
+  function makeRightPadStr ( arg_str, arg_count ) {
+    var 
+      delta_count = arg_count - arg_str.length,
+      delta_list  = []
+      ;
+
+    delta_list.length = delta_count > 0 ? delta_count : 0;
+    return arg_str + delta_list.join(' ');
+  }
+  // . END uttility /makeRightPadStr/
+
   // BEGIN utility /_outFn/
   // Purpose: provides abortFn, exitFn, logFn, and warnFn
   function _outFn() {
@@ -182,54 +124,6 @@
   });
   // . END utility /_outFn/
 
-  // BEGIN utility /makeParamMap/
-  // Purpose: return a map like
-  //   { range_list : [ 0,1,2,3,4 ], do_verbose : true }
-  function makeParamMap ( param_list ) {
-    var 
-      do_verbose = false,
-      i, edge_list, range_list
-      ;
-
-    param_list.forEach( function ( str, idx ) {
-      if ( str === '-v' ) {
-        do_verbose = true;
-        return;
-      }
-
-      // skip range list if already defined
-      if ( range_list ) { return true; } 
-
-      if ( str.match(/-/) ) {
-        edge_list  = str.split( '-', 2 );
-        range_list = [];
-
-        for ( i = Number( edge_list[ 0 ] ); i <= Number( edge_list[ 1 ] ); i++ ) {
-          range_list.push( i );
-        }
-        return;
-      }
-
-      if ( str.match(/,/) ) {
-        range_list = str.spit(',');
-        range_list.forEach( function ( data, idx ) {
-          range_list[ idx ] = Number( data );
-        });
-        return;
-      }
-
-      if ( ! isNaN( Number( str ) ) ) {
-        range_list = [ Number( str ) ];
-      }
-    });
-
-    return {
-      do_verbose : do_verbose,
-      range_list : range_list
-    };
-  }
-  // . END utility /makeParamMap/
-
   // BEGIN utility /makeCommandTable/
   function makeCommandTable ( raw_table ) {
     var
@@ -256,8 +150,8 @@
   }
   // . END utility /filterByAlias/
 
-  // BEGIN utility /getTableRowMap/
-  function getTableRowMap ( row_id ) {
+  // BEGIN utility /getCommandMap/
+  function getCommandMap ( row_id ) {
     var
       idx = parseInt( row_id, 10 ),
       filter_list
@@ -271,7 +165,97 @@
     }
     return filter_list[ 0 ];
   }
-  // . END utility /getTableRowMap/
+  // . END utility /getCommandMap/
+
+  // BEGIN utility /makeParamMap/
+  // Purpose   : Process command line arguments
+  // Example   : makeParamMap( [ 'help', '1', '-v' ] )
+  //           : { param_list : [ <commandRowHelp> ], do_verbose: true }
+  // Example   : makeParamMap( [ '1', '-v' ] )
+  //           : { param_list : [ <commandRow1> ], do_verbose: true }
+  // Arguments : (positional)
+  //   0) param_list - list of command line arguments and switches
+  //   1) skip_idx   - skip this number of arguments (not switches)
+  // Returns   :  An object as follows:
+  //   { range_list : [  <commandRow0>, <commandTableRow1, ...  ],
+  //     do_verbose : true
+  //   }
+  function makeParamMap ( param_list, arg_skip_idx ) {
+    var
+      arg_count  = 0,
+      do_verbose = false,
+      skip_idx   = arg_skip_idx || 0,
+      edge_list, temp_list, range_list
+      ;
+
+    param_list.forEach( function ( str, idx ) {
+      var i, first_map, middle_map, last_map, first_idx, last_idx;
+
+      if ( str === '-v' ) {
+        do_verbose = true;
+        return;
+      }
+
+      // skip range list if already defined
+      if ( range_list ) { return true; }
+
+      if ( str.match(/-/) || str === 'all' ) {
+        if ( arg_count < skip_idx ) {
+          return arg_count++;
+        }
+
+        edge_list = str === 'all'
+          ? [ 0, commandTable.length ]
+          : str.split( '-', 2 );
+
+        first_map = getCommandMap( edge_list[ __0 ] );
+        last_map  = getCommandMap( edge_list[ __1 ] );
+        if ( ! ( first_map && last_map ) ) { return; }
+
+        temp_list = [ first_map ];
+
+        first_idx = first_map.idx + 1;
+        last_idx  = last_map.idx - 1;
+
+        for ( i = first_idx; i < last_idx; i++ ) {
+          middle_map = getCommandMap( i );
+          if ( ! middle_map ) { return; }
+          temp_list.push( middle_map );
+        }
+        temp_list.push( last_map );
+        range_list = temp_list;
+        return;
+      }
+
+      if ( str.match(/,/) ) {
+        if ( arg_count < skip_idx ) {
+          return arg_count++;
+        }
+        edge_list = str.split(',');
+        temp_list = [];
+        edge_list.forEach( function ( data, idx ) {
+          middle_map = getCommandMap( data );
+          if ( ! middle_map ) { return; }
+          temp_list.push( middle_ma );
+        });
+        range_list = temp_list;
+        return;
+      }
+
+      if ( arg_count < skip_idx ) {
+        return arg_count++;
+      }
+      middle_map = getCommandMap( str );
+      if ( ! middle_map ) { return; }
+      range_list = [ middle_map ];
+    });
+
+    return {
+      do_verbose : do_verbose,
+      range_list : range_list || []
+    };
+  }
+  // . END utility /makeParamMap/
 
   // BEGIN utlity /grepFileFn/
   function grepFileFn ( filename, pattern_str ) {
@@ -634,16 +618,17 @@
       appName           : appName,
       checkExeList      : checkExeList,
       checkGitInstallFn : checkGitInstallFn,
-      commandTable      : commandTable,
       copyVendorFilesFn : copyVendorFilesFn,
       exeCpeFn          : exeCpeFn,
       flowObj           : flowObj,
       fqModuleDirname   : fqModuleDirname,
       fqOrigDirname     : fqOrigDirname,
       fqProjDirname     : fqProjDirname,
+      getCommandMap     : getCommandMap,
       linkHookFn        : linkHookFn,
       logFn             : logFn,
       makeSpawnObj      : makeSpawnObj,
+      makeRightPadStr   : makeRightPadStr,
       patchFilesFn      : patchFilesFn,
       readPkgFileFn     : readPkgFileFn,
       rmVendorDirsFn    : rmVendorDirsFn,
@@ -789,10 +774,37 @@
   function describeFn () {}
 
   commandTable = makeCommandTable([
-    [ 'fn',              'alias_list',      'descr_str',  'help_list' ],
-    [ _00HelpFn,       [ 'help'          ],  'Describe capability. '  ],
-    [ _01InstallFn,    [ 'install'       ], 'Download+install npm mods',
-      [ 'install', 'Runs npm install' ] ],
+    [ 'fn', 'alias_list', 'short_str',  'long_str' ],
+    [ null, [ 'help' ], 
+      'The xhi life-cycle tool. Use -v to see verbose help.',
+      '\n  Name      : ' + appName + '\n'
+      + '  Purpose   : Run hi_score lifecycle tools\n'
+      + '  Example   : xhi help\n'
+      + '  Arguments :\n'
+      + padName + ' [ help | 0 ] <range> [ -v ]\n'
+      + '    <range> may be:\n'
+      + '    1. A single stage number or name.    Ex: 01.\n'
+      + '    2. A list of stage numbers or names. Ex: 1,2,3,6.\n'
+      + '    3. A range of stages                 Ex: 1-5 or all\n'
+      + '    See ' + appName + ' help all to list stages.\n'
+      + '  More examples:\n'
+      + '    Run stage range\n'
+      + padName + ' dev_pull        // run stage 04\n'
+      + padName + ' 1,2,6           // run 3 stages\n'
+      + padName + ' 1-9             // run 9 stages in range\n'
+      + '    Generic help\n'
+      + padName + ' help            // Short help \n'
+      + '    Help stage range\n'
+      + padName + ' help 01         // Short help on stage 01\n'
+      + padName + ' help install    // Same\n'
+      + padName + ' help all -v     // Long help on all stages\n'
+      + padName + ' help 1,4        // Short help on stages 1,4\n'
+      + padName + ' help help,dev_pull -v // Long help on stages 1,4'
+    ],
+    [ null, [ 'install' ],
+      'Download & install npm modules.',
+      'Download & install npm modules.'
+    ],
     [ _02SetupFn,      [ 'setup'         ], 'Patch+copy dev assets'     ],
     [ _03ShowArchFn,   [ 'design'        ], 'Show architecture docs'    ],
     [ _04DevPullFn,    [ 'dev_pull'      ], 'Pull from Git, sync libs'  ],
@@ -816,49 +828,49 @@
   // Purpose   : Parse command line and dispatch to requested command(s)
   function mainFn( arg_param_list ) {
     var
-      param_list  = arg_param_list.slice(2),
-      param0_str  = param_list[ 0 ],
-      command_map, param_map, stage_fn, stage_list, xhi_obj
+      param_list = arg_param_list.slice( 2 ),
+      param_map  = makeParamMap( param_list ),
+      command_map, stage_fn, xhi_obj
       ;
 
     // Abort if node version < minVersionInt
     checkNodeVersion();
+    command_map = param_map.range_list[ __0 ];
 
-    // Sepcial case: help
-    // { range_list : [ 0,1,2,3,4 ]do, do_verbose : true }
-    if ( param0_str === 'help' || Number( param0_str ) === 0 ) {
-      param_list.shift();
-      param_map   = makeParamMap( param_list );
-      command_map = getTableRowMap( 0 );
+    // Example param_map: { range_list : [ 0, 1 ], do_verbose : true }
+    // Special case: help
+    if ( ! command_map || command_map.id === '00' ) {
+      param_map   = makeParamMap( param_list, 1 );
+      command_map = getCommandMap( __0 );
       xhi_obj     = makeXhiObj({
         catch_fn    : abortFn,
         command_map : command_map,
         next_fn     : exitFn,
         param_map   : param_map
       });
-      stage_fn = require( fqBinDirname + '/xhi_00' ),
+      stage_fn = require( fqBinDirname + '/xhi_00' );
       stage_fn.call( xhi_obj );
     }
 
     // TODO: Walk backward through range and bind functions.
     // The last function should have next_fn set to exitFn.
-    // The second-to-last function should have next_fn set to 
+    // The second-to-last function should have next_fn set to
     //   the last function.
     // The third-to-last function should have next_fn set to
     //   the second-to-last function, etc.
     //
-    // param_map = makeParamMap( param_list );
+    // param_map = makeParamMap( param_list, 0 );
     // param_map.range_list.forEach( function ( stage_idx, idx ) {
     //   var stage_id = String( stage_idx );
     //   if ( stage_id.length === 1 ) {
     //     stage_id = '0' + stage_id;
     //   }
     //
-    //   command_map = getTableRowMap( stage_id );
+    //   command_map = getCommandMap( stage_id );
     //   if ( ! command_map ) {
     //     abortFn( 'Cannot find stage ' + stage_id );
     //   }
-    //   exit_int = command_map.fn.call( 
+    //   exit_int = command_map.fn.call(
     //     command_map, param_map.do_verbose
     //   );
     // });
@@ -866,4 +878,75 @@
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
   mainFn( argList );
-// == . END SCRIPT xhi - the hi_score cli tool ========================
+// == . END SCRIPT xhi - the hi_score cli life-stage tool =============
+
+// TODO move all npm script to xhi helper
+//
+// Stages correlated wth npm
+// "00": "bin/xhi 00",
+// "00_.": "=== HELP",
+// "01": "bin/xhi 01",
+// "01_.": "=== INSTALL",
+// "01_a": "...node preinstall: Run BEFORE the pkg is installed",
+// "02": "bin/xhi 02",
+// "02_.": "=== SETUP",
+// "02_a": "...node install, postinstall: Run AFTER the pkg is installed.",
+// "03": "bin/xhi 03",
+// "03_.": "=== DESIGN",
+// "03__": "...synonym cat /doc/spa-arch.md",
+// "04": "bin/xhi 04",
+// "04_.": "=== DEVSERVER-START",
+// "04_1": "...node start",
+// "04_2": "...node poststart",
+// "04_a": "...node prestart",
+// "05": "bin/xhi 05",
+// "05_.": "=== GIT PULL",
+// "06": "bin/xhi 06",
+// "06_.": "=== DEVELOP-LINT",
+// "07": "bin/xhi 07",
+// "07_.": "=== DEVELOP-TEST",
+// "07_a": "...node pretest, test, posttest: Run by the npm test command.",
+// "08": "bin/xhi 08",
+// "08_.": "=== DEVELOP-COVERAGE",
+// "09": "bin/xhi 09",
+// "09_.": "=== DEVELOP-COMMIT",
+// "09_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
+// "09_a": "...node preversion: Run BEFORE bumping the pkg version.",
+// "09_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
+// "10": "bin/xhi 10",
+// "10_.": "=== BUILD",
+// "10_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
+// "11": "bin/xhi 11",
+// "11_.": "=== PUBLISH",
+// "11_1": "...node publish",
+// "11_2": "...node postpublish: Run AFTER the pkg is published.",
+// "11_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
+// "11_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
+// "12": "bin/xhi 12",
+// "12_.": "=== DEVSERVER-RESTART",
+// "12_1": "...node restart",
+// "12_2": "...node postrestart",
+// "12_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
+// "12_a": "...node prerestart",
+// "13": "bin/xhi 13",
+// "13_.": "=== DEVSERVER-STOP",
+// "13_1": "...node stop",
+// "13_2": "...node poststop",
+// "13_a": "...node prestop",
+// "14": "bin/xhi 14",
+// "14_.": "=== DEPLOY",
+// "14_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
+// "14_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
+// "14_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
+// "15": "bin/xhi 15",
+// "15_.": "=== PRODSERVER-START",
+// "16": "bin/xhi 16",
+// "16_.": "=== PRODSERVER-RESTART",
+// "17": "bin/xhi 17",
+// "17_.": "=== PRODSERVER-STOP",
+// "18": "bin/xhi 18",
+// "18_.": "=== FEEDBACK",
+// "19": "bin/xhi 19",
+// "19_.": "=== UNINSTALL",
+// "19_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
+// "19_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",

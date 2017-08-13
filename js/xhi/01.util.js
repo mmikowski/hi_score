@@ -399,6 +399,7 @@ xhi._makeUtil_ = function ( aMap ) {
     var
       num   = castNum( arg_num,   __undef ),
       count = castInt( arg_count, __undef ),
+      list  = [],
 
       sign_int, num_str, zero_count;
 
@@ -412,10 +413,10 @@ xhi._makeUtil_ = function ( aMap ) {
     zero_count = count - num_str[ __length ]
       - ( sign_int === __n1 ? __1 : __0 );
 
-    while ( zero_count > __0 ) {
-      num_str = '0' + num_str;
-      zero_count--;
-    }
+    // See repeat funciton in ES6
+    list.length = zero_count > __0 ? zero_count + 1 : 0;
+    num_str = list.join( '0' ) + num_str;
+
     if ( sign_int === __n1 ) {
       num_str = '-' + num_str;
     }

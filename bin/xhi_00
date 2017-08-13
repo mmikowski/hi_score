@@ -4,36 +4,29 @@
 // == BEGIN PUBLIC METHOD /helpFn/ ====================================
 function helpFn ( arg_list ) {
   var
-    xhi_obj  = this,
-    app_name = xhi_obj.appName,
-    next_fn  = xhi_obj.next_fn,
+    xhi_obj    = this,
+    app_name   = xhi_obj.appName,
+    next_fn    = xhi_obj.next_fn,
+    param_map  = xhi_obj.param_map,
+
+    range_list = param_map.range_list,
+    help_key   = param_map.do_verbose ? 'long_str' : 'short_str',
+
     pad_name = '      ' + app_name,
-    help_str = '\n'
-      + app_name + ' help -v\n'
-      + '  Name      : ' + app_name + '\n'
-      + '  Purpose   : Run hi_score lifecycle tools\n'
-      + '  Example   : xhi help\n'
-      + '  Arguments : (positional)\n'
-      + '    [ help ] <range> [ -v ]\n'
-      + '    <range> may be:\n'
-      + '    1. A single stage number or name.    Ex: 01.\n'
-      + '    2. A list of stage numbers or names. Ex: 1,2,3,6.\n'
-      + '    3. A range of stages                 Ex: 1-5 or all\n'
-      + '    See ' + app_name + ' help all to list stages.\n'
-      + '  More examples:\n'
-      + '    Run stage range\n'
-      + pad_name + ' dev_pull        // run stage 04\n'
-      + pad_name + ' 1,2,6           // run 3 stages\n'
-      + pad_name + ' 1-9             // run 9 stages in range\n'
-      + '    Generic help\n'
-      + pad_name + ' help            // Short help \n'
-      + '    Help stage range\n'
-      + pad_name + ' help 01         // Short help on stage 01\n'
-      + pad_name + ' help install    // Same\n'
-      + pad_name + ' help all -v     // Long help on all stages\n'
-      + pad_name + ' help 1,4        // Short help on stages 1,4\n'
-      + pad_name + ' help help,dev_pull -v // Long help on stages 1,4\n'
-      ;
+    help_str = '\nBEGIN Stage 0: help'
+    ;
+
+    if ( range_list.length === 0 ) {
+      range_list[ 0 ] = xhi_obj.getCommandMap( 0 );
+    }
+
+    range_list.forEach( function ( command_row, idx ) {
+      help_str += '\n  - Stage ' + command_row.id + ': '
+        + xhi_obj.makeRightPadStr( command_row.alias_list[ 0 ], 12 )
+        + ' | ' + command_row[ help_key ];
+    });
+
+    help_str += '\n. END Stage 0: help'
 
   next_fn( help_str );
 }
