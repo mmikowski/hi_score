@@ -1,32 +1,48 @@
 /*jslint node : true */
 /* vim: set ft=javascript: */
-
 // == BEGIN PUBLIC METHOD /installFn/ =================================
+// Purpose   : Wrap the 'npm install' process for xhi tool
+// Example   : ./xhi install
+// Returns   : 
+//   Runs ctx_obj.catchFn on failure.
+//   Runs ctx_obj.nextFn  on success.
+// Throws    : none
+//
 function installFn () {
   var
-    context_obj = this,
+    ctx_obj     = this,
+    app_name    = ctx_obj.appName,
+    command_map = ctx_obj.commandMap,
+    log_fn      = ctx_obj.logFn,
+    param_map   = ctx_obj.paramMap,
+
+    do_verbose  = param_map.do_verbose,
+    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
+
     stream_obj
     ;
 
-  context_obj.logFn( 'Install dependencies using "npm install"...' );
-  process.chdir( context_obj.fqProjDirname );
-  stream_obj = context_obj.makeSpawnObj( 'npm', ['install'] );
-  process.chdir( context_obj.fqOrigDirname );
+  if ( do_verbose ) {
+    log_fn( '\n' + prefix_str + 'Begin install npm assets' );
+  }
+  process.chdir( ctx_obj.fqProjDirname );
+  stream_obj = ctx_obj.makeSpawnObj( 'npm', ['install'] );
+  process.chdir( ctx_obj.fqOrigDirname );
 
   stream_obj.stdout.on( 'data', function ( data ) {
-    context_obj.logFn(  data.toString() ); }
+    ctx_obj.logFn( data.toString() ); }
   );
-  stream_obj.stderr.on( 'data', function ( data ) { 
-    context_obj.warnFn( data.toString() ); }
+  stream_obj.stderr.on( 'data', function ( data ) {
+    ctx_obj.warnFn( data.toString() ); }
   );
   stream_obj.on( 'close',
     function ( exit_code ) {
       if ( exit_code === 0 ) {
-        context_obj.nextFn( 'xhi install complete.' );
+        ctx_obj.nextFn( prefix_str + 'Installed npm assets.' );
       }
       else {
-        context_obj.abortFn( 
-          'The install did not work as expected.\n'
+        ctx_obj.catchFn(
+          prefix_str + 'Failed to install npm assets.\n'
           + 'Please run "npm install" to diagnose.'
         );
       }

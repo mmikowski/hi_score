@@ -1,33 +1,32 @@
 /*jslint node : true */
 /* vim: set ft=javascript: */
-
 // == BEGIN PUBLIC METHOD /helpFn/ ====================================
 function helpFn ( arg_list ) {
   var
-    xhi_obj    = this,
-    app_name   = xhi_obj.appName,
-    next_fn    = xhi_obj.next_fn,
-    param_map  = xhi_obj.param_map,
+    ctx_obj     = this,
+    app_name    = ctx_obj.appName,
+    command_map = ctx_obj.commandMap,
+    next_fn     = ctx_obj.nextFn,
+    param_map   = ctx_obj.paramMap,
 
-    range_list = param_map.range_list,
-    help_key   = param_map.do_verbose ? 'long_str' : 'short_str',
+    do_verbose  = param_map.do_verbose,
+    stage_list  = param_map.stage_list,
+    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
 
-    pad_name = '      ' + app_name,
-    help_str = '\nBEGIN Stage 0: help'
+    help_key    = do_verbose ? 'long_str' : 'short_str',
+    help_str    = do_verbose ?  '\n' + prefix_str + 'Begin' : ''
     ;
 
-    if ( range_list.length === 0 ) {
-      range_list[ 0 ] = xhi_obj.getCommandMap( 0 );
-    }
+  if ( stage_list.length === 0 ) {
+    stage_list[ 0 ] = ctx_obj.getCommandMap( 0 );
+  }
 
-    range_list.forEach( function ( command_row, idx ) {
-      help_str += '\n  - Stage ' + command_row.id + ': '
-        + xhi_obj.makeRightPadStr( command_row.alias_list[ 0 ], 12 )
-        + ' | ' + command_row[ help_key ];
-    });
-
-    help_str += '\n. END Stage 0: help'
-
+  stage_list.forEach( function ( stage_map, idx ) {
+    help_str += '\n  - Stage ' + stage_map.id + ': '
+      + ctx_obj.makeRightPadStr( stage_map.alias_list[ 0 ], 14 )
+      + ' | ' + stage_map[ help_key ];
+  });
+  help_str += do_verbose ? '\n' + prefix_str + 'End' : '';
   next_fn( help_str );
 }
 // == . END PUBLIC METHOD /helpFn/ ====================================

@@ -1,58 +1,54 @@
 /*jslint node : true */
 /* vim: set ft=javascript: */
 
-// == BEGIN PUBLIC METHOD /_08DevCoverFn/ ==========================
-// == Prior implementation (this works, but single-stage only)
-// function coverFn () {
-//   var context_obj = this;
-//
-//   process.chdir( context_obj.fqProjDirname );
-//   context_obj.exeCpeFn(
-//     context_obj.fqModuleDirname + '/.bin/istanbul',
-//     [ 'cover','-x','**/vendor/**',
-//        context_obj.fqModuleDirname + '/.bin/nodeunit',
-//        context_obj.fqProjDirname   + '/test/xhi_level_0.js'
-//     ]
-//   );
-//   process.chdir( context_obj.fqOrigDirname );
-// }
-// == End Prior implementation
-
+// == BEGIN PUBLIC METHOD /coverFn/ ===================================
 function coverFn () {
   var
-    context_obj = this,
-    stream_obj
+    ctx_obj     = this,
+    app_name    = ctx_obj.appName,
+    catch_fn    = ctx_obj.catchFn,
+    command_map = ctx_obj.commandMap,
+    log_fn      = ctx_obj.logFn,
+    next_fn     = ctx_obj.nextFn,
+
+    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
+
+    xhi_obj, stream_obj
     ;
 
-  context_obj.logFn( 'Start Istanbul coverage check.' );
-  process.chdir( context_obj.fqProjDirname );
-  stream_obj = context_obj.makeSpawnObj( 
-    context_obj.fqModuleDirname + '/.bin/istanbul',
+  // Load post-install libs
+  ctx_obj.loadLibsFn();
+  xhi_obj = ctx_obj.makeXhiObj();
+
+  log_fn( prefix_str + 'Start Istanbul coverage check.' );
+  process.chdir( ctx_obj.fqProjDirname );
+  stream_obj = ctx_obj.makeSpawnObj(
+    xhi_obj.fqModuleDirname + '/.bin/istanbul',
     [ 'cover','-x','**/vendor/**',
-       context_obj.fqModuleDirname + '/.bin/nodeunit',
-       context_obj.fqProjDirname   + '/test/xhi_level_0.js'
+       xhi_obj.fqModuleDirname + '/.bin/nodeunit',
+       ctx_obj.fqProjDirname   + '/test/xhi_level_0.js'
     ]
   );
-  process.chdir( context_obj.fqOrigDirname );
+  process.chdir( ctx_obj.fqOrigDirname );
 
   stream_obj.stdout.on( 'data', function ( data ) {
-    context_obj.logFn(  data.toString() ); }
+    process.stdout.write( data.toString() ); }
   );
-  stream_obj.stderr.on( 'data', function ( data ) { 
-    context_obj.warnFn( data.toString() ); }
+  stream_obj.stderr.on( 'data', function ( data ) {
+    process.stderr.write( data.toString() ); }
   );
   stream_obj.on( 'close',
     function ( exit_code ) {
       if ( exit_code === 0 ) {
-        context_obj.nextFn( 'End Istanbul coverage check.' );
+        next_fn( prefix_str + 'End Istanbul coverage check.' );
       }
       else {
-        context_obj.abortFn( 
-          'Abort Istanbul coverage check.\n'
+        catch_fn(
+          prefix_str + 'Abort Istanbul coverage check.\n'
         );
       }
     }
   );
 }
-// == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
+// == . END PUBLIC METHOD /coverFn/ ===================================
 module.exports = coverFn;

@@ -2,7 +2,7 @@
 /* vim: set ft=javascript: */
 /*
  * Purpose   : Run hi_score lifecycle tools
- * Example   : See xhi help (_00HelpFn)
+ * Example   : See xhi help
  * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
@@ -76,7 +76,7 @@
   // == BEGIN UTILITY METHODS =========================================
   // BEGIN uttility /makeRightPadStr/
   function makeRightPadStr ( arg_str, arg_count ) {
-    var 
+    var
       delta_count = arg_count - arg_str.length,
       delta_list  = []
       ;
@@ -170,34 +170,39 @@
   // BEGIN utility /makeParamMap/
   // Purpose   : Process command line arguments
   // Example   : makeParamMap( [ 'help', '1', '-v' ] )
-  //           : { param_list : [ <commandRowHelp> ], do_verbose: true }
+  //   returns : { do_verbose: true, range_str : '1',
+  //               stage_list : [ <commandRowHelp> ] }
   // Example   : makeParamMap( [ '1', '-v' ] )
-  //           : { param_list : [ <commandRow1> ], do_verbose: true }
+  //   returns : { do_verbose: true, range_str : '1'
+  //               stage_list : [ <commandRow1> ] }
   // Arguments : (positional)
-  //   0) param_list - list of command line arguments and switches
+  //   0) stage_list - list of command line arguments and switches
   //   1) skip_idx   - skip this number of arguments (not switches)
   // Returns   :  An object as follows:
-  //   { range_list : [  <commandRow0>, <commandTableRow1, ...  ],
-  //     do_verbose : true
+  //   { do_verbose : <true|false>,
+  //     range_str  : <cli_range_provided>,
+  //     stage_list : [  <commandRow0>, <commandTableRow1, ...  ]
   //   }
   function makeParamMap ( param_list, arg_skip_idx ) {
     var
       arg_count  = 0,
-      do_verbose = false,
       skip_idx   = arg_skip_idx || 0,
-      edge_list, temp_list, range_list
+
+      do_verbose = false,
+      range_str  = '',
+
+      edge_list, stage_list, temp_list
       ;
 
     param_list.forEach( function ( str, idx ) {
       var i, first_map, middle_map, last_map, first_idx, last_idx;
-
       if ( str === '-v' ) {
         do_verbose = true;
         return;
       }
 
       // skip range list if already defined
-      if ( range_list ) { return true; }
+      if ( stage_list ) { return true; }
 
       if ( str.match(/-/) || str === 'all' ) {
         if ( arg_count < skip_idx ) {
@@ -205,7 +210,7 @@
         }
 
         edge_list = str === 'all'
-          ? [ 0, commandTable.length ]
+          ? [ 0, commandTable.length - __1 ]
           : str.split( '-', 2 );
 
         first_map = getCommandMap( edge_list[ __0 ] );
@@ -223,7 +228,9 @@
           temp_list.push( middle_map );
         }
         temp_list.push( last_map );
-        range_list = temp_list;
+
+        range_str  = str;
+        stage_list = temp_list;
         return;
       }
 
@@ -236,9 +243,11 @@
         edge_list.forEach( function ( data, idx ) {
           middle_map = getCommandMap( data );
           if ( ! middle_map ) { return; }
-          temp_list.push( middle_ma );
+          temp_list.push( middle_map );
         });
-        range_list = temp_list;
+
+        range_str  = str;
+        stage_list = temp_list;
         return;
       }
 
@@ -247,12 +256,15 @@
       }
       middle_map = getCommandMap( str );
       if ( ! middle_map ) { return; }
-      range_list = [ middle_map ];
+
+      range_str  = str;
+      stage_list = [ middle_map ];
     });
 
     return {
       do_verbose : do_verbose,
-      range_list : range_list || []
+      range_str  : range_str,
+      stage_list : stage_list || []
     };
   }
   // . END utility /makeParamMap/
@@ -346,7 +358,7 @@
 
   // BEGIN utility /loadPostInstallfn/
   // Loads libraries after stage 01 (install) is complete
-  function loadPostInstallFn () {
+  function loadLibsFn () {
     LineReader   = require( 'line-by-line' );
     applyPatchFn = require( 'apply-patch'  ).applyPatch;
     exeCpeFn     = require( 'execpe'       );
@@ -359,10 +371,10 @@
     makeRmDirProm = promisifyFn( rmDirFn   );
     makeWhichProm = promisifyFn( whichFn   );
   }
-  // . END utility /loadPostInstallFn/
+  // . END utility /loadLibsFn/
 
-  // BEGIN utility /checkExeList/
-  function checkExeList () {
+  // BEGIN utility /checkExeListFn/
+  function checkExeListFn () {
     var
       context_obj  = this,
       exe_list     = [ 'git', 'patch' ],
@@ -382,13 +394,13 @@
 
     promiseObj.all( promise_list )
       .then(   context_obj.then_fn )
-      .catch( context_obj.catch_fn )
+      .catch( context_obj.catchFn )
       ;
   }
-  // . END utility /checkExeList/
+  // . END utility /checkExeListFn/
 
-  // BEGIN utility /checkNodeVersion/
-  function checkNodeVersion () {
+  // BEGIN utility /checkNodeVersionFn/
+  function checkNodeVersionFn () {
     var abort_str;
     if ( Number( versList[0] ) < minVersionInt ) {
       abort_str
@@ -400,7 +412,7 @@
       abortFn( abort_str );
     }
   }
-  // . END utility /checkNodeVersion/
+  // . END utility /checkNodeVersionFn/
 
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
@@ -445,7 +457,7 @@
 
     promiseObj.all( promise_list )
       .then(  context_obj.then_fn )
-      .catch( context_obj.catch_fn )
+      .catch( context_obj.catchFn )
       ;
   }
   // . END utility /rmVendorDirsFn/
@@ -513,7 +525,7 @@
 
     promiseObj.all( promise_list )
       .then(  context_obj.then_fn  )
-      .catch( context_obj.catch_fn );
+      .catch( context_obj.catchFn );
   }
   // . END utility /copyVendorFilesFn/
 
@@ -546,7 +558,7 @@
 
     Promise.all( promise_list )
       .then(  context_obj.then_fn  )
-      .catch( context_obj.catch_fn )
+      .catch( context_obj.catchFn )
       ;
   }
   // . END utility /patchFilesFn/
@@ -565,7 +577,7 @@
       })
       .catch( function () {
         logFn( 'Git directory ' + fqGitDirname + ' NOT found.');
-        context_obj.catch_fn();
+        context_obj.catchFn();
       });
   }
   // . END utility /checkGitInstallFn/
@@ -602,63 +614,49 @@
   // == . END EVENT HANDLERS ==========================================
 
   // BEGIN utility /makeXhiObj/
-  // Purpose: Creates context_obj for module libraries
+  // Purpose: Creates resource map for modules available
+  //   only after npm install.
   //
   function makeXhiObj ( arg_map ) {
     return {
-      catch_fn    : arg_map.catch_fn,
-      command_map : arg_map.command_map,
-      next_fn     : arg_map.next_fn,
-      param_map   : arg_map.param_map,
-
-      // TODO remove these in favor of catch_fn and next_fn
-      abortFn           : abortFn,
-      exitFn            : exitFn,
-
-      appName           : appName,
-      checkExeList      : checkExeList,
-      checkGitInstallFn : checkGitInstallFn,
-      copyVendorFilesFn : copyVendorFilesFn,
-      exeCpeFn          : exeCpeFn,
-      flowObj           : flowObj,
-      fqModuleDirname   : fqModuleDirname,
-      fqOrigDirname     : fqOrigDirname,
-      fqProjDirname     : fqProjDirname,
-      getCommandMap     : getCommandMap,
-      linkHookFn        : linkHookFn,
-      logFn             : logFn,
-      makeSpawnObj      : makeSpawnObj,
-      makeRightPadStr   : makeRightPadStr,
-      patchFilesFn      : patchFilesFn,
-      readPkgFileFn     : readPkgFileFn,
-      rmVendorDirsFn    : rmVendorDirsFn,
-      unlinkHookFn      : unlinkHookFn,
-      warnFn            : warnFn,
+      checkExeListFn    : checkExeListFn,    // .  .  02
+      checkGitInstallFn : checkGitInstallFn, // .  .  02
+      copyVendorFilesFn : copyVendorFilesFn, // .  .  02
+      exeCpeFn          : exeCpeFn,          // .  .  .
+      flowObj           : flowObj,           // .  .  02
+      fqModuleDirname   : fqModuleDirname,   // .  .  .
+      linkHookFn        : linkHookFn,        // .  .  02
+      patchFilesFn      : patchFilesFn,      // .  .  02
+      readPkgFileFn     : readPkgFileFn,     // .  .  02
+      rmVendorDirsFn    : rmVendorDirsFn,    // .  .  02
+      unlinkHookFn      : unlinkHookFn,      // .  .  02
     };
   }
   // . END utility /makeXhiObj/
 
-  // == BEGIN PUBLIC METHOD /_00HelpFn/ ===============================
-  function _00HelpFn ( arg_list ) {
-    var
-      help_fn = require( fqBinDirname + '/xhi_00' ),
-      xhi_obj = makeXhiObj( arg_list )
-      ;
-
-    help_fn.call( xhi_obj );
+  // BEGIN utility /makeSetObj/
+  // Purpose: Create object to provide as context to lib functions
+  //  nextFn and catchFn are defaults.
+  //
+  function makeSetObj () {
+    return {
+      appName         : appName,        // Applicaiton name
+      catchFn         : abortFn,        // Fn for error
+      commandMap      : null,           // Command map of lib to exec
+      fqOrigDirname   : fqOrigDirname,  // Full path of PWD
+      fqProjDirname   : fqProjDirname,  // Full path of root project dir
+      getCommandMap   : getCommandMap,  // Get command map by id or index
+      loadLibsFn      : loadLibsFn,     // Load libs after stage 1
+      logFn           : logFn,          // Log to console
+      makeRightPadStr : makeRightPadStr,// Pad string right
+      makeSpawnObj    : makeSpawnObj,   // Object create spawned proc
+      makeXhiObj      : makeXhiObj,     // Get utils after stage 1
+      nextFn          : exitFn,         // Fn for success
+      paramMap        : null,           // Parameters per CLI input
+      warnFn          : warnFn          // Warn to console
+    };
   }
-  // == . END PUBLIC METHOD /_00HelpFn/ ===============================
-
-  // == BEGIN PUBLIC METHOD /_01InstallFn/ ============================
-  function _01InstallFn ( arg_list ) {
-    var
-      install_fn = require( fqBinDirname + '/xhi_01' ),
-      xhi_obj    = makeXhiObj( arg_list )
-      ;
-
-    install_fn.call( xhi_obj );
-  }
-  // == . END PUBLIC METHOD /_01InstallFn/ ============================
+  // . END utility /makeSetObj/
 
   // == BEGIN PUBLIC METHOD /_02SetupFn/ ==============================
   // Purpose   : Delete, copies, and patches files. Install commit hook.
@@ -683,7 +681,7 @@
   function _02SetupFn () {
     var setup_fn, xhi_obj;
 
-    loadPostInstallFn();
+    loadLibsFn();
     xhi_obj  = makeXhiObj();
     setup_fn = require( fqBinDirname + '/xhi_02' );
     setup_fn.call( xhi_obj );
@@ -693,7 +691,7 @@
     //     logFn( appName + ' stage 02 Setup start.' );
     //     logFn( appName + ' stage 02 step 00: Init variables...' );
     //     process.chdir( fqProjDirname );
-    //     checkExeList.call({ then_fn  : this, catch_fn : abortFn });
+    //     checkExeListFn.call({ then_fn  : this, catch_fn : abortFn });
     //   },
     //   function _02_01ReadPkgFileFn () {
     //     logFn( appName + ' stage 02 step 01: Read package file...' );
@@ -754,7 +752,7 @@
   function _08DevCoverFn () {
     var cover_fn, xhi_obj;
 
-    loadPostInstallFn();
+    loadLibsFn();
     xhi_obj  = makeXhiObj();
     cover_fn = require( fqBinDirname + '/xhi_08' );
     cover_fn.call( xhi_obj );
@@ -775,7 +773,7 @@
 
   commandTable = makeCommandTable([
     [ 'fn', 'alias_list', 'short_str',  'long_str' ],
-    [ null, [ 'help' ], 
+    [ null, [ 'help' ],
       'The xhi life-cycle tool. Use -v to see verbose help.',
       '\n  Name      : ' + appName + '\n'
       + '  Purpose   : Run hi_score lifecycle tools\n'
@@ -830,57 +828,72 @@
     var
       param_list = arg_param_list.slice( 2 ),
       param_map  = makeParamMap( param_list ),
-      command_map, stage_fn, xhi_obj
+      stage_list = param_map.stage_list,
+      exec_list  = [],
+
+      command_map, set_obj,
+      stage_fn,    stage_idx
       ;
 
     // Abort if node version < minVersionInt
-    checkNodeVersion();
-    command_map = param_map.range_list[ __0 ];
+    checkNodeVersionFn();
+    command_map = stage_list[ __0 ];
 
-    // Example param_map: { range_list : [ 0, 1 ], do_verbose : true }
+    // Make new set_obj as context for lib function
+    set_obj = makeSetObj();
+
     // Special case: help
-    if ( ! command_map || command_map.id === '00' ) {
-      param_map   = makeParamMap( param_list, 1 );
+    if ( ! command_map || command_map.idx === 0 ) {
       command_map = getCommandMap( __0 );
-      xhi_obj     = makeXhiObj({
-        catch_fn    : abortFn,
-        command_map : command_map,
-        next_fn     : exitFn,
-        param_map   : param_map
-      });
+      set_obj.commandMap = command_map;
+      set_obj.paramMap   = makeParamMap( param_list, 1 );
       stage_fn = require( fqBinDirname + '/xhi_00' );
-      stage_fn.call( xhi_obj );
+      return stage_fn.call( set_obj );
     }
 
-    // TODO: Walk backward through range and bind functions.
-    // The last function should have next_fn set to exitFn.
-    // The second-to-last function should have next_fn set to
+    // Begin exec standard stage list
+    // Walk backward through list and bind functions.
+    // The last function should have nextFn set to exit function.
+    // The second-to-last function should have nextFn set to
     //   the last function.
-    // The third-to-last function should have next_fn set to
+    // The third-to-last function should have nextFn set to
     //   the second-to-last function, etc.
     //
-    // param_map = makeParamMap( param_list, 0 );
-    // param_map.range_list.forEach( function ( stage_idx, idx ) {
-    //   var stage_id = String( stage_idx );
-    //   if ( stage_id.length === 1 ) {
-    //     stage_id = '0' + stage_id;
-    //   }
-    //
-    //   command_map = getCommandMap( stage_id );
-    //   if ( ! command_map ) {
-    //     abortFn( 'Cannot find stage ' + stage_id );
-    //   }
-    //   exit_int = command_map.fn.call(
-    //     command_map, param_map.do_verbose
-    //   );
-    // });
+    set_obj.nextFn = function () {
+      abortFn( '. End process range ' + param_map.range_str );
+    };
+
+    stage_idx = stage_list.length - __1;
+    while ( stage_idx > -1 ) {
+
+      // Set commandMap, paramMap in context object
+      command_map = stage_list[ stage_idx ];
+      set_obj.commandMap = command_map;
+      set_obj.paramMap   = param_map;
+
+      // Load library ( TODO load preq_list? )
+      stage_fn = require( fqBinDirname + '/xhi_' + command_map.id );
+
+      // Build exec chain
+      exec_list.push( stage_fn.bind( set_obj ) );
+      stage_idx--;
+
+      // Make new context object and set catchFn, nextFn
+      set_obj = makeSetObj();
+      set_obj.nextFn  = stage_fn;
+      set_obj.catchFn = abortFn;
+    }
+
+    logFn( 'Start process range ' + param_map.range_str );
+    return exec_list[ __0 ]();
+    // End exec standard stage list
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
   mainFn( argList );
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============
 
-// TODO move all npm script to xhi helper
+// TODO Add to command table info
 //
 // Stages correlated wth npm
 // "00": "bin/xhi 00",

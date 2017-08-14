@@ -13,43 +13,53 @@
 //   3. Applies any patches (uglifyjs)
 //   4. Install the commit hook if git is detected
 //
+
 function setupFn () {
   var
-    context_obj = this,
-    abort_fn    = context_obj.abortFn,
-    app_name    = context_obj.appName,
-    next_fn     = context_obj.nextFn,
-    log_fn      = context_obj.logFn
+    ctx_obj     = this,
+    app_name    = ctx_obj.appName,
+    catch_fn    = ctx_obj.catchFn,
+    command_map = ctx_obj.commandMap,
+    log_fn      = ctx_obj.logFn,
+    next_fn     = ctx_obj.nextFn,
+
+    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
+
+    xhi_obj
     ;
 
-  context_obj.flowObj.exec(
+  ctx_obj.loadLibsFn();
+  xhi_obj = ctx_obj.makeXhiObj();
+  
+  xhi_obj.flowObj.exec(
     function _02_00InitVarsFn () {
-      log_fn( app_name + ' stage 02 step 00: Setup start.' );
-      log_fn( app_name + ' stage 02 step 01: Init variables...' );
-      process.chdir( context_obj.fqProjDirname );
-      context_obj.checkExeList.call({ then_fn : this, catch_fn : abort_fn });
+      log_fn( prefix_str + ' step 00: Setup start.' );
+      log_fn( prefix_str + ' step 01: Init variables...' );
+      process.chdir( ctx_obj.fqProjDirname );
+      xhi_obj.checkExeListFn.call({ then_fn : this, catch_fn : catch_fn });
     },
     function _02_01ReadPkgFileFn () {
-      log_fn( app_name + ' stage 02 step 02: Read package file...' );
-      context_obj.readPkgFileFn.call({ then_fn  : this, catch_fn : abort_fn });
+      log_fn( prefix_str + ' step 02: Read package file...' );
+      xhi_obj.readPkgFileFn.call({ then_fn  : this, catch_fn : catch_fn });
     },
     function _02_02RmVendorDirsFn () {
-      log_fn( app_name + ' stage 02 step 03: Remove vendor directories...' );
-      context_obj.rmVendorDirsFn.call({ then_fn : this, catch_fn : abort_fn });
+      log_fn( prefix_str + ' step 03: Remove vendor directories...' );
+      xhi_obj.rmVendorDirsFn.call({ then_fn : this, catch_fn : catch_fn });
     },
     function _02_03CopyVendorFilesFn () {
-      log_fn( app_name + ' stage 02 step 04: Deploy vendor assets...' );
-      context_obj.copyVendorFilesFn.call({ then_fn : this, catch_fn : abort_fn });
+      log_fn( prefix_str + 'step 04: Deploy vendor assets...' );
+      xhi_obj.copyVendorFilesFn.call({ then_fn : this, catch_fn : catch_fn });
     },
     function _02_04PatchFilesFn () {
-      log_fn( app_name + ' stage 02 step 05: Apply patches...' );
-      context_obj.patchFilesFn.call({ then_fn : this, catch_fn : abort_fn });
+      log_fn( prefix_str + 'step 05: Apply patches...' );
+      xhi_obj.patchFilesFn.call({ then_fn : this, catch_fn : catch_fn });
     },
     function _02_05CheckGitInstallFn () {
-      log_fn( app_name + ' stage 02 step 06: Check for git installation...' );
-      context_obj.checkGitInstallFn.call({
+      log_fn( prefix_str + 'step 06: Check for git installation...' );
+      xhi_obj.checkGitInstallFn.call({
         then_fn  : this,
         catch_fn : function () {
+          process.chdir( ctx_obj.fqOrigDirname );
           next_fn(
             'Exiting without installing git commit hook.\n'
             + 'Please run this step again if you add git.'
@@ -58,21 +68,22 @@ function setupFn () {
       });
     },
     function _02_06UnlinkHookFn () {
-      log_fn( app_name + ' stage 02 step 07: Remove prior commit hook...' );
-      context_obj.unlinkHookFn.call({
+      log_fn( prefix_str + 'step 07: Remove prior commit hook...' );
+      xhi_obj.unlinkHookFn.call({
         then_fn  : this,
-        catch_fn : abort_fn
+        catch_fn : catch_fn
       });
     },
     function _02_07LinkHookFn () {
-      log_fn( app_name + ' stage 02 step 08: Add latest commit hook...' );
-      context_obj.linkHookFn.call({
+      log_fn( prefix_str + 'step 08: Add latest commit hook...' );
+      xhi_obj.linkHookFn.call({
         then_fn  : this,
-        catch_fn : abort_fn
+        catch_fn : catch_fn
       });
     },
     function _02_99FinishRunFn () {
-      next_fn( app_name + ' stage 02 step 99: Setup finish.' );
+      process.chdir( ctx_obj.fqOrigDirname );
+      next_fn( prefix_str + 'step 99: Setup finish.' );
     }
   );
 }
