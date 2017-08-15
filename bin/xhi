@@ -52,7 +52,7 @@
 
     // Set minimum Node verion number and init empty map
     minVersionInt  = 8,
-    exePathMap     = {},
+    binPathMap     = {},
 
     // Set convenience vars
     __0 = 0,
@@ -347,12 +347,12 @@
   function storePathFn ( path_str ) {
     var
       ctx_obj = this,
-      exe_key = ctx_obj.exe_key;
+      bin_key = ctx_obj.bin_key;
 
-    if ( ! exe_key ) {
+    if ( ! bin_key ) {
       abortFn( 'No key provided for ' + path_str );
     }
-    exePathMap[ exe_key ] = path_str;
+    binPathMap[ bin_key ]  = path_str;
   }
   // . END utility /storePathFn/
 
@@ -386,21 +386,21 @@
   }
   // . END utility /loadLibsFn/
 
-  // BEGIN utility /checkExeListFn/
-  function checkExeListFn () {
+  // BEGIN utility /checkBinListFn/
+  function checkBinListFn () {
     var
       ctx_obj      = this,
       exe_list     = [ 'git', 'patch' ],
       exe_count    = exe_list.length,
       promise_list = [],
 
-      idx, exe_key, bound_fn, promise_obj;
+      idx, bin_key, bound_fn, promise_obj;
 
     // Assign executable path vars
     for ( idx = 0; idx < exe_count; idx++ ) {
-      exe_key     = exe_list[ idx ];
-      bound_fn    = storePathFn.bind( { exe_key : exe_key });
-      promise_obj = makeWhichProm( exe_key );
+      bin_key     = exe_list[ idx ];
+      bound_fn    = storePathFn.bind( { bin_key : bin_key });
+      promise_obj = makeWhichProm( bin_key );
       promise_obj.then( bound_fn ).catch( abortFn );
       promise_list.push( promise_obj );
     }
@@ -410,7 +410,7 @@
       .catch( ctx_obj.catch_fn )
       ;
   }
-  // . END utility /checkExeListFn/
+  // . END utility /checkBinListFn/
 
   // BEGIN utility /checkNodeVersionFn/
   function checkNodeVersionFn () {
@@ -632,10 +632,11 @@
   //
   function makeXhiObj ( arg_map ) {
     return {
-      checkExeListFn    : checkExeListFn,    // .  .  02
+      checkBinListFn    : checkBinListFn,    // .  .  02
       checkGitInstallFn : checkGitInstallFn, // .  .  02
       copyVendorFilesFn : copyVendorFilesFn, // .  .  02
       exeCpeFn          : exeCpeFn,          // .  .  .
+      binPathMap        : binPathMap,        // .  .  .  03
       flowObj           : flowObj,           // .  .  02
       fqModuleDirname   : fqModuleDirname,   // .  .  .
       linkHookFn        : linkHookFn,        // .  .  02
@@ -773,12 +774,13 @@
     ],
     [ [ 'setup'         ], 'Patch+copy dev assets'     ],
     [ [ 'design'        ], 'Show architecture docs'    ],
-    [ [ 'dev_pull'      ], 'Pull from Git, sync libs'  ],
+    [ [ 'dev_pull'      ], 'Download assets (git pull)'],
     [ [ 'dev_start'     ], 'Start local web services'  ],
     [ [ 'dev_lint'      ], 'Lint changed code'         ],
     [ [ 'dev_test'      ], 'Run regression tests'      ],
-    [ [ 'dev_cover'     ], 'Create coverage reports'   ],
-    [ [ 'dev_commit'    ], 'Save validate code to repo'],
+    [ [ 'dev_cover'     ], 'Create coverage report'    ],
+    [ [ 'dev_commit'    ], 'Save code (git commit)'    ],
+    [ [ 'dev_pkgupgrade'], 'Upgrade packages (ncu -u)' ],
     [ [ 'build', 'make' ], 'Create app distribution'   ],
     [ [ 'publish'       ], 'Upload to NPM, Coveralls'  ],
     [ [ 'dev_restart'   ], 'Cycle local web server'    ],
