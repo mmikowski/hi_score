@@ -14,7 +14,6 @@ function installFn () {
     app_name    = ctx_obj.appName,
     command_map = ctx_obj.commandMap,
     log_fn      = ctx_obj.logFn,
-    param_map   = ctx_obj.paramMap,
 
     prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
 

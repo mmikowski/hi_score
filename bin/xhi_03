@@ -13,19 +13,17 @@ function pullFn () {
 
     prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
 
-    xhi_obj, stream_obj
+    stream_obj
     ;
 
   // Load post-install libs
   ctx_obj.loadLibsFn();
-  xhi_obj = ctx_obj.makeXhiObj();
-
   log_fn( prefix_str + 'Start git pull.' );
   process.chdir( ctx_obj.fqProjDirname );
-  stream_obj = ctx_obj.makeSpawnObj( 
-    'git', // xhi_obj.binPathMap[ 'git' ],
-    [ 'pull' ]
-  );
+
+  // Run git pull.
+  // If prereqs are run this is better: xhi_obj.binPathMap[ 'git' ],
+  stream_obj = ctx_obj.makeSpawnObj( 'git', [ 'pull' ] );
   process.chdir( ctx_obj.fqOrigDirname );
 
   stream_obj.stdout.on( 'data', function ( data ) {
