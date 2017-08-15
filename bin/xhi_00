@@ -1,11 +1,19 @@
 /*jslint node : true */
 /* vim: set ft=javascript: */
 // == BEGIN PUBLIC METHOD /helpFn/ ====================================
-function helpFn ( arg_list ) {
+// Purpose   : xhi help tool
+// Example   : xhi help
+// Returns   :
+//   Ingnores ctx_obj.catchFn.
+//   Runs     ctx_obj.nextFn when finished.
+// Throws    : none
+//
+function helpFn () {
   var
     ctx_obj     = this,
     app_name    = ctx_obj.appName,
     command_map = ctx_obj.commandMap,
+    log_fn      = ctx_obj.logFn,
     next_fn     = ctx_obj.nextFn,
     param_map   = ctx_obj.paramMap,
 
@@ -14,20 +22,26 @@ function helpFn ( arg_list ) {
     prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
 
     help_key    = do_verbose ? 'long_str' : 'short_str',
-    help_str    = do_verbose ?  '\n' + prefix_str + 'Begin' : ''
+    help_list
     ;
 
-  if ( stage_list.length === 0 ) {
-    stage_list[ 0 ] = ctx_obj.getCommandMap( 0 );
+  log_fn( prefix_str + 'Begin help' );
+
+  // Show list help is directed
+  help_list = ctx_obj.doListShow ? stage_list.slice( 0 ) : [];
+
+  if ( help_list.length === 0 ) {
+    help_list[ 0 ] = ctx_obj.getCommandMap( 0 );
   }
 
-  stage_list.forEach( function ( stage_map, idx ) {
-    help_str += '\n  - Stage ' + stage_map.id + ': '
+  help_list.forEach( function ( stage_map, idx ) {
+    log_fn ( '  ' + stage_map.id + ': '
       + ctx_obj.makeRightPadStr( stage_map.alias_list[ 0 ], 14 )
-      + ' | ' + stage_map[ help_key ];
+      + ' | ' + stage_map[ help_key ]
+    );
   });
-  help_str += do_verbose ? '\n' + prefix_str + 'End' : '';
-  next_fn( help_str );
+  log_fn( prefix_str + 'End help' );
+  next_fn();
 }
 // == . END PUBLIC METHOD /helpFn/ ====================================
 module.exports = helpFn;

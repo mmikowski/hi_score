@@ -74,7 +74,7 @@
   // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
-  // BEGIN uttility /makeRightPadStr/
+  // BEGIN utility /makeRightPadStr/
   function makeRightPadStr ( arg_str, arg_count ) {
     var
       delta_count = arg_count - arg_str.length,
@@ -84,15 +84,15 @@
     delta_list.length = delta_count > 0 ? delta_count : 0;
     return arg_str + delta_list.join(' ');
   }
-  // . END uttility /makeRightPadStr/
+  // . END utility /makeRightPadStr/
 
   // BEGIN utility /_outFn/
   // Purpose: provides abortFn, exitFn, logFn, and warnFn
   function _outFn() {
     var
-      context_obj = this || {},
-      method_str = context_obj._method_str_ || 'log',
-      prompt_str = context_obj._prompt_str_ || appName + '-info> ',
+      ctx_obj    = this || {},
+      method_str = ctx_obj._method_str_ || 'log',
+      prompt_str = ctx_obj._prompt_str_ || appName + '-info> ',
       arg_list   = Array.from( arguments )
       ;
 
@@ -100,11 +100,11 @@
       arg_list.unshift( prompt_str );
       console[ method_str ].apply( null, arg_list );
     }
-    if ( context_obj._cwd_name_ ) {
-      process.chdir( context_obj._cwd_name_ );
+    if ( ctx_obj._cwd_name_ ) {
+      process.chdir( ctx_obj._cwd_name_ );
     }
-    if ( context_obj._do_abort ) { process.exit( 1 ); }
-    if ( context_obj._do_exit  ) { process.exit( 0 ); }
+    if ( ctx_obj._do_abort ) { process.exit( 1 ); }
+    if ( ctx_obj._do_exit  ) { process.exit( 0 ); }
   }
   abortFn = _outFn.bind({
     _cwd_name_   : fqOrigDirname,
@@ -215,19 +215,32 @@
 
         first_map = getCommandMap( edge_list[ __0 ] );
         last_map  = getCommandMap( edge_list[ __1 ] );
-        if ( ! ( first_map && last_map ) ) { return; }
+        if ( ! first_map ) {
+          return warnFn( 'Range stage ' + edge_list[ __0 ] + ' is invalid' );
+        }
+        if ( ! last_map ) {
+          return warnFn( 'Range stage ' + edge_list[ __1 ] + ' is invalid' );
+        }
+        if ( first_map.idx > last_map.idx ) {
+          return warnFn(
+            'Range start start ' + edge_list[ __0 ]
+            + ' exceeds stage end ' + edge_list[ __1 ]
+          );
+        }
 
         temp_list = [ first_map ];
 
-        first_idx = first_map.idx + 1;
-        last_idx  = last_map.idx - 1;
+        first_idx = first_map.idx + __1;
+        last_idx  = last_map.idx  - __1;
 
-        for ( i = first_idx; i < last_idx; i++ ) {
+        for ( i = first_idx; i <= last_idx; i++ ) {
           middle_map = getCommandMap( i );
           if ( ! middle_map ) { return; }
           temp_list.push( middle_map );
         }
-        temp_list.push( last_map );
+        if ( last_map !== first_map ) {
+          temp_list.push( last_map );
+        }
 
         range_str  = str;
         stage_list = temp_list;
@@ -333,8 +346,8 @@
   // BEGIN utility /storePathFn/
   function storePathFn ( path_str ) {
     var
-      context_obj = this,
-      exe_key = context_obj.exe_key;
+      ctx_obj = this,
+      exe_key = ctx_obj.exe_key;
 
     if ( ! exe_key ) {
       abortFn( 'No key provided for ' + path_str );
@@ -345,13 +358,13 @@
 
   // BEGIN utility /patchIfNeededFn/
   function patchIfNeededFn ( is_check_found ) {
-    var context_obj = this;
+    var ctx_obj = this;
     if ( is_check_found ) {
-      logFn( 'Patch ' + context_obj.relative_name + ' already applied.' );
+      logFn( '    Patch ' + ctx_obj.relative_name + ' already applied.' );
     }
     else {
-      applyPatchFn( context_obj.relative_name );
-      logFn( 'Applied patch ' + context_obj.relative_name );
+      applyPatchFn( ctx_obj.relative_name );
+      logFn( '    Applied patch ' + ctx_obj.relative_name );
     }
   }
   // . END utility /patchIfNeededFn/
@@ -376,7 +389,7 @@
   // BEGIN utility /checkExeListFn/
   function checkExeListFn () {
     var
-      context_obj  = this,
+      ctx_obj      = this,
       exe_list     = [ 'git', 'patch' ],
       exe_count    = exe_list.length,
       promise_list = [],
@@ -393,8 +406,8 @@
     }
 
     promiseObj.all( promise_list )
-      .then(   context_obj.then_fn )
-      .catch( context_obj.catchFn )
+      .then(   ctx_obj.then_fn )
+      .catch( ctx_obj.catch_fn )
       ;
   }
   // . END utility /checkExeListFn/
@@ -416,29 +429,29 @@
 
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
-    var context_obj = this;
+    var ctx_obj = this;
     if ( error_obj ) { return abortFn( error_obj ); }
     pkgMatrix   = JSON.parse( json_str ) || [];
     setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
     if ( ! setupMatrix ) {
       abortFn( 'xhi_02_SetupMatrix not set in package.json' );
     }
-    context_obj.then_fn();
+    ctx_obj.then_fn();
   }
   // . END utility /storePkgMapFn/
 
   // BEGIN utility /readPkgFileFn/
   function readPkgFileFn () {
-    var context_obj = this;
+    var ctx_obj = this;
     fsObj.readFile( fqPkgFilename, 'utf8',
-    storePkgMapFn.bind( context_obj ), abortFn );
+    storePkgMapFn.bind( ctx_obj ), abortFn );
   }
   // END utility /readPkgFileFn/
 
   // BEGIN utility /rmVendorDirsFn/
   function rmVendorDirsFn () {
     var
-      context_obj        = this,
+      ctx_obj            = this,
       asset_group_table  = setupMatrix.asset_group_table,
       asset_group_count  = asset_group_table.length,
       promise_list       = [],
@@ -456,8 +469,8 @@
     }
 
     promiseObj.all( promise_list )
-      .then(  context_obj.then_fn )
-      .catch( context_obj.catchFn )
+      .then(  ctx_obj.then_fn  )
+      .catch( ctx_obj.catch_fn )
       ;
   }
   // . END utility /rmVendorDirsFn/
@@ -465,7 +478,7 @@
   // BEGIN utility /copyVendorFilesFn/
   function copyVendorFilesFn () {
     var
-      context_obj        = this,
+      ctx_obj            = this,
       asset_group_table  = setupMatrix.asset_group_table || [],
       dev_dependency_map = pkgMatrix.devDependencies     || {},
       asset_group_count  = asset_group_table.length,
@@ -524,8 +537,8 @@
     }
 
     promiseObj.all( promise_list )
-      .then(  context_obj.then_fn  )
-      .catch( context_obj.catchFn );
+      .then(  ctx_obj.then_fn  )
+      .catch( ctx_obj.catch_fn );
   }
   // . END utility /copyVendorFilesFn/
 
@@ -533,7 +546,7 @@
   // This function requires CWD to be fqProjDirname
   function patchFilesFn () {
     var
-      context_obj      = this,
+      ctx_obj          = this,
       patch_matrix     = setupMatrix.patch_matrix   || {},
       patch_dir_str    = patch_matrix.patch_dir_str || '',
       patch_map_list   = patch_matrix.patch_map_list|| [],
@@ -557,8 +570,8 @@
     }
 
     Promise.all( promise_list )
-      .then(  context_obj.then_fn  )
-      .catch( context_obj.catchFn )
+      .then(  ctx_obj.then_fn  )
+      .catch( ctx_obj.catch_fn )
       ;
   }
   // . END utility /patchFilesFn/
@@ -566,18 +579,18 @@
   // BEGIN utility /checkGitInstallFn/
   function checkGitInstallFn () {
     var
-      context_obj = this,
+      ctx_obj = this,
       promise_obj = makeStatProm( fqGitDirname )
       ;
 
     promise_obj
       .then( function () {
-        logFn( 'Git directory ' + fqGitDirname + ' found.');
-        context_obj.then_fn();
+        logFn( '    Git directory ' + fqGitDirname + ' found.');
+        ctx_obj.then_fn();
       })
       .catch( function () {
-        logFn( 'Git directory ' + fqGitDirname + ' NOT found.');
-        context_obj.catchFn();
+        logFn( '    Git directory ' + fqGitDirname + ' NOT found.');
+        ctx_obj.catch_fn();
       });
   }
   // . END utility /checkGitInstallFn/
@@ -585,22 +598,22 @@
   // BEGIN utility /unlinkHookFn/
   // This ignores any error
   function unlinkHookFn () {
-    var context_obj = this;
+    var ctx_obj = this;
     fqHookFilename = fqProjDirname + '/.git/hooks/pre-commit';
-    fsObj.unlink( fqHookFilename, context_obj.then_fn );
+    fsObj.unlink( fqHookFilename, ctx_obj.then_fn );
   }
   // . END utility /unlinkHookFn/
 
   // BEGIN utility /linkHookFn/
   // This function requires CWD to be fqProjDirname
   function linkHookFn () {
-    var context_obj = this;
+    var ctx_obj = this;
     fsObj.symlink(
       '../../bin/git-hook_pre-commit',
       fqHookFilename,
       function ( error_data ) {
         if ( error_data ) { abortFn( error_data ); }
-        context_obj.then_fn();
+        ctx_obj.then_fn();
       }
     );
   }
@@ -657,241 +670,6 @@
     };
   }
   // . END utility /makeSetObj/
-
-  // == BEGIN PUBLIC METHOD /_02SetupFn/ ==============================
-  // Purpose   : Delete, copies, and patches files. Install commit hook.
-  // Example   : xhi_tool 02
-  // Returns   : boolean true on success
-  // Throws    : none
-  // Method    :
-  //   1. Count down from end of array with last_idx
-  //   2. Randomly pick element from between 0 and last_idx
-  //   3. Swap pick element with last_idx element
-  //
-  //
-  // Synopsis : Setup project using package.json as manifest.
-  // Provides : Deletes, copies, and patches files. Install commit hook.
-  //   1. Delete all vendor directories as directed by config.
-  //      directories in bin, css, font, img, and js
-  //   2. Copy assets from node_modules to vendor directories with the
-  //      npm version appended to the names.
-  //   3. Applies any patches (uglifyjs)
-  //   4. Install the commit hook if git is detected
-  //
-  function _02SetupFn () {
-    var setup_fn, xhi_obj;
-
-    loadLibsFn();
-    xhi_obj  = makeXhiObj();
-    setup_fn = require( fqBinDirname + '/xhi_02' );
-    setup_fn.call( xhi_obj );
-
-    // flowObj.exec(
-    //   function _02_00InitVarsFn () {
-    //     logFn( appName + ' stage 02 Setup start.' );
-    //     logFn( appName + ' stage 02 step 00: Init variables...' );
-    //     process.chdir( fqProjDirname );
-    //     checkExeListFn.call({ then_fn  : this, catch_fn : abortFn });
-    //   },
-    //   function _02_01ReadPkgFileFn () {
-    //     logFn( appName + ' stage 02 step 01: Read package file...' );
-    //     readPkgFileFn.call({ then_fn  : this, catch_fn : abortFn });
-    //   },
-    //   function _02_02RmVendorDirsFn () {
-    //     logFn( appName + ' stage 02 step 02: Remove vendor directories...' );
-    //     rmVendorDirsFn.call({ then_fn  : this, catch_fn : abortFn });
-    //   },
-    //   function _02_03CopyVendorFilesFn () {
-    //     logFn( appName + ' stage 02 step 03: Deploy vendor assets...' );
-    //     copyVendorFilesFn.call({ then_fn  : this, catch_fn : abortFn });
-    //   },
-    //   function _02_04PatchFilesFn () {
-    //     logFn( appName + ' stage 02 step 04: Apply patches...' );
-    //     patchFilesFn.call({ then_fn  : this, catch_fn : abortFn });
-    //   },
-    //   function _02_05CheckGitInstallFn () {
-    //     logFn( appName + ' stage 02 step 05: Check for git installation...' );
-    //     checkGitInstallFn.call({
-    //       then_fn  : this,
-    //       catch_fn : function () {
-    //         logFn( 'Exiting without installing git commit hook.' );
-    //         logFn( 'Please run this step again if you add git.' );
-    //         process.chdir( fqOrigDirname );
-    //         exitGoodFn();
-    //       }
-    //     });
-    //   },
-    //   function _02_06UnlinkHookFn () {
-    //     logFn( appName + ' stage 02 step 06: Remove prior commit hook...' );
-    //     unlinkHookFn.call({
-    //       then_fn  : this,
-    //       catch_fn : abortFn
-    //     });
-    //   },
-    //   function _02_07LinkHookFn () {
-    //     logFn( appName + ' stage 02 Add latest commit hook...' );
-    //     linkHookFn.call({
-    //       then_fn  : this,
-    //       catch_fn : abortFn
-    //     });
-    //   },
-    //   function _02_99FinishRunFn () {
-    //     logFn( appName + ' stage 02 Setup finish.' );
-    //     process.chdir( fqOrigDirname );
-    //     exitGoodFn();
-    //   }
-    // );
-  }
-  // == . END PUBLIC METHOD /_02SetupFn/ ==============================
-  function _03ShowArchFn () {}
-  function _04DevPullFn  () {}
-  function _05DevStartFn () {}
-  function _06DevLintFn  () {}
-  function _07DevTestFn  () {}
-  // == BEGIN PUBLIC METHOD /_08DevCoverFn/ ==========================
-  function _08DevCoverFn () {
-    var cover_fn, xhi_obj;
-
-    loadLibsFn();
-    xhi_obj  = makeXhiObj();
-    cover_fn = require( fqBinDirname + '/xhi_08' );
-    cover_fn.call( xhi_obj );
-  }
-  // == . END PUBLIC METHOD /_08DevCoverFn/ ==========================
-  function _09CommitFn () {}
-  function _10BuildFn  () {}
-  function _11PublishFn () {}
-  function _12DevRestartFn () {}
-  function _13DevStopFn () {}
-  function _14DeployFn () {}
-  function _15ProdStartFn () {}
-  function _16ProdRestartFn () {}
-  function _17ProdStopFn () {}
-  function _18FetchInfoFn () {}
-  function _19UninstallFn () {}
-  function describeFn () {}
-
-  commandTable = makeCommandTable([
-    [ 'fn', 'alias_list', 'short_str',  'long_str' ],
-    [ null, [ 'help' ],
-      'The xhi life-cycle tool. Use -v to see verbose help.',
-      '\n  Name      : ' + appName + '\n'
-      + '  Purpose   : Run hi_score lifecycle tools\n'
-      + '  Example   : xhi help\n'
-      + '  Arguments :\n'
-      + padName + ' [ help | 0 ] <range> [ -v ]\n'
-      + '    <range> may be:\n'
-      + '    1. A single stage number or name.    Ex: 01.\n'
-      + '    2. A list of stage numbers or names. Ex: 1,2,3,6.\n'
-      + '    3. A range of stages                 Ex: 1-5 or all\n'
-      + '    See ' + appName + ' help all to list stages.\n'
-      + '  More examples:\n'
-      + '    Run stage range\n'
-      + padName + ' dev_pull        // run stage 04\n'
-      + padName + ' 1,2,6           // run 3 stages\n'
-      + padName + ' 1-9             // run 9 stages in range\n'
-      + '    Generic help\n'
-      + padName + ' help            // Short help \n'
-      + '    Help stage range\n'
-      + padName + ' help 01         // Short help on stage 01\n'
-      + padName + ' help install    // Same\n'
-      + padName + ' help all -v     // Long help on all stages\n'
-      + padName + ' help 1,4        // Short help on stages 1,4\n'
-      + padName + ' help help,dev_pull -v // Long help on stages 1,4'
-    ],
-    [ null, [ 'install' ],
-      'Download & install npm modules.',
-      'Download & install npm modules.'
-    ],
-    [ _02SetupFn,      [ 'setup'         ], 'Patch+copy dev assets'     ],
-    [ _03ShowArchFn,   [ 'design'        ], 'Show architecture docs'    ],
-    [ _04DevPullFn,    [ 'dev_pull'      ], 'Pull from Git, sync libs'  ],
-    [ _05DevStartFn,   [ 'dev_start'     ], 'Start local web services'  ],
-    [ _06DevLintFn,    [ 'dev_lint'      ], 'Lint changed code'         ],
-    [ _07DevTestFn,    [ 'dev_test'      ], 'Run regression tests'      ],
-    [ _08DevCoverFn,   [ 'dev_cover'     ], 'Create coverage reports'   ],
-    [ _09CommitFn,     [ 'dev_commit'    ], 'Save validate code to repo'],
-    [ _10BuildFn,      [ 'build', 'make' ], 'Create app distribution'   ],
-    [ _11PublishFn,    [ 'publish'       ], 'Upload to NPM, Coveralls'  ],
-    [ _12DevRestartFn, [ 'dev_restart'   ], 'Cycle local web server'    ],
-    [ _13DevStopFn,    [ 'dev_stop'      ], 'Stop development server'   ],
-    [ _14DeployFn,     [ 'deploy'        ], 'Upload distro to servers'  ],
-    [ _15ProdStartFn,  [ 'prod_start'    ], 'Start prod web services'   ],
-    [ _16ProdRestartFn,[ 'prod_restart'  ], 'Cycle production process'  ],
-    [ _17ProdStopFn ,  [ 'prod_stop'     ], 'Stop production process'   ],
-    [ _18FetchInfoFn,  [ 'fetch_info'    ], 'Fetch prod info'           ],
-    [ _19UninstallFn , [ 'uninstall'     ], 'Remove ' + appName         ]
-  ]);
-  // == BEGIN PUBLIC METHOD /mainFn/ ==================================
-  // Purpose   : Parse command line and dispatch to requested command(s)
-  function mainFn( arg_param_list ) {
-    var
-      param_list = arg_param_list.slice( 2 ),
-      param_map  = makeParamMap( param_list ),
-      stage_list = param_map.stage_list,
-      exec_list  = [],
-
-      command_map, set_obj,
-      stage_fn,    stage_idx
-      ;
-
-    // Abort if node version < minVersionInt
-    checkNodeVersionFn();
-    command_map = stage_list[ __0 ];
-
-    // Make new set_obj as context for lib function
-    set_obj = makeSetObj();
-
-    // Special case: help
-    if ( ! command_map || command_map.idx === 0 ) {
-      command_map = getCommandMap( __0 );
-      set_obj.commandMap = command_map;
-      set_obj.paramMap   = makeParamMap( param_list, 1 );
-      stage_fn = require( fqBinDirname + '/xhi_00' );
-      return stage_fn.call( set_obj );
-    }
-
-    // Begin exec standard stage list
-    // Walk backward through list and bind functions.
-    // The last function should have nextFn set to exit function.
-    // The second-to-last function should have nextFn set to
-    //   the last function.
-    // The third-to-last function should have nextFn set to
-    //   the second-to-last function, etc.
-    //
-    set_obj.nextFn = function () {
-      abortFn( '. End process range ' + param_map.range_str );
-    };
-
-    stage_idx = stage_list.length - __1;
-    while ( stage_idx > -1 ) {
-
-      // Set commandMap, paramMap in context object
-      command_map = stage_list[ stage_idx ];
-      set_obj.commandMap = command_map;
-      set_obj.paramMap   = param_map;
-
-      // Load library ( TODO load preq_list? )
-      stage_fn = require( fqBinDirname + '/xhi_' + command_map.id );
-
-      // Build exec chain
-      exec_list.push( stage_fn.bind( set_obj ) );
-      stage_idx--;
-
-      // Make new context object and set catchFn, nextFn
-      set_obj = makeSetObj();
-      set_obj.nextFn  = stage_fn;
-      set_obj.catchFn = abortFn;
-    }
-
-    logFn( 'Start process range ' + param_map.range_str );
-    return exec_list[ __0 ]();
-    // End exec standard stage list
-  }
-  // == . END PUBLIC METHOD /mainFn/ ==================================
-
-  mainFn( argList );
-// == . END SCRIPT xhi - the hi_score cli life-stage tool =============
 
 // TODO Add to command table info
 //
@@ -963,3 +741,129 @@
 // "19_.": "=== UNINSTALL",
 // "19_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
 // "19_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
+  commandTable = makeCommandTable([
+    [ 'alias_list', 'short_str',  'long_str' ],
+    [ [ 'help' ],
+      'Hi_score admin tool. Use -v for verbose.',
+      '\n  Name      : ' + appName + '\n'
+      + '  Purpose   : Run hi_score lifecycle tools\n'
+      + '  Example   : xhi help\n'
+      + '  Arguments : [ help || 0 ] <range> [ -v ]\n'
+      + '    <range> may be:\n'
+      + '    1. A single stage number or name.    Ex: 01.\n'
+      + '    2. A list of stage numbers or names. Ex: 1,2,3,6.\n'
+      + '    3. A range of stages                 Ex: 1-5 or all\n'
+      + '    See ' + appName + ' help all to list stages.\n'
+      + '  More examples:\n'
+      + '    Run stage range\n'
+      + padName + ' dev_pull        // run stage 04\n'
+      + padName + ' 1,2,6           // run three stages\n'
+      + padName + ' 1-9             // run nine stages in range\n'
+      + '    Generic help\n'
+      + padName + ' help            // Short help \n'
+      + '    Help stage range\n'
+      + padName + ' help 01         // Short help on install stage\n'
+      + padName + ' help all -v     // Long help on all stages\n'
+      + padName + ' help 1,4        // Short help on stages 1,4\n'
+      + padName + ' help help,dev_pull -v // Long help on stages 1,4'
+    ],
+    [ [ 'install' ],
+      'Download & install npm modules.',
+      'Download & install npm modules.'
+    ],
+    [ [ 'setup'         ], 'Patch+copy dev assets'     ],
+    [ [ 'design'        ], 'Show architecture docs'    ],
+    [ [ 'dev_pull'      ], 'Pull from Git, sync libs'  ],
+    [ [ 'dev_start'     ], 'Start local web services'  ],
+    [ [ 'dev_lint'      ], 'Lint changed code'         ],
+    [ [ 'dev_test'      ], 'Run regression tests'      ],
+    [ [ 'dev_cover'     ], 'Create coverage reports'   ],
+    [ [ 'dev_commit'    ], 'Save validate code to repo'],
+    [ [ 'build', 'make' ], 'Create app distribution'   ],
+    [ [ 'publish'       ], 'Upload to NPM, Coveralls'  ],
+    [ [ 'dev_restart'   ], 'Cycle local web server'    ],
+    [ [ 'dev_stop'      ], 'Stop development server'   ],
+    [ [ 'deploy'        ], 'Upload distro to servers'  ],
+    [ [ 'prod_start'    ], 'Start prod web services'   ],
+    [ [ 'prod_restart'  ], 'Cycle production process'  ],
+    [ [ 'prod_stop'     ], 'Stop production process'   ],
+    [ [ 'fetch_info'    ], 'Fetch prod info'           ],
+    [ [ 'uninstall'     ], 'Remove ' + appName         ]
+  ]);
+  // == BEGIN PUBLIC METHOD /mainFn/ ==================================
+  // Purpose   : Parse command line and dispatch to requested command(s)
+  function mainFn( arg_param_list ) {
+    var
+      param_list = arg_param_list.slice( 2 ),
+      param_map  = makeParamMap( param_list ),
+      stage_list = param_map.stage_list,
+      exec_list  = [],
+
+      command_map, set_obj,  stage_idx,
+      stage_fn,    bound_fn
+      ;
+
+    // Abort if node version < minVersionInt
+    checkNodeVersionFn();
+    command_map = stage_list[ __0 ];
+
+    // Make new set_obj as context for lib function
+    set_obj = makeSetObj();
+
+    // Special case: help
+    if ( ! command_map
+      || param_map.range_str === ''
+      || param_map.range_str.match(/^0+$/)
+      || param_map.range_str === 'help'
+    ) {
+      command_map = getCommandMap( __0 );
+      set_obj.commandMap = command_map;
+      set_obj.paramMap   = makeParamMap( param_list, __1 );
+      set_obj.doListShow = true;
+      stage_fn = require( fqBinDirname + '/xhi_00' );
+      return stage_fn.call( set_obj );
+    }
+
+    // Begin exec standard stage list
+    // Walk backward through list and bind functions.
+    // The last function should have nextFn set to exit function.
+    // The second-to-last function should have nextFn set to
+    //   the last function.
+    // The third-to-last function should have nextFn set to
+    //   the second-to-last function, etc.
+    //
+    set_obj.nextFn = function () {
+      exitFn( '. End process range ' + param_map.range_str );
+    };
+
+    stage_idx = stage_list.length - __1;
+    while ( stage_idx > -1 ) {
+
+      // Set commandMap, paramMap in context object
+      command_map = stage_list[ stage_idx ];
+      set_obj.commandMap = command_map;
+      set_obj.paramMap   = param_map;
+
+      // Load library ( TODO load preq_list? )
+      stage_fn = require( fqBinDirname + '/xhi_' + command_map.id );
+
+      // Build exec chain
+      bound_fn = stage_fn.bind( set_obj );
+      exec_list.push( bound_fn );
+
+      // Make new context object and set catchFn, nextFn
+      if ( stage_idx > __0 ) {
+        set_obj = makeSetObj();
+        set_obj.nextFn  = bound_fn;
+      }
+      stage_idx--;
+    }
+    logFn( 'Start process range ' + param_map.range_str );
+    if ( bound_fn ) { return bound_fn(); }
+    // End exec standard stage list
+  }
+  // == . END PUBLIC METHOD /mainFn/ ==================================
+
+  mainFn( argList );
+// == . END SCRIPT xhi - the hi_score cli life-stage tool =============
+

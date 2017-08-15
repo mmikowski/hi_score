@@ -40,7 +40,8 @@ function coverFn () {
   stream_obj.on( 'close',
     function ( exit_code ) {
       if ( exit_code === 0 ) {
-        next_fn( prefix_str + 'End Istanbul coverage check.' );
+        log_fn( prefix_str + 'End Istanbul coverage check.' );
+        next_fn();
       }
       else {
         catch_fn(
