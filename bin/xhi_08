@@ -1,6 +1,5 @@
 /*jslint node : true */
 /* vim: set ft=javascript: */
-
 // == BEGIN PUBLIC METHOD /coverFn/ ===================================
 function coverFn () {
   var

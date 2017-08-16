@@ -784,7 +784,7 @@
     [ [ 'publish'       ], 'Upload to NPM, Coveralls'  ],
     [ [ 'dev_restart'   ], 'Cycle local web server'    ],
     [ [ 'dev_stop'      ], 'Stop development server'   ],
-    [ [ 'upgrade'],     ], 'Upgrade packages (ncu -u)' ],
+    [ [ 'upgrade'       ], 'Upgrade packages (ncu -u)' ],
     [ [ 'deploy'        ], 'Upload distro to servers'  ],
     [ [ 'prod_start'    ], 'Start prod web services'   ],
     [ [ 'prod_restart'  ], 'Cycle production process'  ],
