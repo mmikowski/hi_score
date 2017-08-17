@@ -4,28 +4,21 @@
 function lintFn () {
   var
     ctx_obj       = this,
-    app_name      = ctx_obj.appName,
     catch_fn      = ctx_obj.catchFn,
     command_map   = ctx_obj.commandMap,
     js_list       = [],
     log_fn        = ctx_obj.logFn,
     next_fn       = ctx_obj.nextFn,
-    subject_str   = 'lint checks.',
+    prefix_str  = ctx_obj.makePrefixStr( command_map ),
 
-    prefix_str, xhi_obj, stream_obj
+    xhi_obj, stream_obj
     ;
-
-  prefix_str = app_name + ' Stage '
-      + command_map.id + ' '
-      + ctx_obj.makeRightPadStr( command_map.alias_list[ 0 ], 14 )
-      + command_map.alias_list[ 0 ] + ': '
-      ;
 
   // Load post-install libs
   ctx_obj.loadLibsFn();
   xhi_obj = ctx_obj.makeXhiObj();
 
-  log_fn( prefix_str + 'Start ' + subject_str );
+  log_fn( 'Begin ' + prefix_str );
   process.chdir( ctx_obj.fqProjDirname );
 
   xhi_obj.flowObj.exec(
@@ -33,11 +26,12 @@ function lintFn () {
       var then_fn = this;
       log_fn( '  step 01: Get changed js files' );
       process.chdir( ctx_obj.fqProjDirname );
-      xhi_obj.checkChangedJSFiles.call(
+      xhi_obj.makeChangedJSList.call(
         { then_fn : then_fn, catch_fn : catch_fn },
         js_list
       );
     },
+
     function _02JSLintFiles () {
       var
         then_fn     = this,
@@ -76,6 +70,7 @@ function lintFn () {
         }
       );
     },
+
     function _03CheckWhiteSpace () {
       var
         then_fn     = this,
@@ -89,10 +84,11 @@ function lintFn () {
       // TODO slurp-in files and review line-by-line
       // xhi_obj.rmVendorDirsFn.call({ then_fn : this, catch_fn : catch_fn });
     },
+
     function _04ConcludeLint () {
       var then_fn = this;
       process.chdir( ctx_obj.fqOrigDirname );
-      log_fn( prefix_str + 'End ' + subject_str );
+      log_fn( 'Success ' + prefix_str  );
       // Execute next xhi function, then exit flow closure with then_fn
       next_fn();
       then_fn();

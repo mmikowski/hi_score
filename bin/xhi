@@ -13,10 +13,9 @@
   'use strict';
   var
     // Import capabilities
-    EventEmitter = require( 'events' ).EventEmitter,
+    // TODO not used: EventEmitter = require( 'events' ).EventEmitter,
     childProcObj = require( 'child_process' ),
     fsObj        = require( 'fs'            ),
-    npmObj       = require( 'npm'           ),
     pathObj      = require( 'path'          ),
     utilObj      = require( 'util'          ),
     promiseObj   = Promise,
@@ -29,7 +28,7 @@
     makeStatProm  = promisifyFn( fsObj.stat ),
 
     // Assign nodejs builtins
-    eventObj      = new EventEmitter(),
+    // eventObj      = new EventEmitter(),
     fqAppFilename = __filename,
     fqBinDirname  = __dirname,
 
@@ -45,10 +44,6 @@
     fqGitDirname    = fqProjDirname   + '/.git',
     fqModuleDirname = fqProjDirname   + '/node_modules',
     fqPkgFilename   = fqProjDirname   + '/package.json',
-    fqPatchFilename = fqProjDirname   + '/patch/uglify-js-3.0.21.patch',
-
-    fqUglyDirname   = fqModuleDirname + '/uglifyjs',
-    fqScopeFileStr  = fqUglyDirname   + '/lib/scope.js',
 
     // Set minimum Node verion number and init empty map
     minVersionInt  = 8,
@@ -91,8 +86,8 @@
   function _outFn() {
     var
       ctx_obj    = this || {},
-      method_str = ctx_obj._method_str_ || 'log',
-      prompt_str = ctx_obj._prompt_str_ || appName + '-info> ',
+      method_str = ctx_obj.method_str || 'log',
+      prompt_str = ctx_obj.prompt_str || appName + '-info> ',
       arg_list   = Array.from( arguments )
       ;
 
@@ -100,27 +95,27 @@
       arg_list.unshift( prompt_str );
       console[ method_str ].apply( null, arg_list );
     }
-    if ( ctx_obj._cwd_name_ ) {
-      process.chdir( ctx_obj._cwd_name_ );
+    if ( ctx_obj.cd_name ) {
+      process.chdir( ctx_obj.cd_name );
     }
-    if ( ctx_obj._do_abort ) { process.exit( 1 ); }
-    if ( ctx_obj._do_exit  ) { process.exit( 0 ); }
+    if ( ctx_obj.do_abort ) { process.exit( 1 ); }
+    if ( ctx_obj.do_exit  ) { process.exit( 0 ); }
   }
   abortFn = _outFn.bind({
-    _cwd_name_   : fqOrigDirname,
-    _do_abort_   : true,
-    _method_str_ : 'warn',
-    _prompt_str_ : appName + '-abort> ',
+    cd_name      : fqOrigDirname,
+    do_abort     : true,
+    method_str : 'warn',
+    prompt_str : appName + '-abort> '
   });
   exitFn = _outFn.bind({
-    _cwd_name_   : fqOrigDirname,
-    _do_exit_    : true,
-    _prompt_str_ : appName + '-exit> ',
+    cd_name   : fqOrigDirname,
+    do_exit    : true,
+    prompt_str : appName + '-exit> '
   });
-  logFn   = _outFn.bind();
+  logFn   = _outFn.bind({});
   warnFn  = _outFn.bind({
-    _method_str_ : 'warn',
-    _prompt_str_ : appName + '-warn> '
+    method_str : 'warn',
+    prompt_str : appName + '-warn> '
   });
   // . END utility /_outFn/
 
@@ -167,6 +162,16 @@
   }
   // . END utility /getCommandMap/
 
+
+  // BEGIN utility /makePrefixStr/
+  function makePrefixStr ( command_map ) {
+    return appName + ' Stage ' + command_map.id + ' '
+      + makeRightPadStr( command_map.alias_list[ 0 ], 14 )
+      + command_map.alias_list[ 0 ] + ': '
+      ;
+  }
+  // . END utility /makePrefixStr/
+
   // BEGIN utility /makeParamMap/
   // Purpose   : Process command line arguments
   // Example   : makeParamMap( [ 'help', '1', '-v' ] )
@@ -190,11 +195,12 @@
 
       do_verbose = false,
       range_str  = '',
+      stage_list = null,
 
-      edge_list, stage_list, temp_list
+      edge_list, temp_list
       ;
 
-    param_list.forEach( function ( str, idx ) {
+    param_list.forEach( function ( str, ignore_idx ) {
       var i, first_map, middle_map, last_map, first_idx, last_idx;
       if ( str === '-v' ) {
         do_verbose = true;
@@ -206,7 +212,8 @@
 
       if ( str.match(/-/) || str === 'all' ) {
         if ( arg_count < skip_idx ) {
-          return arg_count++;
+          arg_count++;
+          return;
         }
 
         edge_list = str === 'all'
@@ -249,11 +256,12 @@
 
       if ( str.match(/,/) ) {
         if ( arg_count < skip_idx ) {
-          return arg_count++;
+          arg_count++;
+          return;
         }
         edge_list = str.split(',');
         temp_list = [];
-        edge_list.forEach( function ( data, idx ) {
+        edge_list.forEach( function ( data, ignore_idx ) {
           middle_map = getCommandMap( data );
           if ( ! middle_map ) { return; }
           temp_list.push( middle_map );
@@ -265,7 +273,8 @@
       }
 
       if ( arg_count < skip_idx ) {
-        return arg_count++;
+        arg_count++;
+        return;
       }
       middle_map = getCommandMap( str );
       if ( ! middle_map ) { return; }
@@ -281,6 +290,10 @@
     };
   }
   // . END utility /makeParamMap/
+
+  // BEGIN utility /makeChangedJSList/
+  function makeChangedJSList () { }
+  // . END utility /makeChangedJSList/
 
   // BEGIN utlity /grepFileFn/
   function grepFileFn ( filename, pattern_str ) {
@@ -630,7 +643,7 @@
   // Purpose: Creates resource map for modules available
   //   only after npm install.
   //
-  function makeXhiObj ( arg_map ) {
+  function makeXhiObj () {
     return {
       checkBinListFn    : checkBinListFn,    // .  .  02
       checkGitInstallFn : checkGitInstallFn, // .  .  02
@@ -643,7 +656,7 @@
       patchFilesFn      : patchFilesFn,      // .  .  02
       readPkgFileFn     : readPkgFileFn,     // .  .  02
       rmVendorDirsFn    : rmVendorDirsFn,    // .  .  02
-      unlinkHookFn      : unlinkHookFn,      // .  .  02
+      unlinkHookFn      : unlinkHookFn       // .  .  02
     };
   }
   // . END utility /makeXhiObj/
@@ -662,6 +675,7 @@
       getCommandMap   : getCommandMap,  // Get command map by id or index
       loadLibsFn      : loadLibsFn,     // Load libs after stage 1
       logFn           : logFn,          // Log to console
+      makePrefixStr   : makePrefixStr,  // Fn for stage prefix
       makeRightPadStr : makeRightPadStr,// Pad string right
       makeSpawnObj    : makeSpawnObj,   // Object create spawned proc
       makeXhiObj      : makeXhiObj,     // Get utils after stage 1
@@ -749,8 +763,8 @@
       '\n  Name      : ' + appName + '\n'
       + '  Purpose   : Run hi_score lifecycle tools\n'
       + '  Example   : xhi help\n'
-      + '  Arguments : [ help || 0 ] <range> [ -v ]\n'
-      + '    <range> may be:\n'
+      + '  Arguments : [ help || 0 ] /range/ [ -v ]\n'
+      + '    /range/ may be:\n'
       + '    1. A single stage number or name.    Ex: 01.\n'
       + '    2. A list of stage numbers or names. Ex: 1,2,3,6.\n'
       + '    3. A range of stages                 Ex: 1-5 or all\n'
@@ -822,7 +836,7 @@
       set_obj.commandMap = command_map;
       set_obj.paramMap   = makeParamMap( param_list, __1 );
       set_obj.doListShow = true;
-      stage_fn = require( fqBinDirname + '/xhi_00' );
+      stage_fn = require( fqBinDirname + '/xhi_00.js' );
       return stage_fn.call( set_obj );
     }
 
@@ -834,7 +848,7 @@
     // The third-to-last function should have nextFn set to
     //   the second-to-last function, etc.
     //
-    set_obj.nextFn = function () {
+    set_obj.nextFn = function _nextFn () {
       exitFn( '. End process range ' + param_map.range_str );
     };
 
@@ -847,7 +861,7 @@
       set_obj.paramMap   = param_map;
 
       // Load library ( TODO load preq_list? )
-      stage_fn = require( fqBinDirname + '/xhi_' + command_map.id );
+      stage_fn = require( fqBinDirname + '/xhi_' + command_map.id + '.js' );
 
       // Build exec chain
       bound_fn = stage_fn.bind( set_obj );

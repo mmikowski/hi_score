@@ -11,7 +11,6 @@
 function helpFn () {
   var
     ctx_obj     = this,
-    app_name    = ctx_obj.appName,
     command_map = ctx_obj.commandMap,
     log_fn      = ctx_obj.logFn,
     next_fn     = ctx_obj.nextFn,
@@ -19,13 +18,13 @@ function helpFn () {
 
     do_verbose  = param_map.do_verbose,
     stage_list  = param_map.stage_list,
-    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
+    prefix_str  = ctx_obj.makePrefixStr( command_map ),
 
     help_key    = do_verbose ? 'long_str' : 'short_str',
     help_list
     ;
 
-  log_fn( prefix_str + 'Begin help' );
+  log_fn( 'Begin ' + prefix_str );
 
   // Show list help is directed
   help_list = ctx_obj.doListShow ? stage_list.slice( 0 ) : [];
@@ -34,13 +33,13 @@ function helpFn () {
     help_list[ 0 ] = ctx_obj.getCommandMap( 0 );
   }
 
-  help_list.forEach( function ( stage_map, idx ) {
+  help_list.forEach( function ( stage_map, ignore_idx ) {
     log_fn ( '  ' + stage_map.id + ': '
       + ctx_obj.makeRightPadStr( stage_map.alias_list[ 0 ], 14 )
       + ' | ' + stage_map[ help_key ]
     );
   });
-  log_fn( prefix_str + 'End help' );
+  log_fn( 'Success ' + prefix_str );
   next_fn();
 }
 // == . END PUBLIC METHOD /helpFn/ ====================================

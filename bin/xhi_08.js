@@ -4,13 +4,11 @@
 function coverFn () {
   var
     ctx_obj     = this,
-    app_name    = ctx_obj.appName,
     catch_fn    = ctx_obj.catchFn,
     command_map = ctx_obj.commandMap,
     log_fn      = ctx_obj.logFn,
     next_fn     = ctx_obj.nextFn,
-
-    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
+    prefix_str  = ctx_obj.makePrefixStr( command_map ),
 
     xhi_obj, stream_obj
     ;
@@ -19,7 +17,7 @@ function coverFn () {
   ctx_obj.loadLibsFn();
   xhi_obj = ctx_obj.makeXhiObj();
 
-  log_fn( prefix_str + 'Start Istanbul coverage check.' );
+  log_fn( 'Begin ' + prefix_str );
   process.chdir( ctx_obj.fqProjDirname );
   stream_obj = ctx_obj.makeSpawnObj(
     xhi_obj.fqModuleDirname + '/.bin/istanbul',
@@ -39,13 +37,11 @@ function coverFn () {
   stream_obj.on( 'close',
     function ( exit_code ) {
       if ( exit_code === 0 ) {
-        log_fn( prefix_str + 'End Istanbul coverage check.' );
+        log_fn( 'Success ' + prefix_str );
         next_fn();
       }
       else {
-        catch_fn(
-          prefix_str + 'Abort Istanbul coverage check.\n'
-        );
+        catch_fn( 'Fail ' + prefix_str );
       }
     }
   );

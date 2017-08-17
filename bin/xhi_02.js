@@ -19,14 +19,13 @@
 function setupFn () {
   var
     ctx_obj     = this,
-    app_name    = ctx_obj.appName,
     catch_fn    = ctx_obj.catchFn,
     command_map = ctx_obj.commandMap,
     log_fn      = ctx_obj.logFn,
     next_fn     = ctx_obj.nextFn,
     warn_fn     = ctx_obj.warnFn,
 
-    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
+    prefix_str  = ctx_obj.makePrefixStr( command_map ),
 
     xhi_obj
     ;
@@ -34,13 +33,13 @@ function setupFn () {
   ctx_obj.loadLibsFn();
   xhi_obj = ctx_obj.makeXhiObj();
 
-  log_fn( prefix_str + 'Begin setup' );
+  log_fn( 'Begin ' + prefix_str );
   xhi_obj.flowObj.exec(
     function _02_00InitVarsFn () {
       log_fn( '  step 00: Setup start.' );
       log_fn( '  step 01: Init variables...' );
       process.chdir( ctx_obj.fqProjDirname );
-      xhi_obj.checkExeListFn.call({ then_fn : this, catch_fn : catch_fn });
+      xhi_obj.checkBinListFn.call({ then_fn : this, catch_fn : catch_fn });
     },
     function _02_01ReadPkgFileFn () {
       log_fn( '  step 02: Read package file...' );
@@ -62,13 +61,13 @@ function setupFn () {
       log_fn( '  step 06: Check for git installation...' );
       xhi_obj.checkGitInstallFn.call({
         then_fn  : this,
-        catch_fn : function () {
+        catch_fn : function _catch_fn () {
           process.chdir( ctx_obj.fqOrigDirname );
           warn_fn(
-            'Exiting without installing git commit hook.\n'
+            '\nExiting without installing git commit hook.\n'
             + 'Please run this step again if you add git.'
           );
-          log_fn( prefix_str + 'End Setup' );
+          log_fn( 'Success ' + prefix_str );
           next_fn();
         }
       });
@@ -83,7 +82,7 @@ function setupFn () {
     },
     function _02_99FinishRunFn () {
       process.chdir( ctx_obj.fqOrigDirname );
-      log_fn( prefix_str + 'End Setup' );
+      log_fn( 'Success ' + prefix_str );
       next_fn();
     }
   );

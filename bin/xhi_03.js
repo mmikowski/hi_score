@@ -4,13 +4,11 @@
 function pullFn () {
   var
     ctx_obj     = this,
-    app_name    = ctx_obj.appName,
     catch_fn    = ctx_obj.catchFn,
     command_map = ctx_obj.commandMap,
     log_fn      = ctx_obj.logFn,
     next_fn     = ctx_obj.nextFn,
-
-    prefix_str  = app_name + ' Stage ' + command_map.id + ': ',
+    prefix_str  = ctx_obj.makePrefixStr( command_map ),
 
     stream_obj
     ;
@@ -34,13 +32,11 @@ function pullFn () {
   stream_obj.on( 'close',
     function ( exit_code ) {
       if ( exit_code === 0 ) {
-        log_fn( prefix_str + 'End git pull.' );
+        log_fn( 'Success ' + prefix_str );
         next_fn();
       }
       else {
-        catch_fn(
-          prefix_str + 'Abort git pull.\n'
-        );
+        catch_fn( 'Fail ' + prefix_str );
       }
     }
   );

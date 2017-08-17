@@ -23,7 +23,7 @@
     map  = {},
     fn   = Function,
     int  = 1,
-    num  = 0.5,
+    num  = 1 / 2,
     obj  = {},
     str  = ''
     ;
@@ -56,6 +56,6 @@
     _do_title_close_ : bool,
     _layout_key_     : str,
     _autoclose_ms_   : int,
-    _position_map_   : map,
+    _position_map_   : map
   };
 }());
