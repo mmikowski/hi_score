@@ -41,7 +41,9 @@
 
     // Set paths
     fqProjDirname   = pathObj.dirname( fqBinDirname ),
+
     fqGitDirname    = fqProjDirname   + '/.git',
+    fqLibDirname    = fqProjDirname   + '/lib',
     fqModuleDirname = fqProjDirname   + '/node_modules',
     fqPkgFilename   = fqProjDirname   + '/package.json',
 
@@ -166,8 +168,7 @@
   // BEGIN utility /makePrefixStr/
   function makePrefixStr ( command_map ) {
     return appName + ' Stage ' + command_map.id + ' '
-      + makeRightPadStr( command_map.alias_list[ 0 ], 14 )
-      + command_map.alias_list[ 0 ] + ': '
+      + makeRightPadStr( command_map.alias_list[ 0 ], 14 ) + ': '
       ;
   }
   // . END utility /makePrefixStr/
@@ -836,7 +837,7 @@
       set_obj.commandMap = command_map;
       set_obj.paramMap   = makeParamMap( param_list, __1 );
       set_obj.doListShow = true;
-      stage_fn = require( fqBinDirname + '/xhi_00.js' );
+      stage_fn = require( fqLibDirname + '/xhi_00.js' );
       return stage_fn.call( set_obj );
     }
 
@@ -849,7 +850,7 @@
     //   the second-to-last function, etc.
     //
     set_obj.nextFn = function _nextFn () {
-      exitFn( '. End process range ' + param_map.range_str );
+      exitFn( 'Process range ' + param_map.range_str + ': Success');
     };
 
     stage_idx = stage_list.length - __1;
@@ -861,7 +862,7 @@
       set_obj.paramMap   = param_map;
 
       // Load library ( TODO load preq_list? )
-      stage_fn = require( fqBinDirname + '/xhi_' + command_map.id + '.js' );
+      stage_fn = require( fqLibDirname + '/xhi_' + command_map.id + '.js' );
 
       // Build exec chain
       bound_fn = stage_fn.bind( set_obj );
@@ -874,7 +875,7 @@
       }
       stage_idx--;
     }
-    logFn( 'Start process range ' + param_map.range_str );
+    logFn( 'Process range ' + param_map.range_str + ': Start');
     if ( bound_fn ) { return bound_fn(); }
     // End exec standard stage list
   }
