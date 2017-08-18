@@ -12,8 +12,6 @@
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
-    // Import capabilities
-    // TODO not used: EventEmitter = require( 'events' ).EventEmitter,
     childProcObj = require( 'child_process' ),
     fsObj        = require( 'fs'            ),
     pathObj      = require( 'path'          ),
@@ -366,6 +364,7 @@
   // . END utility /storePathFn/
 
   // BEGIN utility /patchIfNeededFn/
+  // TODO mmikowski 2017-08-18: move to xhi_02
   function patchIfNeededFn ( is_check_found ) {
     var ctx_obj = this;
     if ( is_check_found ) {
@@ -441,6 +440,7 @@
     var ctx_obj = this;
     if ( error_obj ) { return abortFn( error_obj ); }
     pkgMatrix   = JSON.parse( json_str ) || [];
+    // TODO mmikowski 2017-08-18: move to xhi_02
     setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
     if ( ! setupMatrix ) {
       abortFn( 'xhi_02_SetupMatrix not set in package.json' );
@@ -458,6 +458,7 @@
   // END utility /readPkgFileFn/
 
   // BEGIN utility /rmVendorDirsFn/
+    // TODO mmikowski 2017-08-18: move to xhi_02
   function rmVendorDirsFn () {
     var
       ctx_obj            = this,
@@ -485,6 +486,7 @@
   // . END utility /rmVendorDirsFn/
 
   // BEGIN utility /copyVendorFilesFn/
+  // TODO mmikowski 2017-08-18: move this to xhi_02
   function copyVendorFilesFn () {
     var
       ctx_obj            = this,
@@ -552,6 +554,7 @@
   // . END utility /copyVendorFilesFn/
 
   // BEGIN utility /patchFilesFn/
+  // TODO mmikowski 2017-08-18: move this to xhi_02
   // This function requires CWD to be fqProjDirname
   function patchFilesFn () {
     var
@@ -586,6 +589,7 @@
   // . END utility /patchFilesFn/
 
   // BEGIN utility /checkGitInstallFn/
+  // TODO mmikowski 2017-08-18: move this to xhi_02
   function checkGitInstallFn () {
     var
       ctx_obj = this,
@@ -605,6 +609,7 @@
   // . END utility /checkGitInstallFn/
 
   // BEGIN utility /unlinkHookFn/
+  // TODO mmikowski 2017-08-18: move this to xhi_02
   // This ignores any error
   function unlinkHookFn () {
     var ctx_obj = this;
@@ -615,6 +620,7 @@
 
   // BEGIN utility /linkHookFn/
   // This function requires CWD to be fqProjDirname
+  // TODO mmikowski 2017-08-18: move this to xhi_02
   function linkHookFn () {
     var ctx_obj = this;
     fsObj.symlink(
