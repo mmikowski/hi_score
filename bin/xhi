@@ -65,8 +65,9 @@
     // Declare after-install-variables
     LineReader,    applyPatchFn,  exeCpeFn,
     flowObj,       mkdirpFn,      ncpFn,
-    rmDirFn,       whichFn,       makeWhichProm,
-    makeRmDirProm
+    rmDirFn,       shellJsObj,    whichFn,
+
+    makeWhichProm, makeRmDirProm
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -292,7 +293,16 @@
   // . END utility /makeParamMap/
 
   // BEGIN utility /makeJsLintList/
-  function makeJsLintList () { }
+  function makeJsLintList () {
+    shellJsObj.find( fqProjDirname ).filter(
+      function ( filename ) {
+        if ( filename.match(/node_modules/) ) {
+          return false;
+        }
+      }
+    );
+    return filename.match(/\.js$/ );
+  }
   // . END utility /makeJsLintList/
 
   // BEGIN utlity /grepFileFn/
@@ -392,8 +402,8 @@
     mkdirpFn     = require( 'mkdirp'       );
     ncpFn        = require( 'ncp'          ).ncp;
     rmDirFn      = require( 'rmdir'        );
+    shellJsObj   = require( 'shelljs'      );
     whichFn      = require( 'which'        );
-
     makeRmDirProm = promisifyFn( rmDirFn   );
     makeWhichProm = promisifyFn( whichFn   );
   }
