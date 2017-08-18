@@ -20,7 +20,6 @@
     utilObj      = require( 'util'          ),
     promiseObj   = Promise,
 
-    // execFn       = childProcObj.exec,
     makeSpawnObj = childProcObj.spawn,
 
     // Convert to promises using promisfy
@@ -291,19 +290,6 @@
     };
   }
   // . END utility /makeParamMap/
-
-  // BEGIN utility /makeJsLintList/
-  function makeJsLintList () {
-    shellJsObj.find( fqProjDirname ).filter(
-      function ( filename ) {
-        if ( filename.match(/node_modules/) ) {
-          return false;
-        }
-      }
-    );
-    return filename.match(/\.js$/ );
-  }
-  // . END utility /makeJsLintList/
 
   // BEGIN utlity /grepFileFn/
   function grepFileFn ( filename, pattern_str ) {
@@ -685,7 +671,6 @@
       getCommandMap   : getCommandMap,  // Get command map by id or index
       loadLibsFn      : loadLibsFn,     // Load libs after stage 1
       logFn           : logFn,          // Log to console
-      makeJsLintList  : makeJsLintList, // Create list of files for jslint
       makePrefixStr   : makePrefixStr,  // Fn for stage prefix
       makeRightPadStr : makeRightPadStr,// Pad string right
       makeSpawnObj    : makeSpawnObj,   // Object create spawned proc
