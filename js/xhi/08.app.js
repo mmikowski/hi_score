@@ -5,7 +5,7 @@
  * Synopsis: Assembles an application in the provided namespace
  * Provides: app_map which has the global name '<namespace>'
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */

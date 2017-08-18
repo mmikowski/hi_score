@@ -5,7 +5,7 @@
  * Synopsis: Feature module template
  * Provides: A template that embodies best practice
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */

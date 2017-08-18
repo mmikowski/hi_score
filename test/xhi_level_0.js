@@ -1946,7 +1946,7 @@ function makeSeriesMap ( test_obj ) {
       {"_time_idx_":3,"_unit_count_":2,"_unit_ms_":500,"_unit_name_":"0.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00"]},
       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00","06:14:00","06:14:00"]},
       'ditto', 'ditto', 'ditto', 'ditto',
-      // these can not be solve with our current cfg
+      // these can not be solve with our current config
       __undef, __undef, __undef, __undef, __undef, __undef,
       // . end 1s expect list
 

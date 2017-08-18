@@ -5,7 +5,7 @@
  * Synopsis: Add _data_ capabilities to app_map
  * Provides: Shared data transfer methods (AJAX, Websockets)
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */

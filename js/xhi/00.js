@@ -5,7 +5,7 @@
  * Synopsis: Create an app_map using named <namespace>
  * Provides: An application map containing shared symbols
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */

@@ -5,7 +5,7 @@
  * Synopsis: Add _shell_ capabilities to app_map
  * Provides: Page Shell controller
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */

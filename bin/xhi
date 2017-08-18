@@ -164,7 +164,6 @@
   }
   // . END utility /getCommandMap/
 
-
   // BEGIN utility /makePrefixStr/
   function makePrefixStr ( command_map ) {
     return appName + ' Stage ' + command_map.id + ' '
@@ -292,9 +291,9 @@
   }
   // . END utility /makeParamMap/
 
-  // BEGIN utility /makeChangedJSList/
-  function makeChangedJSList () { }
-  // . END utility /makeChangedJSList/
+  // BEGIN utility /makeJsLintList/
+  function makeJsLintList () { }
+  // . END utility /makeJsLintList/
 
   // BEGIN utlity /grepFileFn/
   function grepFileFn ( filename, pattern_str ) {
@@ -676,6 +675,7 @@
       getCommandMap   : getCommandMap,  // Get command map by id or index
       loadLibsFn      : loadLibsFn,     // Load libs after stage 1
       logFn           : logFn,          // Log to console
+      makeJsLintList  : makeJsLintList, // Create list of files for jslint
       makePrefixStr   : makePrefixStr,  // Fn for stage prefix
       makeRightPadStr : makeRightPadStr,// Pad string right
       makeSpawnObj    : makeSpawnObj,   // Object create spawned proc

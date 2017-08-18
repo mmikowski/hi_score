@@ -5,7 +5,7 @@
  * Synopsis: Add _css_shell_ capabilities to app_map
  * Provides: CSS symbols for shell (_shell_) used by PowerCSS
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */

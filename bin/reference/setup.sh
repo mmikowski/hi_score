@@ -16,7 +16,7 @@ set -u;
 # 3. Applies patch to uglify-js
 #
 # TODO:
-# 1. Use the same cfg file as buildify / superpack
+# 1. Use the same config file as buildify / superpack
 # 2. Auto-update links to these files using in index.html
 #    (consider using sed -e 's/"<old_vrs_path>"/"<new_vrs_path>"/ index.html' )
 #

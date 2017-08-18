@@ -71,7 +71,7 @@
   "scripts": {
     "coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
     "help": "bin/xhi 00",
-    "make": "bin/buildify cfg/*.buildify",
+    "make": "bin/buildify config/*.buildify",
     "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
     "requirements-check": "bin/check-node-version",
     "setup": "bin/xhi 02",

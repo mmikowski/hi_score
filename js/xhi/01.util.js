@@ -5,7 +5,7 @@
  * Synopsis: Add _util_ capabilities to app_map
  * Provides: Utilities which do not require jQuery or a browser
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */

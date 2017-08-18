@@ -5,7 +5,7 @@
  * Synopsis: Add _css_base_ capabilities to app_map
  * Provides: Shared CSS symbols used by PowerCSS
  *
- * JSLint settings found in cfg/jslint.conf
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
 /*jslint browser : true */
