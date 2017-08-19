@@ -9,7 +9,7 @@
   "bundleDependencies": false,
   "dependencies": {},
   "deprecated": false,
-  "description": "A 2017 full-life-cycle starter project for SPAs. Hi_Score assembles best-in-class libraries in a feature-module architecture",
+  "description": "A modern, full-life-cycle starter project for SPAs",
   "devDependencies": {
     "apply-patch": "0.1.2",
     "clusterjs": "0.7.1",
@@ -19,6 +19,7 @@
     "express": "4.15.3",
     "flow": "0.2.3",
     "font-awesome": "4.7.0",
+    "http-server": "0.10.0",
     "istanbul": "0.4.5",
     "jquery": "3.2.1",
     "jquery.event.dragscroll": "1.0.0",
