@@ -62,7 +62,8 @@
     // Declare after-install-variables
     LineReader,    applyPatchFn,  exeCpeFn,
     flowObj,       mkdirpFn,      ncpFn,
-    rmDirFn,       shellJsObj,    whichFn,
+    ncuObj,        rmDirFn,       shellJsObj,
+    whichFn,
 
     makeWhichProm, makeRmDirProm
     ;
@@ -380,17 +381,18 @@
   // BEGIN utility /loadPostInstallfn/
   // Loads libraries after stage 01 (install) is complete
   function loadLibsFn () {
-    LineReader   = require( 'line-by-line' );
-    applyPatchFn = require( 'apply-patch'  ).applyPatch;
-    exeCpeFn     = require( 'execpe'       );
-    flowObj      = require( 'flow'         );
-    mkdirpFn     = require( 'mkdirp'       );
-    ncpFn        = require( 'ncp'          ).ncp;
-    rmDirFn      = require( 'rmdir'        );
-    shellJsObj   = require( 'shelljs'      );
-    whichFn      = require( 'which'        );
-    makeRmDirProm = promisifyFn( rmDirFn   );
-    makeWhichProm = promisifyFn( whichFn   );
+    LineReader   = require( 'line-by-line'     );
+    applyPatchFn = require( 'apply-patch'      ).applyPatch;
+    exeCpeFn     = require( 'execpe'           );
+    flowObj      = require( 'flow'             );
+    mkdirpFn     = require( 'mkdirp'           );
+    ncpFn        = require( 'ncp'              ).ncp;
+    ncuObj       = require('npm-check-updates' );
+    rmDirFn      = require( 'rmdir'            );
+    shellJsObj   = require( 'shelljs'          );
+    whichFn      = require( 'which'            );
+    makeRmDirProm = promisifyFn( rmDirFn       );
+    makeWhichProm = promisifyFn( whichFn       );
   }
   // . END utility /loadLibsFn/
 
@@ -648,18 +650,19 @@
   //
   function makeXhiObj () {
     return {
-      checkBinListFn    : checkBinListFn,    // .  .  02
-      checkGitInstallFn : checkGitInstallFn, // .  .  02
-      copyVendorFilesFn : copyVendorFilesFn, // .  .  02
-      exeCpeFn          : exeCpeFn,          // .  .  .
-      binPathMap        : binPathMap,        // .  .  .  03
-      flowObj           : flowObj,           // .  .  02
-      fqModuleDirname   : fqModuleDirname,   // .  .  .
-      linkHookFn        : linkHookFn,        // .  .  02
-      patchFilesFn      : patchFilesFn,      // .  .  02
-      readPkgFileFn     : readPkgFileFn,     // .  .  02
-      rmVendorDirsFn    : rmVendorDirsFn,    // .  .  02
-      unlinkHookFn      : unlinkHookFn       // .  .  02
+      checkBinListFn    : checkBinListFn,    // 02 setup
+      checkGitInstallFn : checkGitInstallFn, // 02 setup
+      copyVendorFilesFn : copyVendorFilesFn, // 02 setup
+      exeCpeFn          : exeCpeFn,          // --  ?
+      binPathMap        : binPathMap,        // --  ?
+      flowObj           : flowObj,           // 02 setup
+      fqModuleDirname   : fqModuleDirname,   // 02 setup? (TODO: confirm)
+      linkHookFn        : linkHookFn,        // 02 setup
+      ncuObj            : ncuObj,            // 05 dev-upgrade
+      patchFilesFn      : patchFilesFn,      // 02 setup
+      readPkgFileFn     : readPkgFileFn,     // 02 setup
+      rmVendorDirsFn    : rmVendorDirsFn,    // 02 setup
+      unlinkHookFn      : unlinkHookFn       // 02 setup
     };
   }
   // . END utility /makeXhiObj/
@@ -693,73 +696,79 @@
 // TODO Add to command table info
 //
 // Stages correlated wth npm
+// === 00 'help'
 // "00": "bin/xhi 00",
 // "00_.": "=== HELP",
+// === 01 'install'
 // "01": "bin/xhi 01",
 // "01_.": "=== INSTALL",
 // "01_a": "...node preinstall: Run BEFORE the pkg is installed",
+// === 02 'setup'
 // "02": "bin/xhi 02",
 // "02_.": "=== SETUP",
 // "02_a": "...node install, postinstall: Run AFTER the pkg is installed.",
+// === 03 'design'
 // "03": "bin/xhi 03",
-// "03_.": "=== DESIGN",
 // "03__": "...synonym cat /doc/spa-arch.md",
+// === 04 'dev_pull'
 // "04": "bin/xhi 04",
-// "04_.": "=== DEVSERVER-START",
-// "04_1": "...node start",
-// "04_2": "...node poststart",
-// "04_a": "...node prestart",
-// "05": "bin/xhi 05",
-// "05_.": "=== GIT PULL",
+// === 05 'dev_upgrade'
+// "05": "bin/xhi 05"
+// "05__": "Upgrade packages in package.json"
+// === 06 'dev_start'
 // "06": "bin/xhi 06",
-// "06_.": "=== DEVELOP-LINT",
+// "06_1": "...node start",
+// "06_2": "...node poststart",
+// "06_a": "...node prestart",
+// === 07 'dev_lint'
 // "07": "bin/xhi 07",
-// "07_.": "=== DEVELOP-TEST",
-// "07_a": "...node pretest, test, posttest: Run by the npm test command.",
+// === 08 'dev_test'
 // "08": "bin/xhi 08",
-// "08_.": "=== DEVELOP-COVERAGE",
+// "08_a": "...node pretest, test, posttest: Run by the npm test command.",
+// === 09 'dev_cover'
 // "09": "bin/xhi 09",
-// "09_.": "=== DEVELOP-COMMIT",
-// "09_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
-// "09_a": "...node preversion: Run BEFORE bumping the pkg version.",
-// "09_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
+// === 10 'dev_commit'
 // "10": "bin/xhi 10",
-// "10_.": "=== BUILD",
-// "10_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
+// "10_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
+// "10_a": "...node preversion: Run BEFORE bumping the pkg version.",
+// "10_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
+// === 11 'build', 'make'
 // "11": "bin/xhi 11",
-// "11_.": "=== PUBLISH",
-// "11_1": "...node publish",
-// "11_2": "...node postpublish: Run AFTER the pkg is published.",
-// "11_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
-// "11_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
+// "11_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
+// === 12 'publish'
 // "12": "bin/xhi 12",
-// "12_.": "=== DEVSERVER-RESTART",
-// "12_1": "...node restart",
-// "12_2": "...node postrestart",
-// "12_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
-// "12_a": "...node prerestart",
+// "12_1": "...node publish",
+// "12_2": "...node postpublish: Run AFTER the pkg is published.",
+// "12_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
+// "12_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
+// === 13 'dev_restart'
 // "13": "bin/xhi 13",
-// "13_.": "=== DEVSERVER-STOP",
-// "13_1": "...node stop",
-// "13_2": "...node poststop",
-// "13_a": "...node prestop",
+// "13_1": "...node restart",
+// "13_2": "...node postrestart",
+// "13_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
+// "13_a": "...node prerestart",
+// === 14 'dev_stop'
 // "14": "bin/xhi 14",
-// "14_.": "=== DEPLOY",
-// "14_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
-// "14_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
-// "14_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
-// "15": "bin/xhi 15",
-// "15_.": "=== PRODSERVER-START",
+// "14_1": "...node stop",
+// "14_2": "...node poststop",
+// "14_a": "...node prestop",
+// === 15 'deploy'
+// "15_.": "=== DEPLOY",
+// "15_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
+// "15_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
+// "15_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
+// === 16 'prod_start'
 // "16": "bin/xhi 16",
-// "16_.": "=== PRODSERVER-RESTART",
+// === 17 'prod_restart'
 // "17": "bin/xhi 17",
-// "17_.": "=== PRODSERVER-STOP",
+// === 18 'prod_stop'
 // "18": "bin/xhi 18",
-// "18_.": "=== FEEDBACK",
-// "19": "bin/xhi 19",
-// "19_.": "=== UNINSTALL",
-// "19_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
-// "19_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
+// === 19 'fetch_info' (feedback)
+// "19": "bin/xhi 19", (uninstall)
+// === -1 'uninstall'
+// "-1_.": "=== UNINSTALL",
+// "-1_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
+// "-1_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
   commandTable = makeCommandTable([
     [ 'alias_list', 'short_str',  'long_str' ],
     [ [ 'help' ],
@@ -793,6 +802,7 @@
     [ [ 'setup'         ], 'Patch+copy dev assets'     ],
     [ [ 'design'        ], 'Show architecture docs'    ],
     [ [ 'dev_pull'      ], 'Download assets (git pull)'],
+    [ [ 'dev_upgrade'   ], 'Upgrade packages (ncu -u)' ],
     [ [ 'dev_start'     ], 'Start local web services'  ],
     [ [ 'dev_lint'      ], 'Lint changed code'         ],
     [ [ 'dev_test'      ], 'Run regression tests'      ],
@@ -802,7 +812,6 @@
     [ [ 'publish'       ], 'Upload to NPM, Coveralls'  ],
     [ [ 'dev_restart'   ], 'Cycle local web server'    ],
     [ [ 'dev_stop'      ], 'Stop development server'   ],
-    [ [ 'upgrade'       ], 'Upgrade packages (ncu -u)' ],
     [ [ 'deploy'        ], 'Upload distro to servers'  ],
     [ [ 'prod_start'    ], 'Start prod web services'   ],
     [ [ 'prod_restart'  ], 'Cycle production process'  ],
