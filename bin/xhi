@@ -88,7 +88,7 @@
     var
       ctx_obj    = this || {},
       method_str = ctx_obj.method_str || 'log',
-      prompt_str = ctx_obj.prompt_str || appName + '-info> ',
+      prompt_str = ctx_obj.prompt_str || appName + '-info>',
       arg_list   = Array.from( arguments )
       ;
 
@@ -106,17 +106,17 @@
     cd_name      : fqOrigDirname,
     do_abort     : true,
     method_str : 'warn',
-    prompt_str : appName + '-abort> '
+    prompt_str : appName + '-abort>'
   });
   exitFn = _outFn.bind({
     cd_name   : fqOrigDirname,
     do_exit    : true,
-    prompt_str : appName + '-exit> '
+    prompt_str : appName + '-exit>'
   });
   logFn   = _outFn.bind({});
   warnFn  = _outFn.bind({
     method_str : 'warn',
-    prompt_str : appName + '-warn> '
+    prompt_str : appName + '-warn>'
   });
   // . END utility /_outFn/
 
@@ -131,8 +131,12 @@
       var row_id = String( row_idx ), row_map;
       if ( row_id.length < 2 ) { row_id = '0' + row_id; }
       row_map = { id : row_id, idx : row_idx };
-      head_row.forEach( function ( head_val, head_idx ) {
-        row_map[ head_val ] = src_list[ head_idx ];
+      head_row.forEach( function ( field_key, field_idx ) {
+        var src_data = src_list[ field_idx ];
+        if ( field_key.match( /_str$/ ) && Array.isArray( src_data ) ) {
+          src_data = src_data.join( '\n' );
+        }
+        row_map[ field_key ] = src_data;
       });
       solve_table.push( row_map );
     });
@@ -440,25 +444,11 @@
   // BEGIN utility /storePkgMapFn/
   function storePkgMapFn ( error_obj, json_str ) {
     var ctx_obj = this;
-    if ( error_obj ) { return abortFn( error_obj ); }
+    if ( error_obj ) { return ctx_obj.catch_fn( error_obj ); }
     pkgMatrix   = JSON.parse( json_str ) || [];
-    // TODO mmikowski 2017-08-18: move to xhi_02
-    setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
-    if ( ! setupMatrix ) {
-      abortFn( 'xhi_02_SetupMatrix not set in package.json' );
-    }
     ctx_obj.then_fn();
   }
   // . END utility /storePkgMapFn/
-
-  // BEGIN utility /readPkgFileFn/
-  function readPkgFileFn () {
-    var ctx_obj = this;
-    fsObj.readFile(
-      fqPkgFilename, 'utf8', storePkgMapFn.bind( ctx_obj ), abortFn
-    );
-  }
-  // END utility /readPkgFileFn/
 
   // BEGIN utility /rmVendorDirsFn/
     // TODO mmikowski 2017-08-18: move to xhi_02
@@ -644,29 +634,6 @@
   // }
   // == . END EVENT HANDLERS ==========================================
 
-  // BEGIN utility /makeXhiObj/
-  // Purpose: Creates resource map for modules available
-  //   only after npm install.
-  //
-  function makeXhiObj () {
-    return {
-      checkBinListFn    : checkBinListFn,    // 02 setup
-      checkGitInstallFn : checkGitInstallFn, // 02 setup
-      copyVendorFilesFn : copyVendorFilesFn, // 02 setup
-      exeCpeFn          : exeCpeFn,          // --  ?
-      binPathMap        : binPathMap,        // --  ?
-      flowObj           : flowObj,           // 02 setup
-      fqModuleDirname   : fqModuleDirname,   // 02 setup? (TODO: confirm)
-      linkHookFn        : linkHookFn,        // 02 setup
-      ncuObj            : ncuObj,            // 05 dev-upgrade
-      patchFilesFn      : patchFilesFn,      // 02 setup
-      readPkgFileFn     : readPkgFileFn,     // 02 setup
-      rmVendorDirsFn    : rmVendorDirsFn,    // 02 setup
-      unlinkHookFn      : unlinkHookFn       // 02 setup
-    };
-  }
-  // . END utility /makeXhiObj/
-
   // BEGIN utility /makeSetObj/
   // Purpose: Create object to provide as context to lib functions
   //  nextFn and catchFn are defaults.
@@ -692,6 +659,28 @@
     };
   }
   // . END utility /makeSetObj/
+
+  // BEGIN utility /makeXhiObj/
+  // Purpose: Creates resource map for modules available
+  //   only after npm install.
+  //
+  function makeXhiObj () {
+    return {
+      binPathMap        : binPathMap,        // --  ?
+      checkBinListFn    : checkBinListFn,    // 02 setup
+      checkGitInstallFn : checkGitInstallFn, // 02 setup
+      copyVendorFilesFn : copyVendorFilesFn, // 02 setup
+      exeCpeFn          : exeCpeFn,          // --  ?
+      flowObj           : flowObj,           // 02 setup
+      fqModuleDirname   : fqModuleDirname,   // 02 setup? (TODO: confirm)
+      linkHookFn        : linkHookFn,        // 02 setup
+      ncuObj            : ncuObj,            // 05 dev-upgrade
+      patchFilesFn      : patchFilesFn,      // 02 setup
+      rmVendorDirsFn    : rmVendorDirsFn,    // 02 setup
+      unlinkHookFn      : unlinkHookFn       // 02 setup
+    };
+  }
+  // . END utility /makeXhiObj/
 
 // TODO Add to command table info
 //
@@ -769,68 +758,23 @@
 // "-1_.": "=== UNINSTALL",
 // "-1_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
 // "-1_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
-  commandTable = makeCommandTable([
-    [ 'alias_list', 'short_str',  'long_str' ],
-    [ [ 'help' ],
-      'Hi_score admin tool. Use -v for verbose.',
-      '\n  Name      : ' + appName + '\n'
-      + '  Purpose   : Run hi_score lifecycle tools\n'
-      + '  Example   : xhi help\n'
-      + '  Arguments : [ help || 0 ] /range/ [ -v ]\n'
-      + '    /range/ may be:\n'
-      + '    1. A single stage number or name.    Ex: 01.\n'
-      + '    2. A list of stage numbers or names. Ex: 1,2,3,6.\n'
-      + '    3. A range of stages                 Ex: 1-5 or all\n'
-      + '    See ' + appName + ' help all to list stages.\n'
-      + '  More examples:\n'
-      + '    Run stage range\n'
-      + padName + ' dev_pull        // run stage 04\n'
-      + padName + ' 1,2,6           // run three stages\n'
-      + padName + ' 1-9             // run nine stages in range\n'
-      + '    Generic help\n'
-      + padName + ' help            // Short help \n'
-      + '    Help stage range\n'
-      + padName + ' help 01         // Short help on install stage\n'
-      + padName + ' help all -v     // Long help on all stages\n'
-      + padName + ' help 1,4        // Short help on stages 1,4\n'
-      + padName + ' help help,dev_pull -v // Long help on stages 1,4'
-    ],
-    [ [ 'install' ],
-      'Download & install npm modules.',
-      'Download & install npm modules.'
-    ],
-    [ [ 'setup'         ], 'Patch+copy dev assets'     ],
-    [ [ 'design'        ], 'Show architecture docs'    ],
-    [ [ 'dev_pull'      ], 'Download assets (git pull)'],
-    [ [ 'dev_upgrade'   ], 'Upgrade packages (ncu -u)' ],
-    [ [ 'dev_start'     ], 'Start local web services'  ],
-    [ [ 'dev_lint'      ], 'Lint changed code'         ],
-    [ [ 'dev_test'      ], 'Run regression tests'      ],
-    [ [ 'dev_cover'     ], 'Create coverage report'    ],
-    [ [ 'dev_commit'    ], 'Save code (git commit)'    ],
-    [ [ 'build', 'make' ], 'Create app distribution'   ],
-    [ [ 'publish'       ], 'Upload to NPM, Coveralls'  ],
-    [ [ 'dev_restart'   ], 'Cycle local web server'    ],
-    [ [ 'dev_stop'      ], 'Stop development server'   ],
-    [ [ 'deploy'        ], 'Upload distro to servers'  ],
-    [ [ 'prod_start'    ], 'Start prod web services'   ],
-    [ [ 'prod_restart'  ], 'Cycle production process'  ],
-    [ [ 'prod_stop'     ], 'Stop production process'   ],
-    [ [ 'fetch_info'    ], 'Fetch prod info'           ],
-    [ [ 'uninstall'     ], 'Remove ' + appName         ]
-  ]);
+
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)
-  function mainFn( arg_param_list ) {
+  function mainFn() {
     var
-      param_list = arg_param_list.slice( 2 ),
-      param_map  = makeParamMap( param_list ),
-      stage_list = param_map.stage_list,
+      param_list = argList.slice( 2 ),
       exec_list  = [],
 
-      command_map, set_obj,  stage_idx,
+      command_map, param_map,   stage_list,
+      set_obj,     stage_idx,
       stage_fn,    bound_fn
       ;
+
+    // Create command table from config
+    commandTable = makeCommandTable( pkgMatrix.xhi_commandTable );
+    param_map  = makeParamMap( param_list );
+    stage_list = param_map.stage_list;
 
     // Abort if node version < minVersionInt
     checkNodeVersionFn();
@@ -867,7 +811,6 @@
 
     stage_idx = stage_list.length - __1;
     while ( stage_idx > -1 ) {
-
       // Set commandMap, paramMap in context object
       command_map = stage_list[ stage_idx ];
       set_obj.commandMap = command_map;
@@ -893,6 +836,11 @@
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
-  mainFn( argList );
+  // Read package.json and then proceed to parse arguments
+  fsObj.readFile(
+    fqPkgFilename, 'utf8', storePkgMapFn.bind({
+      catch_fn : abortFn,
+      then_fn  : mainFn
+    })
+  );
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============
-

@@ -82,6 +82,166 @@
     "xhi": "bin/xhi"
   },
   "version": "1.2.10",
+  "xhi_commandTable": [
+    [
+      "alias_list",
+      "short_str",
+      "long_str"
+    ],
+    [
+      [
+        "help"
+      ],
+      "Hi_score admin tool. Use -v for verbose.",
+      [
+        "  Name      : {{appName}}",
+        "  Purpose   : Run hi_score lifecycle tools",
+        "  Example   : xhi help",
+        "  Arguments : [ help || 0 ] /range/ [ -v ]",
+        "    /range/ may be:",
+        "    1. A single stage number or name.    Ex: 01.",
+        "    2. A list of stage numbers or names. Ex: 1,2,3,6.",
+        "    3. A range of stages                 Ex: 1-5 or all",
+        "    See {{appName}} help all to list stages.",
+        "  More examples:",
+        "    Run stage range",
+        "{{padName}} dev_pull        // run stage 04",
+        "{{padName}} 1,2,6           // run three stages",
+        "{{padName}} 1-9             // run nine stages in range",
+        "    Generic help",
+        "{{padName}} help            // Short help ",
+        "    Help stage range",
+        "{{padName}} help 01         // Short help on install stage",
+        "{{padName}} help all -v     // Long help on all stages",
+        "{{padName}} help 1,4        // Short help on stages 1,4",
+        "{{padName}} help help,dev_pull -v // Long help on stages 1,4"
+      ]
+    ],
+    [
+      [
+        "install"
+      ],
+      "Download & install npm modules.",
+      [
+        "Download & install npm modules."
+      ]
+    ],
+    [
+      [
+        "setup"
+      ],
+      "Patch+copy dev assets"
+    ],
+    [
+      [
+        "design"
+      ],
+      "Show architecture docs"
+    ],
+    [
+      [
+        "dev_pull"
+      ],
+      "Download assets (git pull)"
+    ],
+    [
+      [
+        "dev_upgrade"
+      ],
+      "Upgrade packages (ncu -u)"
+    ],
+    [
+      [
+        "dev_start"
+      ],
+      "Start local web services"
+    ],
+    [
+      [
+        "dev_lint"
+      ],
+      "Lint changed code"
+    ],
+    [
+      [
+        "dev_test"
+      ],
+      "Run regression tests"
+    ],
+    [
+      [
+        "dev_cover"
+      ],
+      "Create coverage report"
+    ],
+    [
+      [
+        "dev_commit"
+      ],
+      "Save code (git commit)"
+    ],
+    [
+      [
+        "build",
+        "make"
+      ],
+      "Create app distribution"
+    ],
+    [
+      [
+        "publish"
+      ],
+      "Upload to NPM, Coveralls"
+    ],
+    [
+      [
+        "dev_restart"
+      ],
+      "Cycle local web server"
+    ],
+    [
+      [
+        "dev_stop"
+      ],
+      "Stop development server"
+    ],
+    [
+      [
+        "deploy"
+      ],
+      "Upload distro to servers"
+    ],
+    [
+      [
+        "prod_start"
+      ],
+      "Start prod web services"
+    ],
+    [
+      [
+        "prod_restart"
+      ],
+      "Cycle production process"
+    ],
+    [
+      [
+        "prod_stop"
+      ],
+      "Stop production process"
+    ],
+    [
+      [
+        "fetch_info"
+      ],
+      "Fetch prod info"
+    ],
+    [
+      [
+        "uninstall"
+      ],
+      "Remove {{appName}}"
+    ]
+  ],
   "xhi_02_SetupMatrix": {
     "asset_group_table": [
       {
