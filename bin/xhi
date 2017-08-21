@@ -452,8 +452,9 @@
   // BEGIN utility /readPkgFileFn/
   function readPkgFileFn () {
     var ctx_obj = this;
-    fsObj.readFile( fqPkgFilename, 'utf8',
-    storePkgMapFn.bind( ctx_obj ), abortFn );
+    fsObj.readFile(
+      fqPkgFilename, 'utf8', storePkgMapFn.bind( ctx_obj ), abortFn
+    );
   }
   // END utility /readPkgFileFn/
 
@@ -674,6 +675,7 @@
       commandMap      : null,           // Command map of lib to exec
       fqOrigDirname   : fqOrigDirname,  // Full path of PWD
       fqProjDirname   : fqProjDirname,  // Full path of root project dir
+      fsObj           : fsObj,          // File system object
       getCommandMap   : getCommandMap,  // Get command map by id or index
       loadLibsFn      : loadLibsFn,     // Load libs after stage 1
       logFn           : logFn,          // Log to console
