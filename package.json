@@ -38,6 +38,7 @@
     "npm-check-updates": "2.12.1",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.2",
+    "ps-node": "0.1.6",
     "rmdir": "1.2.0",
     "shelljs": "^0.7.8",
     "taffydb": "2.7.3",
