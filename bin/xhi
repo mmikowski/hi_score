@@ -15,10 +15,11 @@
     childProcObj = require( 'child_process' ),
     fsObj        = require( 'fs'            ),
     pathObj      = require( 'path'          ),
+    readlineObj  = require( 'readline'      ),
     utilObj      = require( 'util'          ),
-    promiseObj   = Promise,
 
-    makeSpawnObj = childProcObj.spawn,
+    makeSpawnObj  = childProcObj.spawn,
+    promiseConstr = Promise,
 
     // Convert to promises using promisfy
     promisifyFn   = utilObj.promisify,
@@ -34,6 +35,7 @@
     argList       = process.argv,
     fqOrigDirname = process.cwd(), // or pathObj.resolve()
     padName       = '      ' + appName,
+    promptStr     = appName + '-info> ',
     versList      = process.versions.node.split('.'),
 
     // Set paths
@@ -44,16 +46,12 @@
     fqModuleDirname = fqProjDirname   + '/node_modules',
     fqPkgFilename   = fqProjDirname   + '/package.json',
 
-    // Set minimum Node verion number and init empty map
+    // Set minimum Node verion and init empty path map
     minVersionInt  = 8,
     binPathMap     = {},
 
-    // Set convenience vars
-    __0 = 0,
-    __1 = 1,
-
     // Declare curried functions
-    abortFn, exitFn, logFn, warnFn,
+    abortFn, exitFn, logFn, warnFn, makeTmpltStr,
 
     // Declare config data
     fqHookFilename,  pkgMatrix,    setupMatrix,
@@ -70,6 +68,41 @@
   // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
+  // BEGIN utility /makeTmpltStr/
+  // See js/xhi/01.util.js
+  makeTmpltStr = (function () {
+    function lookupFn ( ignore_str, lookup_name ) {
+      var
+        return_data  = this, // lookup_map
+        lookup_list  = lookup_name.split( '.' ),
+        lookup_count = lookup_list.length,
+        idx, key_name
+      ;
+
+      for ( idx = 0; idx < lookup_count; idx++ ) {
+        key_name = lookup_list[ idx ];
+        return_data = ( return_data && return_data[ key_name ] );
+      }
+      return String( return_data ) || '';
+    }
+
+    function mainFn ( arg_map ) {
+      // noinspection Annotator
+      var
+        map        = arg_map || {},
+        input_str  = map._input_str_  || '',
+        lookup_map = map._lookup_map_ || {},
+
+        tmplt_rx   = /{{([^}]*[^}]+[^}]*)\}\}/g,
+        bound_fn   = lookupFn.bind( lookup_map )
+      ;
+
+      return input_str.replace( tmplt_rx, bound_fn );
+    }
+    return mainFn;
+  }());
+  // . END utility /makeTmpltStr/
+
   // BEGIN utility /makeRightPadStr/
   function makeRightPadStr ( arg_str, arg_count ) {
     var
@@ -88,7 +121,7 @@
     var
       ctx_obj    = this || {},
       method_str = ctx_obj.method_str || 'log',
-      prompt_str = ctx_obj.prompt_str || appName + '-info>',
+      prompt_str = ctx_obj.prompt_str || promptStr,
       arg_list   = Array.from( arguments )
       ;
 
@@ -120,21 +153,54 @@
   });
   // . END utility /_outFn/
 
+  // BEGIN utility /askFn/
+  // Purpose: Wrap readObj question with prompt
+  //
+  function askFn ( ask_str, response_fn ) {
+    var read_obj = readlineObj.createInterface({
+      input  : process.stdin,
+      output : process.stdout
+    });
+    read_obj.question( promptStr + ask_str,
+      function ( response_str ) {
+        read_obj = null;
+        response_fn( response_str );
+      }
+    );
+  }
+  // . END utilities /askFn/
+
   // BEGIN utility /makeCommandTable/
+  // Purpose: Create data structure to look up command details
+  //
   function makeCommandTable ( raw_table ) {
     var
       head_row    = raw_table.shift(),
-      solve_table = []
-      ;
+      solve_table = [];
 
     raw_table.forEach( function ( src_list, row_idx ) {
       var row_id = String( row_idx ), row_map;
       if ( row_id.length < 2 ) { row_id = '0' + row_id; }
       row_map = { id : row_id, idx : row_idx };
+
       head_row.forEach( function ( field_key, field_idx ) {
-        var src_data = src_list[ field_idx ];
-        if ( field_key.match( /_str$/ ) && Array.isArray( src_data ) ) {
-          src_data = src_data.join( '\n' );
+        var src_data = src_list[ field_idx ], solve_str;
+        // Consider string fields...
+        if ( field_key.match( /_str$/ ) ) {
+          // Join array into multi-line string
+          if ( Array.isArray( src_data ) ) {
+            solve_str = src_data.join( '\n' );
+          }
+          // Replace any template keys
+          solve_str = makeTmpltStr({
+            _input_str_  : solve_str,
+            _lookup_map_ : {
+              appName : appName,
+              padName : padName
+            }
+          });
+          row_map[ field_key ] = solve_str;
+          return;
         }
         row_map[ field_key ] = src_data;
       });
@@ -169,6 +235,7 @@
 
   // BEGIN utility /makePrefixStr/
   function makePrefixStr ( command_map ) {
+    // noinspection MagicNumberJS
     return appName + ' Stage ' + command_map.id + ' '
       + makeRightPadStr( command_map.alias_list[ 0 ], 14 ) + ': '
       ;
@@ -220,28 +287,28 @@
         }
 
         edge_list = str === 'all'
-          ? [ 0, commandTable.length - __1 ]
+          ? [ 0, commandTable.length - 1 ]
           : str.split( '-', 2 );
 
-        first_map = getCommandMap( edge_list[ __0 ] );
-        last_map  = getCommandMap( edge_list[ __1 ] );
+        first_map = getCommandMap( edge_list[ 0 ] );
+        last_map  = getCommandMap( edge_list[ 1 ] );
         if ( ! first_map ) {
-          return warnFn( 'Range stage ' + edge_list[ __0 ] + ' is invalid' );
+          return warnFn( 'Range stage ' + edge_list[ 0 ] + ' is invalid' );
         }
         if ( ! last_map ) {
-          return warnFn( 'Range stage ' + edge_list[ __1 ] + ' is invalid' );
+          return warnFn( 'Range stage ' + edge_list[ 1 ] + ' is invalid' );
         }
         if ( first_map.idx > last_map.idx ) {
           return warnFn(
-            'Range start start ' + edge_list[ __0 ]
-            + ' exceeds stage end ' + edge_list[ __1 ]
+            'Range start start ' + edge_list[ 0 ]
+            + ' exceeds stage end ' + edge_list[ 1 ]
           );
         }
 
         temp_list = [ first_map ];
 
-        first_idx = first_map.idx + __1;
-        last_idx  = last_map.idx  - __1;
+        first_idx = first_map.idx + 1;
+        last_idx  = last_map.idx  - 1;
 
         for ( i = first_idx; i <= last_idx; i++ ) {
           middle_map = getCommandMap( i );
@@ -296,7 +363,7 @@
 
   // BEGIN utlity /grepFileFn/
   function grepFileFn ( filename, pattern_str ) {
-    return new Promise( function ( resolve_fn ) {
+    return new promiseConstr ( function ( resolve_fn ) {
       var
         is_matched    = false,
         line_read_obj = new LineReader( filename, {skipEmptyLines:true })
@@ -316,20 +383,20 @@
   }
   // . END utility /grepFileFn/
 
-  // BEGIN utilities to return resolve and reject functions
-  function makeRejectFuncFn ( reject_fn ) {
-    return function ( error_data ) { reject_fn( error_data ); };
-  }
+  // // BEGIN utilities to return resolve and reject functions
+  // function makeRejectFuncFn ( reject_fn ) {
+  //   return function ( error_data ) { reject_fn( error_data ); };
+  // }
 
-  function makeResolveFuncFn ( resolve_fn ) {
-    return function () { resolve_fn(); };
-  }
-  // . END utilities to return resolve and reject functions
+  // function makeResolveFuncFn ( resolve_fn ) {
+  //   return function () { resolve_fn(); };
+  // }
+  // // . END utilities to return resolve and reject functions
 
   // BEGIN utility /copyPathFn/
   function copyPathFn( fq_src_path_str, fq_dest_path_str, do_dir_copy ) {
     if ( do_dir_copy ) {
-      return new Promise( function ( resolve_fn, reject_fn ) {
+      return new promiseConstr ( function ( resolve_fn, reject_fn ) {
         ncpFn( fq_src_path_str, fq_dest_path_str,
           function ( error_data ) {
             if ( error_data ) { return reject_fn(); }
@@ -339,17 +406,14 @@
       });
     }
 
-    return new Promise( function ( resolve_fn, reject_fn ) {
+    return new promiseConstr ( function ( resolve_fn, reject_fn ) {
       var
-        read_obj        = fsObj.createReadStream(  fq_src_path_str  ),
-        write_obj       = fsObj.createWriteStream( fq_dest_path_str ),
-        full_reject_fn  = makeRejectFuncFn(  reject_fn  ),
-        full_resolve_fn = makeResolveFuncFn( resolve_fn )
-        ;
+        read_obj = fsObj.createReadStream(  fq_src_path_str  ),
+        write_obj= fsObj.createWriteStream( fq_dest_path_str );
 
-      read_obj.on(  'error', full_reject_fn  );
-      write_obj.on( 'error', full_reject_fn  );
-      write_obj.on( 'close', full_resolve_fn );
+      read_obj.on(  'error', reject_fn  );
+      write_obj.on( 'error', reject_fn  );
+      write_obj.on( 'close', resolve_fn );
       read_obj.pipe( write_obj );
     });
   }
@@ -419,7 +483,7 @@
       promise_list.push( promise_obj );
     }
 
-    promiseObj.all( promise_list )
+    promiseConstr.all( promise_list )
       .then(   ctx_obj.then_fn )
       .catch( ctx_obj.catch_fn )
       ;
@@ -471,7 +535,7 @@
       promise_list.push( promise_obj );
     }
 
-    promiseObj.all( promise_list )
+    promiseConstr.all( promise_list )
       .then(  ctx_obj.then_fn  )
       .catch( ctx_obj.catch_fn )
       ;
@@ -540,7 +604,7 @@
       }
     }
 
-    promiseObj.all( promise_list )
+    promiseConstr.all( promise_list )
       .then(  ctx_obj.then_fn  )
       .catch( ctx_obj.catch_fn );
   }
@@ -574,7 +638,7 @@
       promise_list.push( promise_obj );
     }
 
-    Promise.all( promise_list )
+    promiseConstr.all( promise_list )
       .then(  ctx_obj.then_fn  )
       .catch( ctx_obj.catch_fn )
       ;
@@ -641,6 +705,7 @@
   function makeSetObj () {
     return {
       appName         : appName,        // Applicaiton name
+      askFn           : askFn,          // Read line with prompt
       catchFn         : abortFn,        // Fn for error
       commandMap      : null,           // Command map of lib to exec
       fqOrigDirname   : fqOrigDirname,  // Full path of PWD
@@ -682,83 +747,6 @@
   }
   // . END utility /makeXhiObj/
 
-// TODO Add to command table info
-//
-// Stages correlated wth npm
-// === 00 'help'
-// "00": "bin/xhi 00",
-// "00_.": "=== HELP",
-// === 01 'install'
-// "01": "bin/xhi 01",
-// "01_.": "=== INSTALL",
-// "01_a": "...node preinstall: Run BEFORE the pkg is installed",
-// === 02 'setup'
-// "02": "bin/xhi 02",
-// "02_.": "=== SETUP",
-// "02_a": "...node install, postinstall: Run AFTER the pkg is installed.",
-// === 03 'design'
-// "03": "bin/xhi 03",
-// "03__": "...synonym cat /doc/spa-arch.md",
-// === 04 'dev_pull'
-// "04": "bin/xhi 04",
-// === 05 'dev_upgrade'
-// "05": "bin/xhi 05"
-// "05__": "Upgrade packages in package.json"
-// === 06 'dev_start'
-// "06": "bin/xhi 06",
-// "06_1": "...node start",
-// "06_2": "...node poststart",
-// "06_a": "...node prestart",
-// === 07 'dev_lint'
-// "07": "bin/xhi 07",
-// === 08 'dev_test'
-// "08": "bin/xhi 08",
-// "08_a": "...node pretest, test, posttest: Run by the npm test command.",
-// === 09 'dev_cover'
-// "09": "bin/xhi 09",
-// === 10 'dev_commit'
-// "10": "bin/xhi 10",
-// "10_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
-// "10_a": "...node preversion: Run BEFORE bumping the pkg version.",
-// "10_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
-// === 11 'build', 'make'
-// "11": "bin/xhi 11",
-// "11_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
-// === 12 'publish'
-// "12": "bin/xhi 12",
-// "12_1": "...node publish",
-// "12_2": "...node postpublish: Run AFTER the pkg is published.",
-// "12_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
-// "12_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
-// === 13 'dev_restart'
-// "13": "bin/xhi 13",
-// "13_1": "...node restart",
-// "13_2": "...node postrestart",
-// "13_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
-// "13_a": "...node prerestart",
-// === 14 'dev_stop'
-// "14": "bin/xhi 14",
-// "14_1": "...node stop",
-// "14_2": "...node poststop",
-// "14_a": "...node prestop",
-// === 15 'deploy'
-// "15_.": "=== DEPLOY",
-// "15_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
-// "15_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
-// "15_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
-// === 16 'prod_start'
-// "16": "bin/xhi 16",
-// === 17 'prod_restart'
-// "17": "bin/xhi 17",
-// === 18 'prod_stop'
-// "18": "bin/xhi 18",
-// === 19 'fetch_info' (feedback)
-// "19": "bin/xhi 19", (uninstall)
-// === -1 'uninstall'
-// "-1_.": "=== UNINSTALL",
-// "-1_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
-// "-1_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
-
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)
   function mainFn() {
@@ -773,12 +761,14 @@
 
     // Create command table from config
     commandTable = makeCommandTable( pkgMatrix.xhi_commandTable );
-    param_map  = makeParamMap( param_list );
-    stage_list = param_map.stage_list;
+    console.warn( commandTable );
+    param_map    = makeParamMap( param_list );
+    stage_list   = param_map.stage_list;
+
 
     // Abort if node version < minVersionInt
     checkNodeVersionFn();
-    command_map = stage_list[ __0 ];
+    command_map = stage_list[ 0 ];
 
     // Make new set_obj as context for lib function
     set_obj = makeSetObj();
@@ -789,9 +779,9 @@
       || param_map.range_str.match(/^0+$/)
       || param_map.range_str === 'help'
     ) {
-      command_map = getCommandMap( __0 );
+      command_map = getCommandMap( 0 );
       set_obj.commandMap = command_map;
-      set_obj.paramMap   = makeParamMap( param_list, __1 );
+      set_obj.paramMap   = makeParamMap( param_list, 1 );
       set_obj.doListShow = true;
       stage_fn = require( fqLibDirname + '/xhi_00.js' );
       return stage_fn.call( set_obj );
@@ -809,7 +799,7 @@
       exitFn( 'Process range ' + param_map.range_str + ': Success');
     };
 
-    stage_idx = stage_list.length - __1;
+    stage_idx = stage_list.length - 1;
     while ( stage_idx > -1 ) {
       // Set commandMap, paramMap in context object
       command_map = stage_list[ stage_idx ];
@@ -824,7 +814,7 @@
       exec_list.push( bound_fn );
 
       // Make new context object and set catchFn, nextFn
-      if ( stage_idx > __0 ) {
+      if ( stage_idx > 0 ) {
         set_obj = makeSetObj();
         set_obj.nextFn  = bound_fn;
       }
@@ -836,6 +826,86 @@
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
+  // == BEGIN INITIALIZE SCRIPT =======================================
+  // The stages are configured via package.json but
+  // since JSON does not allow comments we have added them here.
+  // We may add this back as notes inside json like so:
+  // "00__" : "help"
+  // Stages correlated wth npm
+  // === 00 'help'
+  // "00": "bin/xhi 00",
+  // "00_.": "=== HELP",
+  // === 01 'install'
+  // "01": "bin/xhi 01",
+  // "01_.": "=== INSTALL",
+  // "01_a": "...node preinstall: Run BEFORE the pkg is installed",
+  // === 02 'setup'
+  // "02": "bin/xhi 02",
+  // "02_.": "=== SETUP",
+  // "02_a": "...node install, postinstall: Run AFTER the pkg is installed.",
+  // === 03 'design'
+  // "03": "bin/xhi 03",
+  // "03__": "...synonym cat /doc/spa-arch.md",
+  // === 04 'dev_pull'
+  // "04": "bin/xhi 04",
+  // === 05 'dev_upgrade'
+  // "05": "bin/xhi 05"
+  // "05__": "Upgrade packages in package.json"
+  // === 06 'dev_start'
+  // "06": "bin/xhi 06",
+  // "06_1": "...node start",
+  // "06_2": "...node poststart",
+  // "06_a": "...node prestart",
+  // === 07 'dev_lint'
+  // "07": "bin/xhi 07",
+  // === 08 'dev_test'
+  // "08": "bin/xhi 08",
+  // "08_a": "...node pretest, test, posttest: Run by the npm test command.",
+  // === 09 'dev_cover'
+  // "09": "bin/xhi 09",
+  // === 10 'dev_commit'
+  // "10": "bin/xhi 10",
+  // "10_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
+  // "10_a": "...node preversion: Run BEFORE bumping the pkg version.",
+  // "10_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
+  // === 11 'build', 'make'
+  // "11": "bin/xhi 11",
+  // "11_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
+  // === 12 'publish'
+  // "12": "bin/xhi 12",
+  // "12_1": "...node publish",
+  // "12_2": "...node postpublish: Run AFTER the pkg is published.",
+  // "12_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
+  // "12_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
+  // === 13 'dev_restart'
+  // "13": "bin/xhi 13",
+  // "13_1": "...node restart",
+  // "13_2": "...node postrestart",
+  // "13_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
+  // "13_a": "...node prerestart",
+  // === 14 'dev_stop'
+  // "14": "bin/xhi 14",
+  // "14_1": "...node stop",
+  // "14_2": "...node poststop",
+  // "14_a": "...node prestop",
+  // === 15 'deploy'
+  // "15_.": "=== DEPLOY",
+  // "15_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
+  // "15_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
+  // "15_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
+  // === 16 'prod_start'
+  // "16": "bin/xhi 16",
+  // === 17 'prod_restart'
+  // "17": "bin/xhi 17",
+  // === 18 'prod_stop'
+  // "18": "bin/xhi 18",
+  // === 19 'fetch_info' (feedback)
+  // "19": "bin/xhi 19", (uninstall)
+  // === -1 'uninstall'
+  // "-1_.": "=== UNINSTALL",
+  // "-1_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
+  // "-1_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
+
   // Read package.json and then proceed to parse arguments
   fsObj.readFile(
     fqPkgFilename, 'utf8', storePkgMapFn.bind({
@@ -843,4 +913,5 @@
       then_fn  : mainFn
     })
   );
+  // == . END INITIALIZE SCRIPT =======================================
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============
