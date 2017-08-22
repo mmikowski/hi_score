@@ -163,6 +163,9 @@
     });
     read_obj.question( promptStr + ask_str,
       function ( response_str ) {
+      //  TODO: 2017-08-22 mmikowski crit: We must figure out how
+      //  to disassociate this input and allow it to "pass through"
+      //  to child processes.
         read_obj = null;
         response_fn( response_str );
       }
@@ -761,7 +764,6 @@
 
     // Create command table from config
     commandTable = makeCommandTable( pkgMatrix.xhi_commandTable );
-    console.warn( commandTable );
     param_map    = makeParamMap( param_list );
     stage_list   = param_map.stage_list;
 
