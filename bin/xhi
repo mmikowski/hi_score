@@ -512,7 +512,8 @@
   function storePkgMapFn ( error_obj, json_str ) {
     var ctx_obj = this;
     if ( error_obj ) { return ctx_obj.catch_fn( error_obj ); }
-    pkgMatrix   = JSON.parse( json_str ) || [];
+    pkgMatrix   = JSON.parse( json_str ) || {};
+    setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
     ctx_obj.then_fn();
   }
   // . END utility /storePkgMapFn/
