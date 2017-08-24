@@ -14,16 +14,17 @@
   var
     childProcObj = require( 'child_process' ),
     fsObj        = require( 'fs'            ),
+    npmObj       = require( 'npm'           ),
+
     pathObj      = require( 'path'          ),
     readlineObj  = require( 'readline'      ),
     utilObj      = require( 'util'          ),
 
     makeSpawnObj  = childProcObj.spawn,
-    promiseConstr = Promise,
+    PromiseObj    = Promise,
 
     // Convert to promises using promisfy
     promisifyFn   = utilObj.promisify,
-    makeStatProm  = promisifyFn( fsObj.stat ),
 
     // Assign nodejs builtins
     // eventObj      = new EventEmitter(),
@@ -34,14 +35,13 @@
     appName       = pathObj.basename( fqAppFilename, '.js' ),
     argList       = process.argv,
     fqOrigDirname = process.cwd(), // or pathObj.resolve()
-    padName       = '      ' + appName,
+    padName       = '    ' + appName,
     promptStr     = appName + '-info> ',
     versList      = process.versions.node.split('.'),
 
     // Set paths
     fqProjDirname   = pathObj.dirname( fqBinDirname ),
 
-    fqGitDirname    = fqProjDirname   + '/.git',
     fqLibDirname    = fqProjDirname   + '/lib',
     fqModuleDirname = fqProjDirname   + '/node_modules',
     fqPkgFilename   = fqProjDirname   + '/package.json',
@@ -60,10 +60,9 @@
     // Declare after-install-variables
     LineReader,    applyPatchFn,  exeCpeFn,
     flowObj,       mkdirpFn,      ncpFn,
-    ncuObj,        rmDirFn,       shellJsObj,
-    whichFn,
+    rmDirFn,       shellJsObj,    whichFn,
 
-    makeWhichProm, makeRmDirProm
+    makeWhichProm
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -178,37 +177,50 @@
   //
   function makeCommandTable ( raw_table ) {
     var
-      head_row    = raw_table.shift(),
-      solve_table = [];
+      head_list   = raw_table[ 0 ],
+      head_count  = head_list.length,
+      prefix_str  = '\n' + promptStr + '      ',
+      solve_table = [],
+      raw_count   = raw_table.length,
 
-    raw_table.forEach( function ( src_list, row_idx ) {
-      var row_id = String( row_idx ), row_map;
-      if ( row_id.length < 2 ) { row_id = '0' + row_id; }
-      row_map = { id : row_id, idx : row_idx };
+      idx, row_list, solve_id, solve_map,
+      jdx, field_key, field_data, solve_str
+      ;
 
-      head_row.forEach( function ( field_key, field_idx ) {
-        var src_data = src_list[ field_idx ], solve_str;
-        // Consider string fields...
+    ROW: for ( idx = 1; idx < raw_count; idx++ ) {
+      row_list = raw_table[ idx ];
+      solve_id   = String( idx - 1 );
+      if ( solve_id.length < 2 ) { solve_id = '0' + solve_id; }
+      solve_map = { id : solve_id, idx : idx - 1  };
+
+      FIELD: for ( jdx = 0; jdx < head_count; jdx++ ) {
+        field_key  = head_list[ jdx ];
+        field_data = row_list[  jdx ];
         if ( field_key.match( /_str$/ ) ) {
+
           // Join array into multi-line string
-          if ( Array.isArray( src_data ) ) {
-            solve_str = src_data.join( '\n' );
+          if ( Array.isArray( field_data ) ) {
+            solve_str = prefix_str + field_data.join( prefix_str );
           }
-          // Replace any template keys
-          solve_str = makeTmpltStr({
+          else {
+            solve_str = String( field_data );
+          }
+
+          // Template replace
+          solve_str = makeTmpltStr( {
             _input_str_  : solve_str,
             _lookup_map_ : {
               appName : appName,
               padName : padName
             }
-          });
-          row_map[ field_key ] = solve_str;
-          return;
+          } );
+          solve_map[ field_key ] = solve_str;
+          continue FIELD;
         }
-        row_map[ field_key ] = src_data;
-      });
-      solve_table.push( row_map );
-    });
+        solve_map[ field_key ] = field_data;
+      }
+      solve_table.push( solve_map );
+    }
     return solve_table;
   }
   // . END utility /makeCommandTable/
@@ -365,41 +377,32 @@
   // . END utility /makeParamMap/
 
   // BEGIN utlity /grepFileFn/
+  // Purpose : Return list of lines in a file that match a pattern
   function grepFileFn ( filename, pattern_str ) {
-    return new promiseConstr ( function ( resolve_fn ) {
+    return new PromiseObj ( function ( resolve_fn, catch_fn ) {
       var
-        is_matched    = false,
-        line_read_obj = new LineReader( filename, {skipEmptyLines:true })
+        line_read_obj = new LineReader( filename, {skipEmptyLines:true }),
+        pattern_rx    = new RegExp( pattern_str ),
+        match_list    = []
         ;
 
-      line_read_obj.on( 'error', abortFn );
+      line_read_obj.on( 'error', catch_fn );
       line_read_obj.on( 'line',  function ( line_str ) {
-        if ( line_str.indexOf( pattern_str ) > -1 ) {
-          is_matched = true;
-          line_read_obj.close();
+        if ( line_str.match( pattern_rx ) ) {
+          match_list.push( line_str );
         }
       });
       line_read_obj.on( 'end', function () {
-        resolve_fn( is_matched );
+        resolve_fn( match_list );
       });
     });
   }
   // . END utility /grepFileFn/
 
-  // // BEGIN utilities to return resolve and reject functions
-  // function makeRejectFuncFn ( reject_fn ) {
-  //   return function ( error_data ) { reject_fn( error_data ); };
-  // }
-
-  // function makeResolveFuncFn ( resolve_fn ) {
-  //   return function () { resolve_fn(); };
-  // }
-  // // . END utilities to return resolve and reject functions
-
   // BEGIN utility /copyPathFn/
   function copyPathFn( fq_src_path_str, fq_dest_path_str, do_dir_copy ) {
     if ( do_dir_copy ) {
-      return new promiseConstr ( function ( resolve_fn, reject_fn ) {
+      return new PromiseObj ( function ( resolve_fn, reject_fn ) {
         ncpFn( fq_src_path_str, fq_dest_path_str,
           function ( error_data ) {
             if ( error_data ) { return reject_fn(); }
@@ -409,7 +412,7 @@
       });
     }
 
-    return new promiseConstr ( function ( resolve_fn, reject_fn ) {
+    return new PromiseObj ( function ( resolve_fn, reject_fn ) {
       var
         read_obj = fsObj.createReadStream(  fq_src_path_str  ),
         write_obj= fsObj.createWriteStream( fq_dest_path_str );
@@ -435,35 +438,19 @@
   }
   // . END utility /storePathFn/
 
-  // BEGIN utility /patchIfNeededFn/
-  // TODO mmikowski 2017-08-18: move to xhi_02
-  function patchIfNeededFn ( is_check_found ) {
-    var ctx_obj = this;
-    if ( is_check_found ) {
-      logFn( '    Patch ' + ctx_obj.relative_name + ' already applied.' );
-    }
-    else {
-      applyPatchFn( ctx_obj.relative_name );
-      logFn( '    Applied patch ' + ctx_obj.relative_name );
-    }
-  }
-  // . END utility /patchIfNeededFn/
-
   // BEGIN utility /loadPostInstallfn/
   // Loads libraries after stage 01 (install) is complete
   function loadLibsFn () {
-    LineReader   = require( 'line-by-line'     );
-    applyPatchFn = require( 'apply-patch'      ).applyPatch;
-    exeCpeFn     = require( 'execpe'           );
-    flowObj      = require( 'flow'             );
-    mkdirpFn     = require( 'mkdirp'           );
-    ncpFn        = require( 'ncp'              ).ncp;
-    ncuObj       = require('npm-check-updates' );
-    rmDirFn      = require( 'rmdir'            );
-    shellJsObj   = require( 'shelljs'          );
-    whichFn      = require( 'which'            );
-    makeRmDirProm = promisifyFn( rmDirFn       );
-    makeWhichProm = promisifyFn( whichFn       );
+    LineReader   = require( 'line-by-line' );
+    applyPatchFn = require( 'apply-patch'  ).applyPatch;
+    exeCpeFn     = require( 'execpe'       );
+    flowObj      = require( 'flow'         );
+    mkdirpFn     = require( 'mkdirp'       );
+    ncpFn        = require( 'ncp'          ).ncp;
+    rmDirFn      = require( 'rmdir'        );
+    shellJsObj   = require( 'shelljs'      );
+    whichFn      = require( 'which'        );
+    makeWhichProm = promisifyFn( whichFn   );
   }
   // . END utility /loadLibsFn/
 
@@ -486,7 +473,7 @@
       promise_list.push( promise_obj );
     }
 
-    promiseConstr.all( promise_list )
+    PromiseObj.all( promise_list )
       .then(   ctx_obj.then_fn )
       .catch( ctx_obj.catch_fn )
       ;
@@ -512,38 +499,11 @@
   function storePkgMapFn ( error_obj, json_str ) {
     var ctx_obj = this;
     if ( error_obj ) { return ctx_obj.catch_fn( error_obj ); }
-    pkgMatrix   = JSON.parse( json_str ) || [];
+    pkgMatrix   = JSON.parse( json_str ) || {};
+    setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
     ctx_obj.then_fn();
   }
   // . END utility /storePkgMapFn/
-
-  // BEGIN utility /rmVendorDirsFn/
-    // TODO mmikowski 2017-08-18: move to xhi_02
-  function rmVendorDirsFn () {
-    var
-      ctx_obj            = this,
-      asset_group_table  = setupMatrix.asset_group_table,
-      asset_group_count  = asset_group_table.length,
-      promise_list       = [],
-
-      idx, asset_group_map, fq_dest_dir_str, promise_obj
-      ;
-
-    for ( idx = 0; idx < asset_group_count; idx++ ) {
-      asset_group_map = asset_group_table[ idx ] || {};
-      fq_dest_dir_str = fqProjDirname + '/' + asset_group_map.dest_dir_str;
-      mkdirpFn.sync( fq_dest_dir_str );
-
-      promise_obj = makeRmDirProm( fq_dest_dir_str );
-      promise_list.push( promise_obj );
-    }
-
-    promiseConstr.all( promise_list )
-      .then(  ctx_obj.then_fn  )
-      .catch( ctx_obj.catch_fn )
-      ;
-  }
-  // . END utility /rmVendorDirsFn/
 
   // BEGIN utility /copyVendorFilesFn/
   // TODO mmikowski 2017-08-18: move this to xhi_02
@@ -607,66 +567,10 @@
       }
     }
 
-    promiseConstr.all( promise_list )
-      .then(  ctx_obj.then_fn  )
-      .catch( ctx_obj.catch_fn );
+    PromiseObj.all( promise_list )
+      .then(  ctx_obj.then_fn  ).catch( ctx_obj.catch_fn );
   }
   // . END utility /copyVendorFilesFn/
-
-  // BEGIN utility /patchFilesFn/
-  // TODO mmikowski 2017-08-18: move this to xhi_02
-  // This function requires CWD to be fqProjDirname
-  function patchFilesFn () {
-    var
-      ctx_obj          = this,
-      patch_matrix     = setupMatrix.patch_matrix   || {},
-      patch_dir_str    = patch_matrix.patch_dir_str || '',
-      patch_map_list   = patch_matrix.patch_map_list|| [],
-      patch_map_count  = patch_map_list.length,
-      promise_list     = [],
-      idx, patch_map, promise_obj,
-      check_filename, patch_filename,
-      bound_fn
-      ;
-
-    for ( idx = 0; idx < patch_map_count; idx++ ) {
-      patch_map      = patch_map_list[ idx ];
-      check_filename = patch_map.check_filename;
-      patch_filename = patch_map.patch_filename;
-      patch_map.relative_name = patch_dir_str + '/' + patch_filename;
-
-      promise_obj    = grepFileFn( check_filename, patch_map.pattern_str );
-      bound_fn       = patchIfNeededFn.bind( patch_map );
-      promise_obj.then( bound_fn ).catch( abortFn );
-      promise_list.push( promise_obj );
-    }
-
-    promiseConstr.all( promise_list )
-      .then(  ctx_obj.then_fn  )
-      .catch( ctx_obj.catch_fn )
-      ;
-  }
-  // . END utility /patchFilesFn/
-
-  // BEGIN utility /checkGitInstallFn/
-  // TODO mmikowski 2017-08-18: move this to xhi_02
-  function checkGitInstallFn () {
-    var
-      ctx_obj = this,
-      promise_obj = makeStatProm( fqGitDirname )
-      ;
-
-    promise_obj
-      .then( function () {
-        logFn( '    Git directory ' + fqGitDirname + ' found.');
-        ctx_obj.then_fn();
-      })
-      .catch( function () {
-        logFn( '    Git directory ' + fqGitDirname + ' NOT found.');
-        ctx_obj.catch_fn();
-      });
-  }
-  // . END utility /checkGitInstallFn/
 
   // BEGIN utility /unlinkHookFn/
   // TODO mmikowski 2017-08-18: move this to xhi_02
@@ -701,17 +605,19 @@
   // }
   // == . END EVENT HANDLERS ==========================================
 
-  // BEGIN utility /makeSetObj/
+  // BEGIN utility /makeXhiObj/
   // Purpose: Create object to provide as context to lib functions
   //  nextFn and catchFn are defaults.
   //
-  function makeSetObj () {
+  function makeXhiObj () {
     return {
       appName         : appName,        // Applicaiton name
       askFn           : askFn,          // Read line with prompt
       catchFn         : abortFn,        // Fn for error
       commandMap      : null,           // Command map of lib to exec
+      fqBinDirname    : fqBinDirname,   // Full path of bin scripts
       fqOrigDirname   : fqOrigDirname,  // Full path of PWD
+      fqPkgFilename   : fqPkgFilename,  // Full path to package.json
       fqProjDirname   : fqProjDirname,  // Full path of root project dir
       fsObj           : fsObj,          // File system object
       getCommandMap   : getCommandMap,  // Get command map by id or index
@@ -720,35 +626,37 @@
       makePrefixStr   : makePrefixStr,  // Fn for stage prefix
       makeRightPadStr : makeRightPadStr,// Pad string right
       makeSpawnObj    : makeSpawnObj,   // Object create spawned proc
-      makeXhiObj      : makeXhiObj,     // Get utils after stage 1
+      makePostObj     : makePostObj,     // Get utils after stage 1
       nextFn          : exitFn,         // Fn for success
+      npmObj          : npmObj,         // Npm API object
       paramMap        : null,           // Parameters per CLI input
+      promisifyFn     : promisifyFn,    // Promisify from utils
+      pkgMatrix       : pkgMatrix,      // package.json content
       warnFn          : warnFn          // Warn to console
     };
   }
-  // . END utility /makeSetObj/
+  // . END utility /makeXhiObj/
 
-  // BEGIN utility /makeXhiObj/
+  // BEGIN utility /makePostObj/
   // Purpose: Creates resource map for modules available
   //   only after npm install.
   //
-  function makeXhiObj () {
+  function makePostObj () {
     return {
+      applyPatchFn      : applyPatchFn,
       binPathMap        : binPathMap,        // --  ?
       checkBinListFn    : checkBinListFn,    // 02 setup
-      checkGitInstallFn : checkGitInstallFn, // 02 setup
       copyVendorFilesFn : copyVendorFilesFn, // 02 setup
       exeCpeFn          : exeCpeFn,          // --  ?
       flowObj           : flowObj,           // 02 setup
-      fqModuleDirname   : fqModuleDirname,   // 02 setup? (TODO: confirm)
+      fqModuleDirname   : fqModuleDirname,   // 02 setup
+      grepFileFn        : grepFileFn,        // 02 setup, 06 lint
       linkHookFn        : linkHookFn,        // 02 setup
-      ncuObj            : ncuObj,            // 05 dev-upgrade
-      patchFilesFn      : patchFilesFn,      // 02 setup
-      rmVendorDirsFn    : rmVendorDirsFn,    // 02 setup
+      rmDirFn           : rmDirFn,           // 02 setup
       unlinkHookFn      : unlinkHookFn       // 02 setup
     };
   }
-  // . END utility /makeXhiObj/
+  // . END utility /makePostObj/
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)
@@ -758,7 +666,7 @@
       exec_list  = [],
 
       command_map, param_map,   stage_list,
-      set_obj,     stage_idx,
+      xhi_obj,     stage_idx,
       stage_fn,    bound_fn
       ;
 
@@ -772,8 +680,8 @@
     checkNodeVersionFn();
     command_map = stage_list[ 0 ];
 
-    // Make new set_obj as context for lib function
-    set_obj = makeSetObj();
+    // Make new xhi_obj as context for lib function
+    xhi_obj = makeXhiObj();
 
     // Special case: help
     if ( ! command_map
@@ -782,11 +690,11 @@
       || param_map.range_str === 'help'
     ) {
       command_map = getCommandMap( 0 );
-      set_obj.commandMap = command_map;
-      set_obj.paramMap   = makeParamMap( param_list, 1 );
-      set_obj.doListShow = true;
+      xhi_obj.commandMap = command_map;
+      xhi_obj.paramMap   = makeParamMap( param_list, 1 );
+      xhi_obj.doListShow = true;
       stage_fn = require( fqLibDirname + '/xhi_00.js' );
-      return stage_fn.call( set_obj );
+      return stage_fn.call( xhi_obj );
     }
 
     // Begin exec standard stage list
@@ -797,7 +705,7 @@
     // The third-to-last function should have nextFn set to
     //   the second-to-last function, etc.
     //
-    set_obj.nextFn = function _nextFn () {
+    xhi_obj.nextFn = function _nextFn () {
       exitFn( 'Process range ' + param_map.range_str + ': Success');
     };
 
@@ -805,20 +713,20 @@
     while ( stage_idx > -1 ) {
       // Set commandMap, paramMap in context object
       command_map = stage_list[ stage_idx ];
-      set_obj.commandMap = command_map;
-      set_obj.paramMap   = param_map;
+      xhi_obj.commandMap = command_map;
+      xhi_obj.paramMap   = param_map;
 
       // Load library ( TODO load preq_list? )
       stage_fn = require( fqLibDirname + '/xhi_' + command_map.id + '.js' );
 
       // Build exec chain
-      bound_fn = stage_fn.bind( set_obj );
+      bound_fn = stage_fn.bind( xhi_obj );
       exec_list.push( bound_fn );
 
       // Make new context object and set catchFn, nextFn
       if ( stage_idx > 0 ) {
-        set_obj = makeSetObj();
-        set_obj.nextFn  = bound_fn;
+        xhi_obj = makeXhiObj();
+        xhi_obj.nextFn  = bound_fn;
       }
       stage_idx--;
     }
@@ -829,6 +737,7 @@
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
   // == BEGIN INITIALIZE SCRIPT =======================================
+  // TODO 2017-08-23 mmikowski warn: add this info to package.json
   // The stages are configured via package.json but
   // since JSON does not allow comments we have added them here.
   // We may add this back as notes inside json like so:

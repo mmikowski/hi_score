@@ -6,8 +6,6 @@
   "bugs": {
     "url": "https://github.com/mmikowski/hi_score/issues"
   },
-  "bundleDependencies": false,
-  "dependencies": {},
   "deprecated": false,
   "description": "A modern, full-life-cycle starter project for SPAs",
   "devDependencies": {
@@ -16,7 +14,7 @@
     "coveralls": "2.13.1",
     "diff": "3.3.0",
     "execpe": "4.0.2",
-    "express": "4.15.3",
+    "express": "4.15.4",
     "flow": "0.2.3",
     "font-awesome": "4.7.0",
     "http-server": "0.10.0",
@@ -27,25 +25,26 @@
     "jquery.event.ue": "1.3.2",
     "jquery.scrolli": "1.0.1",
     "jquery.urianchor": "1.3.5",
-    "jsdom": "11.1.0",
+    "jsdom": "11.2.0",
     "jslint": "0.11.0",
     "line-by-line": "0.1.5",
     "mkdirp": "0.5.1",
-    "mongodb": "2.2.30",
-    "mysql2": "1.3.6",
+    "mongodb": "2.2.31",
+    "mysql2": "1.4.1",
     "ncp": "2.0.0",
     "nodeunit": "0.11.1",
-    "npm-check-updates": "2.12.1",
+    "npm": "^5.3.0",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.2",
     "ps-node": "0.1.6",
     "rmdir": "1.2.0",
-    "shelljs": "^0.7.8",
+    "shelljs": "0.7.8",
     "taffydb": "2.7.3",
-    "uglify-js": "3.0.27",
+    "uglify-js": "3.0.28",
     "uglifycss": "0.0.27",
     "websocket": "1.0.24",
-    "which": "1.2.14"
+    "which": "1.3.0",
+    "write-file-atomic": "^2.3.0"
   },
   "homepage": "https://github.com/mmikowski/hi_score",
   "keywords": [
@@ -83,53 +82,174 @@
   },
   "version": "1.2.10",
   "xhi_commandTable": [
-    [ "alias_list", "short_str", "long_str" ],
-    [ [ "help" ], "Hi_score admin tool. Use -v for verbose.", [
-        "  Name      : {{appName}}",
-        "  Purpose   : Run hi_score lifecycle tools",
-        "  Example   : xhi help",
-        "  Arguments : [ help || 0 ] /range/ [ -v ]",
-        "    /range/ may be:",
-        "    1. A single stage number or name.    Ex: 01.",
-        "    2. A list of stage numbers or names. Ex: 1,2,3,6.",
-        "    3. A range of stages                 Ex: 1-5 or all",
-        "    See {{appName}} help all to list stages.",
-        "  More examples:",
-        "    Run stage range",
+    [
+      "alias_list",
+      "short_str",
+      "long_str"
+    ],
+    [
+      [
+        "help"
+      ],
+      "Hi_score admin tool. Use -v for verbose.",
+      [
+        "Name      : {{appName}}",
+        "Purpose   : Run hi_score lifecycle tools",
+        "Example   : xhi help",
+        "Arguments : [ help || 0 ] /range/ [ -v ]",
+        "  /range/ may be:",
+        "  1. A single stage number or name.    Ex: 01.",
+        "  2. A list of stage numbers or names. Ex: 1,2,3,6.",
+        "  3. A range of stages                 Ex: 1-5 or all",
+        "  See {{appName}} help all to list stages.",
+        "More examples:",
+        "  Run stage range",
         "{{padName}} dev_pull        // run stage 04",
         "{{padName}} 1,2,6           // run three stages",
         "{{padName}} 1-9             // run nine stages in range",
-        "    Generic help",
+        "  Generic help",
         "{{padName}} help            // Short help ",
-        "    Help stage range",
+        "  Help stage range",
         "{{padName}} help 01         // Short help on install stage",
         "{{padName}} help all -v     // Long help on all stages",
         "{{padName}} help 1,4        // Short help on stages 1,4",
         "{{padName}} help help,dev_pull -v // Long help on stages 1,4"
       ]
     ],
-    [ [ "install" ], "Download & install npm modules.",
-      [ "Download & install npm modules." ]
+    [
+      [
+        "install"
+      ],
+      "Download & install npm modules.",
+      [
+        "Download & install npm modules.",
+        "This is the same as 'npm install'"
+      ]
     ],
-    [ [ "setup" ], "Patch+copy dev assets" ],
-    [ [ "design" ], "Show architecture docs" ],
-    [ [ "dev_pull" ], "Download assets (git pull)" ],
-    [ [ "dev_upgrade" ], "Upgrade packages (ncu -u)" ],
-    [ [ "dev_start" ], "Start local web server" ],
-    [ [ "dev_lint" ], "Lint changed code" ],
-    [ [ "dev_test" ], "Run regression tests" ],
-    [ [ "dev_cover" ], "Create coverage report" ],
-    [ [ "dev_commit" ], "Save code (git commit)" ],
-    [ [ "build", "make" ], "Create app distribution" ],
-    [ [ "publish" ], "Upload to NPM, Coveralls" ],
-    [ [ "dev_restart" ], "Cycle local web server" ],
-    [ [ "dev_stop" ], "Stop local web server" ],
-    [ [ "deploy" ], "Upload distro to servers" ],
-    [ [ "prod_start" ], "Start production server" ],
-    [ [ "prod_restart" ], "Cycle production server" ],
-    [ [ "prod_stop" ], "Stop production server" ],
-    [ [ "fetch_info" ], "Fetch feedback" ],
-    [ [ "uninstall" ], "Remove {{appName}}" ]
+    [
+      [
+        "setup"
+      ],
+      "Install and patch assets",
+      [
+        "Install and patch assets",
+        "1. Delete all vendor directories as directed by config.",
+        "   See directories in bin, css, font, img, js, and lib",
+        "2. Copy assets from node_modules to vendor directories with the",
+        "   npm version appended to the names.",
+        "3. Apply any patches",
+        "4. Install the commit hook if git is detected"
+      ]
+    ],
+    [
+      [
+        "design"
+      ],
+      "Show architecture docs"
+    ],
+    [
+      [
+        "dev_pull"
+      ],
+      "Download assets (git pull)"
+    ],
+    [
+      [
+        "dev_upgrade"
+      ],
+      "Upgrade packages to latest"
+    ],
+    [
+      [
+        "dev_start"
+      ],
+      "Start local web server"
+    ],
+    [
+      [
+        "dev_lint"
+      ],
+      "Lint changed code"
+    ],
+    [
+      [
+        "dev_test"
+      ],
+      "Run regression tests"
+    ],
+    [
+      [
+        "dev_cover"
+      ],
+      "Create coverage report"
+    ],
+    [
+      [
+        "dev_commit"
+      ],
+      "Save code (git commit)"
+    ],
+    [
+      [
+        "build",
+        "make"
+      ],
+      "Create app distribution"
+    ],
+    [
+      [
+        "publish"
+      ],
+      "Upload to NPM, Coveralls"
+    ],
+    [
+      [
+        "dev_restart"
+      ],
+      "Cycle local web server"
+    ],
+    [
+      [
+        "dev_stop"
+      ],
+      "Stop local web server"
+    ],
+    [
+      [
+        "deploy"
+      ],
+      "Upload distro to servers"
+    ],
+    [
+      [
+        "prod_start"
+      ],
+      "Start production server"
+    ],
+    [
+      [
+        "prod_restart"
+      ],
+      "Cycle production server"
+    ],
+    [
+      [
+        "prod_stop"
+      ],
+      "Stop production server"
+    ],
+    [
+      [
+        "fetch_info"
+      ],
+      "Fetch feedback"
+    ],
+    [
+      [
+        "uninstall"
+      ],
+      "Remove {{appName}}"
+    ]
   ],
   "xhi_02_SetupMatrix": {
     "asset_group_table": [
@@ -218,7 +338,7 @@
         {
           "check_filename": "node_modules/uglify-js/lib/scope.js",
           "patch_filename": "uglify-js-3.0.21.patch",
-          "pattern_str": "// BEGIN hi_score patch line 324"
+          "pattern_str": "^// BEGIN hi_score patch line 324"
         }
       ]
     }
