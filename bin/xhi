@@ -252,7 +252,7 @@
   function makePrefixStr ( command_map ) {
     // noinspection MagicNumberJS
     return appName + ' Stage ' + command_map.id + ' '
-      + makeRightPadStr( command_map.alias_list[ 0 ], 14 ) + ': '
+      + makeRightPadStr( command_map.alias_list[ 0 ], 12 ) + ': '
       ;
   }
   // . END utility /makePrefixStr/
@@ -474,7 +474,7 @@
     }
 
     PromiseObj.all( promise_list )
-      .then(   ctx_obj.then_fn )
+      .then(  ctx_obj.then_fn  )
       .catch( ctx_obj.catch_fn )
       ;
   }
