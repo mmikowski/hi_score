@@ -92,7 +92,7 @@
         input_str  = map._input_str_  || '',
         lookup_map = map._lookup_map_ || {},
 
-        tmplt_rx   = /{{([^}]*[^}]+[^}]*)\}\}/g,
+        tmplt_rx   = /\{\{([^}]*[^}]+[^}]*)\}\}/g,
         bound_fn   = lookupFn.bind( lookup_map )
       ;
 
@@ -187,7 +187,7 @@
       jdx, field_key, field_data, solve_str
       ;
 
-    ROW: for ( idx = 1; idx < raw_count; idx++ ) {
+    for ( idx = 1; idx < raw_count; idx++ ) {
       row_list = raw_table[ idx ];
       solve_id   = String( idx - 1 );
       if ( solve_id.length < 2 ) { solve_id = '0' + solve_id; }
@@ -605,6 +605,27 @@
   // }
   // == . END EVENT HANDLERS ==========================================
 
+  // BEGIN utility /makePostObj/
+  // Purpose: Creates resource map for modules available
+  //   only after npm install.
+  //
+  function makePostObj () {
+    return {
+      applyPatchFn      : applyPatchFn,
+      binPathMap        : binPathMap,        // --  ?
+      checkBinListFn    : checkBinListFn,    // 02 setup
+      copyVendorFilesFn : copyVendorFilesFn, // 02 setup
+      exeCpeFn          : exeCpeFn,          // --  ?
+      flowObj           : flowObj,           // 02 setup
+      grepFileFn        : grepFileFn,        // 02 setup, 06 lint
+      linkHookFn        : linkHookFn,        // 02 setup
+      rmDirFn           : rmDirFn,           // 02 setup
+      unlinkHookFn      : unlinkHookFn       // 02 setup
+    };
+  }
+  // . END utility /makePostObj/
+
+
   // BEGIN utility /makeXhiObj/
   // Purpose: Create object to provide as context to lib functions
   //  nextFn and catchFn are defaults.
@@ -616,6 +637,7 @@
       catchFn         : abortFn,        // Fn for error
       commandMap      : null,           // Command map of lib to exec
       fqBinDirname    : fqBinDirname,   // Full path of bin scripts
+      fqModuleDirname : fqModuleDirname,   // Full path to node modules
       fqOrigDirname   : fqOrigDirname,  // Full path of PWD
       fqPkgFilename   : fqPkgFilename,  // Full path to package.json
       fqProjDirname   : fqProjDirname,  // Full path of root project dir
@@ -636,27 +658,6 @@
     };
   }
   // . END utility /makeXhiObj/
-
-  // BEGIN utility /makePostObj/
-  // Purpose: Creates resource map for modules available
-  //   only after npm install.
-  //
-  function makePostObj () {
-    return {
-      applyPatchFn      : applyPatchFn,
-      binPathMap        : binPathMap,        // --  ?
-      checkBinListFn    : checkBinListFn,    // 02 setup
-      copyVendorFilesFn : copyVendorFilesFn, // 02 setup
-      exeCpeFn          : exeCpeFn,          // --  ?
-      flowObj           : flowObj,           // 02 setup
-      fqModuleDirname   : fqModuleDirname,   // 02 setup
-      grepFileFn        : grepFileFn,        // 02 setup, 06 lint
-      linkHookFn        : linkHookFn,        // 02 setup
-      rmDirFn           : rmDirFn,           // 02 setup
-      unlinkHookFn      : unlinkHookFn       // 02 setup
-    };
-  }
-  // . END utility /makePostObj/
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)

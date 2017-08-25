@@ -167,15 +167,15 @@
     ],
     [
       [
-        "dev_lint"
-      ],
-      "Lint changed code"
-    ],
-    [
-      [
         "dev_test"
       ],
       "Run regression tests"
+    ],
+    [
+      [
+        "dev_lint"
+      ],
+      "Lint changed code"
     ],
     [
       [
