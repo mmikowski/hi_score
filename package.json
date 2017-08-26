@@ -175,7 +175,19 @@
       [
         "dev_lint"
       ],
-      "Lint changed code"
+      "Lint changed code",
+      [
+        "The lint checks quality of changed JS code.",
+        "Vendor files are ignored.",
+        "Four checks are performed on each file:",
+        "  1. Fail if tabs characters or trailing space.",
+        "  2. Fail if 'use strict'; is not found.",
+        "  3. Fail if 'jslint --config config/jslint.conf <file>'",
+        "     does not pass.",
+        "  4. List TODO items for developer review.",
+        "     Fail if developer does not approve."
+      ]
+
     ],
     [
       [
