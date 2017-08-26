@@ -738,41 +738,6 @@
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
   // == BEGIN INITIALIZE SCRIPT =======================================
-  // TODO 2017-08-23 mmikowski warn: add this info to package.json
-  // The stages are configured via package.json but
-  // since JSON does not allow comments we have added them here.
-  // We may add this back as notes inside json like so:
-  // "00__" : "help"
-  // Stages correlated wth npm
-  // === 00 'help'
-  // "00": "bin/xhi 00",
-  // "00_.": "=== HELP",
-  // === 01 'install'
-  // "01": "bin/xhi 01",
-  // "01_.": "=== INSTALL",
-  // "01_a": "...node preinstall: Run BEFORE the pkg is installed",
-  // === 02 'setup'
-  // "02": "bin/xhi 02",
-  // "02_.": "=== SETUP",
-  // "02_a": "...node install, postinstall: Run AFTER the pkg is installed.",
-  // === 03 'design'
-  // "03": "bin/xhi 03",
-  // "03__": "...synonym cat /doc/spa-arch.md",
-  // === 04 'dev_pull'
-  // "04": "bin/xhi 04",
-  // === 05 'dev_upgrade'
-  // "05": "bin/xhi 05"
-  // "05__": "Upgrade packages in package.json"
-  // === 06 'dev_start'
-  // "06": "bin/xhi 06",
-  // "06_1": "...node start",
-  // "06_2": "...node poststart",
-  // "06_a": "...node prestart",
-  // === 07 'dev_lint'
-  // "07": "bin/xhi 07",
-  // === 08 'dev_test'
-  // "08": "bin/xhi 08",
-  // "08_a": "...node pretest, test, posttest: Run by the npm test command.",
   // === 09 'dev_cover'
   // "09": "bin/xhi 09",
   // === 10 'dev_commit'

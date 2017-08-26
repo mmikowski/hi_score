@@ -113,7 +113,11 @@
         "{{padName}} help 01         // Short help on install stage",
         "{{padName}} help all -v     // Long help on all stages",
         "{{padName}} help 1,4        // Short help on stages 1,4",
-        "{{padName}} help help,dev_pull -v // Long help on stages 1,4"
+        "{{padName}} help help,dev_pull -v // Long help on stages 1,4",
+        "",
+        "NPM lifecycle scripts: none.",
+        "",
+        "Exit status: Success (0) always."
       ]
     ],
     [
@@ -122,8 +126,13 @@
       ],
       "Download & install npm modules.",
       [
-        "Download & install npm modules.",
-        "This is the same as 'npm install'"
+        "Download & install npm modules. This is a wrapper ",
+        "around 'npm install'. One may use this command directly",
+        "to diagnose problems.",
+        "",
+        "NPM lifecycle scripts: presinstall, install, postinstall.",
+        "",
+        "Exit status: Success (0) if 'npm install' completes."
       ]
     ],
     [
@@ -132,44 +141,108 @@
       ],
       "Install and patch assets",
       [
-        "Install and patch assets",
+        "Install and patch assets in four steps:",
         "1. Delete all vendor directories as directed by config.",
         "   See directories in bin, css, font, img, js, and lib",
         "2. Copy assets from node_modules to vendor directories with the",
         "   npm version appended to the names.",
         "3. Apply any patches",
-        "4. Install the commit hook if git is detected"
+        "4. Install the commit hook if git is detected",
+        "",
+        "NPM lifecycle scripts: none.",
+        "",
+        "Exit status: Success (0) if all steps succeed."
       ]
     ],
     [
       [
         "design"
       ],
-      "Show architecture docs"
+      "Show architecture docs",
+      [
+        "Show the guidlines for architecture in {{arch_filename}}.",
+        " TODO make this doc/spa-arch.md",
+        "",
+        "NPM lifecycle scripts: none.",
+        "",
+        "Exit status: Success (0) if file can be displayed."
+      ]
     ],
     [
       [
         "dev_pull"
       ],
-      "Download assets (git pull)"
+      "Download assets (git pull)",
+      [
+        "Retrieve latest code from the repository.",
+        "This is a wrapper around 'git pull'.  Use this command"
+        "directly to diagnorse problems.",
+        "",
+        "NPM lifecycle scripts: none.",
+        "",
+        "Exit status: Success (0) if 'git pull' succeeds."
+      ]
     ],
     [
       [
         "dev_upgrade"
       ],
-      "Upgrade packages to latest"
+      "Upgrade packages to latest",
+      [
+        "Upgrade vendor package versions to latest",
+        "At present the 'package.json' file is automatically updated.",
+        "These additional files must also updated to reflect",
+        "the new versions:",
+        "  1. config/*.buildify",
+        "  2. js/<app_file>.js",
+        "  3. test/*.js",
+        "",
+        "An upgrade may break regression tests builds.",
+        "If this happens one may throw away any local changes",
+        "and start again fresh.  Use the following to removed",
+        "any local changes forever: 'git reset --hard HEAD'.",
+        "One may also use 'git clean -xdf' to remove untracked",
+        "local files.",
+        "",
+        "One may updated one package at a time using",
+        "'npm outdated' to list out-of-date packages",
+        "and then update 'package.json' and related files",
+        "(see above) one package at a time to their",
+        "lastest version.  If a problem occurs, it can",
+        "then be more easily resolved.",
+        "",
+        "NPM lifecycle scripts: none.",
+        "",
+        "Exit status: Success (0) if version upgrade complete."
+      ]
     ],
     [
       [
         "dev_start"
       ],
-      "Start local web server"
+      "Start local HTTPS server",
+      [
+        "Start the local HTTPS server, 'http-server' in SSL mode",
+        "using localhost:8443.  This is a wrapper around ",
+        "'http-server -p8443 -SU -C config/cert.pem -K config/key.pem'.",
+        "Use this directly to diagnose problems.",
+        "",
+        "NPM lifecycle scripts: prestart, start, poststart.",
+        "",
+        "Exit status: Success (0) ."
+      ]
     ],
     [
       [
         "dev_test"
       ],
-      "Run regression tests"
+      "Run regression tests",
+      [
+        "Run all nodeunit tests in the 'test.d' drop-directory.",
+        "The test files are processed in alphabetical order.",
+        "",
+        "NPM lifecycle scripts: pretest, test, posttest."
+      ]
     ],
     [
       [
@@ -177,9 +250,9 @@
       ],
       "Lint changed code",
       [
-        "The lint checks quality of changed JS code.",
-        "Vendor files are ignored.",
-        "Four checks are performed on each file:",
+        "Check lint quality of changed JS code.",
+        "Files in 'vendor' directors are ignored.",
+        "Four tests are performed on each file:",
         "  1. Fail if tabs characters or trailing space.",
         "  2. Fail if 'use strict'; is not found.",
         "  3. Fail if 'jslint --config config/jslint.conf <file>'",
