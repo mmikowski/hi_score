@@ -39,7 +39,7 @@ set -u;
 
     # more paths
     _git_dir=$(cd "$(${_git_exe} rev-parse --show-toplevel)" && pwd );
-    _nodeunit_file="${_npm_dir}/test/xhi_level_0.js";
+    _nodeunit_dir="${_npm_dir}/test.d";
     _list_file="/tmp/git-pre-commit.${$}.list.tmp";
     _log_file="/tmp/git-pre-commit.${$}.tmp";
     _scratch_str="";
@@ -141,15 +141,15 @@ set -u;
     echo
   fi
 
-  if [ ! -r "${_nodeunit_file}" ]; then
-    echo "Nodeunit file ${_nodeunit_file} not found."
+  if [ ! -r "${_nodeunit_dir}" ]; then
+    echo "Nodeunit drop directory ${_nodeunit_dir} not found."
     echo "Please ensure it exists."
     echo
     exit 1;
   fi
 
   echo "Running regression tests";
-  "${_nodeunit_exe}" "${_nodeunit_file}"
+  "${_nodeunit_exe}" "${_nodeunit_dir}"
   _exit_int=$?;
   
   if [ "${_exit_int}" != 0 ]; then 

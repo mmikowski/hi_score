@@ -36,7 +36,7 @@
     argList       = process.argv,
     fqOrigDirname = process.cwd(), // or pathObj.resolve()
     padName       = '    ' + appName,
-    promptStr     = appName + '-info> ',
+    promptStr     = appName + '> ',
     versList      = process.versions.node.split('.'),
 
     // Set paths
@@ -72,7 +72,7 @@
   makeTmpltStr = (function () {
     function lookupFn ( ignore_str, lookup_name ) {
       var
-        return_data  = this, // lookup_map
+        lookup_map   = this,
         lookup_list  = lookup_name.split( '.' ),
         lookup_count = lookup_list.length,
         idx, key_name
@@ -80,9 +80,9 @@
 
       for ( idx = 0; idx < lookup_count; idx++ ) {
         key_name = lookup_list[ idx ];
-        return_data = ( return_data && return_data[ key_name ] );
+        lookup_map = ( lookup_map && lookup_map[ key_name ] );
       }
-      return String( return_data ) || '';
+      return String( lookup_map ) || '';
     }
 
     function mainFn ( arg_map ) {
@@ -138,17 +138,17 @@
     cd_name      : fqOrigDirname,
     do_abort     : true,
     method_str : 'warn',
-    prompt_str : appName + '-abort>'
+    prompt_str : appName + '-abort> '
   });
   exitFn = _outFn.bind({
     cd_name   : fqOrigDirname,
     do_exit    : true,
-    prompt_str : appName + '-exit>'
+    prompt_str : appName + '-exit> '
   });
   logFn   = _outFn.bind({});
   warnFn  = _outFn.bind({
     method_str : 'warn',
-    prompt_str : appName + '-warn>'
+    prompt_str : appName + '-warn> '
   });
   // . END utility /_outFn/
 
@@ -179,7 +179,7 @@
     var
       head_list   = raw_table[ 0 ],
       head_count  = head_list.length,
-      prefix_str  = '\n' + promptStr + '      ',
+      prefix_str  = '\n' + promptStr + '   ',
       solve_table = [],
       raw_count   = raw_table.length,
 
@@ -251,7 +251,7 @@
   // BEGIN utility /makePrefixStr/
   function makePrefixStr ( command_map ) {
     // noinspection MagicNumberJS
-    return appName + ' Stage ' + command_map.id + ' '
+    return 'Stage ' + command_map.id + ' '
       + makeRightPadStr( command_map.alias_list[ 0 ], 12 ) + ': '
       ;
   }
@@ -663,28 +663,28 @@
   // Purpose   : Parse command line and dispatch to requested command(s)
   function mainFn() {
     var
-      param_list = argList.slice( 2 ),
-      exec_list  = [],
+      param_list        = argList.slice( 2 ),
+      exec_list         = [],
+      range_start_str   = '',
+      range_success_str = '',
 
-      command_map, param_map,   stage_list,
-      xhi_obj,     stage_idx,
-      stage_fn,    bound_fn
+      param_map, stage_list, command_map,
+      xhi_obj,   stage_fn,   range_prefix_str,
+      stage_idx, bound_fn
       ;
 
     // Create command table from config
     commandTable = makeCommandTable( pkgMatrix.xhi_commandTable );
-    param_map    = makeParamMap( param_list );
-    stage_list   = param_map.stage_list;
-
 
     // Abort if node version < minVersionInt
     checkNodeVersionFn();
-    command_map = stage_list[ 0 ];
 
-    // Make new xhi_obj as context for lib function
-    xhi_obj = makeXhiObj();
+    param_map    = makeParamMap( param_list ); // cli parameters
+    stage_list   = param_map.stage_list;       // stage list from range
+    command_map  = stage_list[ 0 ];            // first stage
+    xhi_obj      = makeXhiObj();               // context obj for libs
 
-    // Special case: help
+    // Begin execute help
     if ( ! command_map
       || param_map.range_str === ''
       || param_map.range_str.match(/^0+$/)
@@ -697,8 +697,9 @@
       stage_fn = require( fqLibDirname + '/xhi_00.js' );
       return stage_fn.call( xhi_obj );
     }
+    // . End execute help
 
-    // Begin exec standard stage list
+    // Begin execute stage list
     // Walk backward through list and bind functions.
     // The last function should have nextFn set to exit function.
     // The second-to-last function should have nextFn set to
@@ -706,14 +707,21 @@
     // The third-to-last function should have nextFn set to
     //   the second-to-last function, etc.
     //
+
+    if ( stage_list.length > 1 ) {
+      range_prefix_str  = 'Process range ' + param_map.range_str;
+      range_start_str   = range_prefix_str + ' Start';
+      range_success_str = range_prefix_str + ' Success';
+    }
+
     xhi_obj.nextFn = function _nextFn () {
-      exitFn( 'Process range ' + param_map.range_str + ': Success');
+      exitFn( range_success_str );
     };
 
     stage_idx = stage_list.length - 1;
     while ( stage_idx > -1 ) {
       // Set commandMap, paramMap in context object
-      command_map = stage_list[ stage_idx ];
+      command_map        = stage_list[ stage_idx ];
       xhi_obj.commandMap = command_map;
       xhi_obj.paramMap   = param_map;
 
@@ -726,14 +734,14 @@
 
       // Make new context object and set catchFn, nextFn
       if ( stage_idx > 0 ) {
-        xhi_obj = makeXhiObj();
-        xhi_obj.nextFn  = bound_fn;
+        xhi_obj        = makeXhiObj();
+        xhi_obj.nextFn = bound_fn;
       }
       stage_idx--;
     }
-    logFn( 'Process range ' + param_map.range_str + ': Start');
+    logFn( range_start_str );
     if ( bound_fn ) { return bound_fn(); }
-    // End exec standard stage list
+    // . End execute stage list
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 

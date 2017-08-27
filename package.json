@@ -33,7 +33,7 @@
     "mysql2": "1.4.1",
     "ncp": "2.0.0",
     "nodeunit": "0.11.1",
-    "npm": "^5.3.0",
+    "npm": "5.3.0",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.2",
     "ps-node": "0.1.6",
@@ -71,13 +71,13 @@
     "url": "git+https://github.com/mmikowski/hi_score.git"
   },
   "scripts": {
-    "coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
+    "coverage": "istanbul cover -x '**/vendor/**' node_modules/ .bin/nodeunit test.d",
     "help": "bin/xhi 00",
     "make": "bin/buildify config/*.buildify",
-    "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
+    "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d && cat coverage/lcov.info | node_modules/.bin/coveralls",
     "requirements-check": "bin/check-node-version",
     "setup": "bin/xhi 02",
-    "test": "node_modules/.bin/nodeunit test/xhi_level_0.js",
+    "test": "node_modules/.bin/nodeunit test.d/xhi_level_0.js",
     "xhi": "bin/xhi"
   },
   "version": "1.2.10",
@@ -115,9 +115,8 @@
         "{{padName}} help 1,4        // Short help on stages 1,4",
         "{{padName}} help help,dev_pull -v // Long help on stages 1,4",
         "",
-        "NPM lifecycle scripts: none.",
-        "",
-        "Exit status: Success (0) always."
+        "Failure of any stage to complete reults in a non-zero exit",
+        "status and termination of the 'xhi' command."
       ]
     ],
     [
@@ -127,31 +126,27 @@
       "Download & install npm modules.",
       [
         "Download & install npm modules. This is a wrapper ",
-        "around 'npm install'. One may use this command directly",
+        "around 'npm install'. Use this command directly",
         "to diagnose problems.",
-        "",
-        "NPM lifecycle scripts: presinstall, install, postinstall.",
-        "",
-        "Exit status: Success (0) if 'npm install' completes."
+        "NPM SCRIPTS      : presinstall, install, postinstall.",
+        "SUCCESS CRITERIA : npm install completes with 0 exit status."
       ]
     ],
     [
       [
         "setup"
       ],
-      "Install and patch assets",
+      "Prepare assets for development",
       [
-        "Install and patch assets in four steps:",
-        "1. Delete all vendor directories as directed by config.",
-        "   See directories in bin, css, font, img, js, and lib",
-        "2. Copy assets from node_modules to vendor directories with the",
-        "   npm version appended to the names.",
+        "Prepare assets in four steps:",
+        "1. Delete all vendor directories as directed by package.json.",
+        "   See directories in bin, css, font, img, js, and lib.",
+        "2. Copy assets from node_modules to vendor directories",
+        "  with their version appended to the names.",
         "3. Apply any patches",
         "4. Install the commit hook if git is detected",
-        "",
-        "NPM lifecycle scripts: none.",
-        "",
-        "Exit status: Success (0) if all steps succeed."
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : All steps complete without error."
       ]
     ],
     [
@@ -160,12 +155,10 @@
       ],
       "Show architecture docs",
       [
-        "Show the guidlines for architecture in {{arch_filename}}.",
-        " TODO make this doc/spa-arch.md",
-        "",
-        "NPM lifecycle scripts: none.",
-        "",
-        "Exit status: Success (0) if file can be displayed."
+        "Show the guidlines for architecture in 'doc/spa-arch.md.'",
+        "Use the module template 'js/xhi/xhi-module-tmplt.js.'",
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : Document is shown without error."
       ]
     ],
     [
@@ -174,13 +167,10 @@
       ],
       "Download assets (git pull)",
       [
-        "Retrieve latest code from the repository.",
-        "This is a wrapper around 'git pull'.  Use this command"
+        "Retrieve latest code from the repository. Use the 'git pull'",
         "directly to diagnorse problems.",
-        "",
-        "NPM lifecycle scripts: none.",
-        "",
-        "Exit status: Success (0) if 'git pull' succeeds."
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : 'git pull' completes with 0 exit status."
       ]
     ],
     [
@@ -195,7 +185,7 @@
         "the new versions:",
         "  1. config/*.buildify",
         "  2. js/<app_file>.js",
-        "  3. test/*.js",
+        "  3. test.d/*.js",
         "",
         "An upgrade may break regression tests builds.",
         "If this happens one may throw away any local changes",
@@ -211,9 +201,12 @@
         "lastest version.  If a problem occurs, it can",
         "then be more easily resolved.",
         "",
-        "NPM lifecycle scripts: none.",
+        "Please run 'xhi install,setup' after this step to",
+        "have the changes reflected.",
+        "(TODO: automate 'xhi install,setup' and associated files)",
         "",
-        "Exit status: Success (0) if version upgrade complete."
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : Version upgrade completes without error"
       ]
     ],
     [
@@ -225,11 +218,10 @@
         "Start the local HTTPS server, 'http-server' in SSL mode",
         "using localhost:8443.  This is a wrapper around ",
         "'http-server -p8443 -SU -C config/cert.pem -K config/key.pem'.",
-        "Use this directly to diagnose problems.",
+        "Use this command directly to diagnose problems.",
         "",
-        "NPM lifecycle scripts: prestart, start, poststart.",
-        "",
-        "Exit status: Success (0) ."
+        "NPM SCRIPTS      : prestart, start, poststart.",
+        "SUCCESS CRITERIA : Server starts without error."
       ]
     ],
     [
@@ -241,7 +233,8 @@
         "Run all nodeunit tests in the 'test.d' drop-directory.",
         "The test files are processed in alphabetical order.",
         "",
-        "NPM lifecycle scripts: pretest, test, posttest."
+        "NPM SCRIPTS      : pretest, test, posttest.",
+        "SUCCESS CRITERIA : All tests complete without error"
       ]
     ],
     [
@@ -258,82 +251,115 @@
         "  3. Fail if 'jslint --config config/jslint.conf <file>'",
         "     does not pass.",
         "  4. List TODO items for developer review.",
-        "     Fail if developer does not approve."
+        "     Fail if developer does not approve.",
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : All tests complete without error"
       ]
-
     ],
     [
       [
         "dev_cover"
       ],
-      "Create coverage report"
+      "Create coverage report",
+      [
+        "Create coverage report"
+      ]
     ],
     [
       [
         "dev_commit"
       ],
-      "Save code (git commit)"
+      "Save changes (git commit)",
+      [
+        "Save changes (git commit)"
+      ]
     ],
     [
       [
         "build",
         "make"
       ],
-      "Create app distribution"
+      "Build a distribution",
+      [
+        "Build a distribution"
+      ]
     ],
     [
       [
         "publish"
       ],
-      "Upload to NPM, Coveralls"
+      "Upload to publishers",
+      [
+        "Upload to NPM, Coveralls"
+      ]
     ],
     [
       [
         "dev_restart"
       ],
-      "Cycle local web server"
+      "Cycle local HTTPS server",
+      [
+        "Cycle local HTTPS server"
+      ]
     ],
     [
       [
         "dev_stop"
       ],
-      "Stop local web server"
+      "Stop local HTTPS server",
+      [
+        "Stop local HTTPS server"
+      ]
     ],
     [
       [
         "deploy"
       ],
-      "Upload distro to servers"
+      "Upload distribution",
+      [
+        "Upload distribution to production server(s)"
+      ]
     ],
     [
+      [ "prod_start" ],
+      "Start production server",
       [
-        "prod_start"
-      ],
-      "Start production server"
+        "Start production server(s)"
+      ]
     ],
     [
       [
         "prod_restart"
       ],
-      "Cycle production server"
+      "Cycle production server",
+      [ "Cycle production server" ]
     ],
     [
       [
         "prod_stop"
       ],
-      "Stop production server"
+      "Stop production server",
+      [
+        "Stop production server"
+      ]
     ],
     [
       [
         "fetch_info"
       ],
-      "Fetch feedback"
+      "Fetch feedback",
+      [
+        "Fetch feedback"
+      ]
     ],
     [
       [
         "uninstall"
       ],
-      "Remove {{appName}}"
+      "Remove {{appName}}",
+      [
+        "Remove {{appName}}"
+      ]
     ]
   ],
   "xhi_02_SetupMatrix": {

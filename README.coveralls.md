@@ -38,7 +38,7 @@ publish a coveralls report for your fork, look at step 4.
 ```bash
   $ cd hi_score
   $ node_modules/.bin/istanbul cover \
-  $  node_modules/.bin/nodeunit test/xhi_level_0.js
+  $  node_modules/.bin/nodeunit test.d/*
 ```
 
 The local report is found in `coverage/lcov-report/index.html`.
@@ -67,7 +67,7 @@ command run by this script is as follows:
 ```bash
   $ cd hi_score
   $ node_modules/.bin/istanbul cover -x '**/vendor/**' \
-  $  node_modules/.bin/nodeunit test/xhi_level_0.js \
+  $  node_modules/.bin/nodeunit test.d/* \
   $  && cat coverage/lcov.info | node_modules/.bin/coveralls
 ```
 
