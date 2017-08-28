@@ -661,16 +661,18 @@
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)
-  function mainFn() {
+  function mainFn () {
     var
       param_list        = argList.slice( 2 ),
       exec_list         = [],
       range_start_str   = '',
       range_success_str = '',
+      stage_idx         = 0,
 
-      param_map, stage_list, command_map,
-      xhi_obj,   stage_fn,   range_prefix_str,
-      stage_idx, bound_fn
+      param_map,   stage_list,  command_map,
+      xhi_obj,     stage_fn,    stage_count,
+      predo_list,  predo_count, predo_idx,
+      prefix_str,  bound_fn
       ;
 
     // Create command table from config
@@ -699,6 +701,29 @@
     }
     // . End execute help
 
+    // Begin expand stage list to include all predo_list and preq_lists
+    //   then sort in-order.
+    // predo_list   : List of steps that must be added to the command list
+    //   IFF they are not already in the range provided
+    // prereq_list : List of stages that must have been performed at some
+    //   any time after install.
+    //
+    stage_count = stage_list.length;
+    while ( stage_idx < stage_count ) {
+      predo_list  = command_map.predo_list || [];
+      predo_count = predo_list.length;
+      for ( predo_idx = 0; predo_idx < predo_count; predo_idx++ ) {
+        command_map = getCommandMap( predo_list[ predo_idx ] );
+        if ( stage_list.indexOf( command_map ) === -1 ) {
+          stage_list.push( command_map );
+          stage_count++;
+        }
+      }
+      stage_idx++;
+    }
+    stage_list.sort( function ( a, b ) { return a.idx > b.idx; } );
+    // END expand stage list
+
     // Begin execute stage list
     // Walk backward through list and bind functions.
     // The last function should have nextFn set to exit function.
@@ -707,11 +732,10 @@
     // The third-to-last function should have nextFn set to
     //   the second-to-last function, etc.
     //
-
     if ( stage_list.length > 1 ) {
-      range_prefix_str  = 'Process range ' + param_map.range_str;
-      range_start_str   = range_prefix_str + ' Start';
-      range_success_str = range_prefix_str + ' Success';
+      prefix_str  = 'Process range ' + param_map.range_str;
+      range_start_str   = prefix_str + ' Start';
+      range_success_str = prefix_str + ' Success';
     }
 
     xhi_obj.nextFn = function _nextFn () {
@@ -746,50 +770,6 @@
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
   // == BEGIN INITIALIZE SCRIPT =======================================
-  // === 09 'dev_cover'
-  // "09": "bin/xhi 09",
-  // === 10 'dev_commit'
-  // "10": "bin/xhi 10",
-  // "10_1": "...node postversion: Run AFTER bumping the pkg version, and AFTER commit.",
-  // "10_a": "...node preversion: Run BEFORE bumping the pkg version.",
-  // "10_b": "...node version: Run AFTER bumping the pkg version, but BEFORE commit.",
-  // === 11 'build', 'make'
-  // "11": "bin/xhi 11",
-  // "11_a": "...node prepare: Run both BEFORE the pkg is packed and published, and on local npm install without any arguments (See below). This is run AFTER prepublish, but BEFORE prepublishOnly.",
-  // === 12 'publish'
-  // "12": "bin/xhi 12",
-  // "12_1": "...node publish",
-  // "12_2": "...node postpublish: Run AFTER the pkg is published.",
-  // "12_a": "...node prepublish: Run BEFORE the pkg is packed and published, as well as on local npm install without any arguments. (See below)",
-  // "12_b": "...node prepublishOnly: Run BEFORE the pkg is prepared and packed, ONLY on npm publish. (See below.)",
-  // === 13 'dev_restart'
-  // "13": "bin/xhi 13",
-  // "13_1": "...node restart",
-  // "13_2": "...node postrestart",
-  // "13_3": "...node WARN: npm restart will run the stop and start scripts if no restart script is provided.",
-  // "13_a": "...node prerestart",
-  // === 14 'dev_stop'
-  // "14": "bin/xhi 14",
-  // "14_1": "...node stop",
-  // "14_2": "...node poststop",
-  // "14_a": "...node prestop",
-  // === 15 'deploy'
-  // "15_.": "=== DEPLOY",
-  // "15_1": "...node postpack: Run AFTER the tarball has been generated and moved to its final destination.",
-  // "15_a": "...node preshrinkwrap, shrinkwrap, postshrinkwrap: Run by the npm shrinkwrap command.",
-  // "15_b": "...node prepack: run BEFORE a tarball is packed (on npm pack, npm publish, and when installing git dependencies)",
-  // === 16 'prod_start'
-  // "16": "bin/xhi 16",
-  // === 17 'prod_restart'
-  // "17": "bin/xhi 17",
-  // === 18 'prod_stop'
-  // "18": "bin/xhi 18",
-  // === 19 'fetch_info' (feedback)
-  // "19": "bin/xhi 19", (uninstall)
-  // === -1 'uninstall'
-  // "-1_.": "=== UNINSTALL",
-  // "-1_1": "...node preuninstall, uninstall: Run BEFORE the pkg is uninstalled.",
-  // "-1_2": "...node postuninstall: Run AFTER the pkg is uninstalled.",
 
   // Read package.json and then proceed to parse arguments
   fsObj.readFile(

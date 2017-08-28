@@ -71,7 +71,7 @@
     "url": "git+https://github.com/mmikowski/hi_score.git"
   },
   "scripts": {
-    "coverage": "istanbul cover -x '**/vendor/**' node_modules/ .bin/nodeunit test.d",
+    "coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d",
     "help": "bin/xhi 00",
     "make": "bin/buildify config/*.buildify",
     "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d && cat coverage/lcov.info | node_modules/.bin/coveralls",
@@ -85,7 +85,9 @@
     [
       "alias_list",
       "short_str",
-      "long_str"
+      "long_str",
+      "predo_list",
+      "prereq_list"
     ],
     [
       [
@@ -168,7 +170,7 @@
       "Download assets (git pull)",
       [
         "Retrieve latest code from the repository. Use the 'git pull'",
-        "directly to diagnorse problems.",
+        "directly to diagnose problems.",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : 'git pull' completes with 0 exit status."
       ]
@@ -269,10 +271,14 @@
       [
         "dev_commit"
       ],
-      "Save changes (git commit)",
+      "Commit changes with git",
       [
-        "Save changes (git commit)"
-      ]
+        "Commit changes with git",
+        "Use 'git commit' directly to diagnose any problems.",
+        "NPM SCRIPTS    : preversion, version, postversion",
+        "SUCCESS CRITERIA : 'git commit' exit status"
+      ],
+      [ "dev_test", "dev_lint" ]
     ],
     [
       [
@@ -281,8 +287,11 @@
       ],
       "Build a distribution",
       [
-        "Build a distribution"
-      ]
+        "Build a distribution",
+        "NPM SCRIPTS    : prepare",
+        "SUCCESS CRITERIA : All tests complete without error"
+      ],
+      [ "dev_test", "dev_lint" ]
     ],
     [
       [
@@ -290,7 +299,9 @@
       ],
       "Upload to publishers",
       [
-        "Upload to NPM, Coveralls"
+        "Upload to NPM + Coveralls",
+        "NPM SCRIPTS      : prepublish,publish,postpublish,prepublishOnly",
+        "SUCCESS CRITERIA : Push to NPM and coveralls successful"
       ]
     ],
     [
@@ -299,7 +310,9 @@
       ],
       "Cycle local HTTPS server",
       [
-        "Cycle local HTTPS server"
+        "Cycle local HTTPS server",
+        "NPM SCRIPTS      : prerestart, restart, postrestart",
+        "SUCCESS CRITERIA : Server return status"
       ]
     ],
     [
@@ -308,7 +321,9 @@
       ],
       "Stop local HTTPS server",
       [
-        "Stop local HTTPS server"
+        "Stop local HTTPS server",
+        "NPM SCRIPTS      : prestop, stop, poststop",
+        "SUCCESS CRITERIA : Server return status"
       ]
     ],
     [
@@ -317,8 +332,12 @@
       ],
       "Upload distribution",
       [
-        "Upload distribution to production server(s)"
-      ]
+        "Upload distribution to production server(s)",
+        "NPM SCRIPTS      : prepack, pack, postpack",
+        "NPM SCRIPTS      : preshrinkwrap, shrinkwrap, postshrinkwrap",
+        "SUCCESS CRITERIA : Upload return status"
+      ],
+      [ "dev_cover", "dev_commit" ]
     ],
     [
       [ "prod_start" ],
@@ -358,7 +377,9 @@
       ],
       "Remove {{appName}}",
       [
-        "Remove {{appName}}"
+        "Remove {{appName}}",
+        "NPM SCRIPTS      : preuninstall, uninstall, postuninstall",
+        "SUCCESS CRITERIA : Removal success exit status"
       ]
     ]
   ],
