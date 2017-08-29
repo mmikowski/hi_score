@@ -30,7 +30,7 @@
     "line-by-line": "0.1.5",
     "mkdirp": "0.5.1",
     "mongodb": "2.2.31",
-    "mysql2": "1.4.1",
+    "mysql2": "1.4.2",
     "ncp": "2.0.0",
     "nodeunit": "0.11.1",
     "npm": "5.3.0",
@@ -278,7 +278,10 @@
         "NPM SCRIPTS    : preversion, version, postversion",
         "SUCCESS CRITERIA : 'git commit' exit status"
       ],
-      [ "dev_test", "dev_lint" ]
+      [
+        "dev_test",
+        "dev_lint"
+      ]
     ],
     [
       [
@@ -291,7 +294,10 @@
         "NPM SCRIPTS    : prepare",
         "SUCCESS CRITERIA : All tests complete without error"
       ],
-      [ "dev_test", "dev_lint" ]
+      [
+        "dev_test",
+        "dev_lint"
+      ]
     ],
     [
       [
@@ -337,10 +343,15 @@
         "NPM SCRIPTS      : preshrinkwrap, shrinkwrap, postshrinkwrap",
         "SUCCESS CRITERIA : Upload return status"
       ],
-      [ "dev_cover", "dev_commit" ]
+      [
+        "dev_cover",
+        "dev_commit"
+      ]
     ],
     [
-      [ "prod_start" ],
+      [
+        "prod_start"
+      ],
       "Start production server",
       [
         "Start production server(s)"
@@ -351,7 +362,9 @@
         "prod_restart"
       ],
       "Cycle production server",
-      [ "Cycle production server" ]
+      [
+        "Cycle production server"
+      ]
     ],
     [
       [

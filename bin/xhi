@@ -61,12 +61,33 @@
     LineReader,    applyPatchFn,  exeCpeFn,
     flowObj,       mkdirpFn,      ncpFn,
     rmDirFn,       shellJsObj,    whichFn,
+    writeFn,
 
     makeWhichProm
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
+
+
+  // BEGIN utility /readPkgFileFn/
+  // Purpose:
+  function readPkgFileFn ( on_read_fn ) {
+    fsObj.readFile( fqPkgFilename, 'utf8', on_read_fn );
+  }
+  // . END utility /readPkgFileFn/
+
+  // BEGIN utility /writePkgFileFn/
+  // write-file-atomic for safety!
+  function writePkgFileFn ( on_write_fn ) {
+    var package_str = JSON.stringify( pkgMatrix, null, '  ' );
+    writeFn(
+      fqPkgFilename, package_str, on_write_fn
+    );
+  }
+  // . END utility /writePkgFileFn/
+
+
   // BEGIN utility /makeTmpltStr/
   // See js/xhi/01.util.js
   makeTmpltStr = (function () {
@@ -101,6 +122,7 @@
     return mainFn;
   }());
   // . END utility /makeTmpltStr/
+
 
   // BEGIN utility /makeRightPadStr/
   function makeRightPadStr ( arg_str, arg_count ) {
@@ -441,16 +463,18 @@
   // BEGIN utility /loadPostInstallfn/
   // Loads libraries after stage 01 (install) is complete
   function loadLibsFn () {
-    LineReader   = require( 'line-by-line' );
-    applyPatchFn = require( 'apply-patch'  ).applyPatch;
-    exeCpeFn     = require( 'execpe'       );
-    flowObj      = require( 'flow'         );
-    mkdirpFn     = require( 'mkdirp'       );
-    ncpFn        = require( 'ncp'          ).ncp;
-    rmDirFn      = require( 'rmdir'        );
-    shellJsObj   = require( 'shelljs'      );
-    whichFn      = require( 'which'        );
-    makeWhichProm = promisifyFn( whichFn   );
+    LineReader   = require( 'line-by-line'      );
+    applyPatchFn = require( 'apply-patch'       ).applyPatch;
+    exeCpeFn     = require( 'execpe'            );
+    flowObj      = require( 'flow'              );
+    mkdirpFn     = require( 'mkdirp'            );
+    ncpFn        = require( 'ncp'               ).ncp;
+    rmDirFn      = require( 'rmdir'             );
+    shellJsObj   = require( 'shelljs'           );
+    whichFn      = require( 'which'             );
+    writeFn      = require( 'write-file-atomic' );
+
+    makeWhichProm = promisifyFn( whichFn );
   }
   // . END utility /loadLibsFn/
 
@@ -620,7 +644,8 @@
       grepFileFn        : grepFileFn,        // 02 setup, 06 lint
       linkHookFn        : linkHookFn,        // 02 setup
       rmDirFn           : rmDirFn,           // 02 setup
-      unlinkHookFn      : unlinkHookFn       // 02 setup
+      unlinkHookFn      : unlinkHookFn,      // 02 setup
+      writePkgFileFn    : writePkgFileFn     // 05 upgrade
     };
   }
   // . END utility /makePostObj/
@@ -771,12 +796,18 @@
 
   // == BEGIN INITIALIZE SCRIPT =======================================
 
-  // Read package.json and then proceed to parse arguments
-  fsObj.readFile(
-    fqPkgFilename, 'utf8', storePkgMapFn.bind({
-      catch_fn : abortFn,
-      then_fn  : mainFn
+  readPkgFileFn( storePkgMapFn.bind({
+      catch_fn : abortFn, then_fn : mainFn
     })
   );
+
+
+  // Read package.json and then proceed to parse arguments
+  //   fqPkgFilename, 'utf8',
+// storePkgMapFn.bind({
+  //     catch_fn : abortFn,
+  //     then_fn  : mainFn
+  //   });
+  // );
   // == . END INITIALIZE SCRIPT =======================================
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============
