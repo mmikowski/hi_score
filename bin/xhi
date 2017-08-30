@@ -60,8 +60,8 @@
     // Declare after-install-variables
     LineReader,    applyPatchFn,  exeCpeFn,
     flowObj,       mkdirpFn,      ncpFn,
-    rmDirFn,       shellJsObj,    whichFn,
-    writeFn,
+    psObj,         rmDirFn,       shellJsObj,
+    whichFn,       writeFn,
 
     makeWhichProm
     ;
@@ -182,13 +182,12 @@
       input  : process.stdin,
       output : process.stdout
     });
-    read_obj.question( promptStr + ask_str,
-      function ( response_str ) {
-      //  TODO: 2017-08-22 mmikowski crit: We must figure out how
-      //  to disassociate this input and allow it to "pass through"
-      //  to child processes.
-        read_obj = null;
-        response_fn( response_str );
+
+    read_obj.question(
+      promptStr + ask_str,
+      function ( str ) {
+        read_obj.close();   // Relinquish readline control of stdio
+        response_fn( str );
       }
     );
   }
@@ -469,6 +468,7 @@
     flowObj      = require( 'flow'              );
     mkdirpFn     = require( 'mkdirp'            );
     ncpFn        = require( 'ncp'               ).ncp;
+    psObj        = require( 'ps-node'           );
     rmDirFn      = require( 'rmdir'             );
     shellJsObj   = require( 'shelljs'           );
     whichFn      = require( 'which'             );
@@ -643,7 +643,9 @@
       flowObj           : flowObj,           // 02 setup
       grepFileFn        : grepFileFn,        // 02 setup, 06 lint
       linkHookFn        : linkHookFn,        // 02 setup
+      psObj             : psObj,             // 06 dev_start
       rmDirFn           : rmDirFn,           // 02 setup
+      shellJsObj        : shellJsObj,        // 11 build
       unlinkHookFn      : unlinkHookFn,      // 02 setup
       writePkgFileFn    : writePkgFileFn     // 05 upgrade
     };
@@ -660,6 +662,7 @@
       appName         : appName,        // Applicaiton name
       askFn           : askFn,          // Read line with prompt
       catchFn         : abortFn,        // Fn for error
+      childProcObj    : childProcObj,   // child_process object
       commandMap      : null,           // Command map of lib to exec
       fqBinDirname    : fqBinDirname,   // Full path of bin scripts
       fqModuleDirname : fqModuleDirname,   // Full path to node modules
@@ -677,6 +680,7 @@
       nextFn          : exitFn,         // Fn for success
       npmObj          : npmObj,         // Npm API object
       paramMap        : null,           // Parameters per CLI input
+      PromiseObj      : PromiseObj,     // Promise object
       promisifyFn     : promisifyFn,    // Promisify from utils
       pkgMatrix       : pkgMatrix,      // package.json content
       warnFn          : warnFn          // Warn to console
@@ -711,7 +715,7 @@
     command_map  = stage_list[ 0 ];            // first stage
     xhi_obj      = makeXhiObj();               // context obj for libs
 
-    // Begin execute help
+    // Begin run in help mode
     if ( ! command_map
       || param_map.range_str === ''
       || param_map.range_str.match(/^0+$/)
@@ -724,10 +728,10 @@
       stage_fn = require( fqLibDirname + '/xhi_00.js' );
       return stage_fn.call( xhi_obj );
     }
-    // . End execute help
+    // . End run in help mode
 
-    // Begin expand stage list to include all predo_list and preq_lists
-    //   then sort in-order.
+    // Begin expand stage list to resolve all predo_list and preq_lists
+    //   dependencies then sort in-order.
     // predo_list   : List of steps that must be added to the command list
     //   IFF they are not already in the range provided
     // prereq_list : List of stages that must have been performed at some
@@ -749,13 +753,12 @@
     stage_list.sort( function ( a, b ) { return a.idx > b.idx; } );
     // END expand stage list
 
-    // Begin execute stage list
+    // Begin run stage list
     // Walk backward through list and bind functions.
-    // The last function should have nextFn set to exit function.
-    // The second-to-last function should have nextFn set to
-    //   the last function.
-    // The third-to-last function should have nextFn set to
-    //   the second-to-last function, etc.
+    // The last function should have nextFn set to exit function,
+    //   the second-to-last function should have nextFn set to
+    //   the last function; the third-to-last function should have
+    //   nextFn/ set to the second-to-last function, and so on.
     //
     if ( stage_list.length > 1 ) {
       prefix_str  = 'Process range ' + param_map.range_str;
@@ -790,24 +793,14 @@
     }
     logFn( range_start_str );
     if ( bound_fn ) { return bound_fn(); }
-    // . End execute stage list
+    // . End run stage list
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
   // == BEGIN INITIALIZE SCRIPT =======================================
-
   readPkgFileFn( storePkgMapFn.bind({
       catch_fn : abortFn, then_fn : mainFn
     })
   );
-
-
-  // Read package.json and then proceed to parse arguments
-  //   fqPkgFilename, 'utf8',
-// storePkgMapFn.bind({
-  //     catch_fn : abortFn,
-  //     then_fn  : mainFn
-  //   });
-  // );
   // == . END INITIALIZE SCRIPT =======================================
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============

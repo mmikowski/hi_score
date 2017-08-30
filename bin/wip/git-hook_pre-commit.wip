@@ -1,19 +1,6 @@
 #!/bin/bash
-
-## See style-guide
-## https://google.github.io/styleguide/shell.xml#Function_Names
-## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
-
-## The -u option forces bash to exit when encountering an uninit variable.
-## The -e option forces bash to exit when encountering a non-zero exit status.
-##   We omit -e as we do our own checking.
 set -u;
-
+_app_name=$( basename $0 );
 _app_link=$( readlink -f -- "${0}" );
 _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
-
-exec "${_bin_dir}/xhi" "dev_lint-dev_cover"
-
-## TODO 2017-08-24 mmikowski warn: convert to node script that uses
- # API from lib/xhi_core to run these steps.
- # This will require bin/xhi to be rewritten.
+exec ${_bin_dir}/xhi dev_lint,dev_test 
