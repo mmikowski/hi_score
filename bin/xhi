@@ -159,13 +159,13 @@
   abortFn = _outFn.bind({
     cd_name      : fqOrigDirname,
     do_abort     : true,
-    method_str : 'warn',
-    prompt_str : appName + '-abort> '
+    method_str   : 'warn',
+    prompt_str   : appName + '-abort> '
   });
   exitFn = _outFn.bind({
-    cd_name   : fqOrigDirname,
-    do_exit    : true,
-    prompt_str : appName + '-exit> '
+    cd_name      : fqOrigDirname,
+    do_exit      : true,
+    prompt_str   : appName + '-exit> '
   });
   logFn   = _outFn.bind({});
   warnFn  = _outFn.bind({
@@ -760,6 +760,11 @@
     //   the last function; the third-to-last function should have
     //   nextFn/ set to the second-to-last function, and so on.
     //
+    // The CWD starts at the root project dirname.
+    // Any modules that change the CWD should revert it before
+    // running then_fn or catch_fn.
+    //
+    process.chdir( fqProjDirname );
     if ( stage_list.length > 1 ) {
       prefix_str  = 'Process range ' + param_map.range_str;
       range_start_str   = prefix_str + ' Start';
@@ -772,7 +777,6 @@
 
     stage_idx = stage_list.length - 1;
     while ( stage_idx > -1 ) {
-      // Set commandMap, paramMap in context object
       command_map        = stage_list[ stage_idx ];
       xhi_obj.commandMap = command_map;
       xhi_obj.paramMap   = param_map;
