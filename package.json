@@ -81,7 +81,7 @@
     "xhi": "bin/xhi"
   },
   "version": "1.2.10",
-  "xhi_stateMap": {},
+  "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
       "alias_list",
@@ -94,7 +94,7 @@
       [
         "help"
       ],
-      "Hi_score admin tool. Use -v for verbose.",
+      "Help on 'xhi' tool; use -v for verbose",
       [
         "Name      : {{appName}}",
         "Purpose   : Run hi_score lifecycle tools",
@@ -120,26 +120,30 @@
         "",
         "Failure of any stage to complete reults in a non-zero exit",
         "status and termination of the 'xhi' command."
-      ]
+      ],
+      null,
+      null
     ],
     [
       [
         "install"
       ],
-      "Download & install npm modules.",
+      "Download and install npm modules",
       [
         "Download & install npm modules. This is a wrapper ",
         "around 'npm install'. Use this command directly",
         "to diagnose problems.",
         "NPM SCRIPTS      : presinstall, install, postinstall.",
         "SUCCESS CRITERIA : npm install completes with 0 exit status."
-      ]
+      ],
+      null,
+      null
     ],
     [
       [
         "setup"
       ],
-      "Prepare assets for development",
+      "Patch and distribute vendor npm assets",
       [
         "Prepare assets in four steps:",
         "1. Delete all vendor directories as directed by package.json.",
@@ -150,6 +154,10 @@
         "4. Install the commit hook if git is detected",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : All steps complete without error."
+      ],
+      null,
+      [
+        "install"
       ]
     ],
     [
@@ -162,19 +170,23 @@
         "Use the module template 'js/xhi/xhi-module-tmplt.js.'",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : Document is shown without error."
-      ]
+      ],
+      null,
+      null
     ],
     [
       [
         "dev_pull"
       ],
-      "Download assets (git pull)",
+      "Download and merge SCMS assets (git pull)",
       [
         "Retrieve latest code from the repository. Use the 'git pull'",
         "directly to diagnose problems.",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : 'git pull' completes with 0 exit status."
-      ]
+      ],
+      null,
+      null
     ],
     [
       [
@@ -210,6 +222,11 @@
         "",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : Version upgrade completes without error"
+      ],
+      null,
+      [
+        "setup",
+        "dev_pull"
       ]
     ],
     [
@@ -225,6 +242,10 @@
         "",
         "NPM SCRIPTS      : prestart, start, poststart.",
         "SUCCESS CRITERIA : Server starts without error."
+      ],
+      null,
+      [
+        "setup"
       ]
     ],
     [
@@ -257,6 +278,10 @@
         "     Fail if developer does not approve.",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : All tests complete without error"
+      ],
+      null,
+      [
+        "setup"
       ]
     ],
     [
@@ -283,6 +308,10 @@
       [
         "dev_test",
         "dev_lint"
+      ],
+      null,
+      [
+        "setup"
       ]
     ],
     [
@@ -299,6 +328,9 @@
       [
         "dev_test",
         "dev_lint"
+      ],
+      [
+        "setup"
       ]
     ],
     [
@@ -310,6 +342,10 @@
         "Upload to NPM + Coveralls",
         "NPM SCRIPTS      : prepublish,publish,postpublish,prepublishOnly",
         "SUCCESS CRITERIA : Push to NPM and coveralls successful"
+      ],
+      null,
+      [
+        "build"
       ]
     ],
     [
@@ -321,6 +357,10 @@
         "Cycle local HTTPS server",
         "NPM SCRIPTS      : prerestart, restart, postrestart",
         "SUCCESS CRITERIA : Server return status"
+      ],
+      null,
+      [
+        "setup"
       ]
     ],
     [
@@ -332,6 +372,10 @@
         "Stop local HTTPS server",
         "NPM SCRIPTS      : prestop, stop, poststop",
         "SUCCESS CRITERIA : Server return status"
+      ],
+      null,
+      [
+        "setup"
       ]
     ],
     [
@@ -348,6 +392,10 @@
       [
         "dev_cover",
         "dev_commit"
+      ],
+      null,
+      [
+        "build"
       ]
     ],
     [
@@ -357,6 +405,10 @@
       "Start production server",
       [
         "Start production server(s)"
+      ],
+      null,
+      [
+        "deploy"
       ]
     ],
     [
@@ -366,6 +418,10 @@
       "Cycle production server",
       [
         "Cycle production server"
+      ],
+      null,
+      [
+        "deploy"
       ]
     ],
     [
@@ -375,6 +431,10 @@
       "Stop production server",
       [
         "Stop production server"
+      ],
+      null,
+      [
+        "deploy"
       ]
     ],
     [
@@ -384,6 +444,10 @@
       "Fetch feedback",
       [
         "Fetch feedback"
+      ],
+      null,
+      [
+        "deploy"
       ]
     ],
     [
@@ -395,7 +459,9 @@
         "Remove {{appName}}",
         "NPM SCRIPTS      : preuninstall, uninstall, postuninstall",
         "SUCCESS CRITERIA : Removal success exit status"
-      ]
+      ],
+      null,
+      null
     ]
   ],
   "xhi_02_SetupMatrix": {

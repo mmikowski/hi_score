@@ -55,7 +55,7 @@ xhi._makeUtil_ = function ( aMap ) {
 
     checkDateStr, getNowMs,     getVarType,
     getBasename,  getDirname,   logObj,
-    makeGuidStr,  makeTmpltStr, trimStrList
+    makeTmpltStr, trimStrList
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -437,6 +437,7 @@ xhi._makeUtil_ = function ( aMap ) {
   //
   function makeEscRxStr( arg_str ) {
     var str = castStr( arg_str, __blank );
+    // noinspection Annotator
     return str.replace( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
   }
   // . END Public prereq method /makeEscRxStr/
@@ -1309,7 +1310,7 @@ xhi._makeUtil_ = function ( aMap ) {
   // . END Public method /makeErrorObj/
 
   // BEGIN Public method /makeGuidStr/
-  makeGuidStr = (function () {
+  function makeGuidStr () {
     /*jslint bitwise: true*/
     function makePart () {
       //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
@@ -1318,16 +1319,13 @@ xhi._makeUtil_ = function ( aMap ) {
     }
     /*jslint bitwise: false*/
 
-    function mainFn () {
-      return makePart() + makePart()
-        + '-' + makePart()
-        + '-' + makePart()
-        + '-' + makePart()
-        + '-' + makePart() + makePart() + makePart()
-        ;
-    }
-    return mainFn;
-  }());
+    return makePart() + makePart()
+      + '-' + makePart()
+      + '-' + makePart()
+      + '-' + makePart()
+      + '-' + makePart() + makePart() + makePart()
+      ;
+  }
   // . END Public method /makeGuidStr/
 
   // BEGIN Public method /makeMapUtilObj/

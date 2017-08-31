@@ -1,0 +1,12 @@
+{
+  "build_table": [
+    {
+      "build_id": "000000001",
+      "comment_str": "Example build",
+      "is_acvtive": false,
+      "time_int_ms": 1504241954754,
+      "time_str": "2017-09-01 12:36:45"
+    }
+  ],
+  "xhi_state_map": {}
+}
