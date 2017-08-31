@@ -118,7 +118,7 @@ The `xhi` tool takes a range-of-stages argument. Stages that are provided out-of
   $ xhi install
   
   # Run all stages between 'install' and 'dev_commit' inclusive
-  $ xhi install-commit
+  $ xhi install-dev_commit
   
   # Run individual stages
   $ xhi update,dev_cover
@@ -128,7 +128,7 @@ The `xhi` tool takes a range-of-stages argument. Stages that are provided out-of
   
   # Get help on ranges
   $ xhi help install -v
-  $ xhi help install-commit
+  $ xhi help install-dev_commit
   $ xhi update,dev_cover
   $ xhi help 0-5
 ```
@@ -139,14 +139,14 @@ The `xhi` tool may run more than one stage even if we specify just one stage. Th
 The `xhi` has a sophisticated prerequisite resolver that ensures required stages are run only if required. There are two types: **Environment** and **Stage**.
 
 #### Environment prequisites
-These are stages that must be completed successfuly at least once in the development enviornment. For example, if we run `xhi commit` but haven't run `xhi install` ever, the `install` stage will be added to the range and run before the `dev_commit` stage.
+These are stages that must be completed successfuly at least once in the development enviornment. For example, if we run `xhi dev_commit` but haven't run `xhi install` ever, the `install` stage will be added to the range and run before the `dev_commit` stage.
 
 If `install` succeeds the system store the success in `lib/xhi_state.json` (as it does with any stage) and the subsequent stage is run.  Any future run of a stage that has `install` as an environment prequesite will **not** run the stage again, even if the `dev_commit` stage is not successfully completed.
 
 Certain stages may mark an environment prerequisite as `not-ready`. For example, if `xhi install` or `xhi upgrade` fail, the tool will mark the `install` stage as `not-ready` and this will be run again for any future invocation that require it as a prerequisite. This also updates the `lib/xhi_state.json` file.
 
 #### Goal prerequisites
-Unlike environment prerequisites, goal prerequisites are run **every time** before target stage is run. For example, if we run `xhi commit` the `dev_lint`, and `dev_test` stages will be run first to ensure the code quality is acceptable. If either prerequisite fails, `xhi` exits immediately (with an exit code of 1) and the target stage is not attempted. Goal prequesites are configuired in `package.json.xhi_commandTable`.
+Unlike environment prerequisites, goal prerequisites are run **every time** before target stage is run. For example, if we run `xhi dev_commit` the `dev_lint`, and `dev_test` stages will be run first to ensure the code quality is acceptable. If either prerequisite fails, `xhi` exits immediately (with an exit code of 1) and the target stage is not attempted. Goal prequesites are configuired in `package.json.xhi_commandTable`.
 
 ### Exit status
 If all the stages of a range are successful an exit status of `0` is returned. If any stage fails  processing of the range stops and an exit status of `1` is returned. This makes the `xhi` tool very handy for inclusion in other automation.
@@ -258,7 +258,7 @@ Developent libraries are used for testing a building code. They **are** not copi
 - [coveralls][_18]: Code coverage reporting
 - [istanbul][_19]: Code coverage
 - [jsdom][_20]: DOM mock for testing
-- [jslint][_21]: Linting for commit hook
+- [jslint][_21]: Linting for xhi, commit hook
 - [nodeunit][_22]: Unit testing
 - [node-inspector][_23]: Debugging
 - [uglifycss][_24]: CSS minification
