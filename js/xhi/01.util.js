@@ -51,9 +51,11 @@ xhi._makeUtil_ = function ( aMap ) {
     __typeof  = vMap._fnTypeof_,
     __keys    = vMap._fnGetKeyList_,
 
+    getNowFn = Date.now,
+
     configMap, stateMap,  // Set in initModule
 
-    checkDateStr, getNowMs,     getVarType,
+    checkDateStr, getVarType,
     getBasename,  getDirname,   logObj,
     makeTmpltStr, trimStrList
     ;
@@ -317,17 +319,10 @@ xhi._makeUtil_ = function ( aMap ) {
   //   in NodeJS, and I have confirmed this provides almost the
   //   the same performance in that env as a raw Date.now() call.
   //
-  getNowMs = (function () {
-    var return_fn;
-    /* istanbul ignore else */
-    if ( __Date[ vMap._hasOwnProp_ ]( vMap._now_ ) ) {
-      return_fn = function () { return __Date[ vMap._now_ ](); };
-    }
-    else {
-      return_fn = function () { return +new __Date(); };
-    }
-    return return_fn;
-  }());
+  function getNowMs () {
+    if ( getNowFn ) { return getNowFn(); }
+    return + new __Date();
+  }
   // . END Public prereq method /getNowMs/
 
   // BEGIN Public prereq method /getNumSign/
