@@ -11,7 +11,8 @@ This SPA starter project provides best-in-class assets, libraries, documentation
 ## Quick start
 ```
   $ cd hi_score; export PATH=`pwd`/bin:$PATH;
-  $ xhi build && google-chrome build/dist/last/dist/ex0?.html
+  $ xhi build && google-chrome build/dist/ex0*.html
+
 ```
 Yes, we know the examples are lame. We promise to make them more exciting in the future.
 
