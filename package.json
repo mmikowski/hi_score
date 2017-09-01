@@ -96,7 +96,7 @@
       ],
       "Help on 'xhi' tool; use -v for verbose",
       [
-        "Name      : {{appName}}",
+        "Name      : {appName}",
         "Purpose   : Run hi_score lifecycle tools",
         "Example   : xhi help",
         "Arguments : [ help || 0 ] /range/ [ -v ]",
@@ -104,19 +104,19 @@
         "  1. A single stage number or name.    Ex: 01.",
         "  2. A list of stage numbers or names. Ex: 1,2,3,6.",
         "  3. A range of stages                 Ex: 1-5 or all",
-        "  See {{appName}} help all to list stages.",
+        "  See {appName} help all to list stages.",
         "More examples:",
         "  Run stage range",
-        "{{padName}} dev_pull        // run stage 04",
-        "{{padName}} 1,2,6           // run three stages",
-        "{{padName}} 1-9             // run nine stages in range",
+        "{padName} dev_pull        // run stage 04",
+        "{padName} 1,2,6           // run three stages",
+        "{padName} 1-9             // run nine stages in range",
         "  Generic help",
-        "{{padName}} help            // Short help ",
+        "{padName} help            // Short help ",
         "  Help stage range",
-        "{{padName}} help 01         // Short help on install stage",
-        "{{padName}} help all -v     // Long help on all stages",
-        "{{padName}} help 1,4        // Short help on stages 1,4",
-        "{{padName}} help help,dev_pull -v // Long help on stages 1,4",
+        "{padName} help 01         // Short help on install stage",
+        "{padName} help all -v     // Long help on all stages",
+        "{padName} help 1,4        // Short help on stages 1,4",
+        "{padName} help help,dev_pull -v // Long help on stages 1,4",
         "",
         "Failure of any stage to complete reults in a non-zero exit",
         "status and termination of the 'xhi' command."
@@ -454,9 +454,9 @@
       [
         "uninstall"
       ],
-      "Remove {{appName}}",
+      "Remove {appName}",
       [
-        "Remove {{appName}}",
+        "Remove {appName}",
         "NPM SCRIPTS      : preuninstall, uninstall, postuninstall",
         "SUCCESS CRITERIA : Removal success exit status"
       ],
@@ -551,7 +551,8 @@
         {
           "check_filename": "node_modules/uglify-js/lib/scope.js",
           "patch_filename": "uglify-js-3.0.21.patch",
-          "pattern_str": "^// BEGIN hi_score patch line 324"
+          "pattern_str": "^// BEGIN hi_score patch line 324",
+          "relative_name": "patch/uglify-js-3.0.21.patch"
         }
       ]
     }

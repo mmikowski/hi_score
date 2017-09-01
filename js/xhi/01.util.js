@@ -57,7 +57,7 @@ xhi._makeUtil_ = function ( aMap ) {
 
     checkDateStr, getVarType,
     getBasename,  getDirname,   logObj,
-    makeTmpltStr, trimStrList
+    trimStrList
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -1772,8 +1772,15 @@ xhi._makeUtil_ = function ( aMap ) {
   // Returns
   //   The filled-out template string
   //
-  makeTmpltStr = (function () {
-    //noinspection JSUnusedLocalSymbols
+  function makeTmpltStr ( arg_map ) {
+    var
+      map        = castMap( arg_map, {} ),
+      input_str  = castStr( map._input_str_, __blank  ),
+      lookup_map = castMap( map._lookup_map_,      {} ),
+      tmplt_rx   = map._tmplt_rx_ || configMap._tmplt_rx_,
+      bound_fn;
+
+
     function lookupFn ( match_str, lookup_name ) {
       var
         return_data  = this, // lookup_map
@@ -1789,20 +1796,9 @@ xhi._makeUtil_ = function ( aMap ) {
       return castStr( return_data, __blank );
     }
 
-    function mainFn ( arg_map ) {
-      var
-        map        = castMap( arg_map, {} ),
-        input_str  = castStr( map._input_str_, __blank  ),
-        lookup_map = castMap( map._lookup_map_,      {} ),
-
-        tmplt_rx   = map._tmplt_rx_ || configMap._tmplt_rx_,
-        bound_fn   = lookupFn.bind( lookup_map )
-        ;
-
-      return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
-    }
-    return mainFn;
-  }());
+    bound_fn   = lookupFn.bind( lookup_map );
+    return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
+  }
   // . END Public method /makeTmpltStr/
 
   // BEGIN Public method /mergeMaps/

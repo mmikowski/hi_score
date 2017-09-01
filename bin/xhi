@@ -12,10 +12,10 @@
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
+    // Load core libraries
     childProcObj = require( 'child_process' ),
     fsObj        = require( 'fs'            ),
     npmObj       = require( 'npm'           ),
-
     pathObj      = require( 'path'          ),
     readlineObj  = require( 'readline'      ),
     utilObj      = require( 'util'          ),
@@ -23,15 +23,15 @@
     makeSpawnObj  = childProcObj.spawn,
     PromiseObj    = Promise,
 
-    // Convert to promises using promisfy
-    promisifyFn   = utilObj.promisify,
+    // Use promisify to create promise-returning functions
+    promisifyFn    = utilObj.promisify,
+    makeReadPromFn = promisifyFn( fsObj.readFile ),
+    // Consider using eventObj = new EventEmitter(),
 
-    // Assign nodejs builtins
-    // eventObj      = new EventEmitter(),
+    // Get environment values
     fqAppFilename = __filename,
     fqBinDirname  = __dirname,
 
-    // Get environment values
     appName       = pathObj.basename( fqAppFilename, '.js' ),
     argList       = process.argv,
     fqOrigDirname = process.cwd(), // or pathObj.resolve()
@@ -41,88 +41,50 @@
 
     // Set paths
     fqProjDirname   = pathObj.dirname( fqBinDirname ),
-
+    fqHookFilename  = fqProjDirname + '/.git/hooks/pre-commit',
     fqLibDirname    = fqProjDirname   + '/lib',
     fqModuleDirname = fqProjDirname   + '/node_modules',
     fqPkgFilename   = fqProjDirname   + '/package.json',
+    fqStateFilename = fqLibDirname    + '/xhi_state.json',
 
-    // Set minimum Node verion and init empty path map
-    minVersionInt  = 8,
-    binPathMap     = {},
+    binPathMap     = {}, // List of required external executables
+    jsonDataMap    = {}, // Map of JSON read from files
+    minVersionInt  = 8,  // minimum Node version
 
     // Declare curried functions
-    abortFn, exitFn, logFn, warnFn, makeTmpltStr,
+    abortFn, exitFn, logFn, warnFn,
 
     // Declare config data
-    fqHookFilename,  pkgMatrix,    setupMatrix,
     commandTable,
 
     // Declare after-install-variables
-    LineReader,    applyPatchFn,  exeCpeFn,
-    flowObj,       mkdirpFn,      ncpFn,
-    psObj,         rmDirFn,       shellJsObj,
-    whichFn,       writeFn,
-
-    makeWhichProm
+    LineReader,     applyPatchFn,  exeCpeFn,
+    flowObj,        makeWhichProm, mkdirpFn,
+    ncpFn,          psObj,         rmDirFn,
+    shellJsObj,     whichFn,       writeFileFn,
+    xhiLibMap,      xhiUtilObj
     ;
+
+  global.xhi = require( fqProjDirname + '/js/xhi/00.js' );
+  require( fqProjDirname + '/js/xhi/01.util.js' );
+  xhiLibMap = global.xhi._makeRoot_( 'xhiLibMap' );
+  global.xhi._makeUtil_( xhiLibMap );
+  xhiUtilObj = xhiLibMap._util_;
   // == . END MODULE SCOPE VARIABLES ==================================
 
   // == BEGIN UTILITY METHODS =========================================
-
-
-  // BEGIN utility /readPkgFileFn/
-  // Purpose:
-  function readPkgFileFn ( on_read_fn ) {
-    fsObj.readFile( fqPkgFilename, 'utf8', on_read_fn );
-  }
-  // . END utility /readPkgFileFn/
-
-  // BEGIN utility /writePkgFileFn/
+  // BEGIN utilities /writePkgFileFn/ and /writeStateFileFn/
   // write-file-atomic for safety!
-  function writePkgFileFn ( on_write_fn ) {
-    var package_str = JSON.stringify( pkgMatrix, null, '  ' );
-    writeFn(
-      fqPkgFilename, package_str, on_write_fn
-    );
+  function writePkgFileFn ( onwrite_fn ) {
+    var package_str = JSON.stringify( jsonDataMap.package_matrix, null, '  ' );
+    writeFileFn( fqPkgFilename, package_str, onwrite_fn );
   }
-  // . END utility /writePkgFileFn/
 
-
-  // BEGIN utility /makeTmpltStr/
-  // See js/xhi/01.util.js
-  makeTmpltStr = (function () {
-    function lookupFn ( ignore_str, lookup_name ) {
-      var
-        lookup_map   = this,
-        lookup_list  = lookup_name.split( '.' ),
-        lookup_count = lookup_list.length,
-        idx, key_name
-      ;
-
-      for ( idx = 0; idx < lookup_count; idx++ ) {
-        key_name = lookup_list[ idx ];
-        lookup_map = ( lookup_map && lookup_map[ key_name ] );
-      }
-      return String( lookup_map ) || '';
-    }
-
-    function mainFn ( arg_map ) {
-      // noinspection Annotator
-      var
-        map        = arg_map || {},
-        input_str  = map._input_str_  || '',
-        lookup_map = map._lookup_map_ || {},
-
-        tmplt_rx   = /\{\{([^}]*[^}]+[^}]*)\}\}/g,
-        bound_fn   = lookupFn.bind( lookup_map )
-      ;
-
-      return input_str.replace( tmplt_rx, bound_fn );
-    }
-    return mainFn;
-  }());
-  // . END utility /makeTmpltStr/
-
+  function writeStateFileFn ( onwrite_fn ) {
+    var state_str = JSON.stringify( jsonDataMap.state_matrix, null, '  ' );
+    writeFileFn( fqStateFilename, state_str, onwrite_fn );
+  }
+  // END utilities /writePkgFileFn/ and /writeStateFileFn/
 
   // BEGIN utility /makeRightPadStr/
   function makeRightPadStr ( arg_str, arg_count ) {
@@ -146,6 +108,11 @@
       arg_list   = Array.from( arguments )
       ;
 
+    function consider_exit_fn () {
+      if ( ctx_obj.do_abort ) { process.exit( 1 ); }
+      if ( ctx_obj.do_exit  ) { process.exit( 0 ); }
+    }
+
     if ( arg_list.length > 0 ) {
       arg_list.unshift( prompt_str );
       console[ method_str ].apply( null, arg_list );
@@ -153,8 +120,14 @@
     if ( ctx_obj.cd_name ) {
       process.chdir( ctx_obj.cd_name );
     }
-    if ( ctx_obj.do_abort ) { process.exit( 1 ); }
-    if ( ctx_obj.do_exit  ) { process.exit( 0 ); }
+    if ( ( ctx_obj.do_abort || ctx_obj.do_exit )
+      && writeFileFn
+    ) {
+      writeStateFileFn( consider_exit_fn );
+    }
+    else {
+      consider_exit_fn();
+    }
   }
   abortFn = _outFn.bind({
     cd_name      : fqOrigDirname,
@@ -205,7 +178,8 @@
       raw_count   = raw_table.length,
 
       idx, row_list, solve_id, solve_map,
-      jdx, field_key, field_data, solve_str
+      jdx, field_key, field_data, solve_str,
+      alias_list, alias_str
       ;
 
     for ( idx = 1; idx < raw_count; idx++ ) {
@@ -228,18 +202,22 @@
           }
 
           // Template replace
-          solve_str = makeTmpltStr( {
+          solve_str = xhiUtilObj._makeTmpltStr_({
             _input_str_  : solve_str,
             _lookup_map_ : {
               appName : appName,
               padName : padName
             }
-          } );
+          });
           solve_map[ field_key ] = solve_str;
           continue FIELD;
         }
         solve_map[ field_key ] = field_data;
       }
+      alias_list = solve_map.alias_list || [];
+      alias_str  = alias_list[ 0 ]      || '';
+      solve_map.alias_str = alias_str;
+
       solve_table.push( solve_map );
     }
     return solve_table;
@@ -252,8 +230,8 @@
   }
   // . END utility /filterByAlias/
 
-  // BEGIN utility /getCommandMap/
-  function getCommandMap ( row_id ) {
+  // BEGIN utility /getCommandMapFn/
+  function getCommandMapFn ( row_id ) {
     var
       idx = parseInt( row_id, 10 ),
       filter_list
@@ -267,13 +245,13 @@
     }
     return filter_list[ 0 ];
   }
-  // . END utility /getCommandMap/
+  // . END utility /getCommandMapFn/
 
   // BEGIN utility /makePrefixStr/
   function makePrefixStr ( command_map ) {
     // noinspection MagicNumberJS
     return 'Stage ' + command_map.id + ' '
-      + makeRightPadStr( command_map.alias_list[ 0 ], 12 ) + ': '
+      + makeRightPadStr( command_map.alias_str, 12 ) + ': '
       ;
   }
   // . END utility /makePrefixStr/
@@ -326,8 +304,8 @@
           ? [ 0, commandTable.length - 1 ]
           : str.split( '-', 2 );
 
-        first_map = getCommandMap( edge_list[ 0 ] );
-        last_map  = getCommandMap( edge_list[ 1 ] );
+        first_map = getCommandMapFn( edge_list[ 0 ] );
+        last_map  = getCommandMapFn( edge_list[ 1 ] );
         if ( ! first_map ) {
           return warnFn( 'Range stage ' + edge_list[ 0 ] + ' is invalid' );
         }
@@ -347,7 +325,7 @@
         last_idx  = last_map.idx  - 1;
 
         for ( i = first_idx; i <= last_idx; i++ ) {
-          middle_map = getCommandMap( i );
+          middle_map = getCommandMapFn( i );
           if ( ! middle_map ) { return; }
           temp_list.push( middle_map );
         }
@@ -368,7 +346,7 @@
         edge_list = str.split(',');
         temp_list = [];
         edge_list.forEach( function ( data, ignore_idx ) {
-          middle_map = getCommandMap( data );
+          middle_map = getCommandMapFn( data );
           if ( ! middle_map ) { return; }
           temp_list.push( middle_map );
         });
@@ -382,7 +360,7 @@
         arg_count++;
         return;
       }
-      middle_map = getCommandMap( str );
+      middle_map = getCommandMapFn( str );
       if ( ! middle_map ) { return; }
 
       range_str  = str;
@@ -398,7 +376,9 @@
   // . END utility /makeParamMap/
 
   // BEGIN utlity /grepFileFn/
-  // Purpose : Return list of lines in a file that match a pattern
+  // Purpose : Return a promise that provides the resolve function with
+  // a list of lines in a file that match a regex pattern
+  //
   function grepFileFn ( filename, pattern_str ) {
     return new PromiseObj ( function ( resolve_fn, catch_fn ) {
       var
@@ -459,6 +439,13 @@
   }
   // . END utility /storePathFn/
 
+  // BEGIN utility /storeJsonFn/
+  function storeJsonFn ( json_str ) {
+    var ctx_obj = this;
+    jsonDataMap[ ctx_obj.key ] = JSON.parse( json_str ) || {};
+  }
+  // . END utility /storeJsonFn/
+
   // BEGIN utility /loadPostInstallfn/
   // Loads libraries after stage 01 (install) is complete
   function loadLibsFn () {
@@ -472,8 +459,7 @@
     rmDirFn      = require( 'rmdir'             );
     shellJsObj   = require( 'shelljs'           );
     whichFn      = require( 'which'             );
-    writeFn      = require( 'write-file-atomic' );
-
+    writeFileFn  = require( 'write-file-atomic' );
     makeWhichProm = promisifyFn( whichFn );
   }
   // . END utility /loadLibsFn/
@@ -519,23 +505,15 @@
   }
   // . END utility /checkNodeVersionFn/
 
-  // BEGIN utility /storePkgMapFn/
-  function storePkgMapFn ( error_obj, json_str ) {
-    var ctx_obj = this;
-    if ( error_obj ) { return ctx_obj.catch_fn( error_obj ); }
-    pkgMatrix   = JSON.parse( json_str ) || {};
-    setupMatrix = pkgMatrix.xhi_02_SetupMatrix;
-    ctx_obj.then_fn();
-  }
-  // . END utility /storePkgMapFn/
-
   // BEGIN utility /copyVendorFilesFn/
   // TODO mmikowski 2017-08-18: move this to xhi_02
   function copyVendorFilesFn () {
     var
       ctx_obj            = this,
-      asset_group_table  = setupMatrix.asset_group_table || [],
-      dev_dependency_map = pkgMatrix.devDependencies     || {},
+      package_matrix     = jsonDataMap.package_matrix            || {},
+      setup_matrix       = package_matrix.xhi_02_SetupMatrix || {},
+      asset_group_table  = setup_matrix.asset_group_table || [],
+      dev_dependency_map = package_matrix.devDependencies     || {},
       asset_group_count  = asset_group_table.length,
       promise_list       = [],
 
@@ -601,7 +579,6 @@
   // This ignores any error
   function unlinkHookFn () {
     var ctx_obj = this;
-    fqHookFilename = fqProjDirname + '/.git/hooks/pre-commit';
     fsObj.unlink( fqHookFilename, ctx_obj.then_fn );
   }
   // . END utility /unlinkHookFn/
@@ -624,9 +601,6 @@
   // == END UTILITY METHODS ============================================
 
   // == BEGIN EVENT HANDLERS ===========================================
-  // function makeBoundEmitFn ( signal_str ) {
-  //   return function () { eventObj.emit( signal_str ); };
-  // }
   // == . END EVENT HANDLERS ==========================================
 
   // BEGIN utility /makePostObj/
@@ -641,52 +615,91 @@
       copyVendorFilesFn : copyVendorFilesFn, // 02 setup
       exeCpeFn          : exeCpeFn,          // --  ?
       flowObj           : flowObj,           // 02 setup
+      mkdirpFn          : mkdirpFn,          // 02 setup
       grepFileFn        : grepFileFn,        // 02 setup, 06 lint
       linkHookFn        : linkHookFn,        // 02 setup
       psObj             : psObj,             // 06 dev_start
       rmDirFn           : rmDirFn,           // 02 setup
       shellJsObj        : shellJsObj,        // 11 build
       unlinkHookFn      : unlinkHookFn,      // 02 setup
-      writePkgFileFn    : writePkgFileFn     // 05 upgrade
+      writePkgFileFn    : writePkgFileFn,    // 05 upgrade
+      writeStateFileFn  : writeStateFileFn   // 05 upgrade
     };
   }
   // . END utility /makePostObj/
-
 
   // BEGIN utility /makeXhiObj/
   // Purpose: Create object to provide as context to lib functions
   //  nextFn and catchFn are defaults.
   //
   function makeXhiObj () {
+    var
+      status_map = xhiUtilObj._getStructData_(
+        jsonDataMap, [ 'state_matrix', 'stage_status_map' ]
+      ) || {},
+      build_table = xhiUtilObj._getStructData_(
+        jsonDataMap, [ 'state_matrix', 'build_table' ]
+      )|| {},
+      package_matrix = jsonDataMap.package_matrix || {}
+      ;
+
     return {
-      appName         : appName,        // Applicaiton name
-      askFn           : askFn,          // Read line with prompt
-      catchFn         : abortFn,        // Fn for error
-      childProcObj    : childProcObj,   // child_process object
-      commandMap      : null,           // Command map of lib to exec
-      fqBinDirname    : fqBinDirname,   // Full path of bin scripts
-      fqModuleDirname : fqModuleDirname,   // Full path to node modules
-      fqOrigDirname   : fqOrigDirname,  // Full path of PWD
-      fqPkgFilename   : fqPkgFilename,  // Full path to package.json
-      fqProjDirname   : fqProjDirname,  // Full path of root project dir
-      fsObj           : fsObj,          // File system object
-      getCommandMap   : getCommandMap,  // Get command map by id or index
-      loadLibsFn      : loadLibsFn,     // Load libs after stage 1
-      logFn           : logFn,          // Log to console
-      makePrefixStr   : makePrefixStr,  // Fn for stage prefix
-      makeRightPadStr : makeRightPadStr,// Pad string right
-      makeSpawnObj    : makeSpawnObj,   // Object create spawned proc
-      makePostObj     : makePostObj,     // Get utils after stage 1
-      nextFn          : exitFn,         // Fn for success
-      npmObj          : npmObj,         // Npm API object
-      paramMap        : null,           // Parameters per CLI input
-      PromiseObj      : PromiseObj,     // Promise object
-      promisifyFn     : promisifyFn,    // Promisify from utils
-      pkgMatrix       : pkgMatrix,      // package.json content
-      warnFn          : warnFn          // Warn to console
+      appName         : appName,          // Applicaiton name
+      askFn           : askFn,            // Read line with prompt
+      buildTable      : build_table,      // xhi_state.json build records
+      catchFn         : abortFn,          // Fn for error
+      childProcObj    : childProcObj,     // child_process object
+      commandMap      : null,             // Command map of lib to exec
+      fqBinDirname    : fqBinDirname,     // Full path of bin scripts
+      fqModuleDirname : fqModuleDirname,  // Full path to node modules
+      fqOrigDirname   : fqOrigDirname,    // Full path of PWD
+      fqPkgFilename   : fqPkgFilename,    // Full path to package.json
+      fqProjDirname   : fqProjDirname,    // Full path of root project dir
+      fsObj           : fsObj,            // File system object
+      getCommandMapFn : getCommandMapFn,  // Get command map by id or index
+      loadLibsFn      : loadLibsFn,       // Load libs after stage 1
+      logFn           : logFn,            // Log to console
+      makePrefixStr   : makePrefixStr,    // Fn for stage prefix
+      makeRightPadStr : makeRightPadStr,  // Pad string right
+      makeSpawnObj    : makeSpawnObj,     // Object create spawned proc
+      makePostObj     : makePostObj,      // Get utils after stage 1
+      nextFn          : exitFn,           // Fn for success
+      npmObj          : npmObj,           // Npm API object
+      paramMap        : null,             // Parameters per CLI input
+      PromiseObj      : PromiseObj,       // Promise object
+      promisifyFn     : promisifyFn,      // Promisify from utils
+      packageMatrix   : package_matrix,   // package.json data
+      stageStatusMap  : status_map,       // xhi_state.json stage data
+      warnFn          : warnFn            // Warn to console
     };
   }
   // . END utility /makeXhiObj/
+
+  // == BEGIN INIT METHOD ==============================================
+  // Purpose: reads JSON files in source list and stores them
+  //   to the module scope using storeJsonFn
+  //
+  function initRead ( onready_fn ) {
+    var
+      source_list  = [
+        { key : 'package_matrix', filename: fqPkgFilename },
+        { key : 'state_matrix',   filename: fqStateFilename }
+      ],
+      source_count   = source_list.length,
+      promise_list = [],
+
+      idx, row_map, promise_obj, bound_fn;
+
+    for ( idx = 0; idx < source_count; idx++ ) {
+      row_map      = source_list[ idx ];
+      bound_fn     = storeJsonFn.bind( row_map );
+      promise_obj  = makeReadPromFn( row_map.filename, 'utf8' );
+      promise_obj.then( bound_fn ).catch( abortFn );
+      promise_list.push( promise_obj );
+    }
+    PromiseObj.all( promise_list ).then( onready_fn ).catch( abortFn );
+  }
+  // == . END INIT METHOD =============================================
 
   // == BEGIN PUBLIC METHOD /mainFn/ ==================================
   // Purpose   : Parse command line and dispatch to requested command(s)
@@ -697,15 +710,25 @@
       range_start_str   = '',
       range_success_str = '',
       stage_idx         = 0,
+      package_matrix    = jsonDataMap.package_matrix,
+      prereq_type_list  = [ 'predo_list', 'prereq_list' ],
+      prereq_type_count = prereq_type_list.length,
+
+      stage_status_map = xhiUtilObj._getStructData_(
+        jsonDataMap, [ 'state_matrix', 'stage_status_map' ]
+      ) || {},
 
       param_map,   stage_list,  command_map,
       xhi_obj,     stage_fn,    stage_count,
-      predo_list,  predo_count, predo_idx,
-      prefix_str,  bound_fn
+
+      alias_str, prereq_count, prereq_idx,
+      prereq_list,  prereq_type,  type_idx,
+
+      bound_fn, prefix_str
       ;
 
     // Create command table from config
-    commandTable = makeCommandTable( pkgMatrix.xhi_commandTable );
+    commandTable = makeCommandTable( package_matrix.xhi_commandTable );
 
     // Abort if node version < minVersionInt
     checkNodeVersionFn();
@@ -721,7 +744,7 @@
       || param_map.range_str.match(/^0+$/)
       || param_map.range_str === 'help'
     ) {
-      command_map = getCommandMap( 0 );
+      command_map = getCommandMapFn( 0 );
       xhi_obj.commandMap = command_map;
       xhi_obj.paramMap   = makeParamMap( param_list, 1 );
       xhi_obj.doListShow = true;
@@ -730,22 +753,33 @@
     }
     // . End run in help mode
 
-    // Begin expand stage list to resolve all predo_list and preq_lists
-    //   dependencies then sort in-order.
-    // predo_list   : List of steps that must be added to the command list
-    //   IFF they are not already in the range provided
-    // prereq_list : List of stages that must have been performed at some
-    //   any time after install.
+    // Begin expand stage list to resolve all dependencies then sort.
+    // predo_list  : Stages that must be added to the stage_list
+    //   every time this stage is run.
+    // prereq_list : List of stages to add to the stage_list if they
+    //   their most recent run failed.
     //
     stage_count = stage_list.length;
     while ( stage_idx < stage_count ) {
-      predo_list  = command_map.predo_list || [];
-      predo_count = predo_list.length;
-      for ( predo_idx = 0; predo_idx < predo_count; predo_idx++ ) {
-        command_map = getCommandMap( predo_list[ predo_idx ] );
-        if ( stage_list.indexOf( command_map ) === -1 ) {
-          stage_list.push( command_map );
-          stage_count++;
+      for ( type_idx = 0; type_idx < prereq_type_count; type_idx++ ) {
+        prereq_type  = prereq_type_list[ type_idx ];
+        prereq_list  = command_map[ prereq_type ] || [];
+        prereq_count = prereq_list.length;
+
+        for ( prereq_idx = 0; prereq_idx < prereq_count; prereq_idx++ ) {
+          command_map  = getCommandMapFn( prereq_list[ prereq_idx ] );
+          alias_str = command_map.alias_str;
+
+          // Skip any environment prereq that is completed
+          if ( prereq_type === 'prereq_list'
+            && stage_status_map[ alias_str ]
+          ) { continue; }
+
+          // Push prereq to end of list for further resolution
+          if ( stage_list.indexOf( command_map ) === -1 ) {
+            stage_list.push( command_map );
+            stage_count++;
+          }
         }
       }
       stage_idx++;
@@ -781,14 +815,14 @@
       xhi_obj.commandMap = command_map;
       xhi_obj.paramMap   = param_map;
 
-      // Load library ( TODO load preq_list? )
+      // Load library
       stage_fn = require( fqLibDirname + '/xhi_' + command_map.id + '.js' );
 
       // Build exec chain
       bound_fn = stage_fn.bind( xhi_obj );
       exec_list.push( bound_fn );
 
-      // Make new context object and set catchFn, nextFn
+      // Make new context object and set nextFn (catchFn === abortFn )
       if ( stage_idx > 0 ) {
         xhi_obj        = makeXhiObj();
         xhi_obj.nextFn = bound_fn;
@@ -801,10 +835,5 @@
   }
   // == . END PUBLIC METHOD /mainFn/ ==================================
 
-  // == BEGIN INITIALIZE SCRIPT =======================================
-  readPkgFileFn( storePkgMapFn.bind({
-      catch_fn : abortFn, then_fn : mainFn
-    })
-  );
-  // == . END INITIALIZE SCRIPT =======================================
+  initRead( mainFn );
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============

@@ -1,4 +1,5 @@
 {
+  "build_idx": 1,
   "build_table": [
     {
       "build_id": "000000001",
@@ -8,5 +9,17 @@
       "time_str": "2017-09-01 12:36:45"
     }
   ],
-  "xhi_state_map": {}
+  "stage_status_map": {
+    "install": true,
+    "setup": true,
+    "design": true,
+    "dev_pull": true,
+    "dev_upgrade": true,
+    "dev_start": true,
+    "dev_test": true,
+    "dev_lint": false,
+    "dev_cover": true,
+    "dev_commit": false,
+    "build": true
+  }
 }
