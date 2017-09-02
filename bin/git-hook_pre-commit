@@ -30,4 +30,4 @@ if [ "${_exit_code}" -ne "0" ]; then
 fi
 ## == . END Process changed documents =====================================
 
-exec ${_bin_dir}/xhi dev_commit
+exec ${_bin_dir}/xhi dev_commit && exit 1;
