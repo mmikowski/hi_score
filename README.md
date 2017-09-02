@@ -61,6 +61,7 @@ placeholders at present.
 
 ---
 ## Planned enhancements
+- `setup` state : auto-create `xhi_state.json` if required
 - `setup` prereq: Implement environment prequisites and `lib/xhi_state.json`
 - `build` number: Create build directory like `dist/\<build-number\>`
 - `build` link  : Link `dist/last` to latest build
@@ -72,7 +73,7 @@ placeholders at present.
 - `build` convert: superpack Perl to JS, use `package.json` config
 - Test load times using remote server
 - `deploy` implement: Add configuration and capability
-- eamples: Increase richness of example app
+- examples: Increase richness of example app
 
 ---
 ## The xhi tool
