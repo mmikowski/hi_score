@@ -186,7 +186,9 @@
         "SUCCESS CRITERIA : 'git pull' completes with 0 exit status."
       ],
       null,
-      null
+      [
+        "setup"
+      ]
     ],
     [
       [
@@ -225,7 +227,6 @@
       ],
       null,
       [
-        "setup",
         "dev_pull"
       ]
     ],
@@ -259,6 +260,10 @@
         "",
         "NPM SCRIPTS      : pretest, test, posttest.",
         "SUCCESS CRITERIA : All tests complete without error"
+      ],
+      null,
+      [
+        "dev_pull"
       ]
     ],
     [
@@ -327,7 +332,8 @@
       ],
       [
         "dev_test",
-        "dev_lint"
+        "dev_lint",
+        "dev_cover"
       ],
       [
         "setup"

@@ -34,7 +34,7 @@ var
 
   appName       = pathObj.basename( fqAppFilename, '.js' ),
   argList       = process.argv,
-  fqOrigDirname = process.cwd(), // or pathObj.resolve()
+  fqOrigDirname = process.cwd(),
   padName       = '    ' + appName,
   promptStr     = appName + '> ',
   versList      = process.versions.node.split('.'),
@@ -553,13 +553,11 @@ function makePostObj () {
 //
 function makeXhiObj () {
   var
-    status_map = xhiUtilObj._getStructData_(
-      jsonDataMap, [ 'state_matrix', 'stage_status_map' ]
-    ) || {},
-    build_table = xhiUtilObj._getStructData_(
-      jsonDataMap, [ 'state_matrix', 'build_table' ]
-    )|| {},
-    package_matrix = jsonDataMap.package_matrix || {}
+    package_matrix = jsonDataMap.package_matrix || {},
+    state_matrix   = jsonDataMap.state_matrix   || {},
+
+    build_table    = state_matrix.build_table      || [],
+    status_map     = state_matrix.stage_status_map || {}
     ;
 
   return {
@@ -589,8 +587,10 @@ function makeXhiObj () {
     PromiseObj      : PromiseObj,       // Promise object
     promisifyFn     : promisifyFn,      // Promisify from utils
     packageMatrix   : package_matrix,   // package.json data
-    stageStatusMap  : status_map,       // xhi_state.json stage data
-    warnFn          : warnFn            // Warn to console
+    stageStatusMap  : status_map,       // xhi_state.json stage status
+    stateMatrix     : state_matrix,     // xhi_state.json data
+    warnFn          : warnFn,           // Warn to console
+    xhiUtilObj      : xhiUtilObj        // Utilities
   };
 }
 // . END utility /makeXhiObj/

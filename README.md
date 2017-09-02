@@ -64,7 +64,7 @@ placeholders at present.
 - `setup` state : auto-create `xhi_state.json` if required
 - `setup` prereq: Implement environment prequisites and `lib/xhi_state.json`
 - `build` number: Create build directory like `dist/\<build-number\>`
-- `build` link  : Link `dist/last` to latest build
+- `build` link  : Link `dist/latest` to latest build
 - `cover` report: Move to `dist/\<build-number\>` directories
 - `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
 - `dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
@@ -288,7 +288,7 @@ Use `xhi make` to build a distribution. The build script concatenates, compresse
   $ xhi make
 
   $ ## Get disk usage of all development files
-  $ cd build/last
+  $ cd build/latest
   $ du -sh .
 ```
 

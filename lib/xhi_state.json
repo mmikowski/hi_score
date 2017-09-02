@@ -1,11 +1,11 @@
 {
-  "build_idx": 1,
+  "build_idx": 2,
   "build_table": [],
   "stage_status_map": {
     "install": true,
-    "setup": true,
     "dev_test": true,
     "dev_lint": false,
+    "dev_cover": true,
     "build": true
   }
 }
