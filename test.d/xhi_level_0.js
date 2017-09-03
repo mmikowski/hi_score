@@ -762,7 +762,7 @@ function getTzCode ( test_obj ) {
   var tz_code = __util._getTzCode_();
   test_obj.expect( __1 );
 
-  test_obj.ok( tz_code.match( /^[A-Z]+$/ ),
+  test_obj.ok( tz_code.match( /^[A-Z0-9+\-]+$/ ),
     'Code fails to match regex: ' + tz_code
   );
   test_obj.done();
@@ -1145,8 +1145,6 @@ function makeDateStr ( test_obj ) {
     expect_str, solve_str, msg_str
     ;
 
-    // console.warn( '>>>>', date_obj.getTimezoneOffset() * 60000,
-    // tz_offset_ms, '<<<<' );
   date_obj.setTime( 1374323405099 + tz_offset_ms );
 
   test_obj.expect( assert_count );
@@ -1939,6 +1937,20 @@ function makeSeenMap ( test_obj ) {
   test_obj.done();
 }
 
+// The makeSeriesMap assert_map looks like this:
+// assert_table = [
+//   { ..expect_map.. },
+//   [ { ..alt1_expect_map.. }, ... { ..altN_expect_map.. } ],
+//   'ditto',
+// ]
+// { ..expect_map.. } = expected results from test
+// [ ..alt_list.. ]   = alternate expect maps, any match is good
+// 'ditto'            = use same data from last row
+//
+// We use the 'ditto' tag to avoid duplicating tons of data.
+// We use the alt_list structure where algorithmic jitter can result
+//   in two or more valid results.
+//
 function makeSeriesMap ( test_obj ) {
   var
     start_ms   = 1465452840000,
@@ -1951,21 +1963,21 @@ function makeSeriesMap ( test_obj ) {
       3540000,      // 5.9m
       7140000,      // 11.9m
       14280000,     // 3.97hr
-      28560000,     // 7.93hr
-      57440000,     // 15.96hr
-      114080000,    // 31.69hr
-      231360000,    // 2.68d
-      460800000,    // 5.33d
-      928000000,    // 10.74d
-      1840640000    // 21.30d
+      28560000      // 7.93hr
+      // 57440000,     // 15.96hr
+      // 114080000,    // 31.69hr
+      // 231360000,    // 2.68d
+      // 460800000,    // 5.33d
+      // 928000000,    // 10.74d
+      // 1840640000    // 21.30d
 
       // These need some love to improve larger date-size presentation
       // 3769600000,   // 43.67d
       // 7354419200,   // 85.12d
       // 14708838400   // 170.24d
     ],
-    intvl_list = [ 2,3,4,5,6,7,9,11,13,15,17,21 ],
-    expect_map_list = [
+    interval_list = [ 2,3,4,5,6,7,9,11,13,15,17,21 ],
+    assert_table = [
       // begin 1s expect list
       {"_time_idx_":3,"_unit_count_":2,"_unit_ms_":500,"_unit_name_":"0.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00"]},
       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00","06:14:00","06:14:00"]},
@@ -2041,19 +2053,34 @@ function makeSeriesMap ( test_obj ) {
       // . end 11.9m expect list
 
       // begin 3.97hr expect list
-      {"_time_idx_":2,"_unit_count_":2,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.44537815126050423,"_unit_ratio_":0.5042016806722689,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["08:00","10:00"]},
+      [
+        {"_time_idx_":2,"_unit_count_":2,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.19327731092436976,"_unit_ratio_":0.5042016806722689,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["07:00","09:00"]},
+        {"_time_idx_":2,"_unit_count_":2,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.44537815126050423,"_unit_ratio_":0.5042016806722689,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["08:00","10:00"]}
+      ],
       {"_time_idx_":2,"_unit_count_":4,"_unit_ms_":3600000,"_unit_name_":"1hr","_left_ratio_":0.19327731092436976,"_unit_ratio_":0.25210084033613445,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["07:00","08:00","09:00","10:00"]},
       'ditto', 'ditto',
       {"_time_idx_":2,"_unit_count_":8,"_unit_ms_":1800000,"_unit_name_":"30m","_left_ratio_":0.06722689075630252,"_unit_ratio_":0.12605042016806722,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:30","06:59","07:30","08:00","08:30","09:00","09:30","10:00"]},
       'ditto', 'ditto', 'ditto',
-      {"_time_idx_":2,"_unit_count_":16,"_unit_ms_":900000,"_unit_name_":"15m","_left_ratio_":0.004201680672268907,"_unit_ratio_":0.06302521008403361,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:15","06:30","06:44","06:59","07:14","07:30","07:45","08:00","08:15","08:30","08:45","09:00","09:15","09:30","09:45","10:00"]},
+      [
+        {"_time_idx_":2,"_unit_count_":16,"_unit_ms_":900000,"_unit_name_":"15m","_left_ratio_":0.004201680672268907,"_unit_ratio_":0.06302521008403361,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:15","06:30","06:44","06:59","07:14","07:30","07:45","08:00","08:15","08:30","08:45","09:00","09:15","09:30","09:45","10:00"]},
+        {"_time_idx_":2,"_unit_count_":4,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.09663865546218488,"_unit_ratio_":0.25210084033613445,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["07:00","09:00","11:00","13:00"]}
+      ],
       'ditto', 'ditto',
-      {"_time_idx_":2,"_unit_count_":24,"_unit_ms_":600000,"_unit_name_":"10m","_left_ratio_":0.025210084033613446,"_unit_ratio_":0.04201680672268908,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:20","06:30","06:40","06:50","07:00","07:10","07:20","07:30","07:40","07:50","08:00","08:10","08:20","08:30","08:40","08:50","09:00","09:09","09:19","09:29","09:39","09:49","09:59","10:09"]},
+      [
+        {"_time_idx_":2,"_unit_count_":24,"_unit_ms_":600000,"_unit_name_":"10m","_left_ratio_":0.025210084033613446,"_unit_ratio_":0.04201680672268908,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:20","06:30","06:40","06:50","07:00","07:10","07:20","07:30","07:40","07:50","08:00","08:10","08:20","08:30","08:40","08:50","09:00","09:09","09:19","09:29","09:39","09:49","09:59","10:09"]},
+        {"_time_idx_":2,"_unit_count_":4,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.09663865546218488,"_unit_ratio_":0.25210084033613445,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["07:00","09:00","11:00","13:00"]}
+      ],
       // . end 11.9m expect list
 
       //  begin 7.93hr expect list
-      {"_time_idx_":2,"_unit_count_":2,"_unit_ms_":14400000,"_unit_name_":"4hr","_left_ratio_":0.22268907563025211,"_unit_ratio_":0.5042016806722689,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["08:00","12:00"]},
-      {"_time_idx_":2,"_unit_count_":4,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.22268907563025211,"_unit_ratio_":0.25210084033613445,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["08:00","10:00","12:00","14:00"]},
+      [
+        {"_time_idx_":2,"_unit_count_":2,"_unit_ms_":14400000,"_unit_name_":"4hr","_left_ratio_":0.22268907563025211,"_unit_ratio_":0.5042016806722689,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["08:00","12:00"]},
+        {"_time_idx_":2,"_unit_count_":2,"_unit_ms_":14400000,"_unit_name_":"4hr","_left_ratio_":0.3487394957983193,"_unit_ratio_":0.5042016806722689,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["09:00","13:00"]}
+      ],
+      [
+        {"_time_idx_":2,"_unit_count_":4,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.22268907563025211,"_unit_ratio_":0.25210084033613445,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["08:00","10:00","12:00","14:00"]},
+        {"_time_idx_":2,"_unit_count_":4,"_unit_ms_":7200000,"_unit_name_":"2hr","_left_ratio_":0.09663865546218488,"_unit_ratio_":0.25210084033613445,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["07:00","09:00","11:00","13:00"]}
+      ],
       'ditto', 'ditto',
       {"_time_idx_":2,"_unit_count_":8,"_unit_ms_":3600000,"_unit_name_":"1hr","_left_ratio_":0.09663865546218488,"_unit_ratio_":0.12605042016806722,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00"]},
       'ditto', 'ditto', 'ditto',
@@ -2132,34 +2159,55 @@ function makeSeriesMap ( test_obj ) {
       'ditto', 'ditto'
       // . end 21.30d expect list
     ],
-    expect_count = __0,
-    delta_count  = delta_list.length,
-    intvl_count  = intvl_list.length,
-    make_map_fn  = __util._makeSeriesMap_,
-    tz_offset_ms = __util._getTzOffsetMs_(),
+    delta_count    = delta_list.length,
+    expect_count   = __0,
+    interval_count = interval_list.length,
+    make_map_fn    = __util._makeSeriesMap_,
+    tz_offset_ms   = __util._getTzOffsetMs_(),
 
-    delta_idx, delta_ms, intvl_idx, intvl_int,
-    arg_map, expect_data, expect_map, solve_map, msg_str
+    delta_idx, delta_ms, interval_idx, interval_int,
+    alt_list, alt_count, alt_bool, alt_str, i,
+    arg_map, tmp_data, assert_data, expect_map,
+    solve_map, msg_str
     ;
 
-  test_obj.expect( delta_count * intvl_count );
+  test_obj.expect( delta_count * interval_count );
 
   for ( delta_idx = __0; delta_idx < delta_count; delta_idx ++ ) {
     delta_ms = delta_list[ delta_idx ];
-    for ( intvl_idx = __0; intvl_idx < intvl_count; intvl_idx ++ ) {
-      intvl_int = intvl_list[ intvl_idx ];
+    INTV: for ( interval_idx = __0; interval_idx < interval_count; interval_idx ++ ) {
+      interval_int = interval_list[ interval_idx ];
       arg_map = {
-        _max_ms_       : start_ms + delta_ms - tz_offset_ms,
-        _min_ms_       : start_ms - tz_offset_ms,
-        _tgt_count_    : intvl_int,
+        _max_ms_       : start_ms + tz_offset_ms + delta_ms,
+        _min_ms_       : start_ms + tz_offset_ms,
+        _tgt_count_    : interval_int
       };
-      solve_map   = make_map_fn( arg_map );
-      expect_data = expect_map_list[ expect_count ];
-      // reuse prior expect map if directed
-      if ( expect_data !== 'ditto' ) {
-        expect_map = expect_data;
+      solve_map = make_map_fn( arg_map );
+      tmp_data  = assert_table[ expect_count ];
+
+      // reuse prior data if directed
+      if ( tmp_data !== 'ditto' ) {
+        assert_data = tmp_data;
       }
-      msg_str     = __Str( expect_count ) + '. arg_map: '
+
+      // test for alternates (compensates for algo jitter)
+      if ( Array.isArray( assert_data ) ) {
+        alt_list  = assert_data;
+        alt_count = alt_list.length;
+        alt_bool  = false;
+        ALT: for ( i = 0; i < alt_count; i++ ) {
+          alt_str  = JSON.stringify( alt_list[ i ] );
+          alt_bool = JSON.stringify( solve_map ) === alt_str;
+          if ( alt_bool ) { break ALT; }
+        }
+        test_obj.ok( alt_bool, 'At least one alternate matches' );
+        expect_count++;
+        continue INTV;
+      }
+
+      // deep test
+      expect_map = assert_data;
+      msg_str = __Str( expect_count ) + '. arg_map: '
         + JSON.stringify( arg_map ) + '\n solve_map: '
         + JSON.stringify( solve_map )
         + '\n expect_map: ' + JSON.stringify( expect_map );
@@ -3548,7 +3596,7 @@ module.exports = {
   _makeReplaceFn_   : makeReplaceFn,
   _makeScrubStr_    : makeScrubStr,
   _makeSeenMap_     : makeSeenMap,
- // _makeSeriesMap_   : makeSeriesMap,
+  _makeSeriesMap_   : makeSeriesMap,
   _makeStrFromMap_  : makeStrFromMap,
   _makeThrottle01Fn_: makeThrottle01Fn,
   _makeTmpltStr_    : makeTmpltStr,
