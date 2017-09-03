@@ -763,7 +763,7 @@ function getTzCode ( test_obj ) {
   test_obj.expect( __1 );
 
   test_obj.ok( tz_code.match( /^[A-Z]+$/ ),
-    'Code looks good'
+    'Code fails to match regex: ' + tz_code
   );
   test_obj.done();
 }
@@ -1035,38 +1035,57 @@ function makeCommaNumStr ( test_obj ) {
 
 function makeDateStr ( test_obj ) {
   var
-    date_obj      = new Date(),
+    date_obj      = new Date( 1374294605000 ),
     tz_offset_ms  = __util._getTzOffsetMs_(),
     assert_table  = [
       // [ arg_map, expect_data ]
       [ __null, __blank ],
       [ { foo : '_bar_' }, __blank ],
       [ { _date_ms_ : 1474323404498 }, '2016-09-19' ],
-      [ { _date_ms_ : 1474323404498, _time_idx_ : 0 }, '2016-09-19' ],
-      [ { _date_ms_ : 1474323404498, _time_idx_ : 1 }, '2016-09-19 22' ],
-      [ { _date_ms_ : 1474323404498, _time_idx_ : 2 }, '2016-09-19 22:16' ],
-      [ { _date_ms_ : 1474323404498, _time_idx_ : 3 }, '2016-09-19 22:16:44' ],
-      [ { _date_ms_ : 1274323404500 }, '2010-05-20' ],
-      [ { _date_ms_ : 1274323404999, _time_idx_ : 0 }, '2010-05-20' ],
-      [ { _date_ms_ : 1274323404999, _time_idx_ : 1 }, '2010-05-20 02' ],
-      [ { _date_ms_ : 1274323404999, _time_idx_ : 2 }, '2010-05-20 02:43' ],
-      [ { _date_ms_ : 1274323405000, _time_idx_ : 3 }, '2010-05-20 02:43:25' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 0 },
+         '2016-09-19' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 1 },
+         '2016-09-19 22' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 2 },
+         '2016-09-19 22:16' ],
+      [ { _date_ms_ : 1474323404498, _time_idx_ : 3 },
+         '2016-09-19 22:16:44' ],
+      [ { _date_ms_ : 1274323404500 },
+         '2010-05-20' ],
+      [ { _date_ms_ : 1274323404999, _time_idx_ : 0 },
+         '2010-05-20' ],
+      [ { _date_ms_ : 1274323404999, _time_idx_ : 1 },
+         '2010-05-20 02' ],
+      [ { _date_ms_ : 1274323404999, _time_idx_ : 2 },
+         '2010-05-20 02:43' ],
+      [ { _date_ms_ : 1274323405000, _time_idx_ : 3 },
+         '2010-05-20 02:43:25' ],
+
       [ { _date_obj_ : date_obj }, '2013-07-20' ],
       [ { _date_obj_ : date_obj,     _time_idx_ : 0 }, '2013-07-20' ],
       [ { _date_obj_ : date_obj,     _time_idx_ : 1 }, '2013-07-20 12' ],
       [ { _date_obj_ : date_obj,     _time_idx_ : 2 }, '2013-07-20 12:30' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 3 }, '2013-07-20 12:30:05' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 3 }, '2013-07-20 12:30:05'],
       [ { _date_obj_ : date_obj,     _time_idx_ : 4 }, '2013-07-20' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 0 }, '2013-07-20' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 1 }, '2013-07-20 12' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 2 }, '2013-07-20 12:30' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : 3 }, '2013-07-20 12:30:05' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : 4 }, '2013-07-20' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : -1 }, '2013-07-20 12h' ],
 
-      [ { _date_ms_ : 1374323405099, _time_idx_ : -2 }, '2013-07-20 12h:30m' ],
-      [ { _date_ms_ : 1374323405099, _time_idx_ : -3 }, '2013-07-20 12h:30m:05s' ],
-      [ { _date_obj_ : date_obj,     _time_idx_ : -4 }, '2013-07-20' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 0 },
+         '2013-07-20' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 1 },
+         '2013-07-20 12' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 2 },
+         '2013-07-20 12:30' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : 3 },
+         '2013-07-20 12:30:05' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : 4 },
+         '2013-07-20' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : -1 },
+         '2013-07-20 12h' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : -2 },
+         '2013-07-20 12h:30m' ],
+      [ { _date_ms_ : 1374323405099, _time_idx_ : -3 },
+         '2013-07-20 12h:30m:05s' ],
+      [ { _date_obj_ : date_obj,     _time_idx_ : -4 },
+         '2013-07-20' ],
 
       // US format test
       [ { _date_ms_ : 1474323404010, _order_str_ : '_us_' }, '09/19/2016' ],
@@ -1122,9 +1141,12 @@ function makeDateStr ( test_obj ) {
     assert_count = assert_table.length,
     make_str_fn   = __util._makeDateStr_,
 
-    idx, expect_list, arg_map, expect_str, solve_str, msg_str
+    idx, expect_list, arg_map,
+    expect_str, solve_str, msg_str
     ;
 
+    // console.warn( '>>>>', date_obj.getTimezoneOffset() * 60000,
+    // tz_offset_ms, '<<<<' );
   date_obj.setTime( 1374323405099 + tz_offset_ms );
 
   test_obj.expect( assert_count );
@@ -1132,6 +1154,8 @@ function makeDateStr ( test_obj ) {
     expect_list  = assert_table[ idx ];
     arg_map      = expect_list[ __0 ];
     expect_str   = expect_list[ __1 ];
+
+    // date_obj.
     if ( arg_map && arg_map._date_ms_ ) {
       arg_map._date_ms_ += tz_offset_ms;
     }
@@ -2125,8 +2149,8 @@ function makeSeriesMap ( test_obj ) {
     for ( intvl_idx = __0; intvl_idx < intvl_count; intvl_idx ++ ) {
       intvl_int = intvl_list[ intvl_idx ];
       arg_map = {
-        _max_ms_       : start_ms + delta_ms + tz_offset_ms,
-        _min_ms_       : start_ms + tz_offset_ms,
+        _max_ms_       : start_ms + delta_ms - tz_offset_ms,
+        _min_ms_       : start_ms - tz_offset_ms,
         _tgt_count_    : intvl_int,
       };
       solve_map   = make_map_fn( arg_map );
@@ -3524,7 +3548,7 @@ module.exports = {
   _makeReplaceFn_   : makeReplaceFn,
   _makeScrubStr_    : makeScrubStr,
   _makeSeenMap_     : makeSeenMap,
-  _makeSeriesMap_   : makeSeriesMap,
+ // _makeSeriesMap_   : makeSeriesMap,
   _makeStrFromMap_  : makeStrFromMap,
   _makeThrottle01Fn_: makeThrottle01Fn,
   _makeTmpltStr_    : makeTmpltStr,

@@ -638,6 +638,7 @@ xhi._makeUtil_ = function ( aMap ) {
         dd_int = +match_list[ 3 ];
       }
 
+      // Check that utc timestamps match
       date_obj = new Date( Date.UTC( yy_int, mm_int, dd_int ));
       check_int = date_obj.getUTCDate();
 
@@ -1781,9 +1782,9 @@ xhi._makeUtil_ = function ( aMap ) {
       bound_fn;
 
 
-    function lookupFn ( match_str, lookup_name ) {
+    function lookupFn ( ignore_match_str, lookup_name ) {
       var
-        return_data  = this, // lookup_map
+        return_data  = this,
         lookup_list  = lookup_name.split( '.' ),
         lookup_count = lookup_list.length,
         idx, key_name
@@ -2071,7 +2072,7 @@ xhi._makeUtil_ = function ( aMap ) {
       _tag_end_rx_: makeRxObj( '(</[^>]+>)+', 'g' ),
       _tag_rx_    : makeRxObj( '</?[^>]+>', 'g' ),
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
-      _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
+      _tzcode_rx_ : makeRxObj( '\\((.*)\\)$' ),
       _unit_ms_list_ : [
         { _str_ : '0.1s',  _ms_ :        100, _time_idx_ : __3 },
         { _str_ : '0.25s', _ms_ :        250, _time_idx_ : __3 },

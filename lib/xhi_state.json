@@ -6,6 +6,8 @@
     "dev_test": true,
     "dev_lint": false,
     "dev_cover": true,
-    "build": true
+    "build": true,
+    "setup": true,
+    "dev_pull": true
   }
 }
