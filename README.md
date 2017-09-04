@@ -1,7 +1,7 @@
 ![hi_score][_0A]
 [![Coverage Status](https://coveralls.io/repos/github/mmikowski/hi_score/badge.svg?branch=master)](https://coveralls.io/github/mmikowski/hi_score?branch=master)
 
-*A modern full-life-cycle starter project for SPAs*
+*A modern full-lifecycle starter project for SPAs*
 
 ---
 ## Overview
@@ -19,19 +19,23 @@ Yes, we know the examples are lame. We promise to make them more exciting in the
 ---
 ## Key benefits
 - Automated full-lifecycle best practice with the `xhi` tool
-- Sophisticated managment of currated libraries and assets for SPAs
-- Fully managed patching of vendor assets
-- Centralized management of development lifecycle in `package.json`
-- Battle-tested `xhi` libraries with 98% coverage of core utilities
+- Installation and management of currated libs and assets
+- Fully managed of vendor assets including SCMS controlled patching
 - Type safety using [type-casting][_05]
-- Uniformly applied JavaScript [Code standard][_03] ([Quick-reference][_04])
-- Uniformly applied style for all other tools
-- TDD with drop directory, code coverage, and tight GIT integration
-- Deployment-ready build system (build numbers are WIP)
+- Battle-tested `xhi` libraries with 98% coverage of core utilities
+- Integrated development server using HTTPS and HTTP2
+- Consistent JS and Bash code style [see Code standard][_03]
+- Integrated with GIT and NPM lifecycles
+- TDD with drop directory and code coverage reports
+- One-touch build with deployment-ready distributions
+- Example applications
+- Placeholders for future lifecycle phase marked WIP.
 
-The full-lifecycle stages supported by `xhi` are shown below. The WIP items are 
-placeholders at present.
+---
+## The xhi tool
+The `xhi` tool automates almost every conceivable stage of the SPA development process using researched best practice. The configuration is stored in the NPM `package.json` file and is used to support many [NPM lifecycle scripts][_38].
 
+The full-lifecycle stages supported by `xhi` are shown below.
 ```
   $ xhi help all
     xhi>  START Stage 00 help
@@ -59,33 +63,13 @@ placeholders at present.
     xhi>  END Stage 00 help
 ```
 
----
-## Planned enhancements
-- `setup` state : auto-create `xhi_state.json` if required
-- `setup` prereq: Implement environment prequisites and `lib/xhi_state.json`
-- `build` number: Create build directory like `dist/\<build-number\>`
-- `build` link  : Link `dist/latest` to latest build
-- `cover` report: Move to `dist/\<build-number\>` directories
-- `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
-- `dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
-- Move tools from Bash to NodeJS
-- `build` convert: buildify Bash to JS, use `package.json` config
-- `build` convert: superpack Perl to JS, use `package.json` config
-- Test load times using remote server
-- `deploy` implement: Add configuration and capability
-- examples: Increase richness of example app
-
----
-## The xhi tool
-This `xhi` tool automates almost every conceivable stage of the SPA development process using the best practice researched by the hi_score team. The configuration is stored in the NPM `package.json` file and is used to support many [NPM lifecycle scripts][_38].
-
 ### Get help
-The `xhi` tool help is integrated and extensive. Type `xhi help all` to see all stage available as shown in the [Benefits](#benfits) section. One can see detailed help on use by including a `-v` flag as shown below.
+The `xhi` tool help is detailed and extensive. We have deleted many sections of this document because the information is now directly integrated  One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
 
 ```
-  $ xhi help dev_lint
+  $ xhi help dev_lint -v
     xhi>  START Stage 00 help
-    xhi>  08 dev_lint: 
+    xhi>  08 dev_lint:
     xhi>    Check lint quality of changed JS code.
     xhi>    Files in 'vendor' directors are ignored.
     xhi>    Four tests are performed on each file:
@@ -100,33 +84,32 @@ The `xhi` tool help is integrated and extensive. Type `xhi help all` to see all 
     xhi>  END   Stage 00 help
 ```
 
-### Select a stage
-We have deleted many sections of this document because the information is now directly integrated to the `xhi` tool as illustrated by the `xhi help` output shown above. A typical workflow is shown below.
+### Run lifecycle stages
+A typical workflow is shown below.
 
 ```
   # Get list of stages
   $ xhi help all
-  
-  # Run desired stage
-  $ xhi build
+
+  # Run desired stage-range
+  $ xhi dev_cover,build
 ```
 
-### Run a range
-The `xhi` tool takes a range-of-stages argument. Stages that are provided out-of-order are sorted before running. Example use is shown below.
+The `xhi` tool takes a `<stage-range>` argument. Stages that are provided out-of-order are sorted before running. Example use is shown below.
 
 ```
   # Run a single stage
   $ xhi install
-  
+
   # Run all stages between 'install' and 'dev_commit' inclusive
   $ xhi install-dev_commit
-  
+
   # Run individual stages
   $ xhi update,dev_cover
-  
+
   # Run a range using stage numbers
   $ xhi 0-5
-  
+
   # Get help on ranges
   $ xhi help install -v
   $ xhi help install-dev_commit
@@ -134,8 +117,8 @@ The `xhi` tool takes a range-of-stages argument. Stages that are provided out-of
   $ xhi help 0-5
 ```
 
-The `xhi` tool may run more than one stage even if we specify just one stage. That is because many stage require prequisite stages as discussed in the following section.
- 
+The `xhi` tool will often run more than one stage even when we specify just one. That is because many stage require prequisite as discussed in the following section.
+
 ### Prerequisite resolution
 The `xhi` has a sophisticated prerequisite resolver that ensures required stages are run only if required.
 
@@ -387,7 +370,26 @@ MIT
 - (x) Configure setup completely in package.json
 
 ### Version 1.3.x
+- (o) Update code standard quick-reference
+- (o) `build` run   : Create manifest from JSON
+- (o) `cover` report: Move to `dist/\<build-number\>` directories
+- (o) Create AMI for easy deployment
+
 - (x) Implement xhi tool
+- (x) Update code standard
+- (x) `build` link  : Link `dist/latest` to latest build
+- (x) `build` number: Create build directory like `dist/\<build-number\>`
+- (x) `setup` prereq: Implement environment prequisites and `lib/xhi_state.json`
+- (x) `setup` state : auto-create `xhi_state.json` if required
+
+### Version 1.4.x
+- (o) `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
+- (o) `dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
+- (o) `build` convert: buildify Bash to JS, use `package.json` config
+- (o) `build` convert: superpack Perl to JS, use `package.json` config
+- (o) `deploy` implement: Add configuration and capability
+- (o) Test load times using remote server
+- (o) Examples: Increase richness of example app
 
 ---
 ## Similar Projects
