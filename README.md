@@ -11,7 +11,7 @@ This SPA starter project provides best-in-class assets, libraries, documentation
 ## Quick start
 ```
   $ cd hi_score; export PATH=`pwd`/bin:$PATH;
-  $ xhi build && google-chrome build/dist/ex0*.html
+  $ xhi build && google-chrome build/latest/dist/ex0*.html
 
 ```
 Yes, we know the examples are lame. We promise to make them more exciting in the future.
@@ -33,9 +33,12 @@ Yes, we know the examples are lame. We promise to make them more exciting in the
 
 ---
 ## The xhi tool
-The `xhi` tool automates almost every conceivable stage of the SPA development process using researched best practice. The configuration is stored in the NPM `package.json` file and is used to support many [NPM lifecycle scripts][_38].
+The `xhi` tool automates almost every conceivable stage of the SPA development process using researched best practice. The configuration is stored in the NPM `package.json` file and is used to support many [NPM lifecycle scripts][_38]. The `xhi` tool allows you to
+ string together multiple stages either explicitly or implicitly (See )
 
-The full-lifecycle stages supported by `xhi` are shown below.
+The full-lifecycle stages supported by `xhi` are shown below. Those marked 
+`WIP` need work.
+
 ```
   $ xhi help all
     xhi>  START Stage 00 help
@@ -263,7 +266,7 @@ The patches mechanism allows us to use great tools tweaked for our needs while m
 
 ---
 ## Build
-Use `xhi make` to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
+Use `xhi make` to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
 
 ```
   $ ## Create a release
@@ -275,7 +278,7 @@ Use `xhi make` to build a distribution. The build script concatenates, compresse
   $ du -sh .
 ```
 
-The `xhi make` stage uses the `buildify` package assets for the distribution. This script in turn uses `superpack` to analyze variable names and object properties and replaces them with shuffled keys. The shortest keys are used for the most-used symbols. It reports the symbol-to-key mapping and the frequency of use which makes further optimizations by pruning code easier. Projects with many object properities can be compressed an additional 50% using `superpack`.
+The `xhi make` stage uses the `buildify` package assets for the distribution. This script in turn uses `superpack` to analyze all symbols (variable names, object properties, and labels) and replaces them with shuffled keys. The shortest keys are used for the most-used symbols. It reports the symbol-to-key mapping and the frequency of use which makes further optimizations by pruning code easier. Projects with many object properities can be compressed an additional 50% using `superpack`. This process makes reverse-engineering of the released products more challenging.
 
 Buildify reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
 
@@ -370,26 +373,52 @@ MIT
 - (x) Configure setup completely in package.json
 
 ### Version 1.3.x
-- (x) Implement xhi tool
-- (x) Update code standard
-- (x) `build` link  : Link `dist/latest` to latest build
-- (x) `build` number: Create build directory like `dist/\<build-number\>`
-- (x) `setup` prereq: Implement environment prequisites and `lib/xhi_state.json`
-- (x) `setup` state : auto-create `xhi_state.json` if required
-- (x) `coverage` report: Move to `dist/\<build-number\>` directories
-
-- (o) `build` run   : Create manifest from JSON
+- (i) Implement `xhi` tool development capabilities
+    - (o) 12 publih
+    - (o) 13 dev_restart
+    - (x) 00 help
+    - (x) 01 install
+    - (x) 02 setup
+    - (x) 03 design
+    - (x) 04 dev_pull
+    - (x) 05 dev_upgrade
+    - (x) 06 dev_start
+    - (x) 07 dev_test
+    - (x) 08 dev_lint
+    - (x) 09 dev_cover
+    - (x) 10 dev_commit
+    - (i) 11 build
+    - (o) 12 publish
+    - (i) 13 dev_restart
+    - (x) 14 dev_stop
+- (i) Tool enhancements
+  - (x) `setup` prereq   : Implement env prequisites and `lib/xhi_state.json`
+  - (x) `setup` state    : auto-create `xhi_state.json` if required
+  - (x) `publish` update : 
+  - (x) `build` link     : Link `dist/latest` to latest build
+  - (x) `build` number   : Create build directory like `dist/\<build-number\>`
+  - (x) `coverage` report: Move to `dist/\<build-number\>` directories
+  - (o) `build` run   : Create manifest from JSON
 - (o) Update code standard quick-reference
-- (o) Create AMI for easy deployment
-
+- (o) Create VirtualBox image for development
+- (x) Update code standard
+- (x) Update all NPM lifecycle scripts to use `xhi` 
+    - (x)"help": "bin/xhi help",
+    - (x)"make": "bin/xhi make",
+    - (x)"setup": "bin/xhi setup",
+    - (x)"test": "bin/xhi test",
+    - (x)"xhi": "bin/xhi"
+    
 ### Version 1.4.x
-- (o) `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
-- (o) `dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
-- (o) `build` convert: buildify Bash to JS, use `package.json` config
-- (o) `build` convert: superpack Perl to JS, use `package.json` config
-- (o) `deploy` implement: Add configuration and capability
+- (o) Create AMI image for deployment
 - (o) Test load times using remote server
 - (o) Examples: Increase richness of example app
+- (o) `xhi` tools enhancements
+  - (o) `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
+  - (o) `dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
+  - (o) `build` convert: buildify Bash to JS, use `package.json` config
+  - (o) `build` convert: superpack Perl to JS, use `package.json` config
+  - (o) `deploy` implement: Add configuration and capability
 
 ---
 ## Similar Projects
