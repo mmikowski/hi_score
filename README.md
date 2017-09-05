@@ -370,33 +370,32 @@ MIT
 - (x) Configure setup completely in package.json
 
 ### Version 1.3.x
+- (o) Update code standard quick-reference    (2hr)
+- (o) Create VirtualBox image for development (4hr)
 - (i) Implement `xhi` tool development capabilities
-    - (o) 12 publih
-    - (o) 13 dev_restart
-    - (x) 00 help
-    - (x) 01 install
-    - (x) 02 setup
-    - (x) 03 design
-    - (x) 04 dev_pull
-    - (x) 05 dev_upgrade
-    - (x) 06 dev_start
-    - (x) 07 dev_test
-    - (x) 08 dev_lint
-    - (x) 09 dev_cover
-    - (x) 10 dev_commit
-    - (i) 11 build
-    - (x) 14 dev_stop
+  - (o) 11 `xhi build`     : Create manifest from JSON (4hr)
+  - (o) 12 `xhi publish`   : Push to coveralls (2hr)
+  - (o) 13 dev\_restart    : Implement (1hr)
+
+  - (x) 00 help
+  - (x) 01 install
+  - (x) 02 setup
+  - (x) 03 design
+  - (x) 04 dev\_pull
+  - (x) 05 dev\_upgrade
+  - (x) 06 dev\_start
+  - (x) 07 dev\_test
+  - (x) 08 dev\_lint
+  - (x) 09 dev\_cover
+  - (x) 10 dev\_commit
+  - (x) 14 dev\_stop
 - (i) Tool enhancements
-  - (o) `xhi build`     : Create manifest from JSON
-  - (o) `xhi publish`   : Push to coveralls and npm
   - (x) `xhi setup`     : Implement env prequisites and `lib/xhi_state.json`
   - (x) `xhi setup`     : Auto-create `xhi_state.json` if required
   - (x) `xhi build`     : Create build directory like `dist/\<build-number\>`
   - (x) `xhi build`     : Link `dist/latest` to latest build
   - (x) `xhi build`     : Do not auto-increment build until next commit
   - (x) `xhi dev_cover` : Move to `dist/\<build-number\>` directories
-- (o) Update code standard quick-reference
-- (o) Create VirtualBox image for development
 - (x) Update code standard
 - (x) Update all NPM lifecycle scripts to use `xhi` 
     - (x)"help": "bin/xhi help",
@@ -409,11 +408,12 @@ MIT
 - (o) Create AMI image for deployment
 - (o) Test load times using remote server
 - (o) `xhi` tools enhancements
-  - (o) `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
-  - (o) `dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
-  - (o) `build` convert: buildify Bash to JS, use `package.json` config
-  - (o) `build` convert: superpack Perl to JS, use `package.json` config
-  - (o) `deploy` implement: Add configuration and capability
+  - (o) `xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
+  - (o) `xhi dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
+  - (o) `xhi build` convert: buildify Bash to JS, use `package.json` config
+  - (o) `xhi build` convert: superpack Perl to JS, use `package.json` config
+  - (o) `xhi deploy` implement: Add configuration and capability
+  - (o) `xhi publish` : Push to NPM
 - (o) Increase richness of example app(s)
 ---
 ## Similar Projects
