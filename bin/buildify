@@ -330,8 +330,31 @@ _main () {
   fi
   ## . END validiate input files
 
-  ## BEGIN validate dist dir
+  ## BEGIN ensure builddir and link are up-to-date
+  _logFn "  > Processing";
   mkdir -p "${_outDir}";
+  if [ -e "${_outDir}/latest" ]; then
+    rm "${_outDir}/latest";
+  fi
+
+  mkdir -p "${_buildDir}";
+  pushd "${_buildDir}";
+  ln -s "${_argBuildId}" "${_outDir}/latest";
+  popd;
+  ## . END ensure builddir and link are up-to-date
+
+  ## BEGIN move top log to build directory
+  if [ "${_topLogFile}" != "${_buildDir}/${_topLogName}" ] \
+    && ! mv "${_topLogFile}" "${_buildDir}"; then
+    _argDoVerbose=1;
+    _logFn "  ! Could not move global log to build directory";
+    _abortFn;
+  else
+    _topLogFile="${_buildDir}/${_topLogName}";
+  fi
+  ## . END move top log to build directory
+
+  ## BEGIN validate dist dir
   if [ -d "${_distDir}" ]; then
     _scratchStr="${_argDoVerbose}";
     _argDoVerbose=1;
@@ -348,33 +371,15 @@ _main () {
     _logFn "  > Removal complete.";
     _argDoVerbose="${_scratchStr}"
   fi
-  ## . END validate dist dir
-
-  _logFn "  > Processing";
-  if [ -e "${_outDir}/latest" ]; then
-    rm "${_outDir}/latest";
-  fi
-  mkdir "${_buildDir}";
-  pushd "${_buildDir}";
-  ln -s "${_argBuildId}" "${_outDir}/latest";
-  popd;
-
   mkdir ${_stageDir};
   mkdir ${_distDir};
-  mkdir -p "${_distDir}/css/vendor";
-  mkdir -p "${_distDir}/js/vendor";
-  mkdir -p "${_distDir}/img/vendor";
-  mkdir -p "${_distDir}/font/vendor";
+  ## . END validate dist dir
 
-  if [ "${_topLogFile}" != "${_buildDir}/${_topLogName}" ] \
-    && ! mv "${_topLogFile}" "${_buildDir}"; then
-    _argDoVerbose=1;
-    _logFn "  ! Could not move global log to build directory";
-    _abortFn;
-  else
-    _topLogFile="${_buildDir}/${_topLogName}";
-  fi
-  ## . END validate build dir and move global log there
+  # mkdir -p "${_distDir}/css/vendor";
+  # mkdir -p "${_distDir}/js/vendor";
+  # mkdir -p "${_distDir}/img/vendor";
+  # mkdir -p "${_distDir}/font/vendor";
+
 
   ## BEGIN process each manifest in turn
   for (( _file_idx = 0; _file_idx < ${#_manifestList[*]}; _file_idx++ )); do
@@ -382,8 +387,8 @@ _main () {
     _manifest_file="${_manifestList[$_file_idx]}";
     _manifest_basename=$( basename "${_manifest_file}" );
     _manifest_short_name=$( echo "${_manifest_basename}" |cut -f1 -d'.' );
-#    _manifest_dir=$( dirname "${_manifest_file}" );
-#    _manifest_dir=$( cd "${_manifest_dir}" && echo "${PWD}" );
+    # _manifest_dir=$( dirname "${_manifest_file}" );
+    # _manifest_dir=$( cd "${_manifest_dir}" && echo "${PWD}" );
 
     if [ -z "${_manifest_short_name}" ]; then
       _argDoVerbose=1;
