@@ -28,7 +28,7 @@
 //             }
 //           ]
 //       }
-//       "dest_dir_str": "js/vendor",
+//       "dest_dirname": "js/vendor",
 //       "dest_ext_str": "js"
 //     },
 //     "xhi_10_BuildTable": [

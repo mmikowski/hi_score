@@ -71,13 +71,10 @@
     "url": "git+https://github.com/mmikowski/hi_score.git"
   },
   "scripts": {
-    "coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d",
-    "help": "bin/xhi 00",
-    "make": "bin/buildify config/*.buildify",
-    "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d && cat coverage/lcov.info | node_modules/.bin/coveralls",
-    "requirements-check": "bin/check-node-version",
-    "setup": "bin/xhi 02",
-    "test": "node_modules/.bin/nodeunit test.d/xhi_level_0.js",
+    "help": "bin/xhi help",
+    "make": "bin/xhi make",
+    "setup": "bin/xhi setup",
+    "test": "bin/xhi test",
     "xhi": "bin/xhi"
   },
   "version": "1.2.10",
@@ -477,11 +474,11 @@
         "asset_list": [
           {
             "src_asset_name": "font-awesome.css",
-            "src_dir_str": "css",
+            "src_dirname": "css",
             "src_pkg_name": "font-awesome"
           }
         ],
-        "dest_dir_str": "css/vendor",
+        "dest_dirname": "css/vendor",
         "dest_ext_str": "css"
       },
       {
@@ -495,23 +492,23 @@
           {
             "dest_name": "pcss",
             "src_asset_name": "pcss.js",
-            "src_dir_str": "dist",
+            "src_dirname": "dist",
             "src_pkg_name": "powercss"
           },
           {
             "dest_name": "pcss.cfg",
             "src_asset_name": "pcss.cfg.js",
-            "src_dir_str": "dist",
+            "src_dirname": "dist",
             "src_pkg_name": "powercss"
           },
           {
             "src_asset_name": "jquery.js",
-            "src_dir_str": "dist",
+            "src_dirname": "dist",
             "src_pkg_name": "jquery"
           },
           {
             "src_asset_name": "jquery.event.dragscroll.js",
-            "src_dir_str": "dist",
+            "src_dirname": "dist",
             "src_pkg_name": "jquery.event.dragscroll"
           },
           {
@@ -524,7 +521,7 @@
           },
           {
             "src_pkg_name": "jquery.scrolli",
-            "src_dir_str": "dist",
+            "src_dirname": "dist",
             "src_asset_name": "jquery.scrolli.js"
           },
           {
@@ -532,7 +529,7 @@
             "src_pkg_name": "jquery.urianchor"
           }
         ],
-        "dest_dir_str": "js/vendor",
+        "dest_dirname": "js/vendor",
         "dest_ext_str": "js"
       },
       {
@@ -540,19 +537,19 @@
         "asset_list": [
           {
             "src_pkg_name": "font-awesome",
-            "src_dir_str": "fonts"
+            "src_dirname": "fonts"
           },
           {
             "src_pkg_name": "open-sans-fontface",
-            "src_dir_str": "fonts"
+            "src_dirname": "fonts"
           }
         ],
-        "dest_dir_str": "font/vendor",
+        "dest_dirname": "font/vendor",
         "do_dir_copy": true
       }
     ],
     "patch_matrix": {
-      "patch_dir_str": "patch",
+      "patch_dirname": "patch",
       "patch_map_list": [
         {
           "check_filename": "node_modules/uglify-js/lib/scope.js",
@@ -568,7 +565,7 @@
       "build_id": "ex01",
       "do_isolate": false,
       "dir_make_map": {
-        "asset_list" : [
+        "asset_list": [
           "font/vendor/font-awesome-4.7.0",
           "font/vendor/open-sans-fontface-1.4.0/Regular"
         ]

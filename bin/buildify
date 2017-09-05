@@ -65,8 +65,7 @@ Employ the -v or --verbose switch to see more detailed help.
   [ "${_argDoVerbose}" -gt 0 ] && _logStderrFn "
 DESCRIPTION
   ${_appName} builds a production-ready web site from sources listed
-  in manifest files. The output files are placed in
-  ${_outDir}/<build_id> under the following subdirectories:
+  in manifest files. The output files are placed in as follows:
 
     - ${_outDir}/<build_id>/stage - Staging area
     - ${_outDir}/<build_id>/dist  - Distribution area
@@ -84,7 +83,7 @@ EXAMPLES
 
   Then running the following ...
 
-      $ ${_appName} ./ex01.${_appName}
+      $ ${_appName} -i 1234 ./ex01.${_appName}
 
   ... results in the following files in ${_stageDir}:
 
@@ -156,7 +155,7 @@ SEE ALSO
   * UglifyCSS
 
 AUTHOR and COPYRIGHT
-  Michael S. Mikowski (c) 2008-2016
+  Michael S. Mikowski (c) 2008-2017
 ";
 
   exit 0;

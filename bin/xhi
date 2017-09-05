@@ -52,13 +52,6 @@ var
   jsonDataMap      = {}, // Map of JSON read from files
   minVersionInt    = 8,  // minimum Node version
 
-  // Example build_table entry
-  // { "build_id"    : "000000001",
-  //   "comment_str" : "Example build",
-  //   "is_acvtive"  : false,
-  //   "time_int_ms" : 1504241954754,
-  //   "time_str"    : "2017-09-01 12:36:45"
-  // }
   emptyStateMatrix = {
     "build_idx"        : 1,
     "build_table"      : [],
@@ -72,9 +65,9 @@ var
   commandTable,
 
   // Declare after-install-variables
-  LineReader,     applyPatchFn,  exeCpeFn,
-  flowObj,        makeWhichProm, mkdirpFn,
-  ncpFn,          psObj,         rmDirFn,
+  LineReader,     applyPatchFn,    exeCpeFn,
+  flowObj,        makeWhichPromFn, mkdirpFn,
+  ncpFn,          psObj,           rmDirFn,
   shellJsObj,     whichFn,
   xhiLibMap,      xhiUtilObj
   ;
@@ -474,7 +467,7 @@ function loadLibsFn () {
   rmDirFn      = require( 'rmdir'             );
   shellJsObj   = require( 'shelljs'           );
   whichFn      = require( 'which'             );
-  makeWhichProm = promisifyFn( whichFn );
+  makeWhichPromFn = promisifyFn( whichFn );
 }
 // . END utility /loadLibsFn/
 
@@ -492,7 +485,7 @@ function checkBinListFn () {
   for ( idx = 0; idx < exe_count; idx++ ) {
     bin_key     = exe_list[ idx ];
     bound_fn    = storePathFn.bind( { bin_key : bin_key });
-    promise_obj = makeWhichProm( bin_key );
+    promise_obj = makeWhichPromFn( bin_key );
     promise_obj.then( bound_fn ).catch( abortFn );
     promise_list.push( promise_obj );
   }
@@ -774,3 +767,11 @@ fsObj.stat( fqStateFilename, function ( error_obj, ignore_map ) {
 });
 // . End Create state file if needed
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============
+
+// These are the prior npm scripts for reference
+// "_coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d",
+//   "_make": "bin/buildify config/*.buildify",
+//   "_publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d && cat coverage/lcov.info | node_modules/.bin/coveralls",
+//   "_requirements-check": "bin/check-node-version",
+//   "_test": "node_modules/.bin/nodeunit test.d/xhi_level_0.js",
+

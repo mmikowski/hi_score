@@ -370,17 +370,17 @@ MIT
 - (x) Configure setup completely in package.json
 
 ### Version 1.3.x
-- (o) Update code standard quick-reference
-- (o) `build` run   : Create manifest from JSON
-- (o) `cover` report: Move to `dist/\<build-number\>` directories
-- (o) Create AMI for easy deployment
-
 - (x) Implement xhi tool
 - (x) Update code standard
 - (x) `build` link  : Link `dist/latest` to latest build
 - (x) `build` number: Create build directory like `dist/\<build-number\>`
 - (x) `setup` prereq: Implement environment prequisites and `lib/xhi_state.json`
 - (x) `setup` state : auto-create `xhi_state.json` if required
+- (x) `coverage` report: Move to `dist/\<build-number\>` directories
+
+- (o) `build` run   : Create manifest from JSON
+- (o) Update code standard quick-reference
+- (o) Create AMI for easy deployment
 
 ### Version 1.4.x
 - (o) `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
