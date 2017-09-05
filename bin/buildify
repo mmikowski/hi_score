@@ -330,24 +330,25 @@ _main () {
   fi
   ## . END validiate input files
 
-  ## BEGIN validate build dir and move global log to it
+  ## BEGIN validate dist dir
   mkdir -p "${_outDir}";
-  if [ -d "${_buildDir}" ]; then
+  if [ -d "${_distDir}" ]; then
     _scratchStr="${_argDoVerbose}";
     _argDoVerbose=1;
-    _logFn "The build directory ${_buildDir} already exists."
-    read -p 'Wipe and recreate? (y/N) ' _responseStr;
+    _logFn "The distribution directory ${_distDir} already exists."
+    read -p "Wipe and recreate this and /stage? (y/N) " _responseStr;
     _responseStr="${_responseStr^^}";
     if [ "${_responseStr^^:=N}" == 'N' ]; then
       _logFn "  ! Aborted at user request.";
       _abortFn;
     fi
     _logFn '';
-    _logFn "  > Removing ${_buildDir} at user request";
-    rm -rf "${_buildDir}";
+    _logFn "  > Removing ${_distDir} and ${_stageDir} at user request";
+    rm -rf "${_distDir}"; rm -rf "${_stageDir}";
     _logFn "  > Removal complete.";
     _argDoVerbose="${_scratchStr}"
   fi
+  ## . END validate dist dir
 
   _logFn "  > Processing";
   if [ -e "${_outDir}/latest" ]; then
