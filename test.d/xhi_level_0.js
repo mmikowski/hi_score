@@ -1964,8 +1964,8 @@ function makeSeriesMap ( test_obj ) {
       7140000,      // 11.9m
       14280000,     // 3.97hr
       28560000      // 7.93hr
-      // TODO 2017-09-03 mmikowski warn: fix for jitter so we can
-      // test these zones.  Also, fix 18:59 => 19:00.
+      // TODO 2017-09-03 mmikowski warn: Fix algo jitter
+      //   Also, fix 18:59 => 19:00.
 
       //
       // 57440000,     // 15.96hr

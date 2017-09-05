@@ -14,7 +14,7 @@ This SPA starter project provides best-in-class assets, libraries, documentation
   $ xhi build && google-chrome build/latest/dist/ex0*.html
 
 ```
-Yes, we know the examples are lame. We promise to make them more exciting in the future.
+The `xhi build` command will install vendor assets; setup and patch files for development; configure a development HTTP server; test code with JSLint; check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with unique ID, and more. Yes, we know the examples are lame. We promise to make them more exciting in the future.
 
 ---
 ## Key benefits
@@ -33,11 +33,9 @@ Yes, we know the examples are lame. We promise to make them more exciting in the
 
 ---
 ## The xhi tool
-The `xhi` tool automates almost every conceivable stage of the SPA development process using researched best practice. The configuration is stored in the NPM `package.json` file and is used to support many [NPM lifecycle scripts][_38]. The `xhi` tool allows you to
- string together multiple stages either explicitly or implicitly (See )
+The `xhi` tool automates almost every conceivable stage of the SPA development process using researched best practice. The configuration is stored in the NPM `package.json` file and is used to support all [NPM lifecycle scripts][_38]. The `xhi` will run the multiple number of stages to attain a goal (See [below][#run-lifecycle-stages]) and will abort with guidance instructions if any prerequisite stage cannot be met.
 
-The full-lifecycle stages supported by `xhi` are shown below. Those marked 
-`WIP` need work.
+The full-lifecycle stages supported by `xhi` are shown below. Those marked 1.4.x are placeholder which will be addressed in the next major release.
 
 ```
   $ xhi help all
@@ -57,12 +55,12 @@ The full-lifecycle stages supported by `xhi` are shown below. Those marked
     xhi>  12 publish     : Upload to publishers
     xhi>  13 dev_restart : Cycle local HTTP server
     xhi>  14 dev_stop    : Stop local HTTP server
-    xhi>  15 deploy      : Upload distribution        WIP
-    xhi>  16 prod_start  : Start production server(s) WIP
-    xhi>  17 prod_restart: Cycle production server(s) WIP
-    xhi>  18 prod_stop   : Stop production server(s)  WIP
-    xhi>  19 fetch_info  : Fetch feedback             WIP
-    xhi>  20 uninstall   : Remove xhi                 WIP
+    xhi>  15 deploy      : Upload distribution        1.4.x
+    xhi>  16 prod_start  : Start production server(s) 1.4.x
+    xhi>  17 prod_restart: Cycle production server(s) 1.4.x
+    xhi>  18 prod_stop   : Stop production server(s)  1.4.x
+    xhi>  19 fetch_info  : Fetch feedback             1.4.x
+    xhi>  20 uninstall   : Remove xhi                 1.4.x
     xhi>  END Stage 00 help
 ```
 
@@ -266,21 +264,20 @@ The patches mechanism allows us to use great tools tweaked for our needs while m
 
 ---
 ## Build
-Use `xhi make` to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
+Use `xhi build` or `xhi make` or `xhi 11` (where 11 is the stage number) to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
 
 ```
   $ ## Create a release
   $ cd hi_score && export PATH=`pwd`/bin:$PATH;
-  $ xhi make
+  $ du -sh . // All hi_score files disk space=
 
-  $ ## Get disk usage of all development files
-  $ cd build/latest
-  $ du -sh .
+  $ ## Get disk usage of all distribution files
+  $ xhi build && cd build/latest && du -sh .
 ```
 
-The `xhi make` stage uses the `buildify` package assets for the distribution. This script in turn uses `superpack` to analyze all symbols (variable names, object properties, and labels) and replaces them with shuffled keys. The shortest keys are used for the most-used symbols. It reports the symbol-to-key mapping and the frequency of use which makes further optimizations by pruning code easier. Projects with many object properities can be compressed an additional 50% using `superpack`. This process makes reverse-engineering of the released products more challenging.
+The `xhi make` stage uses the `buildify` to make a distribution. This script in turn uses `superpack` to analyze all symbols (variable names, object properties, and labels) and replaces them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. `superpack` reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>.diag` for mapping and key use). Projects with many object properities can be compressed an additional 50% using `superpack` and it can make reverse-engineering of the compressed code much harder.
 
-Buildify reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
+It is typical to see distributions require only 2-10% the storage of a development environment.There are substantial benefits beyond storage reduction. In particular, security is greatly improved because only a tiny, currated, obsfucated portion of your code is published and sensitive data such as SCMS metadata, documentation, lookup-maps, and development assets are omitted for use to publish elsewhere at our discretion. The distribution-ready application also reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
 
 | Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
 |-------------|-----------------:|-----------------:|-----------------:|
@@ -388,17 +385,16 @@ MIT
     - (x) 09 dev_cover
     - (x) 10 dev_commit
     - (i) 11 build
-    - (o) 12 publish
-    - (i) 13 dev_restart
     - (x) 14 dev_stop
 - (i) Tool enhancements
-  - (x) `setup` prereq   : Implement env prequisites and `lib/xhi_state.json`
-  - (x) `setup` state    : auto-create `xhi_state.json` if required
-  - (x) `publish` update : 
-  - (x) `build` link     : Link `dist/latest` to latest build
-  - (x) `build` number   : Create build directory like `dist/\<build-number\>`
-  - (x) `coverage` report: Move to `dist/\<build-number\>` directories
-  - (o) `build` run   : Create manifest from JSON
+  - (o) `xhi build`     : Create manifest from JSON
+  - (o) `xhi publish`   : Push to coveralls and npm
+  - (x) `xhi setup`     : Implement env prequisites and `lib/xhi_state.json`
+  - (x) `xhi setup`     : Auto-create `xhi_state.json` if required
+  - (x) `xhi build`     : Create build directory like `dist/\<build-number\>`
+  - (x) `xhi build`     : Link `dist/latest` to latest build
+  - (x) `xhi build`     : Do not auto-increment build until next commit
+  - (x) `xhi dev_cover` : Move to `dist/\<build-number\>` directories
 - (o) Update code standard quick-reference
 - (o) Create VirtualBox image for development
 - (x) Update code standard
@@ -412,14 +408,13 @@ MIT
 ### Version 1.4.x
 - (o) Create AMI image for deployment
 - (o) Test load times using remote server
-- (o) Examples: Increase richness of example app
 - (o) `xhi` tools enhancements
   - (o) `dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
   - (o) `dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
   - (o) `build` convert: buildify Bash to JS, use `package.json` config
   - (o) `build` convert: superpack Perl to JS, use `package.json` config
   - (o) `deploy` implement: Add configuration and capability
-
+- (o) Increase richness of example app(s)
 ---
 ## Similar Projects
 [absurd.js][_26], [responsive.js][_27]

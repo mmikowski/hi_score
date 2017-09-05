@@ -340,9 +340,9 @@
       [
         "publish"
       ],
-      "Upload to publishers",
+      "Publish to coveralls and NPM",
       [
-        "Upload to NPM + Coveralls",
+        "Publish to coveralls and NPM.",
         "NPM SCRIPTS      : prepublish,publish,postpublish,prepublishOnly",
         "SUCCESS CRITERIA : Push to NPM and coveralls successful"
       ],
@@ -396,10 +396,10 @@
         "dev_cover",
         "dev_commit"
       ],
-      null,
       [
         "build"
-      ]
+      ],
+      null
     ],
     [
       [
