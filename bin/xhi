@@ -550,12 +550,15 @@ function makeXhiObj () {
     state_matrix   = jsonDataMap.state_matrix   || {},
 
     build_table    = state_matrix.build_table      || [],
-    status_map     = state_matrix.stage_status_map || {}
+    status_map     = state_matrix.stage_status_map || {},
+
+    build_id = xhiUtilObj._makePadNumStr_( state_matrix.build_idx, 7 )
     ;
 
   return {
     appName         : appName,          // Applicaiton name
     askFn           : askFn,            // Read line with prompt
+    buildId         : build_id,
     buildTable      : build_table,      // xhi_state.json build records
     catchFn         : abortFn,          // Fn for error
     childProcObj    : childProcObj,     // child_process object
@@ -636,7 +639,8 @@ function mainFn () {
     xhi_obj,     stage_fn,    stage_count,
 
     alias_str, prereq_count, prereq_idx,
-    prereq_list,  prereq_type,  type_idx,
+    prereq_list,  prereq_type,  inner_command_map,
+    type_idx,
 
     bound_fn, prefix_str
     ;
@@ -667,6 +671,16 @@ function mainFn () {
   }
   // . End run in help mode
 
+  // Check install and reset stageStatusMap if wrong
+  if ( stage_status_map.install ) {
+    try { require( 'line-by-line' ); }
+    catch ( ignore_data ) {
+      warnFn( 'Installation state data is wrong. Resetting.' );
+      stage_status_map = {};
+      jsonDataMap.stage_status_map = stage_status_map;
+    }
+  }
+
   // Begin expand stage list to resolve all dependencies then sort.
   // predo_list  : Stages that must be added to the stage_list
   //   every time this stage is run.
@@ -675,14 +689,15 @@ function mainFn () {
   //
   stage_count = stage_list.length;
   while ( stage_idx < stage_count ) {
+    command_map  = stage_list[ stage_idx ];
     for ( type_idx = 0; type_idx < prereq_type_count; type_idx++ ) {
       prereq_type  = prereq_type_list[ type_idx ];
       prereq_list  = command_map[ prereq_type ] || [];
       prereq_count = prereq_list.length;
 
       for ( prereq_idx = 0; prereq_idx < prereq_count; prereq_idx++ ) {
-        command_map  = getCommandMapFn( prereq_list[ prereq_idx ] );
-        alias_str = command_map.alias_str;
+        inner_command_map  = getCommandMapFn( prereq_list[ prereq_idx ] );
+        alias_str = inner_command_map.alias_str;
 
         // Skip any environment prereq that is completed
         if ( prereq_type === 'prereq_list'
@@ -690,8 +705,8 @@ function mainFn () {
         ) { continue; }
 
         // Push prereq to end of list for further resolution
-        if ( stage_list.indexOf( command_map ) === -1 ) {
-          stage_list.push( command_map );
+        if ( stage_list.indexOf( inner_command_map ) === -1 ) {
+          stage_list.push( inner_command_map );
           stage_count++;
         }
       }
@@ -750,7 +765,7 @@ function mainFn () {
 // == . END PUBLIC METHOD /mainFn/ ====================================
 
 // Begin Create state file if needed
-// TODO 2017-09-01 mmikowski warn: Prefer routine to check all missing
+// TODO 2017-09-01 mmikowski info: Prefer routine to check all missing
 // files and fill with default content.
 fsObj.stat( fqStateFilename, function ( error_obj, ignore_map ) {
   var scratch_str;
