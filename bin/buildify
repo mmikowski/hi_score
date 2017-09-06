@@ -462,7 +462,7 @@ _main () {
           _logFn "  > Added file ${_field1_str} to CSS queue.";
           ;;
         subtree)
-          _subtree_deploy_list[${#_subtree_deploy_list[*]}]="${_source_file}";
+          _subtree_deploy_list[${#_subtree_deploy_list[*]}]="${_row_str}";
           _logFn "  > Added file ${_field1_str} to SUBTREE DEPLOY queue.";
           ;;
         copy)
@@ -498,7 +498,7 @@ _main () {
 
 
     ## BEGIN process javascript files
-    for (( i = 0; i < ${#_js_file_list[*]}; i++ ))
+    for (( _i = 0; _i < ${#_js_file_list[*]}; _i++ ))
     do
       if [ ! -r "${_js_concat_file}" ]; then
         touch "${_js_concat_file}";
@@ -510,8 +510,8 @@ _main () {
         fi
         _logFn "  > Combining JS Source Files";
       fi
-      cat "${_js_file_list[$i]}" >> "${_js_concat_file}";
-      _logFn "  > ${_js_file_list[$i]}";
+      cat "${_js_file_list[$_i]}" >> "${_js_concat_file}";
+      _logFn "  > ${_js_file_list[$_i]}";
     done
     ## . END process javascript files
 
@@ -557,7 +557,7 @@ _main () {
     ## . END superpack javascript file if specified
 
     ## BEGIN process css files
-    for (( i = 0; i < ${#_css_file_list[*]}; i++ ))
+    for (( _i = 0; _i < ${#_css_file_list[*]}; _i++ ))
     do
       if [ ! -r "${_css_concat_file}" ]; then
         touch "${_css_concat_file}";
@@ -570,8 +570,8 @@ _main () {
         _logFn "  > Combining CSS Source Files";
         _logFn "  > Writing css concat file '${_css_concat_file}'";
       fi
-      cat "${_css_file_list[$i]}" >> "${_css_concat_file}";
-      _logFn "  >> ${_css_file_list[$i]}";
+      cat "${_css_file_list[$_i]}" >> "${_css_concat_file}";
+      _logFn "  >> ${_css_file_list[$_i]}";
     done
     ## . END process css files
 
@@ -614,46 +614,51 @@ _main () {
     done
     ## . END move over remaining files
 
-    ## BEGIN deployment (WIP)
-    cp "${_pack_out_file}" "${_distDir}/js/"
+    ## BEGIN deployment
+    mkdir -p "${_distDir}/css";
+    mkdir -p "${_distDir}/js";
     cp "${_ugcss_out_file}" "${_distDir}/css/"
+    cp "${_pack_out_file}" "${_distDir}/js/"
 
     ## BEGIN subtree deployment
-    for (( i = 0; i < ${#_subtree_deploy_list[*]}; i++ ))
+    for (( _i = 0; _i < ${#_subtree_deploy_list[*]}; _i++ ))
     do
-      _row_str="${_subtree_deploy_list[$i]}";
-      _dirname=$( dirname "${_row_str}" );
-      _src_dir="${_npmDir}/${_row_str}";
-      _tgt_dir="${_distDir}/${_dirname}";
+      _row_str="${_subtree_deploy_list[$_i]}";
 
-      if [ ! -d "${_src_dir}" ]; then
-        _logFn "Cannot copy subtree |${_row_str}|: Not found";
+      _base_dirname=$( dirname "${_row_str}" );
+      _src_dirname="${_npmDir}/${_row_str}";
+      _tgt_dirname="${_distDir}/${_base_dirname}";
+
+      if [ ! -d "${_src_dirname}" ]; then
+        _logStderrFn "Cannot copy subtree |${_row_str}|: Not found";
         continue;
       fi
 
-      mkdir -p "${_tgt_dir}";
-      cp -a "${_src_dir}" "${_tgt_dir}";
+      mkdir -p "${_tgt_dirname}";
+      cp -a "${_src_dirname}" "${_tgt_dirname}/";
     done
     ## . END subtree deployment
 
     ## BEGIN copy deployment
-    for (( i = 0; i < ${#_copy_deploy_list[*]}; i++ ))
+    for (( _i = 0; _i < ${#_copy_deploy_list[*]}; _i++ ))
     do
-      _row_str="${_copy_deploy_list[$i]}";
-      echo ">>>> $_row_str";
-      _dirname=$( dirname "${_row_str}" );
-      _src_file="${_npmDir}/${_row_str}";
-      _tgt_dir="${_distDir}/${_dirname}";
-      _tgt_file="${_distDir}/${_row_str}";
+      _row_str="${_copy_deploy_list[$_i]}";
 
-      if [ ! -f "${_src_dir}" ]; then
-        _logFn "Cannot copy file |${_row_str}|: Not found";
+      _src_str=$(echo "${_row_str}" | cut -f1 -d' ' );
+      _tgt_str=$(echo "${_row_str}" | cut -f2 -d' ' );
+
+      _src_filename="${_npmDir}/${_src_str}";
+      _tgt_dirname="${_distDir}/${_tgt_str}";
+
+      if [ ! -f "${_src_filename}" ]; then
+        _logStderrFn "Cannot copy file |${_src_filename}|: Not found";
         continue;
       fi
 
-      mkdir -p "${_tgt_dir}";
-      cp "${_src_file}" "${_tgt_file}";
+      mkdir -p "${_tgt_dirname}";
+      cp "${_src_filename}" "${_tgt_dirname}";
     done
+    ## . END copy deployment
 
   done
   ## . END process each manifest in turn

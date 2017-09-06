@@ -30,8 +30,9 @@ sourcetype:css
 
 sourcetype:subtree
   font/vendor/font-awesome-4.7.0
-  font/vendor/open-sans-fontface-1.4.0/Regular/
+  font/vendor/open-sans-fontface-1.4.0/Regular
 
 sourcetype:copy
-  tmplt/ex02.html ./
+  tmplt/ex02.html .
+  img/hi_score.png img
 

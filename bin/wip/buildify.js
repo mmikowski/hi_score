@@ -1,5 +1,4 @@
 // See bin/xhi help all for all stages (~20)
-// TODO 2017-09-01 mmikowski warn: adjust to take CLI input for manifests
 // Name        : buildify
 // Synopsis    : buildify <build-id> "manifest1" [ "manifest2" ... ]
 // Description :
@@ -64,7 +63,7 @@
 //           "do_vendor": true,
 //           "target_file": "ex01.js - should be redundant"
 //         },
-//         // TODO 2017-07-24 mmikowski warn: add tmplt reqs
+//         // TODO 2017-07-24 mmikowski warn: Add tmplt reqs
 //         "tmplt_make_list": []
 //       }
 //     ]

@@ -141,9 +141,7 @@ xhi._makeData_ = function ( aMap ) {
       do_data_encode = __true;
     }
 
-    // TODO 2016-06-13 mmikowski info:
     // Callback can be a list executed in-order. Could be useful.
-    //
     // TODO 2016-06-13 mmikowski warn: Add auth signature as shown here
     // beforeSend  : function (jqxhr_obj) {
     //  prepareXhrSignature(jqxhr_obj, arg_map._full_url_);

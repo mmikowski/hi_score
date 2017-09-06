@@ -373,10 +373,10 @@ MIT
 - (o) Update code standard quick-reference    (2hr)
 - (o) Create VirtualBox image for development (4hr)
 - (i) Implement `xhi` tool development capabilities
+  - (x) 11 `xhi build`     : Debug build               (1hr)
   - (o) 11 `xhi build`     : Create manifest from JSON (4hr)
-  - (o) 12 `xhi publish`   : Push to coveralls (2hr)
-  - (o) 13 dev\_restart    : Implement (1hr)
-
+  - (o) 12 `xhi publish`   : Push to coveralls         (2hr)
+  - (o) 13 dev\_restart    : Implement feature         (1hr)
   - (x) 00 help
   - (x) 01 install
   - (x) 02 setup
