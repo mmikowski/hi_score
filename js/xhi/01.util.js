@@ -16,12 +16,12 @@ xhi._makeUtil_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
-    aKey   = aMap._aKey_,
-    vMap   = aMap._vMap_,
-    nMap   = aMap._nMap_,
+    aKey      = aMap._aKey_,
+    vMap      = aMap._vMap_,
+    nMap      = aMap._nMap_,
 
     __j2str   = vMap._JSON_[ vMap._stringify_ ],
-    __jparse  = vMap._JSON_[ vMap._parse_     ],
+    __jparse  = vMap._JSON_[ vMap._parse_ ],
 
     __Array   = vMap._Array_,
     __Date    = vMap._Date_,
@@ -51,13 +51,27 @@ xhi._makeUtil_ = function ( aMap ) {
     __typeof  = vMap._fnTypeof_,
     __keys    = vMap._fnGetKeyList_,
 
-    getNowFn = Date.now,
+    typeofMap = {
+      'boolean'   : '_Boolean_',
+      'number'    : '_Number_',
+      'string'    : '_String_',
+      'function'  : '_Function_',
+      'object'    : '_Object_',
+      'undefined' : '_Undefined_',
+
+      'Array'     : '_Array_',
+      'Boolean'   : '_Boolean_',
+      'Function'  : '_Function_',
+      'Null'      : '_Null_',
+      'Number'    : '_Number_',
+      'Object'    : '_Object_',
+      'String'    : '_String_',
+      'Undefined' : '_Undefined_'
+    },
 
     configMap, stateMap,  // Set in initModule
 
-    checkDateStr, getVarType,
-    getBasename,  getDirname,   logObj,
-    trimStrList
+    getBasename, getDirname, logObj
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -72,46 +86,23 @@ xhi._makeUtil_ = function ( aMap ) {
   //             '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
   // Throws    : none
   //
-  //
-  getVarType = (function () {
-    var
-      typeofMap = {
-        'boolean'   : '_Boolean_',
-        'number'    : '_Number_',
-        'string'    : '_String_',
-        'function'  : '_Function_',
-        'object'    : '_Object_',
-        'undefined' : '_Undefined_',
+  function getVarType ( data ) {
+    var type_key, type_str;
 
-        'Array'     : '_Array_',
-        'Boolean'   : '_Boolean_',
-        'Function'  : '_Function_',
-        'Null'      : '_Null_',
-        'Number'    : '_Number_',
-        'Object'    : '_Object_',
-        'String'    : '_String_',
-        'Undefined' : '_Undefined_'
-      };
+    if ( data === __null ) {  return '_Null_'; }
+    if ( data === __undef ) { return '_Undefined_'; }
+    if ( __Array.isArray( data ) ) { return '_Array_'; }
 
-    function mainFn ( data ) {
-      var type_key, type_str;
+    type_key = __typeof( data );
+    type_str = typeofMap[ type_key ];
 
-      if ( data === __null         ) { return '_Null_';      }
-      if ( data === __undef        ) { return '_Undefined_'; }
-      if ( __Array.isArray( data ) ) { return '_Array_';     }
+    if ( type_str && type_str !== '_Object_' ) { return type_str; }
 
-      type_key = __typeof( data );
-      type_str = typeofMap[ type_key ];
+    type_key = {}[ vMap._toString_ ][ vMap._call_ ](
+      data )[ vMap._slice_ ]( nMap._8_, __n1 );
 
-      if ( type_str && type_str !== '_Object_' ) { return type_str; }
-
-      type_key = {}[ vMap._toString_ ][ vMap._call_ ](
-        data )[ vMap._slice_ ]( nMap._8_, __n1 );
-
-      return typeofMap[ type_key ] || type_key;
-    }
-    return mainFn;
-  }());
+    return typeofMap[ type_key ] || type_key;
+  }
   // . END Public prereq method /getVarType/
 
   // BEGIN Public prereq method /castBool/
@@ -320,7 +311,7 @@ xhi._makeUtil_ = function ( aMap ) {
   //   the same performance in that env as a raw Date.now() call.
   //
   function getNowMs () {
-    if ( getNowFn ) { return getNowFn(); }
+    if ( configMap._get_now_fn_ ) { return configMap._get_now_fn_(); }
     return + new __Date();
   }
   // . END Public prereq method /getNowMs/
@@ -607,31 +598,26 @@ xhi._makeUtil_ = function ( aMap ) {
   // yyyy-mm-dd or yyyy/mm/dd and does not validate the time.
   //
   //
-  checkDateStr = (function () {
-    var
-      dateUsRx
-      = /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]([0-9]{4})\b/,
-      dateUtcRx
-        = /^([0-9]{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/
-      ;
 
-    function mainFn ( arg_map ) {
+    function checkDateStr ( arg_map ) {
       var
-        map        = castMap( arg_map, {} ),
-        date_str   = castStr( map._date_str_,  __blank ),
-        order_str  = castStr( map._order_str_, __blank ),
+        map         = castMap( arg_map, {} ),
+        date_str    = castStr( map._date_str_,  __blank ),
+        order_str   = castStr( map._order_str_, __blank ),
+        date_us_rx  = configMap._date_us_rx_,
+        date_utc_rx = configMap._date_utc_rx_,
         match_list, yy_int, mm_int, dd_int, date_obj, check_int
         ;
 
       if ( order_str === '_us_') {
-        match_list = date_str.match( dateUsRx );
+        match_list = date_str.match( date_us_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 3 ] - 1900;
         mm_int = +match_list[ 1 ] - 1;
         dd_int = +match_list[ 2 ];
       }
       else {
-        match_list = date_str.match( dateUtcRx );
+        match_list = date_str.match( date_utc_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 1 ] - 1900;
         mm_int = +match_list[ 2 ] - 1;
@@ -645,8 +631,6 @@ xhi._makeUtil_ = function ( aMap ) {
       // Invalid dates will not match
       return check_int === dd_int;
     }
-    return mainFn;
-  }());
   // . END Public method /checkDateStr/
 
   // BEGIN public method /makeMetricStr/
@@ -678,6 +662,7 @@ xhi._makeUtil_ = function ( aMap ) {
   // . END public method /makeMetricStr/
 
   // BEGIN Public method /clearMap/
+  // Purpose: Empty a map by deleting all keys
   function clearMap ( arg_map ) {
     var
       map = castMap( arg_map ),
@@ -2024,18 +2009,17 @@ xhi._makeUtil_ = function ( aMap ) {
   // . END public method /shuffleList/
 
   // BEGIN public method /trimStrList/
-  trimStrList = ( function () {
-    function mapFn( data ) {
+  function trimStrList ( arg_list ) {
+    var list = castList( arg_list );
+
+    function mapFn ( data ) {
       return getVarType( data ) === '_String_'
         ? data[ vMap._trim_ ]() : data;
     }
-    function mainFn ( arg_list ) {
-      var list = castList( arg_list );
-      if ( ! list ) { return arg_list; }
-      return list[ vMap._map_ ]( mapFn );
-    }
-    return mainFn;
-  }());
+
+    if ( ! list ) { return arg_list; }
+    return list[ vMap._map_ ]( mapFn );
+  }
   // . END utility /trimStrList/
 
   // == . END PUBLIC METHODS ==========================================
@@ -2058,8 +2042,6 @@ xhi._makeUtil_ = function ( aMap ) {
       _day_ms_    : 86400000,
       _offset_yr_ : 1900,
 
-      _encode_html_rx_  : /[&"'><]/g,
-      _encode_noamp_rx_ : /["'><]/g,
       _encode_html_map_ : {
         '&' : '&#38;',
         '"' : '&#34;',
@@ -2068,11 +2050,21 @@ xhi._makeUtil_ = function ( aMap ) {
         '<' : '&#60;'
       },
 
-      _comma_rx_  : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
+      _get_now_fn_  : Date.now,
+      _date_us_rx_  :
+        /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]([0-9]{4})\b/,
+      _date_utc_rx_ :
+        /^([0-9]{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/,
+
+      _comma_rx_        : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
+      _encode_html_rx_  : /[&"'><]/g,
+      _encode_noamp_rx_ : /["'><]/g,
+
       _tag_end_rx_: makeRxObj( '(</[^>]+>)+', 'g' ),
       _tag_rx_    : makeRxObj( '</?[^>]+>', 'g' ),
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
       _tzcode_rx_ : makeRxObj( '\\((.*)\\)$' ),
+
       _unit_ms_list_ : [
         { _str_ : '0.1s',  _ms_ :        100, _time_idx_ : __3 },
         { _str_ : '0.25s', _ms_ :        250, _time_idx_ : __3 },
@@ -2100,6 +2092,7 @@ xhi._makeUtil_ = function ( aMap ) {
         { _str_ : '4d',    _ms_ : 86400000*4, _time_idx_ : __1 },
         { _str_ : '1wk',   _ms_ : 86400000*7, _time_idx_ : __1 }
       ]
+
     };
     /* istanbul ignore next */
     try {

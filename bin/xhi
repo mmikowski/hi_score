@@ -99,6 +99,18 @@ function writeStateFileFn ( onwrite_fn ) {
 }
 // END utilities /writePkgFileFn/ and /writeStateFileFn/
 
+function makeWritePromFn ( filename, content_str ) {
+  return new PromiseObj ( function ( resolve_fn, catch_fn ) {
+    fsObj.writeFile(
+      filename, content_str, { encoding : 'utf8' },
+      function ( error_obj ) {
+        if ( error_obj ) { return catch_fn( error_obj ); }
+        resolve_fn();
+      }
+    );
+  });
+}
+
 // BEGIN utility /makeRightPadStr/
 function makeRightPadStr ( arg_str, arg_count ) {
   var
@@ -563,6 +575,8 @@ function makeXhiObj () {
     ;
 
   return {
+    PromiseObj      : PromiseObj,       // Promise object
+
     appName         : appName,          // Applicaiton name
     askFn           : askFn,            // Read line with prompt
     buildId         : build_id,
@@ -585,10 +599,10 @@ function makeXhiObj () {
     makeRightPadStr : makeRightPadStr,  // Pad string right
     makeSpawnObj    : makeSpawnObj,     // Object create spawned proc
     makePostObj     : makePostObj,      // Get utils after stage 1
+    makeWritePromFn : makeWritePromFn,  // Write file and return promise
     nextFn          : exitFn,           // Fn for success
     npmObj          : npmObj,           // Npm API object
     paramMap        : null,             // Parameters per CLI input
-    PromiseObj      : PromiseObj,       // Promise object
     promisifyFn     : promisifyFn,      // Promisify from utils
     packageMatrix   : package_matrix,   // package.json data
     stageStatusMap  : status_map,       // xhi_state.json stage status
