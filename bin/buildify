@@ -526,7 +526,7 @@ _main () {
 
       if [ ${_ugjs_exit_code} == 0 ]; then
         _logFn "  > Compression successful. Output is '${_ugjs_out_file}'";
-        rm "${_ugjs_log_file}";
+        # rm "${_ugjs_log_file}";
       else
         _argDoVerbose=1;
         _logFn "  ! Compression of '${_js_concat_file}' not successfull";
@@ -586,7 +586,7 @@ _main () {
 
       if [ ${_ugcss_exit_code} == 0 ]; then
         _logFn "  > Compression successful. Output is '${_ugcss_out_file}'";
-        rm "${_ugcss_log_file}";
+        # rm "${_ugcss_log_file}";
       else
         _argDoVerbose=1;
         _logFn "  ! Compression of '${_css_concat_file}' not successfull";

@@ -264,15 +264,17 @@ The patches mechanism allows us to use great tools tweaked for our needs while m
 
 ---
 ## Build
-Use `xhi build` or `xhi make` or `xhi 11` (where 11 is the stage number) to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
+Use `xhi build` or `xhi make` or `xhi 11` (where 11 is the stage number) to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result loads faster, runs faster, and typically consumes less than 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
 
 ```
-  $ ## Create a release
+  $ ## Show disk usage of all development files
   $ cd hi_score && export PATH=`pwd`/bin:$PATH;
-  $ du -sh . // All hi_score files disk space=
+  $ du -sh .
+    160M
 
   $ ## Get disk usage of all distribution files
   $ xhi build && cd build/latest && du -sh .
+    2.1M
 ```
 
 The `xhi make` stage uses the `buildify` to make a distribution. This script in turn uses `superpack` to analyze all symbols (variable names, object properties, and labels) and replaces them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. `superpack` reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>.diag` for mapping and key use). Projects with many object properities can be compressed an additional 50% using `superpack` and it can make reverse-engineering of the compressed code much harder.

@@ -34,18 +34,20 @@ var
 
   appName       = pathObj.basename( fqAppFilename, '.js' ),
   argList       = process.argv,
-  fqOrigDirname = process.cwd(),
   padName       = '    ' + appName,
   promptStr     = appName + '> ',
   versList      = process.versions.node.split('.'),
 
   // Set paths
+  fqOrigDirname   = process.cwd(),
   fqProjDirname   = pathObj.dirname( fqBinDirname ),
+
+  fqBuildDirname  = fqProjDirname + '/build',
   fqHookFilename  = fqProjDirname + '/.git/hooks/pre-commit',
-  fqLibDirname    = fqProjDirname   + '/lib',
-  fqModuleDirname = fqProjDirname   + '/node_modules',
-  fqPkgFilename   = fqProjDirname   + '/package.json',
-  fqStateFilename = fqLibDirname    + '/xhi_state.json',
+  fqLibDirname    = fqProjDirname + '/lib',
+  fqModuleDirname = fqProjDirname + '/node_modules',
+  fqPkgFilename   = fqProjDirname + '/package.json',
+  fqStateFilename = fqLibDirname  + '/xhi_state.json',
 
   // Set data
   binPathMap       = {}, // List of required external executables
@@ -68,10 +70,11 @@ var
   LineReader,     applyPatchFn,    exeCpeFn,
   flowObj,        makeWhichPromFn, mkdirpFn,
   ncpFn,          psObj,           rmDirFn,
-  shellJsObj,     whichFn,
-  xhiLibMap,      xhiUtilObj
+  shellJsObj,     uglifyCssObj,    uglifyJsObj,
+  whichFn,        xhiLibMap,       xhiUtilObj
   ;
 
+// Use xhi browser util library
 global.xhi = require( fqProjDirname + '/js/xhi/00.js' );
 require( fqProjDirname + '/js/xhi/01.util.js' );
 xhiLibMap = global.xhi._makeRoot_( 'xhiLibMap' );
@@ -457,16 +460,18 @@ function storeJsonFn ( json_str ) {
 // BEGIN utility /loadPostInstallfn/
 // Loads libraries after stage 01 (install) is complete
 function loadLibsFn () {
-  LineReader   = require( 'line-by-line'      );
-  applyPatchFn = require( 'apply-patch'       ).applyPatch;
-  exeCpeFn     = require( 'execpe'            );
-  flowObj      = require( 'flow'              );
-  mkdirpFn     = require( 'mkdirp'            );
-  ncpFn        = require( 'ncp'               ).ncp;
-  psObj        = require( 'ps-node'           );
-  rmDirFn      = require( 'rmdir'             );
-  shellJsObj   = require( 'shelljs'           );
-  whichFn      = require( 'which'             );
+  LineReader   = require( 'line-by-line' );
+  applyPatchFn = require( 'apply-patch'  ).applyPatch;
+  exeCpeFn     = require( 'execpe'       );
+  flowObj      = require( 'flow'         );
+  mkdirpFn     = require( 'mkdirp'       );
+  ncpFn        = require( 'ncp'          ).ncp;
+  psObj        = require( 'ps-node'      );
+  rmDirFn      = require( 'rmdir'        );
+  shellJsObj   = require( 'shelljs'      );
+  uglifyCssObj = require( 'uglifycss'    );
+  uglifyJsObj  = require( 'uglify-js'    );
+  whichFn      = require( 'which'        );
   makeWhichPromFn = promisifyFn( whichFn );
 }
 // . END utility /loadLibsFn/
@@ -534,6 +539,8 @@ function makePostObj () {
     psObj             : psObj,             // 06 dev_start
     rmDirFn           : rmDirFn,           // 02 setup
     shellJsObj        : shellJsObj,        // 11 build
+    uglifyCssObj      : uglifyCssObj,      // 11 build
+    uglifyJsObj       : uglifyJsObj,       // 11 build
     writePkgFileFn    : writePkgFileFn,    // 05 upgrade
     writeStateFileFn  : writeStateFileFn   // 05 upgrade
   };
@@ -564,10 +571,11 @@ function makeXhiObj () {
     childProcObj    : childProcObj,     // child_process object
     commandMap      : null,             // Command map of lib to exec
     fqBinDirname    : fqBinDirname,     // Full path of bin scripts
-    fqHookFilename  : fqHookFilename,   // Full path to commit hook
-    fqModuleDirname : fqModuleDirname,  // Full path to node modules
+    fqBuildDirname  : fqBuildDirname,   // Full path of builds directory
+    fqHookFilename  : fqHookFilename,   // Full path of commit hook
+    fqModuleDirname : fqModuleDirname,  // Full path of node modules
     fqOrigDirname   : fqOrigDirname,    // Full path of PWD
-    fqPkgFilename   : fqPkgFilename,    // Full path to package.json
+    fqPkgFilename   : fqPkgFilename,    // Full path of package.json
     fqProjDirname   : fqProjDirname,    // Full path of root project dir
     fsObj           : fsObj,            // File system object
     getCommandMapFn : getCommandMapFn,  // Get command map by id or index
@@ -644,6 +652,7 @@ function mainFn () {
 
     bound_fn, prefix_str
     ;
+
 
   // Create command table from config
   commandTable = makeCommandTable( package_matrix.xhi_commandTable );
@@ -784,9 +793,12 @@ fsObj.stat( fqStateFilename, function ( error_obj, ignore_map ) {
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============
 
 // These are the prior npm scripts for reference
-// "_coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d",
-//   "_make": "bin/buildify config/*.buildify",
-//   "_publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test.d && cat coverage/lcov.info | node_modules/.bin/coveralls",
-//   "_requirements-check": "bin/check-node-version",
-//   "_test": "node_modules/.bin/nodeunit test.d/xhi_level_0.js",
+// "coverage": "istanbul cover -x '**/vendor/**' \
+//   node_modules/.bin/nodeunit test.d",
+// "make": "bin/buildify config/*.buildify",
+// "publish-coverage": "istanbul cover -x '**/vendor/**' \
+//   node_modules/.bin/nodeunit test.d && cat coverage/lcov.info | \
+//   node_modules/.bin/coveralls",
+// "requirements-check": "bin/check-node-version",
+// "test": "node_modules/.bin/nodeunit test.d/xhi_level_0.js",
 

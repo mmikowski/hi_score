@@ -12,7 +12,7 @@
     "apply-patch": "0.1.2",
     "clusterjs": "0.7.1",
     "coveralls": "2.13.1",
-    "diff": "3.3.0",
+    "diff": "3.3.1",
     "execpe": "4.0.2",
     "express": "4.15.4",
     "flow": "0.2.3",
@@ -33,7 +33,7 @@
     "mysql2": "1.4.2",
     "ncp": "2.0.0",
     "nodeunit": "0.11.1",
-    "npm": "5.3.0",
+    "npm": "5.4.0",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.2",
     "ps-node": "0.1.6",
@@ -72,9 +72,9 @@
   },
   "scripts": {
     "help": "bin/xhi help",
-    "make": "bin/xhi make",
+    "build": "bin/xhi build",
     "setup": "bin/xhi setup",
-    "test": "bin/xhi test",
+    "test": "bin/xhi dev_test",
     "xhi": "bin/xhi"
   },
   "version": "1.2.10",
@@ -550,14 +550,7 @@
     ],
     "patch_matrix": {
       "patch_dirname": "patch",
-      "patch_map_list": [
-        {
-          "check_filename": "node_modules/uglify-js/lib/scope.js",
-          "patch_filename": "uglify-js-3.0.21.patch",
-          "pattern_str": "^// BEGIN hi_score patch line 324",
-          "relative_name": "patch/uglify-js-3.0.21.patch"
-        }
-      ]
+      "patch_map_list": []
     }
   },
   "xhi_10_BuildTable": [
