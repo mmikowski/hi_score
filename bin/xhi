@@ -602,6 +602,7 @@ function makeXhiObj () {
     makeWritePromFn : makeWritePromFn,  // Write file and return promise
     nextFn          : exitFn,           // Fn for success
     npmObj          : npmObj,           // Npm API object
+    pathObj         : pathObj,          // Path manipulation
     paramMap        : null,             // Parameters per CLI input
     promisifyFn     : promisifyFn,      // Promisify from utils
     packageMatrix   : package_matrix,   // package.json data
