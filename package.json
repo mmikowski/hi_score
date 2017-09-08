@@ -562,18 +562,16 @@
   },
   "xhi_10_BuildTable": [
     {
-      "build_id": "ex01",
+      "app_id": "ex01",
       "do_isolate": false,
-      "dir_make_map": {
-        "asset_list": [
-          "font/vendor/font-awesome-4.7.0",
-          "font/vendor/open-sans-fontface-1.4.0/Regular"
-        ]
-      },
+      "path_copy_list": [
+        "font/vendor/font-awesome-4.7.0",
+        "font/vendor/open-sans-fontface-1.4.0/Regular"
+      ],
       "css_make_map": {
         "do_compress": true,
         "do_vendor": true,
-        "target_file": "ex01.css - should be reundant"
+        "target_file": "This should be <dist_dir>/css/<app_id>-min.css"
       },
       "js_make_map": {
         "asset_list": [
@@ -595,7 +593,7 @@
         ],
         "do_compress": true,
         "do_vendor": true,
-        "target_file": "ex01.js - should be redundant"
+        "target_file": "This should be <dist_dir>/js/<app_id>-sp.js"
       },
       "tmplt_make_list": [
         "TODO: determine template reqs"
