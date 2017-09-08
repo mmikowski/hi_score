@@ -551,7 +551,8 @@
     "patch_matrix": {
       "patch_dirname": "patch",
       "patch_map_list": [
-        { "check_filename": "node_modules/uglify-js/lib/scope.js",
+        {
+          "check_filename": "node_modules/uglify-js/lib/scope.js",
           "patch_filename": "uglify-js-3.0.21.patch",
           "pattern_str": "^// BEGIN hi_score patch line 324",
           "relative_name": "patch/uglify-js-3.0.21.patch"
