@@ -483,6 +483,7 @@
       },
       {
         "asset_type": "js",
+        "guide_str": "Place these in order of inclusion",
         "asset_list": [
           {
             "dest_name": "taffy",

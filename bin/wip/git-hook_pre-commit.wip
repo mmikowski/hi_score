@@ -1,6 +1,0 @@
-#!/bin/bash
-set -u;
-_app_name=$( basename $0 );
-_app_link=$( readlink -f -- "${0}" );
-_bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
-exec ${_bin_dir}/xhi dev_lint,dev_test 
