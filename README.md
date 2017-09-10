@@ -373,13 +373,13 @@ MIT
 
 ### Version 1.3.x
 - (o) Update code standard quick-reference    (2hr)
-- (o) Create VirtualBox image for development (4hr)
+- (i) Create VirtualBox OVA for development (8hr)
 - (i) Implement `xhi` tool development capabilities
-  - (x) 11 `xhi build`     : Debug build               (1hr)
-  - (o) 11 `xhi build`     : Create manifest from JSON (4hr)
-  - (o) 12 `xhi publish`   : Push to coveralls         (2hr)
-  - (o) 13 dev\_restart    : Implement feature         (1hr)
-  - (x) 00 help
+  - (o) 12 publish      : Push to coveralls         ( 4hr)
+  - (o) 13 dev\_restart : Implement feature         ( 2hr)
+  - (x) 11 build        : Debug build               ( 1hr)
+  - (x) 11 build        : Replace buildify module   (24hr)
+  - (x) 00 xhi help
   - (x) 01 install
   - (x) 02 setup
   - (x) 03 design
@@ -391,7 +391,7 @@ MIT
   - (x) 09 dev\_cover
   - (x) 10 dev\_commit
   - (x) 14 dev\_stop
-- (i) Tool enhancements
+- (x) Tool enhancements
   - (x) `xhi setup`     : Implement env prequisites and `lib/xhi_state.json`
   - (x) `xhi setup`     : Auto-create `xhi_state.json` if required
   - (x) `xhi build`     : Create build directory like `dist/\<build-number\>`
@@ -400,14 +400,14 @@ MIT
   - (x) `xhi dev_cover` : Move to `dist/\<build-number\>` directories
 - (x) Update code standard
 - (x) Update all NPM lifecycle scripts to use `xhi` 
-    - (x)"help": "bin/xhi help",
-    - (x)"make": "bin/xhi make",
+    - (x)"help" : "bin/xhi help",
+    - (x)"make" : "bin/xhi make",
     - (x)"setup": "bin/xhi setup",
-    - (x)"test": "bin/xhi test",
-    - (x)"xhi": "bin/xhi"
+    - (x)"test" : "bin/xhi test",
+    - (x)"xhi"  : "bin/xhi"
     
 ### Version 1.4.x
-- (o) Create AMI image for deployment
+- (i) Create AMI image for deployment
 - (o) Test load times using remote server
 - (o) `xhi` tools enhancements
   - (o) `xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
