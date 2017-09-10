@@ -56,7 +56,7 @@ var
 
   emptyStateMatrix = {
     "build_idx"        : 1,
-    "build_table"      : [],
+    "build_rec_table"  : [],
     "stage_status_map" : {}
   },
 
@@ -67,11 +67,9 @@ var
   commandTable,
 
   // Declare after-install-variables
-  LineReader,     applyPatchFn,    exeCpeFn,
-  flowObj,        makeWhichPromFn, mkdirpFn,
-  ncpFn,          psObj,           rmDirFn,
-  shellJsObj,     uglifyCssObj,    uglifyJsObj,
-  whichFn,        xhiLibMap,       xhiUtilObj
+  LineReader,     applyPatchFn,     flowObj,
+  psObj,          shellJsObj,       uglifyCssObj,
+  uglifyJsObj,    xhiLibMap,        xhiUtilObj
   ;
 
 // Use xhi browser util library
@@ -423,44 +421,96 @@ function grepFileFn ( filename, pattern_str ) {
 }
 // . END utility /grepFileFn/
 
-// BEGIN utility /copyPathFn/
-function copyPathFn( fq_src_path_str, fq_dest_path_str, do_dir_copy ) {
-  if ( do_dir_copy ) {
-    return new PromiseObj ( function ( resolve_fn, reject_fn ) {
-      ncpFn( fq_src_path_str, fq_dest_path_str,
-        function ( error_data ) {
-          if ( error_data ) { return reject_fn(); }
-          resolve_fn();
-        }
-      );
-    });
-  }
-
-  return new PromiseObj ( function ( resolve_fn, reject_fn ) {
-    var
-      read_obj = fsObj.createReadStream(  fq_src_path_str  ),
-      write_obj= fsObj.createWriteStream( fq_dest_path_str );
-
-    read_obj.on(  'error', reject_fn  );
-    write_obj.on( 'error', reject_fn  );
-    write_obj.on( 'close', resolve_fn );
-    read_obj.pipe( write_obj );
-  });
-}
-// . END utility /copyPathFn/
-
-// BEGIN utility /storePathFn/
-function storePathFn ( path_str ) {
+// BEGIN utility /makeAssetMatrix/
+// Purpose: Creates asset lists for vendor directories.
+//   { js_list : [
+//       // src_pathname, tgt_pathname, do_dircopy
+//       [ 'node_modules/taffydb/taffy.js',
+//         'js/vendor/taffy-2.7.3.js',
+//         false
+//       ],
+//       [ 'node_modules/powercss/dist/pcss.js',
+//         'js/vendor/pcss-1.4.2.js',
+//           false
+//       ]
+//     ],
+//     <asset_type>_list : [ ... ]
+//   }
+function makeAssetMatrix () {
   var
-    ctx_obj = this,
-    bin_key = ctx_obj.bin_key;
+    package_matrix     = jsonDataMap.package_matrix        || {},
 
-  if ( ! bin_key ) {
-    abortFn( 'No key provided for ' + path_str );
+    setup_matrix       = package_matrix.xhi_02_SetupMatrix || {},
+    dev_dependency_map = package_matrix.devDependencies    || {},
+
+    asset_group_table  = setup_matrix.asset_group_table    || [],
+    asset_group_count  = asset_group_table.length,
+    solve_matrix       = {},
+
+    solve_list,
+    idx, asset_group_map, asset_list, asset_count,
+    dest_dirname, dest_ext_str, do_dir_copy,
+
+    idj, asset_map, asset_type, src_asset_name,
+    src_dirname,   src_pkg_name, dest_vers_str,
+    dest_filename, src_path_list, src_pathname,
+    dest_pathname
+  ;
+
+  for ( idx = 0; idx < asset_group_count; idx++ ) {
+    asset_group_map = asset_group_table[ idx ] || {};
+
+    asset_list  = asset_group_map.asset_list   || [];
+    asset_type  = asset_group_map.asset_type;
+    asset_count = asset_list.length;
+
+    dest_ext_str  = asset_group_map.dest_ext_str;
+    do_dir_copy   = asset_group_map.do_dir_copy;
+    dest_dirname  = asset_group_map.dest_dirname;
+
+    solve_list = [];
+    ASSET_MAP: for ( idj = 0; idj < asset_count; idj++ ) {
+      asset_map      = asset_list[ idj ];
+      src_asset_name = asset_map.src_asset_name;
+      src_dirname    = asset_map.src_dirname || '';
+      src_pkg_name   = asset_map.src_pkg_name;
+
+      // Calculate destination pathname
+      dest_vers_str  = dev_dependency_map[ src_pkg_name ];
+      if ( ! dest_vers_str ) {
+        logFn( 'WARN: package ' + src_pkg_name + ' not found.');
+        continue ASSET_MAP;
+      }
+      dest_filename = asset_map.dest_name || src_pkg_name;
+      dest_pathname = dest_dirname + '/'
+        + dest_filename + '-' + dest_vers_str;
+
+      // Calc source pathname
+      src_path_list = [ 'node_modules', src_pkg_name ];
+      if ( src_dirname    ) { src_path_list.push( src_dirname   ); }
+      if ( src_asset_name ) { src_path_list.push( src_asset_name); }
+      src_pathname = src_path_list.join( '/' );
+
+
+      // Adjust for directory copy
+      if ( do_dir_copy ) {
+        if ( src_asset_name ) {
+          dest_pathname += '/' + src_asset_name;
+        }
+      }
+      else {
+        dest_pathname += '.' + dest_ext_str;
+      }
+
+      solve_list.push( [
+        src_pathname, dest_pathname, !! do_dir_copy
+      ]);
+    }
+    solve_matrix[ asset_type + '_list' ] = solve_list;
   }
-  binPathMap[ bin_key ]  = path_str;
+  return solve_matrix;
 }
-// . END utility /storePathFn/
+// . END utility /makeAssetMatrix/
 
 // BEGIN utility /storeJsonFn/
 function storeJsonFn ( json_str ) {
@@ -471,48 +521,18 @@ function storeJsonFn ( json_str ) {
 
 // BEGIN utility /loadPostInstallfn/
 // Loads libraries after stage 01 (install) is complete
+// If we need unix-like exec capability, it appears execpe is best.
+//
 function loadLibsFn () {
   LineReader   = require( 'line-by-line' );
   applyPatchFn = require( 'apply-patch'  ).applyPatch;
-  exeCpeFn     = require( 'execpe'       );
   flowObj      = require( 'flow'         );
-  mkdirpFn     = require( 'mkdirp'       );
-  ncpFn        = require( 'ncp'          ).ncp;
   psObj        = require( 'ps-node'      );
-  rmDirFn      = require( 'rmdir'        );
   shellJsObj   = require( 'shelljs'      );
   uglifyCssObj = require( 'uglifycss'    );
   uglifyJsObj  = require( 'uglify-js'    );
-  whichFn      = require( 'which'        );
-  makeWhichPromFn = promisifyFn( whichFn );
 }
 // . END utility /loadLibsFn/
-
-// BEGIN utility /checkBinListFn/
-function checkBinListFn () {
-  var
-    ctx_obj      = this,
-    exe_list     = [ 'git', 'patch' ],
-    exe_count    = exe_list.length,
-    promise_list = [],
-
-    idx, bin_key, bound_fn, promise_obj;
-
-  // Assign executable path vars
-  for ( idx = 0; idx < exe_count; idx++ ) {
-    bin_key     = exe_list[ idx ];
-    bound_fn    = storePathFn.bind( { bin_key : bin_key });
-    promise_obj = makeWhichPromFn( bin_key );
-    promise_obj.then( bound_fn ).catch( abortFn );
-    promise_list.push( promise_obj );
-  }
-
-  PromiseObj.all( promise_list )
-    .then(  ctx_obj.then_fn  )
-    .catch( ctx_obj.catch_fn )
-    ;
-}
-// . END utility /checkBinListFn/
 
 // BEGIN utility /checkNodeVersionFn/
 function checkNodeVersionFn () {
@@ -522,8 +542,7 @@ function checkNodeVersionFn () {
       = 'NodeJS Version ' + versList.join('.') + ' is installed.\n'
       + 'As of ' + appName + '1.2 NodeJS v'
       + minVersionInt + ' is required.\n'
-      + 'Please upgrade NodeJS and try again.'
-      ;
+      + 'Please upgrade NodeJS and try again.';
     abortFn( abort_str );
   }
 }
@@ -542,14 +561,9 @@ function makePostObj () {
   return {
     applyPatchFn      : applyPatchFn,
     binPathMap        : binPathMap,        // --  ?
-    checkBinListFn    : checkBinListFn,    // 02 setup
-    copyPathFn        : copyPathFn,        // 02 setup
-    exeCpeFn          : exeCpeFn,          // --  ?
     flowObj           : flowObj,           // 02 setup
-    mkdirpFn          : mkdirpFn,          // 02 setup
     grepFileFn        : grepFileFn,        // 02 setup, 06 lint
     psObj             : psObj,             // 06 dev_start
-    rmDirFn           : rmDirFn,           // 02 setup
     shellJsObj        : shellJsObj,        // 11 build
     uglifyCssObj      : uglifyCssObj,      // 11 build
     uglifyJsObj       : uglifyJsObj,       // 11 build
@@ -565,51 +579,52 @@ function makePostObj () {
 //
 function makeXhiObj () {
   var
-    package_matrix = jsonDataMap.package_matrix || {},
-    state_matrix   = jsonDataMap.state_matrix   || {},
+    package_matrix  = jsonDataMap.package_matrix     || {},
+    state_matrix    = jsonDataMap.state_matrix       || {},
 
-    build_table    = state_matrix.build_table      || [],
-    status_map     = state_matrix.stage_status_map || {},
+    build_rec_table  = state_matrix.build_rec_table  || [],
+    stage_status_map = state_matrix.stage_status_map || {},
 
     build_id = xhiUtilObj._makePadNumStr_( state_matrix.build_idx, 7 )
     ;
 
   return {
-    PromiseObj      : PromiseObj,       // Promise object
+    PromiseObj       : PromiseObj,      // Promise object
 
-    appName         : appName,          // Applicaiton name
-    askFn           : askFn,            // Read line with prompt
-    buildId         : build_id,
-    buildTable      : build_table,      // xhi_state.json build records
-    catchFn         : abortFn,          // Fn for error
-    childProcObj    : childProcObj,     // child_process object
-    commandMap      : null,             // Command map of lib to exec
-    fqBinDirname    : fqBinDirname,     // Full path of bin scripts
-    fqBuildDirname  : fqBuildDirname,   // Full path of builds directory
-    fqHookFilename  : fqHookFilename,   // Full path of commit hook
-    fqModuleDirname : fqModuleDirname,  // Full path of node modules
-    fqOrigDirname   : fqOrigDirname,    // Full path of PWD
-    fqPkgFilename   : fqPkgFilename,    // Full path of package.json
-    fqProjDirname   : fqProjDirname,    // Full path of root project dir
-    fsObj           : fsObj,            // File system object
-    getCommandMapFn : getCommandMapFn,  // Get command map by id or index
-    loadLibsFn      : loadLibsFn,       // Load libs after stage 1
-    logFn           : logFn,            // Log to console
-    makePrefixStr   : makePrefixStr,    // Fn for stage prefix
-    makeRightPadStr : makeRightPadStr,  // Pad string right
-    makeSpawnObj    : makeSpawnObj,     // Object create spawned proc
-    makePostObj     : makePostObj,      // Get utils after stage 1
-    makeWritePromFn : makeWritePromFn,  // Write file and return promise
-    nextFn          : exitFn,           // Fn for success
-    npmObj          : npmObj,           // Npm API object
-    pathObj         : pathObj,          // Path manipulation
-    paramMap        : null,             // Parameters per CLI input
-    promisifyFn     : promisifyFn,      // Promisify from utils
-    packageMatrix   : package_matrix,   // package.json data
-    stageStatusMap  : status_map,       // xhi_state.json stage status
-    stateMatrix     : state_matrix,     // xhi_state.json data
-    warnFn          : warnFn,           // Warn to console
-    xhiUtilObj      : xhiUtilObj        // Utilities
+    appName          : appName,         // Applicaiton name
+    askFn            : askFn,           // Read line with prompt
+    buildId          : build_id,        // Calc build id from build_idx
+    buildRecTable    : build_rec_table, // xhi_state Build records
+    catchFn          : abortFn,         // Fn for error
+    childProcObj     : childProcObj,    // child_process object
+    commandMap       : null,            // Command map of lib to exec
+    fqBinDirname     : fqBinDirname,    // Full path of bin scripts
+    fqBuildDirname   : fqBuildDirname,  // Full path of builds directory
+    fqHookFilename   : fqHookFilename,  // Full path of commit hook
+    fqModuleDirname  : fqModuleDirname, // Full path of node modules
+    fqOrigDirname    : fqOrigDirname,   // Full path of PWD
+    fqPkgFilename    : fqPkgFilename,   // Full path of package.json
+    fqProjDirname    : fqProjDirname,   // Full path of root project dir
+    fsObj            : fsObj,           // File system object
+    getCommandMapFn  : getCommandMapFn, // Get command map by id or index
+    loadLibsFn       : loadLibsFn,      // Load libs after stage 1
+    logFn            : logFn,           // Log to console
+    makeAssetMatrix  : makeAssetMatrix, // Create vendor asset lists
+    makePrefixStr    : makePrefixStr,   // Fn for stage prefix
+    makeRightPadStr  : makeRightPadStr, // Pad string right
+    makeSpawnObj     : makeSpawnObj,    // Object create spawned proc
+    makePostObj      : makePostObj,     // Get utils after stage 1
+    makeWritePromFn  : makeWritePromFn, // Write file and return promise
+    nextFn           : exitFn,          // Fn for success
+    npmObj           : npmObj,          // Npm API object
+    pathObj          : pathObj,         // Path manipulation
+    paramMap         : null,            // Parameters per CLI input
+    promisifyFn      : promisifyFn,     // Promisify from utils
+    packageMatrix    : package_matrix,  // package.json data
+    stageStatusMap   : stage_status_map,// xhi_state stage status
+    stateMatrix      : state_matrix,    // xhi_state data
+    warnFn           : warnFn,          // Warn to console
+    xhiUtilObj       : xhiUtilObj       // Isomorphic Utilities
   };
 }
 // . END utility /makeXhiObj/
@@ -806,14 +821,4 @@ fsObj.stat( fqStateFilename, function ( error_obj, ignore_map ) {
 });
 // . End Create state file if needed
 // == . END SCRIPT xhi - the hi_score cli life-stage tool =============
-
-// These are the prior npm scripts for reference
-// "coverage": "istanbul cover -x '**/vendor/**' \
-//   node_modules/.bin/nodeunit test.d",
-// "make": "bin/buildify config/*.buildify",
-// "publish-coverage": "istanbul cover -x '**/vendor/**' \
-//   node_modules/.bin/nodeunit test.d && cat coverage/lcov.info | \
-//   node_modules/.bin/coveralls",
-// "requirements-check": "bin/check-node-version",
-// "test": "node_modules/.bin/nodeunit test.d/xhi_level_0.js",
 
