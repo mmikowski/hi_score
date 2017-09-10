@@ -1,27 +1,18 @@
 /*
  * xhi-module-tmplt.js
  *
- * Use: $ cp xhi-module-tmplt.js 07.<newfeature>.js
+ * Use: cp xhi-module-tmplt.js 07.<newfeature>.js
  * Synopsis: Feature module template
  * Provides: A template that embodies best practice
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global $ */
+/*jslint browser : true */
+/*global $, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeTmplt_ ====================================
-__NS._makeTmplt_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeTmplt_ =====================================
+xhi._makeTmplt_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -91,5 +82,5 @@ __NS._makeTmplt_ = function ( aMap ) {
   aMap._makeTmplt_ = { _initModule_ : initModule };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeTmplt_ ====================================
+// == . END MODULE xhi._makeTmplt_ =====================================
 

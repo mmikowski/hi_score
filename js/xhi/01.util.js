@@ -5,32 +5,23 @@
  * Synopsis: Add _util_ capabilities to app_map
  * Provides: Utilities which do not require jQuery or a browser
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global jQuery */
+/*jslint browser : true */
+/*global jQuery, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeUtil_ ====================================
-__NS._makeUtil_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeUtil_ =====================================
+xhi._makeUtil_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
-    aKey   = aMap._aKey_,
-    vMap   = aMap._vMap_,
-    nMap   = aMap._nMap_,
+    aKey      = aMap._aKey_,
+    vMap      = aMap._vMap_,
+    nMap      = aMap._nMap_,
 
     __j2str   = vMap._JSON_[ vMap._stringify_ ],
-    __jparse  = vMap._JSON_[ vMap._parse_     ],
+    __jparse  = vMap._JSON_[ vMap._parse_ ],
 
     __Array   = vMap._Array_,
     __Date    = vMap._Date_,
@@ -60,11 +51,27 @@ __NS._makeUtil_ = function ( aMap ) {
     __typeof  = vMap._fnTypeof_,
     __keys    = vMap._fnGetKeyList_,
 
+    typeofMap = {
+      'boolean'   : '_Boolean_',
+      'number'    : '_Number_',
+      'string'    : '_String_',
+      'function'  : '_Function_',
+      'object'    : '_Object_',
+      'undefined' : '_Undefined_',
+
+      'Array'     : '_Array_',
+      'Boolean'   : '_Boolean_',
+      'Function'  : '_Function_',
+      'Null'      : '_Null_',
+      'Number'    : '_Number_',
+      'Object'    : '_Object_',
+      'String'    : '_String_',
+      'Undefined' : '_Undefined_'
+    },
+
     configMap, stateMap,  // Set in initModule
 
-    checkDateStr, getNowMs,     getVarType,
-    getBasename,  getDirname,   logObj,
-    makeGuidStr,  makeTmpltStr, trimStrList
+    getBasename, getDirname, logObj
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -79,46 +86,23 @@ __NS._makeUtil_ = function ( aMap ) {
   //             '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
   // Throws    : none
   //
-  //
-  getVarType = (function () {
-    var
-      typeofMap = {
-        'boolean'   : '_Boolean_',
-        'number'    : '_Number_',
-        'string'    : '_String_',
-        'function'  : '_Function_',
-        'object'    : '_Object_',
-        'undefined' : '_Undefined_',
+  function getVarType ( data ) {
+    var type_key, type_str;
 
-        'Array'     : '_Array_',
-        'Boolean'   : '_Boolean_',
-        'Function'  : '_Function_',
-        'Null'      : '_Null_',
-        'Number'    : '_Number_',
-        'Object'    : '_Object_',
-        'String'    : '_String_',
-        'Undefined' : '_Undefined_'
-      };
+    if ( data === __null ) {  return '_Null_'; }
+    if ( data === __undef ) { return '_Undefined_'; }
+    if ( __Array.isArray( data ) ) { return '_Array_'; }
 
-    function mainFn ( data ) {
-      var type_key, type_str;
+    type_key = __typeof( data );
+    type_str = typeofMap[ type_key ];
 
-      if ( data === __null         ) { return '_Null_';      }
-      if ( data === __undef        ) { return '_Undefined_'; }
-      if ( __Array.isArray( data ) ) { return '_Array_';     }
+    if ( type_str && type_str !== '_Object_' ) { return type_str; }
 
-      type_key = __typeof( data );
-      type_str = typeofMap[ type_key ];
+    type_key = {}[ vMap._toString_ ][ vMap._call_ ](
+      data )[ vMap._slice_ ]( nMap._8_, __n1 );
 
-      if ( type_str && type_str !== '_Object_' ) { return type_str; }
-
-      type_key = {}[ vMap._toString_ ][ vMap._call_ ](
-        data )[ vMap._slice_ ]( nMap._8_, __n1 );
-
-      return typeofMap[ type_key ] || type_key;
-    }
-    return mainFn;
-  }());
+    return typeofMap[ type_key ] || type_key;
+  }
   // . END Public prereq method /getVarType/
 
   // BEGIN Public prereq method /castBool/
@@ -316,6 +300,22 @@ __NS._makeUtil_ = function ( aMap ) {
   }
   // . END Public prereq method /cloneData/
 
+  // BEGIN Public prereq method /extendList/
+  // Summary   : extendList( base_list, extend_list )
+  // Purpose   : Extends base_list with contents of extend_list
+  // Example   : extendList( [0], [1,2,3] ); // returns [0,1,2,3]
+  // Arguments : (positional)
+  //   <base_list>   - list to extend
+  //   <extend_list> - list to append to base_list
+  // Returns   : base_list after change
+  // Throws    : none
+  //
+  function extendList ( base_list, extend_list ) {
+    Array.prototype.push.apply( base_list, extend_list );
+    return base_list;
+  }
+  // . END Public prereq method /extendList/
+
   // BEGIN Public prereq method /getNowMs/
   // Purpose   : Get timestamp
   // Example   : getNowMs(); // returns 1486283077968
@@ -326,17 +326,10 @@ __NS._makeUtil_ = function ( aMap ) {
   //   in NodeJS, and I have confirmed this provides almost the
   //   the same performance in that env as a raw Date.now() call.
   //
-  getNowMs = (function () {
-    var return_fn;
-    /* istanbul ignore else */
-    if ( __Date[ vMap._hasOwnProp_ ]( vMap._now_ ) ) {
-      return_fn = function () { return __Date[ vMap._now_ ](); };
-    }
-    else {
-      return_fn = function () { return +new __Date(); };
-    }
-    return return_fn;
-  }());
+  function getNowMs () {
+    if ( configMap._get_now_fn_ ) { return configMap._get_now_fn_(); }
+    return + new __Date();
+  }
   // . END Public prereq method /getNowMs/
 
   // BEGIN Public prereq method /getNumSign/
@@ -408,6 +401,7 @@ __NS._makeUtil_ = function ( aMap ) {
     var
       num   = castNum( arg_num,   __undef ),
       count = castInt( arg_count, __undef ),
+      list  = [],
 
       sign_int, num_str, zero_count;
 
@@ -421,10 +415,10 @@ __NS._makeUtil_ = function ( aMap ) {
     zero_count = count - num_str[ __length ]
       - ( sign_int === __n1 ? __1 : __0 );
 
-    while ( zero_count > __0 ) {
-      num_str = '0' + num_str;
-      zero_count--;
-    }
+    // See repeat funciton in ES6
+    list.length = zero_count > __0 ? zero_count + 1 : 0;
+    num_str = list.join( '0' ) + num_str;
+
     if ( sign_int === __n1 ) {
       num_str = '-' + num_str;
     }
@@ -433,7 +427,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // . END Public prereq method /makePadNumStr/
 
   // BEGIN public prereq method /makeEscRxStr/
-  // Summary   : makeEscRxStr( <string> ) {
+  // Summary   : makeEscRxStr( <string> )
   // Purpose   : Escapes a regular expression string
   // Example   : makeEscRxStr( '[]' ) // returns '\[\]\'
   // Arguments : <string> to escape
@@ -445,6 +439,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //
   function makeEscRxStr( arg_str ) {
     var str = castStr( arg_str, __blank );
+    // noinspection Annotator
     return str.replace( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
   }
   // . END Public prereq method /makeEscRxStr/
@@ -619,45 +614,39 @@ __NS._makeUtil_ = function ( aMap ) {
   // yyyy-mm-dd or yyyy/mm/dd and does not validate the time.
   //
   //
-  checkDateStr = (function () {
-    var
-      dateUsRx
-      = /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]([0-9]{4})\b/,
-      dateUtcRx
-        = /^([0-9]{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/
-      ;
 
-    function mainFn ( arg_map ) {
+    function checkDateStr ( arg_map ) {
       var
-        map        = castMap( arg_map, {} ),
-        date_str   = castStr( map._date_str_,  __blank ),
-        order_str  = castStr( map._order_str_, __blank ),
+        map         = castMap( arg_map, {} ),
+        date_str    = castStr( map._date_str_,  __blank ),
+        order_str   = castStr( map._order_str_, __blank ),
+        date_us_rx  = configMap._date_us_rx_,
+        date_utc_rx = configMap._date_utc_rx_,
         match_list, yy_int, mm_int, dd_int, date_obj, check_int
         ;
 
       if ( order_str === '_us_') {
-        match_list = date_str.match( dateUsRx );
+        match_list = date_str.match( date_us_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 3 ] - 1900;
         mm_int = +match_list[ 1 ] - 1;
         dd_int = +match_list[ 2 ];
       }
       else {
-        match_list = date_str.match( dateUtcRx );
+        match_list = date_str.match( date_utc_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 1 ] - 1900;
         mm_int = +match_list[ 2 ] - 1;
         dd_int = +match_list[ 3 ];
       }
 
+      // Check that utc timestamps match
       date_obj = new Date( Date.UTC( yy_int, mm_int, dd_int ));
       check_int = date_obj.getUTCDate();
 
       // Invalid dates will not match
       return check_int === dd_int;
     }
-    return mainFn;
-  }());
   // . END Public method /checkDateStr/
 
   // BEGIN public method /makeMetricStr/
@@ -689,6 +678,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // . END public method /makeMetricStr/
 
   // BEGIN Public method /clearMap/
+  // Purpose: Empty a map by deleting all keys
   function clearMap ( arg_map ) {
     var
       map = castMap( arg_map ),
@@ -952,7 +942,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // Purpose   : Create HH:MM:SS time string from UTC time integer in ms
   // Example   : clock_str = makeClockStr( 1465621376000 ); // '05:02:56'
   // Arguments : ( positional )
-  //   0 - int (required) time_ms  UTC time in milliseconds
+  //   0 - int (required) time_ms UTC time in milliseconds
   //   1 - int (default 3) time_idx Precision
   //     -3 === [DDd:]HHh:MMm:SSs
   //     -3 === [DDd:]HHh:MMm
@@ -966,7 +956,7 @@ __NS._makeUtil_ = function ( aMap ) {
   //   Remember to use your local timezone offset if you want to
   //   show local time. Example:
   //       tz_offset_ms = aMap._util_._getTzOffsetMs_(),
-  //       local_ms     = raw_utc_ms - tz_offset_ms;
+  //       local_ms     = raw_utc_ms + tz_offset_ms;
   //
   function makeClockStr ( arg_time_ms, arg_time_idx ) {
     var
@@ -1087,7 +1077,6 @@ __NS._makeUtil_ = function ( aMap ) {
   //    Returns a string like '2016-09-18 12:45:52'
   // 3. makeDateStr({ _date_ms_ : 1474311626050 })
   //    Returns '2016-09-19'
-  //
   // Arguments :
   //   * _date_obj_ : A valid date object.
   //   * _date_ms_  : A date time in ms.
@@ -1099,6 +1088,11 @@ __NS._makeUtil_ = function ( aMap ) {
   //       the clock string format
   //   * _order_str_ (default ''):
   //       Request '_us_' results in stupid-format: mm/dd/yyyy hh:mm:ss.
+  // Cautions  :
+  //   Remember to use your local timezone offset if you want to
+  //   show local time. Example:
+  //       tz_offset_ms = aMap._util_._getTzOffsetMs_(),
+  //       local_ms     = raw_utc_ms - tz_offset_ms;
   //
   function makeDateStr ( arg_map ) {
     var
@@ -1313,7 +1307,7 @@ __NS._makeUtil_ = function ( aMap ) {
   // . END Public method /makeErrorObj/
 
   // BEGIN Public method /makeGuidStr/
-  makeGuidStr = (function () {
+  function makeGuidStr () {
     /*jslint bitwise: true*/
     function makePart () {
       //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
@@ -1322,16 +1316,13 @@ __NS._makeUtil_ = function ( aMap ) {
     }
     /*jslint bitwise: false*/
 
-    function mainFn () {
-      return makePart() + makePart()
-        + '-' + makePart()
-        + '-' + makePart()
-        + '-' + makePart()
-        + '-' + makePart() + makePart() + makePart()
-        ;
-    }
-    return mainFn;
-  }());
+    return makePart() + makePart()
+      + '-' + makePart()
+      + '-' + makePart()
+      + '-' + makePart()
+      + '-' + makePart() + makePart() + makePart()
+      ;
+  }
   // . END Public method /makeGuidStr/
 
   // BEGIN Public method /makeMapUtilObj/
@@ -1591,14 +1582,12 @@ __NS._makeUtil_ = function ( aMap ) {
   //   series_map = makeSeriesMap({
   //     _max_ms_       : 1465459980000,
   //     _min_ms_       : 1465452840000,
-  //     _tgt_count_    : 12,
-  //     _tz_offset_ms_ : 25200000
+  //     _tgt_count_    : 12
   //   });
   // Arguments :
-  //   _max_ms_       : (req) int start UTC time in milliseconds
-  //   _min_ms_       : (req) int end UTC time in milliseconds
+  //   _max_ms_       : (req) int start local-time milliseconds
+  //   _min_ms_       : (req) int end local-time in milliseconds
   //   _tgt_count_    : (req) int desired number of divisions (+/- 50%)
-  //   _tz_offset_ms_ : (req) int UTC offset for timezone
   //
   //  Returns
   //   A map useful for plotting a quantized time series like so:
@@ -1638,15 +1627,12 @@ __NS._makeUtil_ = function ( aMap ) {
   //
   function makeSeriesMap( arg_map ) {
     var
-      map          = castMap( arg_map, {} ),
-      tz_offset_ms = castInt( map._tz_offset_ms_, __0 ),
-      max_ms       = castInt( map._max_ms_ - tz_offset_ms, __0 ),
-      min_ms       = castInt( map._min_ms_ - tz_offset_ms, __0 ),
-      tgt_count    = castInt( map._tgt_count_ ),
+      map       = castMap( arg_map, {}       ),
+      max_ms    = castInt( map._max_ms_, __0 ),
+      min_ms    = castInt( map._min_ms_, __0 ),
+      tgt_count = castInt( map._tgt_count_   ),
 
-      date_obj     = new __Date(),
-      offset_str   = makeClockStr( tz_offset_ms ),
-      offset_list  = offset_str[ vMap._split_ ](':'),
+      date_obj  = new __Date(),
 
       span_ms,         unit_ms_list, unit_count,
       btm_idx,         top_idx,      last_btm_idx,
@@ -1658,8 +1644,8 @@ __NS._makeUtil_ = function ( aMap ) {
       width_ratio,     left_ratio,   accum_ratio,
       date_ms,         date_offset,
 
-      solve_map,       solve_ms,     solve_str,
-      solve_time_list, solve_date_list
+      solve_map,       solve_ms,        time_ms,
+      solve_str,       solve_time_list, solve_date_list
       ;
 
     // Get the time span and a list of available units
@@ -1728,10 +1714,8 @@ __NS._makeUtil_ = function ( aMap ) {
     solve_map._unit_ratio_ = solve_map._unit_ms_ / span_ms;
 
     // Create date list
-    date_obj.setTime( min_ms );
-    date_obj.setHours(
-      -offset_list[ __0 ], -offset_list[ __1], -offset_list[__2]
-    );
+    date_obj.setTime( min_ms   );
+    date_obj.setHours( 0, 0, 0 );
     date_ms     = date_obj.getTime();
     date_offset = min_ms - date_ms;
 
@@ -1755,7 +1739,13 @@ __NS._makeUtil_ = function ( aMap ) {
     solve_time_list = [];
     while ( left_ratio < __1 ) {
       solve_ms  = __floor( left_ratio * span_ms ) + min_ms;
-      solve_str = makeClockStr( solve_ms, solve_map._time_idx_ );
+      date_obj.setTime( solve_ms );
+      time_ms = __Num( date_obj.getHours()   ) * configMap._hrs_ms_
+        +       __Num( date_obj.getMinutes() ) * configMap._min_ms_
+        +       __Num( date_obj.getSeconds() ) * configMap._sec_ms_
+        ;
+
+      solve_str = makeClockStr( time_ms, solve_map._time_idx_ );
       solve_time_list[ __push ]( solve_str );
       left_ratio += solve_map._unit_ratio_;
     }
@@ -1784,11 +1774,18 @@ __NS._makeUtil_ = function ( aMap ) {
   // Returns
   //   The filled-out template string
   //
-  makeTmpltStr = (function () {
-    //noinspection JSUnusedLocalSymbols
-    function lookupFn ( match_str, lookup_name ) {
+  function makeTmpltStr ( arg_map ) {
+    var
+      map        = castMap( arg_map, {} ),
+      input_str  = castStr( map._input_str_, __blank  ),
+      lookup_map = castMap( map._lookup_map_,      {} ),
+      tmplt_rx   = map._tmplt_rx_ || configMap._tmplt_rx_,
+      bound_fn;
+
+
+    function lookupFn ( ignore_match_str, lookup_name ) {
       var
-        return_data  = this, // lookup_map
+        return_data  = this,
         lookup_list  = lookup_name.split( '.' ),
         lookup_count = lookup_list.length,
         idx, key_name
@@ -1801,20 +1798,9 @@ __NS._makeUtil_ = function ( aMap ) {
       return castStr( return_data, __blank );
     }
 
-    function mainFn ( arg_map ) {
-      var
-        map        = castMap( arg_map, {} ),
-        input_str  = castStr( map._input_str_, __blank  ),
-        lookup_map = castMap( map._lookup_map_,      {} ),
-
-        tmplt_rx   = map._tmplt_rx_ || configMap._tmplt_rx_,
-        bound_fn   = lookupFn.bind( lookup_map )
-        ;
-
-      return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
-    }
-    return mainFn;
-  }());
+    bound_fn   = lookupFn.bind( lookup_map );
+    return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
+  }
   // . END Public method /makeTmpltStr/
 
   // BEGIN Public method /mergeMaps/
@@ -2039,18 +2025,17 @@ __NS._makeUtil_ = function ( aMap ) {
   // . END public method /shuffleList/
 
   // BEGIN public method /trimStrList/
-  trimStrList = ( function () {
-    function mapFn( data ) {
+  function trimStrList ( arg_list ) {
+    var list = castList( arg_list );
+
+    function mapFn ( data ) {
       return getVarType( data ) === '_String_'
         ? data[ vMap._trim_ ]() : data;
     }
-    function mainFn ( arg_list ) {
-      var list = castList( arg_list );
-      if ( ! list ) { return arg_list; }
-      return list[ vMap._map_ ]( mapFn );
-    }
-    return mainFn;
-  }());
+
+    if ( ! list ) { return arg_list; }
+    return list[ vMap._map_ ]( mapFn );
+  }
   // . END utility /trimStrList/
 
   // == . END PUBLIC METHODS ==========================================
@@ -2073,8 +2058,6 @@ __NS._makeUtil_ = function ( aMap ) {
       _day_ms_    : 86400000,
       _offset_yr_ : 1900,
 
-      _encode_html_rx_  : /[&"'><]/g,
-      _encode_noamp_rx_ : /["'><]/g,
       _encode_html_map_ : {
         '&' : '&#38;',
         '"' : '&#34;',
@@ -2083,11 +2066,21 @@ __NS._makeUtil_ = function ( aMap ) {
         '<' : '&#60;'
       },
 
-      _comma_rx_  : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
+      _get_now_fn_  : Date.now,
+      _date_us_rx_  :
+        /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]([0-9]{4})\b/,
+      _date_utc_rx_ :
+        /^([0-9]{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/,
+
+      _comma_rx_        : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),
+      _encode_html_rx_  : /[&"'><]/g,
+      _encode_noamp_rx_ : /["'><]/g,
+
       _tag_end_rx_: makeRxObj( '(</[^>]+>)+', 'g' ),
       _tag_rx_    : makeRxObj( '</?[^>]+>', 'g' ),
       _tmplt_rx_  : makeRxObj( '{([^{}]+[^\\\\])}','g' ),
-      _tzcode_rx_ : makeRxObj( '\\(([A-Za-z\\s].*)\\)' ),
+      _tzcode_rx_ : makeRxObj( '\\((.*)\\)$' ),
+
       _unit_ms_list_ : [
         { _str_ : '0.1s',  _ms_ :        100, _time_idx_ : __3 },
         { _str_ : '0.25s', _ms_ :        250, _time_idx_ : __3 },
@@ -2115,6 +2108,7 @@ __NS._makeUtil_ = function ( aMap ) {
         { _str_ : '4d',    _ms_ : 86400000*4, _time_idx_ : __1 },
         { _str_ : '1wk',   _ms_ : 86400000*7, _time_idx_ : __1 }
       ]
+
     };
     /* istanbul ignore next */
     try {
@@ -2140,6 +2134,7 @@ __NS._makeUtil_ = function ( aMap ) {
     _castObj_         : castObj,
     _castStr_         : castStr,
     _cloneData_       : cloneData,
+    _extendList_      : extendList,
     _getNowMs_        : getNowMs,
     _getNumSign_      : getNumSign,
     _makeArgList_     : makeArgList,
@@ -2189,4 +2184,4 @@ __NS._makeUtil_ = function ( aMap ) {
     _trimStrList_     : trimStrList
   };
 };
-// == . END MODULE __NS._makeUtil_ ====================================
+// == . END MODULE xhi._makeUtil_ =====================================

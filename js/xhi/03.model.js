@@ -5,23 +5,14 @@
  * Synopsis: Add _model_ capabilities to app_map
  * Provides: Business logic methods
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global $ */
+/*jslint browser : true */
+/*global xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeModel_ ====================================
-__NS._makeModel_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeModel_ =====================================
+xhi._makeModel_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -56,7 +47,7 @@ __NS._makeModel_ = function ( aMap ) {
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModule/
   function initModule () {
-    __logMsg( '_info_', $,
+    __logMsg( '_info_',
       '\n  __0       === ' + __0,
       '\n  __1       === ' + __1,
       '\n  __blank   === ' + __blank,
@@ -71,5 +62,5 @@ __NS._makeModel_ = function ( aMap ) {
   aMap._model_ = { _initModule_ : initModule };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeModel_ ====================================
+// == . END MODULE xhi._makeModel_ =====================================
 

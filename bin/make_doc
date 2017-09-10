@@ -49,6 +49,6 @@ find -type f -name "*.md" \
   "${_pandoc_exe}" "${_loop_file}" \
   -f markdown_github \
   -so "${_loop_dir}/${_loop_basename}.html" \
-  -H "${_top_dir}/cfg/md-github.style";
+  -H "${_top_dir}/config/md-github.style";
 done
 

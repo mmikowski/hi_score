@@ -5,23 +5,14 @@
  * Synopsis: Add _css_shell_ capabilities to app_map
  * Provides: CSS symbols for shell (_shell_) used by PowerCSS
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global */
+/*jslint browser : true */
+/*global xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeCssShell_ =================================
-__NS._makeCssShell_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeCssShell_ =================================
+xhi._makeCssShell_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -406,5 +397,5 @@ __NS._makeCssShell_ = function ( aMap ) {
   aMap._css_shell_ = { _selectorList_ : configMap._selector_list_ };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeCssShell_ =================================
+// == . END MODULE xhi._makeCssShell_ =================================
 

@@ -8,58 +8,46 @@
 ## The -e option forces bash to exit when encountering a non-zero exit status.
 ##   We omit -e as we do our own checking.
 set -u;
+## == BEGIN Layout variables
+_appName=$( basename $0 );
+_launchDir=$( pwd );
+echo "start ${_appName}";
+echo "  > layout vars";
 
-## == BEGIN Layout variables ===============================================
-  _appName=$( basename $0 );
-  _launchDir=$( pwd );
-  echo "start ${_appName}";
-  echo "  > layout vars";
+# app path and name
+_appLink=$( readlink -f -- "${0}" );
+_binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
 
-    # app path and name
-    _appLink=$( readlink -f -- "${0}" );
-    _binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
+# npm modules paths
+_npmDir=$( dirname "${_binDir}" );
+_modDir="${_npmDir}/node_modules";
+_modDirBin="${_modDir}/.bin";
 
-    # npm modules paths
-    _npmDir=$( dirname "${_binDir}" );
-    _modDir="${_npmDir}/node_modules";
-    _modDirBin="${_modDir}/.bin";
+_outDir="${_npmDir}/build";
+_topLogName="${_appName}.log";
+_topLogFile="${_npmDir}/${_topLogName}";
 
-    _buildDir="${_npmDir}/build";
-    _distDir="${_buildDir}/dist";
-    _stageDir="${_buildDir}/stage";
+# cli varibles defaults
+_argBuildId='';
+_argDoHelp=0;
+_argDoVerbose=0;
+_argDontCompress=0;
+_stageDir='';
+_templateDir="${_npmDir}/tmplt";
+_tmpDir='';
 
-    _topLogName="${_appName}.log";
-    _topLogFile="${_npmDir}/${_topLogName}";
+# executables
+_packExe="${_binDir}/superpack";
+_ugjsExe="${_modDirBin}/uglifyjs";
+_ugcssExe="${_modDirBin}/uglifycss";
 
-    # cli varibles defaults
-    _argDoHelp=0;
-    _argDoVerbose=0;
-    _argDontCompress=0;
-    _templateDir="${_npmDir}/tmplt";
-
-    # executables
-    _packExe="${_binDir}/superpack";
-    _ugjsExe="${_modDirBin}/uglifyjs";
-    _ugcssExe="${_modDirBin}/uglifycss";
-
-    # timestamps
-    _startTimestamp=$(date "+%Y-%m-%d %H:%M:%S");
-    _dateExt=$(date "+%Y%m%d_%H%M%S");
-
-    # temp dir
-    # See http://www.linuxsecurity.com/content/view/115462/81/#mozTocId440182
-    _tmpDir="${TMPDIR:-/tmp}/$$.${_appName}.${_dateExt}";
-    ( umask 077 && mkdir "${_tmpDir}" ) || {
-      _argDoVerbose=1;
-      _logFn "  ! Could not create temporary directory";
-      _abortFn;
-    }
-  # echo "  < layout vars";
-  ## == END Layout variables ===============================================
+# timestamps
+_startTimestamp=$(date "+%Y-%m-%d %H:%M:%S");
+_dateExt=$(date "+%Y%m%d_%H%M%S");
 
 ## BEGIN function to echo to STDERR
 _logStderrFn () { echo "$*" >&2; }
-## END function to echo to STDERR
+## . END function to echo to STDERR
 
 ## BEGIN function to print usage
 _showHelpFn () {
@@ -77,14 +65,13 @@ Employ the -v or --verbose switch to see more detailed help.
   [ "${_argDoVerbose}" -gt 0 ] && _logStderrFn "
 DESCRIPTION
   ${_appName} builds a production-ready web site from sources listed
-  in manifest files.  The output files are placed in ${_buildDir}
-  under the following subdirectories:
+  in manifest files. The output files are placed in as follows:
 
-    - ${_stageDir} - Staging area
-    - ${_distDir}  - Distribution area
+    - ${_outDir}/<build_id>/stage - Staging area
+    - ${_outDir}/<build_id>/dist  - Distribution area
 
   The output files will have the same basename as the source manifest
-  file.  Therefore, '${_appName} ex01.${_appName}' will output
+  file. Therefore, '${_appName} ex01.${_appName}' will output
   the files with the ex01 prefix as illustrated in the examples.
 
 EXAMPLES
@@ -96,7 +83,7 @@ EXAMPLES
 
   Then running the following ...
 
-      $ ${_appName} ./ex01.${_appName}
+      $ ${_appName} -i 1234 ./ex01.${_appName}
 
   ... results in the following files in ${_stageDir}:
 
@@ -130,7 +117,7 @@ EXAMPLES
 
 ARGUMENTS
   manifest_1, manifest_2, ... (REQUIRED)
-    Manifests to process.  Each manifest lists the source files to
+    Manifests to process. Each manifest lists the source files to
     process. It may have multiple sections delineated by a source-type header.
     ${_appName} expects all paths to be relative to the referencing
     manifest file path.
@@ -149,16 +136,16 @@ OPTIONS
 
   * -n | --nocompress (OPTIONAL)
     By default ${_appName} concatenates and minifies CSS and JS files.
-    It also SuperPacks JS files.  This option turns off this behavior.
+    It also SuperPacks JS files. This option turns off this behavior.
 
   * -v | --verbose (OPTIONAL)
     Be noisy when processing
 
 REQUIRED PATCH
-  Buildify uses Superpack symbol compression.  Superpack requires a patch
-  to UglifyJS.  If you have installed **hi\_score** this patch will have
-  been applied when running 'npm run setup' which is the safest means
-  to apply the patch.  If you need to do so manually, this should also work:
+  Buildify uses Superpack symbol compression. Superpack requires a patch
+  to UglifyJS. If you have installed **hi\_score** this patch will have
+  been applied when running 'bin/xhi setup' which is the safest means
+  to apply the patch. If you need to do so manually, this should also work:
 
     \$ cd ${_modDir}
     \$ patch -p0 < ../patch/uglifyjs-2.4.10.patch
@@ -168,16 +155,16 @@ SEE ALSO
   * UglifyCSS
 
 AUTHOR and COPYRIGHT
-  Michael S. Mikowski (c) 2008-2016
+  Michael S. Mikowski (c) 2008-2017
 ";
 
-  exit 1;
+  exit 0;
 }
-## END function to print usage
+## . END function to print usage
 
 ## BEGIN function to log output
 _logFn () {
-  local IFS="";
+  local IFS='';
   _msg_str="$*";
   if [ -w "${_topLogFile}" ]; then
     echo "${_msg_str}" >> "${_topLogFile}";
@@ -188,7 +175,7 @@ _logFn () {
   if [ "${_argDoVerbose}" -gt 0 ]; then _logStderrFn "${_msg_str}"; fi
   return 0;
 }
-## END function to log output
+## . END function to log output
 
 ## BEGIN function to clean up temp files
 _cleanTmpdirFn () {
@@ -200,7 +187,7 @@ _cleanTmpdirFn () {
     fi
   fi
 }
-## END function to clean up temp files
+## . END function to clean up temp files
 
 ## BEGIN function to abort processing
 _abortFn () {
@@ -213,13 +200,25 @@ _abortFn () {
   # exit with error (bash shell standard)
   exit 1;
 }
-## END function to abort processing
+## . END function to abort processing
 
 ## BEGIN MAIN
+_main () {
+    # temp dir
+    # See http://www.linuxsecurity.com/content/view/115462/81/#mozTocId440182
+    _tmpDir="${TMPDIR:-/tmp}/$$.${_appName}.${_dateExt}";
+    ( umask 077 && mkdir "${_tmpDir}" ) || {
+      _argDoVerbose=1;
+      _logFn "  ! Could not create temporary directory";
+      _abortFn;
+    }
+  # echo "  < layout vars";
+  ## == END Layout variables
+
   ## BEGIN get options
   ## (see /usr/share/doc/util-linux/examples/getopt-parse.bash)
-  _cliStr=$(getopt -o hnvt: \
-    --long help,usage,nocompress,verbose: \
+  _cliStr=$(getopt -o hnvi: \
+    --long help,usage,nocompress,verbose,id: \
       -n "${_appName}" -- "$@")
 
   if [ $? != 0 ] ; then
@@ -234,6 +233,7 @@ _abortFn () {
   # Process arguments
   while true; do
     case "$1" in
+      -i|--id) shift;    _argBuildId="$1";   shift ;;
       -h|--help|--usage) _argDoHelp=1;       shift ;;
       -n|--nocompress)   _argDontCompress=1; shift ;;
       -v|--verbose)      _argDoVerbose=1;    shift ;;
@@ -243,11 +243,21 @@ _abortFn () {
           _abortFn;;
     esac
   done
+  ## . END get options
 
+  ## BEGIN process options
   if [ ${_argDoHelp} -gt 0 ]; then _showHelpFn; fi
-  ## END get options (see /usr/share/doc/util-linux/examples/getopt-parse.bash)
+  if [ -z "${_argBuildId}" ]; then
+    _logStderrFn "Please provide a build id like so: -i 12345";
+    _abortFn;
+  fi
+  ## . END process options
 
-  ## BEGIN set global log to start
+  _buildDir="${_outDir}/${_argBuildId}"
+  _distDir="${_buildDir}/dist";
+  _stageDir="${_buildDir}/stage";
+
+  ## BEGIN set global files and directories
   if ! echo -n > "${_topLogFile}"; then
     _argDoVerbose=1;
     _logStderrFn "Cannot create global log file '${_topLogFile}'";
@@ -255,7 +265,7 @@ _abortFn () {
   fi
   # put header in log file
   _logFn "  > Global ${_appName} log ${_startTimestamp}";
-  ## END set global log to start
+  ## . END set global files and directories
 
   ## BEGIN Find SuperPack
   if [ ! -x "${_packExe}" ]; then
@@ -272,7 +282,7 @@ _abortFn () {
     _logfn "  !    liblist-moreutils-perl libgetopt-mixed-perl ";
     _abortFn;
   fi
-  ## END Find SUPERPACK
+  ## . END Find SUPERPACK
 
   ## BEGIN Find UglifyJS
   if [ ! -x "${_ugjsExe}" ]; then
@@ -283,7 +293,7 @@ _abortFn () {
     _logFn "  ! as described by ${_appName} -hv"
     _abortFn;
   fi
-  ## END Find UglifyJS
+  ## . END Find UglifyJS
 
   ## BEGIN Find UglifyCSS
   if [ -z "${_ugcssExe}" ]; then
@@ -292,12 +302,10 @@ _abortFn () {
     _logFn "  ! Try cd ${_npmDir}; npm install uglifycss -D"
     _abortFn;
   fi
-  ## END Find UglifyCSS
+  ## . END Find UglifyCSS
 
   ## BEGIN validiate input files
   _manifestList=();
-  _copyDeployList=();
-  _subtreeDeployList=();
   for _arg_file in $@; do
     if [ ! -f "${_arg_file}" ]; then
       _argDoVerbose=1;
@@ -320,35 +328,22 @@ _abortFn () {
     _logFn "  ! No manifest provided."
     _abortFn;
   fi
-  ## END validiate input files
+  ## . END validiate input files
 
-  ## BEGIN validate build dir and move global log to it
-  if [ -d "${_buildDir}" ]; then
-    _scratchStr="${_argDoVerbose}";
-    _argDoVerbose=1;
-    _logFn "The build directory ${_buildDir} already exists."
-    read -p 'Wipe and recreate? (y/N) ' _responseStr;
-    _responseStr="${_responseStr^^}";
-    if [ "${_responseStr^^:=N}" == 'N' ]; then
-      _logFn "  ! Aborted at user request.";
-      _abortFn;
-    fi
-    _logFn "";
-    _logFn "  > Removing ${_buildDir} at user request";
-    rm -rf "${_buildDir}";
-    _logFn "  > Removal complete.";
-    _argDoVerbose="${_scratchStr}"
+  ## BEGIN ensure builddir and link are up-to-date
+  _logFn "  > Processing";
+  mkdir -p "${_outDir}";
+  if [ -e "${_outDir}/latest" ]; then
+    rm "${_outDir}/latest";
   fi
 
-  _logFn "  > Processing";
-  mkdir ${_buildDir};
-  mkdir ${_stageDir};
-  mkdir ${_distDir};
-  mkdir -p "${_distDir}/css/vendor";
-  mkdir -p "${_distDir}/js/vendor";
-  mkdir -p "${_distDir}/img/vendor";
-  mkdir -p "${_distDir}/font/vendor";
+  mkdir -p "${_buildDir}";
+  pushd "${_buildDir}";
+  ln -s "${_argBuildId}" "${_outDir}/latest";
+  popd;
+  ## . END ensure builddir and link are up-to-date
 
+  ## BEGIN move top log to build directory
   if [ "${_topLogFile}" != "${_buildDir}/${_topLogName}" ] \
     && ! mv "${_topLogFile}" "${_buildDir}"; then
     _argDoVerbose=1;
@@ -357,7 +352,34 @@ _abortFn () {
   else
     _topLogFile="${_buildDir}/${_topLogName}";
   fi
-  ## END validate build dir and move global log there
+  ## . END move top log to build directory
+
+  ## BEGIN validate dist dir
+  if [ -d "${_distDir}" ]; then
+    _scratchStr="${_argDoVerbose}";
+    _argDoVerbose=1;
+    _logFn "The distribution directory ${_distDir} already exists."
+    read -p "Wipe and recreate this and /stage? (y/N) " _responseStr;
+    _responseStr="${_responseStr^^}";
+    if [ "${_responseStr^^:=N}" == 'N' ]; then
+      _logFn "  ! Aborted at user request.";
+      _abortFn;
+    fi
+    _logFn '';
+    _logFn "  > Removing ${_distDir} and ${_stageDir} at user request";
+    rm -rf "${_distDir}"; rm -rf "${_stageDir}";
+    _logFn "  > Removal complete.";
+    _argDoVerbose="${_scratchStr}"
+  fi
+  mkdir ${_stageDir};
+  mkdir ${_distDir};
+  ## . END validate dist dir
+
+  # mkdir -p "${_distDir}/css/vendor";
+  # mkdir -p "${_distDir}/js/vendor";
+  # mkdir -p "${_distDir}/img/vendor";
+  # mkdir -p "${_distDir}/font/vendor";
+
 
   ## BEGIN process each manifest in turn
   for (( _file_idx = 0; _file_idx < ${#_manifestList[*]}; _file_idx++ )); do
@@ -365,8 +387,8 @@ _abortFn () {
     _manifest_file="${_manifestList[$_file_idx]}";
     _manifest_basename=$( basename "${_manifest_file}" );
     _manifest_short_name=$( echo "${_manifest_basename}" |cut -f1 -d'.' );
-    _manifest_dir=$( dirname "${_manifest_file}" );
-    _manifest_dir=$( cd "${_manifest_dir}" && echo "${PWD}" );
+    # _manifest_dir=$( dirname "${_manifest_file}" );
+    # _manifest_dir=$( cd "${_manifest_dir}" && echo "${PWD}" );
 
     if [ -z "${_manifest_short_name}" ]; then
       _argDoVerbose=1;
@@ -375,22 +397,20 @@ _abortFn () {
     fi
 
     _logFn "  > ${_appName}  for ${_manifest_file} on ${_startTimestamp}";
-    ## END get path of manifest and determine output names
+    ## . END get path of manifest and determine output names
 
     ## BEGIN read manifest and append sources to arrays
     _js_file_list=();
     _css_file_list=();
-    _section_type="";
+    _copy_deploy_list=();
+    _subtree_deploy_list=();
+    _section_type='';
 
     while read _row_str; do
       # skip blank lines
       echo "${_row_str}" | grep -q '^\s*$' && continue;
       # skip full-line comments
       echo "${_row_str}" | grep -q '^\s*#' && continue;
-
-      # strip end of line comments and indents
-      _row_str=$(echo "${_row_str}" | sed -e 's/#.*$//g' \
-        | sed -e 's/^\s\+//g' | sed -e 's/\s\+$//g' );
 
       # process section header 'sourcetype'
       if echo "${_row_str}" | grep -q '^sourcetype\s*:'; then
@@ -400,55 +420,54 @@ _abortFn () {
       fi
 
       # skip anything if section type not yet specified
-      [ "${_section_type}" == "" ] && continue;
+      [ "${_section_type}" == '' ] && continue;
+
+      # strip end of line comments and indents
+      _row_str=$(echo "${_row_str}" | sed -e 's/#.*$//g' \
+        | sed -e 's/^\s\+//g' | sed -e 's/\s\+$//g' );
+
+      # determine first field, file extension, full-qualified source_file
+      _field1_str=$( echo "${_row_str}" |sed -e 's/\s.*$//g' );
+      _ext_str=$( echo ${_field1_str} |sed -e 's/^.*\.//' );
+      _source_file="${_npmDir}/${_field1_str}";
 
       # determine full path to source file and test
-      _source_file="${_manifest_dir}/${_row_str}";
-
-      if [ "${_section_type}" = "css" ] || [ "${_section_type}" = "js" ]; then
-        if [ ! -r "${_source_file}" ]; then
-          _argDoVerbose=1;
-          _logFn "  ! ${_section_type} file ${_source_file} is not readable.";
-          _logFn "  ! Do you need to update your manifest file?";
-          _logFn "  ! X_${_row_str}_X";
-          _abortFn;
-        fi
+      if [ ! -r "${_source_file}" ]; then
+        _argDoVerbose=1;
+        _logFn "  ! ${_section_type} file ${_source_file} is not readable.";
+        _logFn "  ! Do you need to update your manifest file?";
+        _logFn "  ! X_${_field1_str}_X";
+        _abortFn;
       fi
-      _ext_str=$( echo ${_row_str} |sed -e 's/^.*\.//' );
 
       case "${_section_type}" in
         js)
           if [ "${_ext_str}" != 'js' ]; then
             _argDoVerbose=1;
-            _logFn "  > Extension for js file ${_row_str} must be 'js'";
+            _logFn "  > Extension for js file ${_field1_str} must be 'js'";
             _abortFn;
           fi
 
-          _js_file_list[${#_js_file_list[*]}]=${_source_file};
-            _logFn "  > Added file ${_row_str} to javascript processing queue.";
+          _js_file_list[${#_js_file_list[*]}]="${_source_file}";
+            _logFn "  > Added file ${_field1_str} to JS queue."
           ;;
 
         css)
           if [ "${_ext_str}" != 'css' ]; then
             _argDoVerbose=1;
-            _logFn "  ! Extension for css file ${_row_str} must be 'css'";
+            _logFn "  ! Extension for css file ${_field1_str} must be 'css'";
             _abortFn;
           fi
-
-          _css_file_list[${#_css_file_list[*]}]=${_source_file};
-          _logFn "  > Added file ${_row_str} to css processing queue.";
+          _css_file_list[${#_css_file_list[*]}]="${_source_file}";
+          _logFn "  > Added file ${_field1_str} to CSS queue.";
           ;;
         subtree)
-          _subtreeDeployList[${#_css_file_list[*]}]=${_source_file};
-          _scratchStr="${_argDoVerbose}"; _argDoVerbose=1;
-          # _logFn "  ! deploy subtree not yet implemented ${_row_str}";
-          _argDoVerbose="${_scratchStr}";
+          _subtree_deploy_list[${#_subtree_deploy_list[*]}]="${_row_str}";
+          _logFn "  > Added file ${_field1_str} to SUBTREE DEPLOY queue.";
           ;;
         copy)
-          _copyDeployList[${#_css_file_list[*]}]=${_source_file};
-          _scratchStr="${_argDoVerbose}"; _argDoVerbose=1;
-          # _logFn "  ! deploy copy not yet implemented ${_row_str}";
-          _argDoVerbose="${_scratchStr}";
+          _copy_deploy_list[${#_copy_deploy_list[*]}]="${_row_str}"
+          _logFn "  > Added row ${_row_str} to COPY DEPLOY queue.";
           ;;
         *) _argDoVerbose=1;
           _logFn "  ! Source type (${_section_type}) not supported.";
@@ -456,7 +475,7 @@ _abortFn () {
           ;;
       esac
     done < "${_manifest_file}"
-    ## END read manifest and append sources to arrays
+    ## . END read manifest and append sources to arrays
 
     ## BEGIN determine paths
     _js_concat_file="${_tmpDir}/$$.${_manifest_short_name}-src.js";
@@ -475,11 +494,11 @@ _abortFn () {
     _ugjs_out_file="${_stage_base_name}-min.js";
     _pack_out_file="${_stage_base_name}-sp.js";
     touch "${_pack_log_file}";
-    ## END determine paths
+    ## . END determine paths
 
 
     ## BEGIN process javascript files
-    for (( i = 0; i < ${#_js_file_list[*]}; i++ ))
+    for (( _i = 0; _i < ${#_js_file_list[*]}; _i++ ))
     do
       if [ ! -r "${_js_concat_file}" ]; then
         touch "${_js_concat_file}";
@@ -491,10 +510,10 @@ _abortFn () {
         fi
         _logFn "  > Combining JS Source Files";
       fi
-      cat "${_js_file_list[$i]}" >> "${_js_concat_file}";
-      _logFn "  > ${_js_file_list[$i]}";
+      cat "${_js_file_list[$_i]}" >> "${_js_concat_file}";
+      _logFn "  > ${_js_file_list[$_i]}";
     done
-    ## END process javascript files
+    ## . END process javascript files
 
     ## BEGIN compress javascript file if specified
     if [ -r "${_js_concat_file}" ] && [ ${_argDontCompress} -eq 0 ]; then
@@ -506,8 +525,8 @@ _abortFn () {
       _ugjs_exit_code=$?;
 
       if [ ${_ugjs_exit_code} == 0 ]; then
-        _logFn "  > Compression successful.  Output is '${_ugjs_out_file}'";
-        rm "${_ugjs_log_file}";
+        _logFn "  > Compression successful. Output is '${_ugjs_out_file}'";
+        # rm "${_ugjs_log_file}";
       else
         _argDoVerbose=1;
         _logFn "  ! Compression of '${_js_concat_file}' not successfull";
@@ -515,7 +534,7 @@ _abortFn () {
         _abortFn;
       fi
     fi
-    ## END compress javascript file if specified
+    ## . END compress javascript file if specified
 
     ## BEGIN superpack javascript file if specified
     if [ -r "${_js_concat_file}" ] && [ ${_argDontCompress} -eq 0 ]; then
@@ -527,7 +546,7 @@ _abortFn () {
       _pack_exit_code=$?;
 
       if [ ${_pack_exit_code} == 0 ]; then
-        _logFn "  > SuperPack successful.  Output is '${_pack_out_file}'";
+        _logFn "  > SuperPack successful. Output is '${_pack_out_file}'";
       else
         _argDoVerbose=1;
         _logFn "  ! SuperPack of '${_js_concat_file}' not successfull";
@@ -535,10 +554,10 @@ _abortFn () {
         _abortFn;
       fi
     fi
-    ## END superpack javascript file if specified
+    ## . END superpack javascript file if specified
 
     ## BEGIN process css files
-    for (( i = 0; i < ${#_css_file_list[*]}; i++ ))
+    for (( _i = 0; _i < ${#_css_file_list[*]}; _i++ ))
     do
       if [ ! -r "${_css_concat_file}" ]; then
         touch "${_css_concat_file}";
@@ -551,10 +570,10 @@ _abortFn () {
         _logFn "  > Combining CSS Source Files";
         _logFn "  > Writing css concat file '${_css_concat_file}'";
       fi
-      cat "${_css_file_list[$i]}" >> "${_css_concat_file}";
-      _logFn "  >> ${_css_file_list[$i]}";
+      cat "${_css_file_list[$_i]}" >> "${_css_concat_file}";
+      _logFn "  >> ${_css_file_list[$_i]}";
     done
-    ## END process css files
+    ## . END process css files
 
     ## BEGIN compress css file if specified
     if [ -r "${_css_concat_file}" ] && [ ${_argDontCompress} -eq 0 ]; then
@@ -566,8 +585,8 @@ _abortFn () {
       _ugcss_exit_code=$?;
 
       if [ ${_ugcss_exit_code} == 0 ]; then
-        _logFn "  > Compression successful.  Output is '${_ugcss_out_file}'";
-        rm "${_ugcss_log_file}";
+        _logFn "  > Compression successful. Output is '${_ugcss_out_file}'";
+        # rm "${_ugcss_log_file}";
       else
         _argDoVerbose=1;
         _logFn "  ! Compression of '${_css_concat_file}' not successfull";
@@ -575,7 +594,7 @@ _abortFn () {
         _abortFn;
       fi
     fi
-    ## END compress css file if specified
+    ## . END compress css file if specified
 
     ## BEGIN move over remaining files
     for _pair_str in \
@@ -593,24 +612,64 @@ _abortFn () {
         fi
       fi
     done
-    ## END move over remaining files
+    ## . END move over remaining files
 
-    ## BEGIN deployment (WIP)
-    pushd "${_distDir}";
-    cp "${_templateDir}/${_manifest_short_name}.html" "${_distDir}/"
-    cp -a "${_npmDir}"/font/vendor/* "${_distDir}/font/vendor/"
-    cp "${_pack_out_file}" "${_distDir}/js/"
+    ## BEGIN deployment
+    mkdir -p "${_distDir}/css";
+    mkdir -p "${_distDir}/js";
     cp "${_ugcss_out_file}" "${_distDir}/css/"
-    popd;
-    ## END deployment (WIP)
+    cp "${_pack_out_file}" "${_distDir}/js/"
+
+    ## BEGIN subtree deployment
+    for (( _i = 0; _i < ${#_subtree_deploy_list[*]}; _i++ ))
+    do
+      _row_str="${_subtree_deploy_list[$_i]}";
+
+      _base_dirname=$( dirname "${_row_str}" );
+      _src_dirname="${_npmDir}/${_row_str}";
+      _tgt_dirname="${_distDir}/${_base_dirname}";
+
+      if [ ! -d "${_src_dirname}" ]; then
+        _logStderrFn "Cannot copy subtree |${_row_str}|: Not found";
+        continue;
+      fi
+
+      mkdir -p "${_tgt_dirname}";
+      cp -a "${_src_dirname}" "${_tgt_dirname}/";
+    done
+    ## . END subtree deployment
+
+    ## BEGIN copy deployment
+    for (( _i = 0; _i < ${#_copy_deploy_list[*]}; _i++ ))
+    do
+      _row_str="${_copy_deploy_list[$_i]}";
+
+      _src_str=$(echo "${_row_str}" | cut -f1 -d' ' );
+      _tgt_str=$(echo "${_row_str}" | cut -f2 -d' ' );
+
+      _src_filename="${_npmDir}/${_src_str}";
+      _tgt_dirname="${_distDir}/${_tgt_str}";
+
+      if [ ! -f "${_src_filename}" ]; then
+        _logStderrFn "Cannot copy file |${_src_filename}|: Not found";
+        continue;
+      fi
+
+      mkdir -p "${_tgt_dirname}";
+      cp "${_src_filename}" "${_tgt_dirname}";
+    done
+    ## . END copy deployment
 
   done
-  ## END process each manifest in turn
+  ## . END process each manifest in turn
 
   _cleanTmpdirFn;
   _endTimestamp=$(date "+%Y-%m-%d %H:%M:%S");
   _logFn "  > ${_appName} run complete on ${_endTimestamp}";
   echo "end ${_appName}";
-## END MAIN
+}
+## . END MAIN
+
+_main $@;
 
 

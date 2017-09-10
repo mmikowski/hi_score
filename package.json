@@ -6,17 +6,17 @@
   "bugs": {
     "url": "https://github.com/mmikowski/hi_score/issues"
   },
-  "bundleDependencies": false,
-  "dependencies": {},
   "deprecated": false,
-  "description": "A 2017 full-life-cycle starter project for SPAs. Hi_Score assembles best-in-class libraries in a feature-module architecture",
+  "description": "A modern, full-life-cycle starter project for SPAs",
   "devDependencies": {
     "apply-patch": "0.1.2",
     "clusterjs": "0.7.1",
     "coveralls": "2.13.1",
-    "diff": "3.3.0",
-    "express": "4.15.3",
+    "diff": "3.3.1",
+    "express": "4.15.4",
+    "flow": "0.2.3",
     "font-awesome": "4.7.0",
+    "http-server": "0.10.0",
     "istanbul": "0.4.5",
     "jquery": "3.2.1",
     "jquery.event.dragscroll": "1.0.0",
@@ -24,23 +24,22 @@
     "jquery.event.ue": "1.3.2",
     "jquery.scrolli": "1.0.1",
     "jquery.urianchor": "1.3.5",
-    "jsdom": "11.1.0",
+    "jsdom": "11.2.0",
     "jslint": "0.11.0",
     "line-by-line": "0.1.5",
-    "mkdirp": "0.5.1",
-    "mongodb": "2.2.30",
-    "mysql2": "1.3.6",
-    "ncp": "2.0.0",
+    "mongodb": "2.2.31",
+    "mysql2": "1.4.2",
     "nodeunit": "0.11.1",
-    "npm-check-updates": "2.12.1",
+    "npm": "5.4.1",
     "open-sans-fontface": "1.4.0",
-    "powercss": "1.4.1",
+    "powercss": "1.4.2",
+    "ps-node": "0.1.6",
     "rmdir": "1.2.0",
+    "shelljs": "0.7.8",
     "taffydb": "2.7.3",
-    "uglify-js": "3.0.25",
+    "uglify-js": "3.0.28",
     "uglifycss": "0.0.27",
-    "websocket": "1.0.24",
-    "which": "1.2.14"
+    "websocket": "1.0.24"
   },
   "homepage": "https://github.com/mmikowski/hi_score",
   "keywords": [
@@ -67,99 +66,604 @@
     "url": "git+https://github.com/mmikowski/hi_score.git"
   },
   "scripts": {
-    "coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js",
-    "make": "bin/buildify cfg/*.buildify",
-    "publish-coverage": "istanbul cover -x '**/vendor/**' node_modules/.bin/nodeunit test/xhi_level_0.js; cat coverage/lcov.info | node_modules/.bin/coveralls",
-    "requirements-check": "bin/check-node-version",
-    "setup": "bin/setup",
-    "test": "node_modules/.bin/nodeunit test/xhi_level_0.js"
+    "help": "bin/xhi help",
+    "build": "bin/xhi build",
+    "setup": "bin/xhi setup",
+    "test": "bin/xhi dev_test",
+    "xhi": "bin/xhi"
   },
   "version": "1.2.10",
-  "xhiPatchMatrix": {
-    "patch_dir_str": "patch",
-    "patch_map_list": [
-      {
-        "check_filename": "node_modules/uglify-js/lib/scope.js",
-        "patch_filename": "uglify-js-3.0.21.patch",
-        "match_str": "// BEGIN hi_score patch line 324"
-      }
+  "xhi_prereqMap": {},
+  "xhi_commandTable": [
+    [
+      "alias_list",
+      "short_str",
+      "long_str",
+      "predo_list",
+      "prereq_list"
+    ],
+    [
+      [
+        "help"
+      ],
+      "Help on 'xhi' tool; use -v for verbose",
+      [
+        "Name      : {appName}",
+        "Purpose   : Run hi_score lifecycle tools",
+        "Example   : xhi help",
+        "Arguments : [ help || 0 ] /range/ [ -v ]",
+        "  /range/ may be:",
+        "  1. A single stage number or name.    Ex: 01.",
+        "  2. A list of stage numbers or names. Ex: 1,2,3,6.",
+        "  3. A range of stages                 Ex: 1-5 or all",
+        "  See {appName} help all to list stages.",
+        "More examples:",
+        "  Run stage range",
+        "{padName} dev_pull        // run stage 04",
+        "{padName} 1,2,6           // run three stages",
+        "{padName} 1-9             // run nine stages in range",
+        "  Generic help",
+        "{padName} help            // Short help ",
+        "  Help stage range",
+        "{padName} help 01         // Short help on install stage",
+        "{padName} help all -v     // Long help on all stages",
+        "{padName} help 1,4        // Short help on stages 1,4",
+        "{padName} help help,dev_pull -v // Long help on stages 1,4",
+        "",
+        "Failure of any stage to complete reults in a non-zero exit",
+        "status and termination of the 'xhi' command."
+      ],
+      null,
+      null
+    ],
+    [
+      [
+        "install"
+      ],
+      "Download and install npm modules",
+      [
+        "Download & install npm modules. This is a wrapper ",
+        "around 'npm install'. Use this command directly",
+        "to diagnose problems.",
+        "NPM SCRIPTS      : presinstall, install, postinstall.",
+        "SUCCESS CRITERIA : npm install completes with 0 exit status."
+      ],
+      null,
+      null
+    ],
+    [
+      [
+        "setup"
+      ],
+      "Patch and distribute vendor npm assets",
+      [
+        "Prepare assets in four steps:",
+        "1. Delete all vendor directories as directed by package.json.",
+        "   See directories in bin, css, font, img, js, and lib.",
+        "2. Copy assets from node_modules to vendor directories",
+        "  with their version appended to the names.",
+        "3. Apply any patches",
+        "4. Install the commit hook if git is detected",
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : All steps complete without error."
+      ],
+      null,
+      [
+        "install"
+      ]
+    ],
+    [
+      [
+        "design"
+      ],
+      "Show architecture docs",
+      [
+        "Show the guidlines for architecture in 'doc/spa-arch.md.'",
+        "Use the module template 'js/xhi/xhi-module-tmplt.js.'",
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : Document is shown without error."
+      ],
+      null,
+      null
+    ],
+    [
+      [
+        "dev_pull"
+      ],
+      "Download and merge SCMS assets (git pull)",
+      [
+        "Retrieve latest code from the repository. Use the 'git pull'",
+        "directly to diagnose problems.",
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : 'git pull' completes with 0 exit status."
+      ],
+      null,
+      [
+        "setup"
+      ]
+    ],
+    [
+      [
+        "dev_upgrade"
+      ],
+      "Upgrade packages to latest",
+      [
+        "Upgrade vendor package versions to latest",
+        "At present the 'package.json' file is automatically updated.",
+        "These additional files must also updated to reflect",
+        "the new versions:",
+        "  1. config/*.buildify",
+        "  2. js/<app_file>.js",
+        "  3. test.d/*.js",
+        "",
+        "An upgrade may break regression tests builds.",
+        "If this happens one may throw away any local changes",
+        "and start again fresh.  Use the following to removed",
+        "any local changes forever: 'git reset --hard HEAD'.",
+        "One may also use 'git clean -xdf' to remove untracked",
+        "local files.",
+        "",
+        "One may updated one package at a time using",
+        "'npm outdated' to list out-of-date packages",
+        "and then update 'package.json' and related files",
+        "(see above) one package at a time to their",
+        "lastest version.  If a problem occurs, it can",
+        "then be more easily resolved.",
+        "",
+        "Please run 'xhi install,setup' after this step to",
+        "have the changes reflected.",
+        "(TODO: automate 'xhi install,setup' and associated files)",
+        "",
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : Version upgrade completes without error"
+      ],
+      null,
+      [
+        "dev_pull"
+      ]
+    ],
+    [
+      [
+        "dev_start"
+      ],
+      "Start local HTTPS server",
+      [
+        "Start the local HTTPS server, 'http-server' in SSL mode",
+        "using localhost:8443.  This is a wrapper around ",
+        "'http-server -p8443 -SU -C config/cert.pem -K config/key.pem'.",
+        "Use this command directly to diagnose problems.",
+        "",
+        "NPM SCRIPTS      : prestart, start, poststart.",
+        "SUCCESS CRITERIA : Server starts without error."
+      ],
+      null,
+      [
+        "setup"
+      ]
+    ],
+    [
+      [
+        "dev_test"
+      ],
+      "Run regression tests",
+      [
+        "Run all nodeunit tests in the 'test.d' drop-directory.",
+        "The test files are processed in alphabetical order.",
+        "",
+        "NPM SCRIPTS      : pretest, test, posttest.",
+        "SUCCESS CRITERIA : All tests complete without error"
+      ],
+      null,
+      [
+        "dev_pull"
+      ]
+    ],
+    [
+      [
+        "dev_lint"
+      ],
+      "Lint changed code",
+      [
+        "Check lint quality of changed JS code.",
+        "Files in 'vendor' directors are ignored.",
+        "Four tests are performed on each file:",
+        "  1. Fail if tabs characters or trailing space.",
+        "  2. Fail if 'use strict'; is not found.",
+        "  3. Fail if 'jslint --config config/jslint.conf <file>'",
+        "     does not pass.",
+        "  4. List TODO items for developer review.",
+        "     Fail if developer does not approve.",
+        "NPM SCRIPTS      : none.",
+        "SUCCESS CRITERIA : All tests complete without error"
+      ],
+      null,
+      [
+        "setup"
+      ]
+    ],
+    [
+      [
+        "dev_cover"
+      ],
+      "Create coverage report",
+      [
+        "Create coverage report"
+      ]
+    ],
+    [
+      [
+        "dev_commit"
+      ],
+      "Commit changes with git",
+      [
+        "Commit changes with git",
+        "TODO 2017-08029 mmikowski warn: add make-doc step prior.",
+        "Use 'git commit' directly to diagnose any problems.",
+        "NPM SCRIPTS      : preversion, version, postversion",
+        "SUCCESS CRITERIA : 'git commit' exit status"
+      ],
+      [
+        "dev_test",
+        "dev_lint"
+      ],
+      null,
+      [
+        "setup"
+      ]
+    ],
+    [
+      [
+        "build",
+        "make"
+      ],
+      "Build a distribution",
+      [
+        "Build a distribution",
+        "NPM SCRIPTS      : prepare",
+        "SUCCESS CRITERIA : All tests complete without error"
+      ],
+      [
+        "dev_test",
+        "dev_lint",
+        "dev_cover"
+      ],
+      [
+        "setup"
+      ]
+    ],
+    [
+      [
+        "publish"
+      ],
+      "Publish to coveralls and NPM",
+      [
+        "Publish to coveralls and NPM.",
+        "NPM SCRIPTS      : prepublish,publish,postpublish,prepublishOnly",
+        "SUCCESS CRITERIA : Push to NPM and coveralls successful"
+      ],
+      null,
+      [
+        "build"
+      ]
+    ],
+    [
+      [
+        "dev_restart"
+      ],
+      "Cycle local HTTPS server",
+      [
+        "Cycle local HTTPS server",
+        "NPM SCRIPTS      : prerestart, restart, postrestart",
+        "SUCCESS CRITERIA : Server return status"
+      ],
+      null,
+      [
+        "setup"
+      ]
+    ],
+    [
+      [
+        "dev_stop"
+      ],
+      "Stop local HTTPS server",
+      [
+        "Stop local HTTPS server",
+        "NPM SCRIPTS      : prestop, stop, poststop",
+        "SUCCESS CRITERIA : Server return status"
+      ],
+      null,
+      [
+        "setup"
+      ]
+    ],
+    [
+      [
+        "deploy"
+      ],
+      "Upload distribution",
+      [
+        "Upload distribution to production server(s)",
+        "NPM SCRIPTS      : prepack, pack, postpack",
+        "NPM SCRIPTS      : preshrinkwrap, shrinkwrap, postshrinkwrap",
+        "SUCCESS CRITERIA : Upload return status"
+      ],
+      [
+        "dev_cover",
+        "dev_commit"
+      ],
+      [
+        "build"
+      ],
+      null
+    ],
+    [
+      [
+        "prod_start"
+      ],
+      "Start production server",
+      [
+        "Start production server(s)"
+      ],
+      null,
+      [
+        "deploy"
+      ]
+    ],
+    [
+      [
+        "prod_restart"
+      ],
+      "Cycle production server",
+      [
+        "Cycle production server"
+      ],
+      null,
+      [
+        "deploy"
+      ]
+    ],
+    [
+      [
+        "prod_stop"
+      ],
+      "Stop production server",
+      [
+        "Stop production server"
+      ],
+      null,
+      [
+        "deploy"
+      ]
+    ],
+    [
+      [
+        "fetch_info"
+      ],
+      "Fetch feedback",
+      [
+        "Fetch feedback"
+      ],
+      null,
+      [
+        "deploy"
+      ]
+    ],
+    [
+      [
+        "uninstall"
+      ],
+      "Remove {appName}",
+      [
+        "Remove {appName}",
+        "NPM SCRIPTS      : preuninstall, uninstall, postuninstall",
+        "SUCCESS CRITERIA : Removal success exit status"
+      ],
+      null,
+      null
     ]
-  },
-  "xhiVendorAssetGroupTable": [
-    {
-      "dest_dir_str": "js/vendor",
-      "dest_ext_str": "js",
-      "asset_list": [
+  ],
+  "xhi_02_SetupMatrix": {
+    "asset_group_table": [
+      {
+        "asset_type": "css",
+        "asset_list": [
+          {
+            "src_asset_name": "font-awesome.css",
+            "src_dirname": "css",
+            "src_pkg_name": "font-awesome"
+          }
+        ],
+        "dest_dirname": "css/vendor",
+        "dest_ext_str": "css"
+      },
+      {
+        "asset_type": "js",
+        "guide_str": "Place these in order of inclusion",
+        "asset_list": [
+          {
+            "dest_name": "taffy",
+            "src_asset_name": "taffy.js",
+            "src_pkg_name": "taffydb"
+          },
+          {
+            "dest_name": "pcss",
+            "src_asset_name": "pcss.js",
+            "src_dirname": "dist",
+            "src_pkg_name": "powercss"
+          },
+          {
+            "dest_name": "pcss.cfg",
+            "src_asset_name": "pcss.cfg.js",
+            "src_dirname": "dist",
+            "src_pkg_name": "powercss"
+          },
+          {
+            "src_asset_name": "jquery.js",
+            "src_dirname": "dist",
+            "src_pkg_name": "jquery"
+          },
+          {
+            "src_asset_name": "jquery.event.dragscroll.js",
+            "src_dirname": "dist",
+            "src_pkg_name": "jquery.event.dragscroll"
+          },
+          {
+            "src_asset_name": "jquery.event.gevent.js",
+            "src_pkg_name": "jquery.event.gevent"
+          },
+          {
+            "src_asset_name": "jquery.event.ue.js",
+            "src_pkg_name": "jquery.event.ue"
+          },
+          {
+            "src_pkg_name": "jquery.scrolli",
+            "src_dirname": "dist",
+            "src_asset_name": "jquery.scrolli.js"
+          },
+          {
+            "src_asset_name": "jquery.uriAnchor.js",
+            "src_pkg_name": "jquery.urianchor"
+          }
+        ],
+        "dest_dirname": "js/vendor",
+        "dest_ext_str": "js"
+      },
+      {
+        "asset_id": "asis",
+        "asset_list": [
+          {
+            "src_pkg_name": "font-awesome",
+            "src_dirname": "fonts"
+          },
+          {
+            "src_asset_name": "Regular",
+            "src_pkg_name": "open-sans-fontface",
+            "src_dirname": "fonts"
+          }
+        ],
+        "dest_dirname": "font/vendor",
+        "do_dir_copy": true
+      }
+    ],
+    "patch_matrix": {
+      "patch_dirname": "patch",
+      "patch_map_list": [
         {
-          "dest_name": "pcss",
-          "src_asset_name": "pcss.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "powercss"
-        },
-        {
-          "dest_name": "pcss.cfg",
-          "src_asset_name": "pcss.cfg.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "powercss"
-        },
-        {
-          "dest_name": "taffy",
-          "src_asset_name": "taffy.js",
-          "src_pkg_name": "taffydb"
-        },
-        {
-          "src_asset_name": "jquery.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "jquery"
-        },
-        {
-          "src_asset_name": "jquery.event.dragscroll.js",
-          "src_dir_str": "dist",
-          "src_pkg_name": "jquery.event.dragscroll"
-        },
-        {
-          "src_asset_name": "jquery.event.gevent.js",
-          "src_pkg_name": "jquery.event.gevent"
-        },
-        {
-          "src_asset_name": "jquery.event.ue.js",
-          "src_pkg_name": "jquery.event.ue"
-        },
-        {
-          "src_pkg_name": "jquery.scrolli",
-          "src_dir_str": "dist",
-          "src_asset_name": "jquery.scrolli.js"
-        },
-        {
-          "src_asset_name": "jquery.uriAnchor.js",
-          "src_pkg_name": "jquery.urianchor"
-        }
-      ]
-    },
-    {
-      "dest_dir_str": "css/vendor",
-      "dest_ext_str": "css",
-      "asset_list": [
-        {
-          "src_asset_name": "font-awesome.css",
-          "src_dir_str": "css",
-          "src_pkg_name": "font-awesome"
-        }
-      ]
-    },
-    {
-      "dest_dir_str": "font/vendor",
-      "do_dir_copy": true,
-      "asset_list": [
-        {
-          "src_pkg_name": "font-awesome",
-          "src_dir_str": "fonts"
-        },
-        {
-          "src_pkg_name": "open-sans-fontface",
-          "src_dir_str": "fonts"
+          "check_filename": "node_modules/uglify-js/lib/scope.js",
+          "patch_filename": "uglify-js-3.0.21.patch",
+          "pattern_str": "^// BEGIN hi_score patch line 324",
+          "relative_name": "patch/uglify-js-3.0.21.patch"
         }
       ]
     }
-  ]
+  },
+  "xhi_11_BuildMatrix": {
+    "note01_str": "Deploy fields: src_pathname, tgt_pathname, is_dircopy.",
+    "note02_str": "Flags do_compress, do_isolate may be added.",
+    "note03_str": "Include bundles in app_list by wrapping in array",
+    "bundle_map": {
+      "xhi_js_list": [
+        "js/plugin/jquery.deferred.whenAll-1.0.0.js",
+        "js/xhi/00.js",
+        "js/xhi/01.util.js",
+        "js/xhi/02.data.js",
+        "js/xhi/02.fake.js",
+        "js/xhi/03.model.js",
+        "js/xhi/04.utilb.js",
+        "js/xhi/05.css_base.js",
+        "js/xhi/05.css_lb.js",
+        "js/xhi/05.css_shell.js",
+        "js/xhi/06.css.js",
+        "js/xhi/06.lb.js",
+        "js/xhi/07.shell.js",
+        "js/xhi/08.app.js"
+      ],
+      "font_deploy_list": [
+        [
+          "font/vendor/font-awesome-4.7.0",
+          null,
+          true
+        ],
+        [
+          "font/vendor/open-sans-fontface-1.4.0/Regular",
+          null,
+          true
+        ]
+      ]
+    },
+    "app_table": [
+      {
+        "app_id": "ex01",
+        "css_make_matrix": {
+          "do_vendor": true
+        },
+        "js_make_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "xhi_js_list"
+              ]
+            },
+            "js/ex01-build.js"
+          ],
+          "do_vendor": true
+        },
+        "path_copy_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "font_deploy_list"
+              ]
+            },
+            [
+              "tmplt/ex01.html",
+              "/",
+              false
+            ],
+            [
+              "img/hi_score.png",
+              null,
+              false
+            ]
+          ]
+        }
+      },
+      {
+        "app_id": "ex02",
+        "css_make_matrix": {
+          "do_vendor": true
+        },
+        "js_make_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "xhi_js_list"
+              ]
+            },
+            "js/ex02-build.js"
+          ],
+          "do_vendor": true
+        },
+        "path_copy_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "font_deploy_list"
+              ]
+            },
+            [
+              "tmplt/ex02.html",
+              "/",
+              false
+            ],
+            [
+              "img/hi_score.png",
+              null,
+              false
+            ]
+          ]
+        }
+      }
+    ]
+  }
 }

@@ -7,178 +7,27 @@
 ## The -u option forces bash to exit when encountering an uninit variable.
 ## The -e option forces bash to exit when encountering a non-zero exit status.
 ##   We omit -e as we do our own checking.
+
 set -u;
+_app_name=$( basename $0 );
+_app_link=$( readlink -f -- "${0}" );
+_bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
+_makedoc_exe="${_bin_dir}/make_doc";
 
-  ## == BEGIN Layout variables ==============================================
-  _app_name=$( basename $0 );
-  _orig_dir=$( pwd );
-  echo "start ${_app_name}";
-  echo "  > layout vars";
+## == BEGIN Process changed documents =====================================
+if [ ! -x "${_makedoc_exe}" ]; then
+  echo "bin/make_doc not found.  This file should exist.";
+  echo "Please check your installation.";
+  exit 1;
+fi
+echo "Updating HTML documents from MarkDown";
+"${_makedoc_exe}";
+_exit_code=$?;
+if [ "${_exit_code}" -ne "0" ]; then
+  echo "Document file failure".
+  echo "Please check your installation.";
+  exit "${_exit_code}";
+fi
+## == . END Process changed documents =====================================
 
-    # app path and name
-    _app_link=$( readlink -f -- "${0}" );
-    _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
-
-    # npm module paths
-    _npm_dir=$( dirname "${_bin_dir}" );
-    _pkg_file="${_npm_dir}/package.json";
-    _mod_dir="${_npm_dir}/node_modules";
-    _mod_dir_bin="${_mod_dir}/.bin";
-
-    # executables
-    _node_exe=$(which node);
-    _git_exe=$(which git);
-    _jslint_exe="${_mod_dir}/.bin/jslint";
-    _makedoc_exe="${_npm_dir}/bin/make_doc";
-    _nodeunit_exe="${_mod_dir}/.bin/nodeunit";
-
-    if [ ! -x "${_git_exe}" ]; then
-      echo "Git not installed.  Aborting...";
-      exit 1;
-    fi
-
-    # more paths
-    _git_dir=$(cd "$(${_git_exe} rev-parse --show-toplevel)" && pwd );
-    _nodeunit_file="${_npm_dir}/test/xhi_level_0.js";
-    _list_file="/tmp/git-pre-commit.${$}.list.tmp";
-    _log_file="/tmp/git-pre-commit.${$}.tmp";
-    _scratch_str="";
-
-  # echo "  < layout vars";
-  ## == . END Layout variables ==============================================
-
-  ## BEGIN Lint JavaScript files ============================================
-  if [ ! -x "${_jslint_exe}" ]; then
-    echo "JSLint executable not found."
-    echo "Please execute the following command: "
-    echo "  cd ${_npm_dir}; npm install ";
-    exit 1;
-  fi
-
-  cd "${_git_dir}";
-  pwd;
-
-  ${_git_exe} status \
-    | grep -v '/vendor/' \
-    | grep '.js$' \
-    | grep '^\s\+\(modified\|new file\)' \
-    | cut -d ":" -f 2- > "${_list_file}"
-
-  echo;
-  echo "Tests of updated or new *.js files ...";
-  cat "${_list_file}" | while read _loop_file; do
-    echo "====> ${_loop_file}";
-    _scratch_str=$(${_jslint_exe} "${_loop_file}");
-    _exit_code=$?;
-    if [ "${_exit_code}" -gt 0 ]; then
-      echo "  JSLint check FAILED";
-      echo "  ${_scratch_str}";
-    fi;
-    _scratch_str=$(grep -nP '\t' "${_loop_file}");
-    if [ ! -z "${_scratch_str}" ]; then
-      echo "  Tab check FAILED";
-      echo "  ${_scratch_str}";
-      echo;
-    fi
-    _scratch_str=$(grep -nP '\s+$' ${_loop_file});
-    if [ ! -z "${_scratch_str}" ]; then
-      echo "  Trailing space check FAILED";
-      echo "  ${_scratch_str}";
-      echo;
-    fi
-    _scratch_str=$(grep '^\s*.use strict.;$' ${_loop_file});
-    if [ -z "${_scratch_str}" ]; then
-      echo "  Strict use check FAILED";
-      echo "  Please add 'use strict'; at the top of your module function.";
-      echo;
-    fi
-    echo "<====";
-    echo;
-  done | tee "${_log_file}";
-
-  echo "Tests complete";
-  if grep -qs 'FAIL' "${_log_file}"; then
-    echo "Checks did not pass.";
-    echo "  Please fix the problem files and commit again.";
-    cp "${_log_file}" "${_orig_dir}/pre-commit-error.log";
-    exit 1;
-  fi
-
-  rm "${_log_file}";
-  rm "${_list_file}";
-
-  echo;
-  ## == . END Lint JavaScript files =========================================
-
-  ## == BEGIN Process changed documents =====================================
-  if [ ! -x "${_makedoc_exe}" ]; then
-    echo "bin/make_doc not found.  This file should exist.";
-    echo "Please check your installation.";
-    exit 1;
-  fi
-  echo "Updating HTML documents from MarkDown";
-  "${_makedoc_exe}";
-  _exit_code=$?;
-  if [ "${_exit_code}" -ne "0" ]; then
-    echo "Document file failure".
-    echo "Please check your installation.";
-    exit "${_exit_code}";
-  fi
-  ## == . END Process changed documents =====================================
-
-  ## == BEGIN Run regression tests ==========================================
-  if [ ! -x "${_node_exe}" ]; then
-    echo "Node not found.  Please install nodejs and ensure it is "
-    echo " found in your PATH environment variable."
-    exit 1;
-  fi
-
-  if [ ! -x "${_nodeunit_exe}" ]; then
-    echo "Nodeunit not found.  Please run "
-    echo "cd ${_npm_dir}; npm install"
-    echo
-  fi
-
-  if [ ! -r "${_nodeunit_file}" ]; then
-    echo "Nodeunit file ${_nodeunit_file} not found."
-    echo "Please ensure it exists."
-    echo
-    exit 1;
-  fi
-
-  echo "Running regression tests";
-  "${_nodeunit_exe}" "${_nodeunit_file}"
-  _exit_int=$?;
-  
-  if [ "${_exit_int}" != 0 ]; then 
-    echo "Regression tests failed.  Please fix and try again.";
-    exit "${_exit_int}";
-  fi
-  ## == . END Run regression tests ==========================================
-
-  ## == BEGIN Report outstanding TODOs ======================================
-  cd "${_npm_dir}"
-
-  echo;
-  echo " == Please review the list of outstanding TODOs ====================";
-  echo " == TODO <YYYY-mm-dd> <username> <urgency>: <Comment> ==============";
-  grep -n TODO $(find ./ -type f -name '*.js' \
-    |grep -v node_modules |grep -v /vendor/ |grep -v /build/ ) |sort -u
-  echo " ===================================================================";
-  echo
-
-  # Open STDIN - see https://stackoverflow.com/questions/3417896
-  exec < /dev/tty
-  read -p "Proceed [Y/n]? " _reply;
-
-  if ( echo "${_reply}" |grep -i "^n" ); then
-    echo "Commit aborted.";
-    exit 1;
-  fi
-  # Close STDIN
-  exec <&-
-
-  ## == . END Report outstanding TODOs ======================================
-
-  cd "${_orig_dir}"
-  exit 0;
+exec ${_bin_dir}/xhi dev_commit && exit 1;

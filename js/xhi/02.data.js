@@ -5,23 +5,14 @@
  * Synopsis: Add _data_ capabilities to app_map
  * Provides: Shared data transfer methods (AJAX, Websockets)
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global $ */
+/*jslint browser : true */
+/*global $, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeData_ ====================================
-__NS._makeData_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeData_ =====================================
+xhi._makeData_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -150,10 +141,8 @@ __NS._makeData_ = function ( aMap ) {
       do_data_encode = __true;
     }
 
-    // TODO 2016-06-13 mikem info: Callback can take list of fns
-    // to be executed in order. Real cool!
-    //
-    // TODO 2016-06-13 mikem warn: Auth signature as shown here?
+    // Callback can be a list executed in-order. Could be useful.
+    // TODO 2016-06-13 mmikowski warn: Add auth signature as shown here
     // beforeSend  : function (jqxhr_obj) {
     //  prepareXhrSignature(jqxhr_obj, arg_map._full_url_);
     // }
@@ -231,4 +220,4 @@ __NS._makeData_ = function ( aMap ) {
   aMap._data_ = { _initModule_ : initModule };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeData_ =====================================
+// == . END MODULE xhi._makeData_ ======================================

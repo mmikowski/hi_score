@@ -5,23 +5,14 @@
  * Synopsis: Add _lb_ capabilities to app_map
  * Provides: Lightbox feature module
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global pcss, $ */
+/*jslint browser : true */
+/*global $, pcss, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeLb_ ======================================
-__NS._makeLb_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeLb_ =======================================
+xhi._makeLb_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   var
@@ -673,5 +664,5 @@ __NS._makeLb_ = function ( aMap ) {
   };
   // == . END PUBLIC METHODS ==========================================
 };
-// == . END MODULE __NS._makeLb_ ======================================
+// == . END MODULE xhi._makeLb_ =======================================
 

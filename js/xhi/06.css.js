@@ -5,24 +5,15 @@
  * Synopsis: Add _css_ capabilities to app_map
  * Provides: Run-time CSS styling using PowerCSS
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global pcss */
+/*jslint browser : true */
+/*global pcss, xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeCss_ ======================================
-__NS._makeCss_ = function ( aMap ) {
-  // == BEGIN MODULE SCOPE VARIABLES ===================================
+// == BEGIN MODULE xhi._makeCss_ ======================================
+xhi._makeCss_ = function ( aMap ) {
+  // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
     aKey   = aMap._aKey_,
@@ -174,7 +165,7 @@ __NS._makeCss_ = function ( aMap ) {
 
     _initModule_       : initModule
   };
-  // == . END PUBLIC METHODS ===========================================
+  // == . END PUBLIC METHODS ==========================================
 };
-// == . END MODULE __NS._makeCss_ ======================================
+// == . END MODULE xhi._makeCss_ ======================================
 

@@ -1,83 +1,159 @@
 ![hi_score][_0A]
 [![Coverage Status](https://coveralls.io/repos/github/mmikowski/hi_score/badge.svg?branch=master)](https://coveralls.io/github/mmikowski/hi_score?branch=master)
 
-*A modern full-life-cycle starter project for SPAs*
+*A modern full-lifecycle starter project for SPAs*
 
+---
 ## Overview
-This is an SPA starter project that installs best-in-class assets and tools to save time and guide best practice. Install **hi_score** today and start writing Test-driven native JS client code immediately. The project comes with recommended libraries, but feel free to swap them out as needed. [That's the point][_01].
+This SPA starter project provides best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap assets and libraries as required. [That's the point][_01].
 
-## Features
-- Code coverage at 98.9% per coveralls.io using Istanbul
-- Fractal MVC architecture and proven file structure per the diagram below
-- Vendor asset management (`npm install && npm run setup`) including support for executables, stylesheets, fonts, images, and libraries and automated patching.
-- Libraries written to exacting [standards][_03] to ensure readability and modularity
-- Full code [standard][_03] and [quick-reference guides][_04] included
-- Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
-- Automatic commit-hook linting using JSLint, whitespace check, and strict checks (`git commit...`)
-- Automatic in-line browsable HTML documentation using markdown and pandoc (`git commit...`)
-- TDD and regression tests using Nodeunit + JSDOM (`npm test`)
-- Type safety with [type-cast][_05] libraries
-- Build compression **including object properties** (`npm run make`)
-- Creation of distribution-ready `build/dist` from build process (`npm run make`)
-- Two simple demo apps that show compression and namespacing (`npm run make`)
-
+---
 ## Quick start
-```bash
-  mkdir -p ~/GitHub
-  cd ~/GitHub
-  git clone git@github.com:mmikowski/hi_score.git
-  cd hi_score
-  npm install && npm run setup
+```
+  $ cd hi_score; export PATH=`pwd`/bin:$PATH;
+  $ xhi build && google-chrome build/latest/dist/ex0*.html
+
+```
+The `xhi build` command will install vendor assets; setup and patch files for development; configure a development HTTP server; test code with JSLint; check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with unique ID, and more. Yes, we know the examples are lame. We promise to make them more exciting in the future.
+
+---
+## Key benefits
+- Automated full-lifecycle best practice with the `xhi` tool
+- Installation and management of currated libs and assets
+- Fully managed of vendor assets including SCMS controlled patching
+- Type safety using [type-casting][_05]
+- Battle-tested `xhi` libraries with 98% coverage of core utilities
+- Integrated development server using HTTPS and HTTP2
+- Consistent JS and Bash code style [see Code standard][_03]
+- Integrated with GIT and NPM lifecycles
+- TDD with drop directory and code coverage reports
+- One-touch build with deployment-ready distributions
+- Example applications
+- Placeholders for future lifecycle phase marked WIP.
+
+---
+## The xhi tool
+The `xhi` tool automates almost every conceivable stage of the SPA development process using researched best practice. The configuration is stored in the NPM `package.json` file and is used to support all [NPM lifecycle scripts][_38]. The `xhi` will run the multiple number of stages to attain a goal (See [below][#run-lifecycle-stages]) and will abort with guidance instructions if any prerequisite stage cannot be met.
+
+The full-lifecycle stages supported by `xhi` are shown below. Those marked 1.4.x are placeholder which will be addressed in the next major release.
+
+```
+  $ xhi help all
+    xhi>  START Stage 00 help
+    xhi>  00 help        : Help on 'xhi' tool, use -v for verbose
+    xhi>  01 install     : Download and install npm modules
+    xhi>  02 setup       : Patch and distribute vendor npm assets
+    xhi>  03 design      : Show architecture docs
+    xhi>  04 dev_pull    : Download and merge SCMS assets (git pull)
+    xhi>  05 dev_upgrade : Upgrade packages to latest
+    xhi>  06 dev_start   : Start local HTTP server
+    xhi>  07 dev_test    : Run regression tests
+    xhi>  08 dev_lint    : Lint changed code
+    xhi>  09 dev_cover   : Create coverage report
+    xhi>  10 dev_commit  : Commit changes with git
+    xhi>  11 build       : Build a distribution
+    xhi>  12 publish     : Upload to publishers
+    xhi>  13 dev_restart : Cycle local HTTP server
+    xhi>  14 dev_stop    : Stop local HTTP server
+    xhi>  15 deploy      : Upload distribution        1.4.x
+    xhi>  16 prod_start  : Start production server(s) 1.4.x
+    xhi>  17 prod_restart: Cycle production server(s) 1.4.x
+    xhi>  18 prod_stop   : Stop production server(s)  1.4.x
+    xhi>  19 fetch_info  : Fetch feedback             1.4.x
+    xhi>  20 uninstall   : Remove xhi                 1.4.x
+    xhi>  END Stage 00 help
 ```
 
+### Get help
+The `xhi` tool help is detailed and extensive. We have deleted many sections of this document because the information is now directly integrated  One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
+
+```
+  $ xhi help dev_lint -v
+    xhi>  START Stage 00 help
+    xhi>  08 dev_lint:
+    xhi>    Check lint quality of changed JS code.
+    xhi>    Files in 'vendor' directors are ignored.
+    xhi>    Four tests are performed on each file:
+    xhi>      1. Fail if tabs characters or trailing space.
+    xhi>      2. Fail if 'use strict'; is not found.
+    xhi>      3. Fail if 'jslint --config config/jslint.conf <file>'
+    xhi>         does not pass.
+    xhi>      4. List TODO items for developer review.
+    xhi>         Fail if developer does not approve.
+    xhi>    NPM SCRIPTS      : none.
+    xhi>    SUCCESS CRITERIA : All tests complete without error
+    xhi>  END   Stage 00 help
+```
+
+### Run lifecycle stages
+A typical workflow is shown below.
+
+```
+  # Get list of stages
+  $ xhi help all
+
+  # Run desired stage-range
+  $ xhi dev_cover,build
+```
+
+The `xhi` tool takes a `<stage-range>` argument. Stages that are provided out-of-order are sorted before running. Example use is shown below.
+
+```
+  # Run a single stage
+  $ xhi install
+
+  # Run all stages between 'install' and 'dev_commit' inclusive
+  $ xhi install-dev_commit
+
+  # Run individual stages
+  $ xhi update,dev_cover
+
+  # Run a range using stage numbers
+  $ xhi 0-5
+
+  # Get help on ranges
+  $ xhi help install -v
+  $ xhi help install-dev_commit
+  $ xhi update,dev_cover
+  $ xhi help 0-5
+```
+
+The `xhi` tool will often run more than one stage even when we specify just one. That is because many stage require prequisite as discussed in the following section.
+
+### Prerequisite resolution
+The `xhi` has a sophisticated prerequisite resolver that ensures required stages are run only if required.
+
+#### Goal prerequisites
+Goal prerequisites are stages that are always run before before the target stage. For example, if we run `xhi dev_commit` the `dev_lint`, and `dev_test` stages will be run first to ensure the code quality is acceptable. If either prerequisite fails, `xhi` exits immediately (with an exit code of 1) and the target stage is not attempted. Goal prequesites are configuired in `package.json.xhi_commandTable`.
+
+#### Environment prequisites
+These are stages that must be successfuly completed in the development environment. For example, if we run `xhi dev_commit` but have not run `xhi install`, the `install` stage will be run before the `dev_commit` stage. The success or failure of each stage is saved in the state file (`lib/xhi_state.json`) and the next stage is run. If the `install` stage succeeds it will not be included in future prerequisite calculations.
+
+Environment prerequisites may be invalidated. For example, if `xhi install` or `xhi upgrade` fail, the tool will mark the `install` stage as failed and this will be attempted again in the next `xhi` invocation that require it as a prerequisite.
+
+Explicitly requested stages will run again regardless of their last success statuses. For example, `xhi dev_lint` may or may not run the `install` stage, but `xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `xhi help-dev_lint` will also run `install` since it is explicitly within the range provided.  We can reset the status by removing the `stage_status_map` from the `lib/xhi_state.json` file.
+
+### Exit status
+If all the stages of a range are successful an exit status of `0` is provided. If any stage fails  processing of the range stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable.
+
+---
 ## Code Style
 We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
 
-## Architecture
-The `xhi` libraries are structured to facilitate loose coupling but strict call precidence. For example the `xhi/00.js` library must be loaded to the browser before any other `xhi` code, and it may not call any library with a higher precidence number. The `08.app.js`, in comparison, must be loaded after all the `00-07` libraries, but it may call any library of the same or lower precidence:
-
-```
-  /|                                                       //////
- +  ======================== API CALLS =========================
-  \|                                                       \\\\\\
-
-  +---------+    +----------+                       +----------+
-  | 02.data |    | 03.model |<--+-------------------|  Shell   |
-  |  Data   |<---|  Model   | ..... events .....))) | 07.shell |
-  |  Fetch  |    +----------+            :          +----------+
-  +---------+      |                     :                    |
-       |           |                     :      +---------+   |
-       |           |                     :      | 06.lb   |   |
-       |           |                     :..))) | litebox |<--+
-       |           |  +----------+       :      | feature |   |
-       v           |  | Browser  |<--+----------+---------+   |
-  +---------+      |  |  Utils   |   |   :                    |
-  | 01.util |      |  | 04.utilb |   |   :      +---------+   |
-  |  Utils  |<-----+--+----------+   |   :      | 06.*    |   |
-  +---------+                        |   ...))) | feature |<--+
-        |                            |          | modules |   |
-        v                            +----------+---------+   |
-  +-----------+                      |                        |
-  |   00.js   |                      |      +-------------+   |
-  | namespace |                      |      | 05.css_*    |   |
-  +-----------+                      |      | 06.css      |<--+
-                                     |      | feature css |
-                                     +------+-------------+
- \\\\\\                                                       |\
-  ========================== DATA FLOW =======================| +
- //////                                                       |/
-```
-
-We use model events to broadcast changes to the Shell and Feature modules and we keep our feature modules isolated from each other. This enhances portability and quality.
-
+---
 ## Browser compatibility
 Our baseline compatibility is IE9+. Those supporting IE 8 have our sympathy.
 
-## Development and deployment
-### Ubuntu 16.04, 16.10, 17.04
-Everything should just work on recent Ubuntu and derivative distributions like Mint or Kubuntu. Here are the steps to install prequisites on Ubuntu 17.04:
+---
+## Deployment platform
+The server component of **hi\_score** is designed to run on industry-standard hardware, cloud instances like Amazon EC2, and containers. Our server platform is Ubuntu 16.04 LTS. Later version of Ubuntu and other distributions should work well.
 
-```bash
+---
+## Development platform
+### Ubuntu 16.04, 16.10, 17.04
+Everything should just work on recent Ubuntu and derivatives like Mint or Kubuntu. The steps to install all required libraries are shown below.
+
+```
   # Install development libs
   sudo apt-get install build-essential openssh-server git pandoc \
     libfile-slurp-perl liblist-moreutils-perl libgetopt-mixed-perl
@@ -95,76 +171,36 @@ Everything should just work on recent Ubuntu and derivative distributions like M
 ```
 
 ### Other Linux
-Other modern Linux distributions should generally work as long as the same tools can be installed as as above. It works fine on CentOS with development libraries installed:
+Other Linux distributions should generally work as long as the same libraries can be installed with Ubuntu. It works fine on current versions of CentOS. Development libraries should be installed as shown below.
 
-```bash
- yum install gcc gcc-c++ make openssl-devel
+```
+  $ yum install gcc gcc-c++ make openssl-devel
 ```
 
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
-### Virtual Machine
-Use AWS or a Virtual Box image using Ubuntu 16.04 Server using the the same steps above.
 
-This is probably the best way to get familiar with the project. Any work here will pay off during deployment as **hi\_score** is designed to run on industry-standard Ubuntu servers, cloud instances like Amazon EC2, and containers.
+### Virtual Machine
+Use AWS or a Virtual Box image using Ubuntu 16.04 Server using the the same steps above. This is the recommended approach for MacOS or Windows users.
 
 ### Mac
-We recommend using a virtual machine if possible. However one should be able to develop natively on Mac. At the very least one will need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
+We have not been able to test developing natively on a Mac but it should be possible. At the very least one would need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
 
 ### Windows
-We recommend using a virtual machine as detailed above. Installation *might* work with the new Linux subsystem on Windows 10 but we don't have any experience with it.
+We recommend using a virtual machine as detailed above.
 
-## Use
-### Installation
-Use the **Quick start** guide to install **hi\_score** and prepare it for development. One can also use `npm install hi_score` but the `git` method is preferred. No errors should be reported.
+---
+## Namespaces
+Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. Namespacing across JS and CSS can help one trace behaviors to the controlling code faster and with greater accuracy. We can open them in google-chrome (`xhi install && google-chrome ex*.html`) to see this in practice.
 
-### Testing
-Use `npm test` to run the regression tests. You may expand tests by adding to the `test/xhi_level_0` file. Tested `xhi` modules include the root namespace (`00.js`), the utilities (`01.util.js`), the browser utilities (`04.utilb.js`), and the litebox (`06.lb.js`).
+When we view Example 1 (`ex01.html`) we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac), type `ex01` into the JavaScript console and press `<return>` to inspect that value. We can see that thisw single variable that contains our entire application. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 (`ex02.html`) instead we can see that `ex01` is `undefined` and `ex02` contains our app code using a similar process.
 
-### Coverage
-Use `npm run coverage` to calculate code coverage. We can open the `coverage/lcov-report/index.html` file with a browser to inspect coverage.  We use the excellent `Istanbul` code coverage tool along with the JSDOM package. Current coverage is reported at the top of this document.
+We also namespace our CSS classes to avoid collisions. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module.
 
-### Publish coverage
-Use `npm run publish-coverage` to publish a report to the coveralls.io website. The process to set up coveralls is described in `hi_score/README.coveralls.md`.
-
-### Build
-Use `npm run make` to create a distribution for deployment. The client deployment files are found in `build/dist`.  We can inspect our sample applications as follows:
-
-```bash
-  cd ~/GitHub/hi_score
-  npm run make
-  cd build/dist
-  google-chrome ex01.html ex02.html
-```
-
-Yes, we know the examples are lame. We are working on that.
-
-### Update
-One may update all the npm libraries, assets and the `package.json` file as follows:
-
-```bash
-PATH=$PATH:node_modules/.bin
-
-# Check module versions
-ncu
-
-# Update package and manifest
-ncu -u --packageFile package.json
-
-# Reinstall vendor assets
-npm run setup
-```
-
-## Namespacing
-When we open our example apps (`google-chrome ex01.html ex02.html`) we see they provide near-identical features and share a great deal of code and assets. However, they use separate *namespaces* to avoid data collisions. Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. With namespacing, one can trace behaviors to the controlling code faster and with greater accuracy.
-
-When we view the Example 1 app we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac) and enter `ex01` into the JavaScript console to inspect that value. We can see that `ex01` is the single variable that contains all our app code. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 we can see that `ex01` is `undefined` and `ex02` contains all our app code.
-
-We namespace our CSS classes as well. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module.
-
+---
 ## Vendor assets
-Use `npm run setup` to deploy vendor assets. The configration for vendor assets are in `package.json`.  The `devDependencies` map listing the assets, `xhiVendorAssetGroupTable` lists the deployment groups and files.
+The `xhi setup` stage patches and deploys vendor assets using the `xhi_02_SetupMatrix` configuration found in the `package.json` file.  This field is correlated with the with the `devDependencies` map to ensure assets are properly label, patched, distributed, and ignored by GIT.
 
-Assets are copied to their destination directory with their version number appended to their names. The `.gitignore` file instructs `git` to ignore all these files as their development management is external to our project. **Everytime `npm setup` is run the vendor directories are deleted and recreated**.
+Assets are copied to their destination directory with their version number appended to their names. The `.gitignore` file instructs `git` to ignore all these files as their development management is external to our project. **Everytime `xhi setup` is run the vendor directories are deleted and recreated**.
 
 ### Executable assets
 Vendor executables are copied to the `bin/vendor` directory.
@@ -207,7 +243,7 @@ Developent libraries are used for testing a building code. They **are** not copi
 - [coveralls][_18]: Code coverage reporting
 - [istanbul][_19]: Code coverage
 - [jsdom][_20]: DOM mock for testing
-- [jslint][_21]: Linting for commit hook
+- [jslint][_21]: Linting for xhi, commit hook
 - [nodeunit][_22]: Unit testing
 - [node-inspector][_23]: Debugging
 - [uglifycss][_24]: CSS minification
@@ -219,32 +255,31 @@ Vendor CSS libraries are copied to the `css/vendor` directory. We copy the Font 
 
 - [Font Awesome][_30]: Icon fonts
 
-## Apply patches
-Use `npm run setup` to apply patches. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory.
+### Patches
+The `xhi_02_SetupMatrix.patch_matrix` directs patch application.
+
+The `xhi setup` stage applies patches to vendor assets. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory.
 
 The patches mechanism allows us to use great tools tweaked for our needs while maintaining the upstream source. For example, we patch `uglify-js` to support object property name compression and shuffling by `superpack`.
 
-## Build a distribution
-Use `npm run make` to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/dist`). The result can load up to 10x faster and typically consumes only 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
+---
+## Build
+Use `xhi build` or `xhi make` or `xhi 11` (where 11 is the stage number) to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result loads faster, runs faster, and typically consumes less than 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
 
-```bash
-  cd ~/GitHub/hi_score
+```
+  $ ## Show disk usage of all development files
+  $ cd hi_score && export PATH=`pwd`/bin:$PATH;
+  $ du -sh .
+    160M
 
-  # Make sure we have built the distribution
-  npm install && npm run setup && npm test && npm run make
-
-  # Get disk usage of all development files
-  du -sh .
-
-  # Inspect distribution directory
-  cd build/dist
-  tree
-  du -sh .
+  $ ## Get disk usage of all distribution files
+  $ xhi build && cd build/latest && du -sh .
+    2.1M
 ```
 
-The `buildify` build script uses `superpack` to analyze variable names and object properties and replaces them with shuffled keys. The shortest keys are used for the most-used symbols. It reports the symbol-to-key mapping and the frequency of use which makes further optimizations by pruning code easier. Projects with many object properities can be compressed an additional 50% using `superpack`.
+The `xhi make` stage uses the `buildify` to make a distribution. This script in turn uses `superpack` to analyze all symbols (variable names, object properties, and labels) and replaces them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. `superpack` reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>.diag` for mapping and key use). Projects with many object properities can be compressed an additional 50% using `superpack` and it can make reverse-engineering of the compressed code much harder.
 
-Buildify reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
+It is typical to see distributions require only 2-10% the storage of a development environment.There are substantial benefits beyond storage reduction. In particular, security is greatly improved because only a tiny, currated, obsfucated portion of your code is published and sensitive data such as SCMS metadata, documentation, lookup-maps, and development assets are omitted for use to publish elsewhere at our discretion. The distribution-ready application also reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
 
 | Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
 |-------------|-----------------:|-----------------:|-----------------:|
@@ -336,15 +371,53 @@ MIT
 - (x) Convert bin/setup in JavaScript
 - (x) Configure setup completely in package.json
 
-### TODO
-- (o) Test load time using remote server
-- (o) Provide unique build number like build/0001/
-- (o) Add deploy capability
-- (o) Move coverage reports to build/xxxx/ directories
-- (o) Convert buildify from Bash to JavaScript using package.json manifest
-- (o) Convert superpack from Perl to JavaScript using package.json manifest
-- (o) Increase richness of example app
-
+### Version 1.3.x
+- (o) Update code standard quick-reference    (2hr)
+- (i) Create VirtualBox OVA for development (8hr)
+- (i) Implement `xhi` tool development capabilities
+  - (o) 12 publish      : Push to coveralls         ( 4hr)
+  - (o) 13 dev\_restart : Implement feature         ( 2hr)
+  - (x) 11 build        : Debug build               ( 1hr)
+  - (x) 11 build        : Replace buildify module   (24hr)
+  - (x) 00 xhi help
+  - (x) 01 install
+  - (x) 02 setup
+  - (x) 03 design
+  - (x) 04 dev\_pull
+  - (x) 05 dev\_upgrade
+  - (x) 06 dev\_start
+  - (x) 07 dev\_test
+  - (x) 08 dev\_lint
+  - (x) 09 dev\_cover
+  - (x) 10 dev\_commit
+  - (x) 14 dev\_stop
+- (x) Tool enhancements
+  - (x) `xhi setup`     : Implement env prequisites and `lib/xhi_state.json`
+  - (x) `xhi setup`     : Auto-create `xhi_state.json` if required
+  - (x) `xhi build`     : Create build directory like `dist/\<build-number\>`
+  - (x) `xhi build`     : Link `dist/latest` to latest build
+  - (x) `xhi build`     : Do not auto-increment build until next commit
+  - (x) `xhi dev_cover` : Move to `dist/\<build-number\>` directories
+- (x) Update code standard
+- (x) Update all NPM lifecycle scripts to use `xhi` 
+    - (x)"help" : "bin/xhi help",
+    - (x)"make" : "bin/xhi make",
+    - (x)"setup": "bin/xhi setup",
+    - (x)"test" : "bin/xhi test",
+    - (x)"xhi"  : "bin/xhi"
+    
+### Version 1.4.x
+- (i) Create AMI image for deployment
+- (o) Test load times using remote server
+- (o) `xhi` tools enhancements
+  - (o) `xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
+  - (o) `xhi dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
+  - (o) `xhi build` convert: buildify Bash to JS, use `package.json` config
+  - (o) `xhi build` convert: superpack Perl to JS, use `package.json` config
+  - (o) `xhi deploy` implement: Add configuration and capability
+  - (o) `xhi publish` : Push to NPM
+- (o) Increase richness of example app(s)
+---
 ## Similar Projects
 [absurd.js][_26], [responsive.js][_27]
 
@@ -389,3 +462,4 @@ MIT
 [_35]:https://www.npmjs.com/package/clusterjs
 [_36]:https://www.npmjs.com/package/express
 [_37]:https://www.npmjs.com/package/websocket
+[_38]:https://docs.npmjs.com/misc/scripts

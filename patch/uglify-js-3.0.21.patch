@@ -1,6 +1,6 @@
---- node_modules/uglify-js/lib/scope.js	2017-06-29 17:40:52.100445914 -0700
-+++ node_modules/uglify-js/lib/scope.js	2017-06-29 17:47:07.231591838 -0700
-@@ -321,27 +321,34 @@
+--- node_modules/uglify-js/lib/scope.js	2017-08-23 22:41:56.307240446 -0700
++++ node_modules/uglify-js/lib/scope.js	2017-08-23 22:43:11.609482763 -0700
+@@ -322,27 +322,34 @@
      return symbol.thedef = def;
  });
  
@@ -16,9 +16,9 @@
 +        m = base54( ++this.cname );
 +        if ( m === '_' ) { continue OUT };
 +        n = '_' + m + '_';
- 
-+        if ( ! is_identifier( n ) ) { continue OUT; }
 +
++        if ( ! is_identifier( n ) ) { continue OUT; }
+ 
          // https://github.com/mishoo/UglifyJS2/issues/242 -- do not
          // shadow a name reserved from mangling.
 -        if (options.reserved.indexOf(m) >= 0) continue;
@@ -48,7 +48,7 @@
 -});
 +    throw 'Cannot find unique key after 1000 iterations';
 + });
-+// . END hi_score patch line 351
++// . END hi_score patch line 352
  
  AST_Function.DEFMETHOD("next_mangled", function(options, def){
      // #179, #326

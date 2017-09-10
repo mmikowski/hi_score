@@ -5,23 +5,14 @@
  * Synopsis: Add _css_base_ capabilities to app_map
  * Provides: Shared CSS symbols used by PowerCSS
  *
+ * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
-/*global */
+/*jslint browser : true */
+/*global xhi */
 
-var __ns = 'xhi', __NS;
-/* istanbul ignore next */
-try          { __NS = global[ __ns ]; }
-catch ( e1 ) { __NS = window[ __ns ]; }
-
-// == BEGIN MODULE __NS._makeCssBase_ ==================================
-__NS._makeCssBase_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeCssBase_ ==================================
+xhi._makeCssBase_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   //noinspection MagicNumberJS
@@ -427,4 +418,4 @@ __NS._makeCssBase_ = function ( aMap ) {
   };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeCssBase_ ==================================
+// == . END MODULE xhi._makeCssBase_ ==================================

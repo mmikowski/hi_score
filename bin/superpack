@@ -12,6 +12,17 @@
     use File::Slurp;
     use Getopt::Mixed;
 
+    ## BEGIN printHelpFn
+    sub printHelpFn {
+      say <<EOH;
+      superpack -i <input_file> -o <output_file> -l <log_file>
+      superpack --input <input_file> --output <output_file> --log <log_file>
+      superpack -h
+      superpack --help
+EOH
+    }
+    ## . END printHelpFn
+  
     ## TODO: switch Getopt::Mixed to Getopt::Long
     #   See http://crumple-zone.it.uts.edu.au\
     #     /pub/mirror/cpan/modules/by-category/12_Opt_Arg_Param_Proc/\
@@ -23,28 +34,105 @@
     #     Getopt::Long::Configure(qw(bundling no_getopt_compat));
     #     GetOptions( ...option-descriptions... );
 
-    # Reporting utilities
+    ## BEGIN config Dumper and setup data
     local $Data::Dumper::Terse    => 1;
     local $Data::Dumper::Indent   => 1;
     local $Data::Dumper::Sortkeys => 1;
 
+    # List characters for replacement symbols
+    my @deck1_char_list = qw(
+      _ a b c d e f g h i j k l m n o p q r s t u v w x y z
+    );
+    my @deck2_char_list = qw(
+      _ a b c d e f g h i j k l m n o p q r s t u v w x y z
+      0 1 2 3 4 5 6 7 8 9
+    );
+
+    # List munge strings to skip; currently all js reserved words.
+    # Updated 2017-09-07 to include all ECMA versions.
+    # See https://mathiasbynens.be/notes/reserved-keywords
+    my @skip_list = (
+      'abstract',   'arguments', 'await',       
+      'boolean',    'break',     'byte',        
+      'case',       'catch',     'char',        
+      'class',      'const',     'continue',    
+      'debugger',   'default',   'delete',      
+      'do',         'double',    'else',        
+      'enum',       'eval',      'export',      
+      'extends',    'false',     'final',       
+      'finally',    'float',     'for',         
+      'function',   'goto',      'if',          
+      'implements', 'import',    'in',           
+      'instanceof', 'int',       'interface',   
+      'let',        'long',      'native',      
+      'new',        'null',      'package',     
+      'private',    'protected', 'public',      
+      'return',     'short',     'static',      
+      'super',      'switch',    'synchronized',
+      'this',       'throw',     'throws',      
+      'transient',  'true',      'try',         
+      'typeof',     'var',       'void',        
+      'volatile',   'while',     'with',        
+      'yield'
+    );
+    my $skip_key_mref = {};
+    for my $skip_word ( @skip_list ) {
+      $skip_key_mref->{ $skip_word } = 1;
+    }
+
+    # TODO: test and remove this old list
+    # 'abstract'     => 1, 'boolean'      => 1,
+    # 'break'        => 1, 'byte'         => 1,
+    # 'case'         => 1, 'catch'        => 1,
+    # 'char'         => 1, 'class'        => 1,
+    # 'const'        => 1, 'continue'     => 1,
+    # 'debugger'     => 1, 'default'      => 1,
+    # 'delete'       => 1, 'do'           => 1,
+    # 'double'       => 1, 'else'         => 1,
+    # 'enum'         => 1, 'export'       => 1,
+    # 'extends'      => 1, 'final'        => 1,
+    # 'finally'      => 1, 'float'        => 1,
+    # 'for'          => 1, 'function'     => 1,
+    # 'goto'         => 1, 'if'           => 1,
+    # 'implements'   => 1, 'import'       => 1,
+    # 'in'           => 1, 'instanceof'   => 1,
+    # 'int'          => 1, 'interface'    => 1,
+    # 'let'          => 1, 'long'         => 1,
+    # 'native'       => 1, 'new'          => 1,
+    # 'package'      => 1, 'private'      => 1,
+    # 'protected'    => 1, 'public'       => 1,
+    # 'return'       => 1, 'short'        => 1,
+    # 'static'       => 1, 'super'        => 1,
+    # 'switch'       => 1, 'synchronized' => 1,
+    # 'this'         => 1, 'throw'        => 1,
+    # 'throws'       => 1, 'transient'    => 1,
+    # 'try'          => 1, 'typeof'       => 1,
+    # 'var'          => 1, 'void'         => 1,
+    # 'volatile'     => 1, 'while'        => 1,
+    # 'with'         => 1
+    ## . END config Dumper and setup data
+
     ## BEGIN process command-line options
-    Getopt::Mixed::init( 'i=s o=s l=s input>i output>o log>l' );
+    Getopt::Mixed::init( 'i=s o=s l=s h input>i output>o log>l help>h' );
     my %opt_map;
 
     while ( my( $option, $value, $pretty ) = Getopt::Mixed::nextOption() ) {
-      $opt_map{ $option } = $value;
+      $opt_map{ $option } = $value || 1;
     };
     Getopt::Mixed::cleanup();
 
-    # get file paths for input file, output file, and log file
-    my $script_file = $opt_map{ 'i' }
-      || die q(required [i]nput not  provided);
-    my $output_file = $opt_map{ 'o' }
-      || die q(required [o]utput not provided);
+    if ( $opt_map{ 'h' } ) {
+      printHelpFn();
+      exit 0;
+    }
+    # Get file paths for input file, output file, and log file
     my $log_file    = $opt_map{ 'l' }
       || die q(required [l]og not provided);
-    ## END process command-line options
+    my $output_file = $opt_map{ 'o' }
+      || die q(required [o]utput not provided);
+    my $script_file = $opt_map{ 'i' }
+      || die q(required [i]nput not  provided);
+    ## . END process command-line options
 
     ## BEGIN extract tokens from input
     # slurp in file content
@@ -74,17 +162,9 @@
     my @token_list
       = sort { $seen_mref->{$b} <=> $seen_mref->{$a} } keys(%{$seen_mref});
     # DEBUG: print STDERR join( q(, ), @token_list ) . "\n";
-    ## END extract tokens from input
+    ## . END extract tokens from input
 
     ## BEGIN Deck management
-    my @deck1_char_list = qw(
-      _ a b c d e f g h i j k l m n o p q r s t u v w x y z
-    );
-    my @deck2_char_list = qw(
-      _ a b c d e f g h i j k l m n o p q r s t u v w x y z
-      0 1 2 3 4 5 6 7 8 9
-    );
-
     my @deck_list      = ();
     my @orig_deck_list = ();
 
@@ -107,42 +187,10 @@
 
       return scalar @deck_list;
     }
-    ## END deck management
+    ## . END deck management
 
     ## BEGIN initialize vars to create token_x_munge_map map
     my %token_x_munge_map = ();
-    # munge strings to skip; currently all js reserved words
-    my $skip_key_mref = {
-      'abstract'     => 1, 'boolean'      => 1,
-      'break'        => 1, 'byte'         => 1,
-      'case'         => 1, 'catch'        => 1,
-      'char'         => 1, 'class'        => 1,
-      'const'        => 1, 'continue'     => 1,
-      'debugger'     => 1, 'default'      => 1,
-      'delete'       => 1, 'do'           => 1,
-      'double'       => 1, 'else'         => 1,
-      'enum'         => 1, 'export'       => 1,
-      'extends'      => 1, 'final'        => 1,
-      'finally'      => 1, 'float'        => 1,
-      'for'          => 1, 'function'     => 1,
-      'goto'         => 1, 'if'           => 1,
-      'implements'   => 1, 'import'       => 1,
-      'in'           => 1, 'instanceof'   => 1,
-      'int'          => 1, 'interface'    => 1,
-      'let'          => 1, 'long'         => 1,
-      'native'       => 1, 'new'          => 1,
-      'package'      => 1, 'private'      => 1,
-      'protected'    => 1, 'public'       => 1,
-      'return'       => 1, 'short'        => 1,
-      'static'       => 1, 'super'        => 1,
-      'switch'       => 1, 'synchronized' => 1,
-      'this'         => 1, 'throw'        => 1,
-      'throws'       => 1, 'transient'    => 1,
-      'try'          => 1, 'typeof'       => 1,
-      'var'          => 1, 'void'         => 1,
-      'volatile'     => 1, 'while'        => 1,
-      'with'         => 1
-    };
 
     # Variables for metrics
     my $skipped_count = 0;
@@ -151,7 +199,7 @@
     # Initialize our list of deck_list by adding our first one
     my $deck_count = add_deck();
     my @munge_digit_list = ();
-    ## END initialize vars to create token_x_munge_map map
+    ## . END initialize vars to create token_x_munge_map map
 
     ## BEGIN Create %token_x_munge_map
     for my $token_str( @token_list ) {
@@ -194,7 +242,7 @@
           }
         }
         $munge_str = join( q(), @munge_digit_list );
-        ## END build munge string
+        ## . END build munge string
 
         ## BEGIN test munge string
         # Check to see if munge already exists in file ...
@@ -208,14 +256,14 @@
           push @skipped_list, $munge_str;
           $skipped_count++;
         }
-        ## END test munge string
+        ## . END test munge string
       }
-      ## END find valid replacement token (munge_str)
+      ## . END find valid replacement token (munge_str)
 
       # save the mapping
       $token_x_munge_map{$token_str} = $munge_str;
     }
-    ## END Create %token_x_munge_map
+    ## . END Create %token_x_munge_map
 
     ## BEGIN collate and output
     # Replace tokens in script
@@ -262,6 +310,6 @@
     print STDERR qq(\n\nMaximum symbol length is |${deck_count}|);
     # print STDERR Dumper( \$seen_mref );
 
-    ## END collate and output
+    ## . END collate and output
 
     exit 0;

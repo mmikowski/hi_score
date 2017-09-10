@@ -1,0 +1,38 @@
+sourcetype:js
+  js/vendor/taffy-2.7.3.js
+  js/vendor/pcss-1.4.2.js
+  js/vendor/pcss.cfg-1.4.2.js
+  js/vendor/jquery-3.2.1.js
+  js/plugin/jquery.deferred.whenAll-1.0.0.js
+  js/vendor/jquery.event.dragscroll-1.0.0.js
+  js/vendor/jquery.event.gevent-1.1.6.js
+  js/vendor/jquery.event.ue-1.3.2.js
+  js/vendor/jquery.scrolli-1.0.1.js
+  js/vendor/jquery.urianchor-1.3.5.js
+  js/xhi/00.js
+  js/xhi/01.util.js
+  js/xhi/02.data.js
+  js/xhi/02.fake.js
+  js/xhi/03.model.js
+  js/xhi/04.utilb.js
+  js/xhi/05.css_base.js
+  js/xhi/05.css_lb.js
+  js/xhi/05.css_shell.js
+  js/xhi/06.css.js
+  js/xhi/06.lb.js
+  js/xhi/07.shell.js
+  js/xhi/08.app.js
+  js/ex01-build.js
+
+sourcetype:css
+  css/xhi-fonts.css
+  css/vendor/font-awesome-4.7.0.css
+
+sourcetype:subtree
+  font/vendor/font-awesome-4.7.0
+  font/vendor/open-sans-fontface-1.4.0/Regular
+
+sourcetype:copy
+  tmplt/ex01.html .
+  img/hi_score.png img
+
