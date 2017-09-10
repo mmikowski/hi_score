@@ -7,10 +7,13 @@
 ## Overview
 This SPA starter project provides best-in-class assets, libraries, documentation, and tools to help guide best practice using feature-module architecture. Please do swap assets and libraries as required - [that's the point][_01].
 
+## Recent changes (2017-09-09)
+We just released Version 1.3.x and it is a huge update from 1.2.x. We created a virtual appliance so setup could hardly be easier. We also added a universal `xhi` tool to guide developers to necessary tasks and added sophisticated dependency checking to help them avoid mistakes.
+
 ---
 ## Quick start
-Installation is trivial once the [development platorm][#development-platform]
-is in place.
+Installation is trivial once the [development platorm](#development-platform)
+is ready. Just open a terminal and type three lines:
 
 ```
   $ git clone git@github.com:mmikowski/hi_score.git
@@ -18,29 +21,42 @@ is in place.
   $ xhi build && google-chrome build/latest/dist/ex0*.html
 
 ```
-The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with JSLint and other checkes,  check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. Yes, we know the examples are lame. We promise to make them more exciting in the future.
+The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with JSLint and other checkes, check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. If it is successful, Chrome will open to show you two simple example applications.
+
+Yes, we know the examples are lame. We promise to make them more exciting in the future.
 
 ---
 ## Key benefits
+**`hi_score`** can really jump-start web client development. With lots of hard stuff resolved out-of-the-box, we can focus on improving things that really matter, like the JavaScript, HTML, CSS and application logic. It provides many highly desirable capabilities that can be otherwise very difficult to orchestrate:
+
 - Automated full-lifecycle best practice with the `xhi` tool
-- Integrated with GIT and NPM lifecycles
+- Integration with GIT and NPM lifecycles
 - Fully managed vendor assets including SCMS controlled patching,
   deployment, packaging, and distribution
-- Integrated development server using HTTPS and HTTP2 (WIP)
-- TDD with drop directory and code coverage reports
-- Battle-tested `xhi` libraries with 98% coverage of core utilities
-- One-touch build with deployment-ready distributions
+- Vendor assets include JavaScript, CSS, Fonts, Images, and others
+- Development web server (WIP HTTPS and HTTP/2)
+- TDD with JSDOM, drop directory and code coverage reports
+- Linting (JSLint, whitespace check, strict check, TODO check)
+- Automatic install of comprehensive commit-hook
+- Battle-tested `xhi` libraries with 99% coverage of core utilities
+- Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
+- All code written to a consistent [standard][_04]
 - Type safety using [type-casting][_05]
-- Consistent [code style][_03]
-- Example applications
+- Integrated browsable HTML documentation using markdown and `pandoc`
+- Two simple example applications
 - Placeholders for future lifecycle phases
+- Compression and shuffling of property key symbols
+- One-touch make ensures dozens of prequisites and tests pass and then
+  creates a unique build id with pristine distribution directory, metadata,
+  and coverage reports.
 
 ---
 ## The xhi tool
-The `xhi` tool automates almost every conceivable stage of the SPA development process using researched best practice. The configuration is stored in the NPM `package.json` file and is used to support all [NPM lifecycle scripts][_38]. The `xhi` will run the multiple number of stages to attain a goal (See [below][#run-lifecycle-stages]) and will abort with guidance instructions if any prerequisite stage cannot be met.
+The `xhi` tool automates best practice for almost every conceivable stage of the SPA development life cycle. All configuration in the NPM `package.json` file.
+
+The `xhi` tool resolves goal and environment prerequisites so we won't forget to run a necessary stage to attain a desired goal. For example, if we run 'xhi build' right after cloning the Github repository, it will run all the stages needed to ensure a quality build including *installation of the npm librares*. If we run it again, many stages will be omitted because they aren't needed again. If we run `dev_upgrade` all the `npm` packages be updated to the latest revision the system will do the right thing and re-install our `npm` packages, re-setup the environment, and re-test the codebase. See the [Run Lifecycle Stages section](#run-lifecycle-stages) below for more detail.
 
 The full-lifecycle stages supported by `xhi` are shown below. Those marked 1.4.x are placeholder which will be addressed in the next major release.
-
 ```
   $ xhi help all
     xhi>  START Stage 00 help
@@ -68,8 +84,10 @@ The full-lifecycle stages supported by `xhi` are shown below. Those marked 1.4.x
     xhi>  END Stage 00 help
 ```
 
+We use `xhi` for all [NPM lifecycle scripts][_38] (such as `npm test`).
+
 ### Get help
-The `xhi` tool help is detailed and extensive. We have deleted many sections of this document because the information is now directly integrated  One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
+The `xhi` tool help is detailed and extensive. We have deleted many sections of this document because the information is now directly integrated. One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
 
 ```
   $ xhi help dev_lint -v
@@ -135,7 +153,7 @@ These are stages that must be successfuly completed in the development environme
 
 Environment prerequisites may be invalidated. For example, if `xhi install` or `xhi upgrade` fail, the tool will mark the `install` stage as failed and this will be attempted again in the next `xhi` invocation that require it as a prerequisite.
 
-Explicitly requested stages will run again regardless of their last success statuses. For example, `xhi dev_lint` may or may not run the `install` stage, but `xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `xhi help-dev_lint` will also run `install` since it is explicitly within the range provided.  We can reset the status by removing the `stage_status_map` from the `lib/xhi_state.json` file.
+Explicitly requested stages will run again regardless of their last success statuses. For example, `xhi dev_lint` may or may not run the `install` stage, but `xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `xhi help-dev_lint` will also run `install` since it is explicitly within the range provided. We can reset the status by removing the `stage_status_map` from the `lib/xhi_state.json` file.
 
 ### Exit status
 If all the stages of a range are successful an exit status of `0` is provided. If any stage fails  processing of the range stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable.
@@ -158,6 +176,9 @@ The server component of **hi\_score** is designed to run on industry-standard ha
 
 ---
 ## Development platform
+### Appliance
+An appliance is recommended for MacOS or Windows users. Download [the OVA image][_39] and install on VirtualBox or VMWare (not tested). Then proceed with the instructions for [Ubuntu 17.04][#ubuntu].
+
 ### Ubuntu
 Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or Kubuntu. The steps to install all required libraries are shown below.
 
@@ -169,14 +190,8 @@ Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or
   # Install nodejs
   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   sudo apt-get install -y nodejs
-
-  # Install mongodb
-  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 \
-    --recv 0C49F3730359A14518585931BC711F9BA15703C6
-  echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" \
-    | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-  sudo apt-get update && sudo apt-get install -y mongodb-org
 ```
+
 
 ### Other Linux
 Other Linux distributions should generally work as long as the same libraries can be installed with Ubuntu. It works fine on current versions of CentOS. Development libraries should be installed as shown below.
@@ -187,9 +202,6 @@ Other Linux distributions should generally work as long as the same libraries ca
 
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
-### Virtual Machine
-A virtual machine is recommended for MacOS or Windows users. Download [the OVA image][_39] and install on VirtualBox or VMWare (not tested). Then proceed with the instructions for [Ubuntu 17.04][#ubuntu].
-
 ### Mac
 We have not been able to test developing natively on a Mac but it should be possible. At the very least one would need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
 
@@ -198,7 +210,7 @@ We recommend using a virtual machine as detailed above.
 
 ---
 ## Vendor assets
-The `xhi setup` stage patches and deploys vendor assets using the `xhi_02_SetupMatrix` configuration found in the `package.json` file.  This field is correlated with the with the `devDependencies` map to ensure assets are properly label, patched, distributed, and ignored by GIT.
+The `xhi setup` stage patches and deploys vendor assets using the `xhi_02_SetupMatrix` configuration found in the `package.json` file. This field is correlated with the with the `devDependencies` map to ensure assets are properly label, patched, distributed, and ignored by GIT.
 
 Assets are copied to their destination directory with their version number appended to their names. The `.gitignore` file instructs `git` to ignore all these files as their development management is external to our project. **Everytime `xhi setup` is run the vendor directories are deleted and recreated**.
 
