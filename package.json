@@ -13,7 +13,6 @@
     "clusterjs": "0.7.1",
     "coveralls": "2.13.1",
     "diff": "3.3.1",
-    "execpe": "4.0.2",
     "express": "4.15.4",
     "flow": "0.2.3",
     "font-awesome": "4.7.0",
@@ -28,12 +27,10 @@
     "jsdom": "11.2.0",
     "jslint": "0.11.0",
     "line-by-line": "0.1.5",
-    "mkdirp": "0.5.1",
     "mongodb": "2.2.31",
     "mysql2": "1.4.2",
-    "ncp": "2.0.0",
     "nodeunit": "0.11.1",
-    "npm": "5.4.0",
+    "npm": "5.4.1",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.2",
     "ps-node": "0.1.6",
@@ -42,9 +39,7 @@
     "taffydb": "2.7.3",
     "uglify-js": "3.0.28",
     "uglifycss": "0.0.27",
-    "websocket": "1.0.24",
-    "which": "1.3.0",
-    "write-file-atomic": "^2.3.0"
+    "websocket": "1.0.24"
   },
   "homepage": "https://github.com/mmikowski/hi_score",
   "keywords": [
@@ -541,6 +536,7 @@
             "src_dirname": "fonts"
           },
           {
+            "src_asset_name": "Regular",
             "src_pkg_name": "open-sans-fontface",
             "src_dirname": "fonts"
           }
@@ -561,44 +557,113 @@
       ]
     }
   },
-  "xhi_10_BuildTable": [
-    {
-      "app_id": "ex01",
-      "do_isolate": false,
-      "path_copy_list": [
-        "font/vendor/font-awesome-4.7.0",
-        "font/vendor/open-sans-fontface-1.4.0/Regular"
+  "xhi_11_BuildMatrix": {
+    "note01_str": "Deploy fields: src_pathname, tgt_pathname, is_dircopy.",
+    "note02_str": "Flags do_compress, do_isolate may be added.",
+    "note03_str": "Include bundles in app_list by wrapping in array",
+    "bundle_map": {
+      "xhi_js_list": [
+        "js/plugin/jquery.deferred.whenAll-1.0.0.js",
+        "js/xhi/00.js",
+        "js/xhi/01.util.js",
+        "js/xhi/02.data.js",
+        "js/xhi/02.fake.js",
+        "js/xhi/03.model.js",
+        "js/xhi/04.utilb.js",
+        "js/xhi/05.css_base.js",
+        "js/xhi/05.css_lb.js",
+        "js/xhi/05.css_shell.js",
+        "js/xhi/06.css.js",
+        "js/xhi/06.lb.js",
+        "js/xhi/07.shell.js",
+        "js/xhi/08.app.js"
       ],
-      "css_make_map": {
-        "do_compress": true,
-        "do_vendor": true,
-        "target_file": "This should be <dist_dir>/css/<app_id>-min.css"
-      },
-      "js_make_map": {
-        "asset_list": [
-          "js/plugin/jquery.deferred.whenAll-1.0.0.js",
-          "js/xhi/00.js",
-          "js/xhi/01.util.js",
-          "js/xhi/02.data.js",
-          "js/xhi/02.fake.js",
-          "js/xhi/03.model.js",
-          "js/xhi/04.utilb.js",
-          "js/xhi/05.css_base.js",
-          "js/xhi/05.css_lb.js",
-          "js/xhi/05.css_shell.js",
-          "js/xhi/06.css.js",
-          "js/xhi/06.lb.js",
-          "js/xhi/07.shell.js",
-          "js/xhi/08.app.js",
-          "js/ex01-build.js"
+      "font_deploy_list": [
+        [
+          "font/vendor/font-awesome-4.7.0",
+          null,
+          true
         ],
-        "do_compress": true,
-        "do_vendor": true,
-        "target_file": "This should be <dist_dir>/js/<app_id>-sp.js"
-      },
-      "tmplt_make_list": [
-        "TODO: determine template reqs"
+        [
+          "font/vendor/open-sans-fontface-1.4.0/Regular",
+          null,
+          true
+        ]
       ]
-    }
-  ]
+    },
+    "app_table": [
+      {
+        "app_id": "ex01",
+        "css_make_matrix": {
+          "do_vendor": true
+        },
+        "js_make_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "xhi_js_list"
+              ]
+            },
+            "js/ex01-build.js"
+          ],
+          "do_vendor": true
+        },
+        "path_copy_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "font_deploy_list"
+              ]
+            },
+            [
+              "tmplt/ex01.html",
+              "/",
+              false
+            ],
+            [
+              "img/hi_score.png",
+              null,
+              false
+            ]
+          ]
+        }
+      },
+      {
+        "app_id": "ex02",
+        "css_make_matrix": {
+          "do_vendor": true
+        },
+        "js_make_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "xhi_js_list"
+              ]
+            },
+            "js/ex02-build.js"
+          ],
+          "do_vendor": true
+        },
+        "path_copy_matrix": {
+          "asset_list": [
+            {
+              "bundle_key_list": [
+                "font_deploy_list"
+              ]
+            },
+            [
+              "tmplt/ex02.html",
+              "/",
+              false
+            ],
+            [
+              "img/hi_score.png",
+              null,
+              false
+            ]
+          ]
+        }
+      }
+    ]
+  }
 }
