@@ -9,11 +9,13 @@ This SPA starter project provides best-in-class assets, libraries, documentation
 
 ---
 ## Quick start
-Once the rerequisites are installed, 
+Installation is trivial once the [development platorm][#development-platform]
+is in place.
+
 ```
-  git clone git@github.com:mmikowski/hi_score.git
-  cd hi_score; export PATH=`pwd`/bin:$PATH;
-  xhi build && google-chrome build/latest/dist/ex0*.html
+  $ git clone git@github.com:mmikowski/hi_score.git
+  $ cd hi_score; export PATH=`pwd`/bin:$PATH;
+  $ xhi build && google-chrome build/latest/dist/ex0*.html
 
 ```
 The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with JSLint and other checkes,  check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. Yes, we know the examples are lame. We promise to make them more exciting in the future.
@@ -156,8 +158,8 @@ The server component of **hi\_score** is designed to run on industry-standard ha
 
 ---
 ## Development platform
-### Ubuntu 16.04, 16.10, 17.04
-Everything should just work on recent Ubuntu and derivatives like Mint or Kubuntu. The steps to install all required libraries are shown below.
+### Ubuntu
+Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or Kubuntu. The steps to install all required libraries are shown below.
 
 ```
   # Install development libs
@@ -186,21 +188,13 @@ Other Linux distributions should generally work as long as the same libraries ca
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
 ### Virtual Machine
-Use AWS or a Virtual Box image using Ubuntu 16.04 Server using the the same steps above. This is the recommended approach for MacOS or Windows users.
+A virtual machine is recommended for MacOS or Windows users. Download [the OVA image][_39] and install on VirtualBox or VMWare (not tested). Then proceed with the instructions for [Ubuntu 17.04][#ubuntu].
 
 ### Mac
 We have not been able to test developing natively on a Mac but it should be possible. At the very least one would need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
 
 ### Windows
 We recommend using a virtual machine as detailed above.
-
----
-## Namespaces
-Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. Namespacing across JS and CSS can help one trace behaviors to the controlling code faster and with greater accuracy. We can open them in google-chrome (`xhi install && google-chrome ex*.html`) to see this in practice.
-
-When we view Example 1 (`ex01.html`) we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac), type `ex01` into the JavaScript console and press `<return>` to inspect that value. We can see that thisw single variable that contains our entire application. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 (`ex02.html`) instead we can see that `ex01` is `undefined` and `ex02` contains our app code using a similar process.
-
-We also namespace our CSS classes to avoid collisions. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module.
 
 ---
 ## Vendor assets
@@ -270,22 +264,22 @@ The patches mechanism allows us to use great tools tweaked for our needs while m
 
 ---
 ## Build
-Use `xhi build` or `xhi make` or `xhi 11` (where 11 is the stage number) to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result loads faster, runs faster, and typically consumes less than 5% of the disk space of the development code. We can inspect the files and disk usage as follows:
+Use `xhi build` or `xhi make` or `xhi 11` (where 11 is the stage number) to build a distribution. The build script concatenates, compresses, and obsufucates JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result loads faster, runs faster, and typically consumes <5% of the disk space of the development code.
 
 ```
   $ ## Show disk usage of all development files
   $ cd hi_score && export PATH=`pwd`/bin:$PATH;
   $ du -sh .
-    160M
+    148M
 
   $ ## Get disk usage of all distribution files
   $ xhi build && cd build/latest && du -sh .
-    2.1M
+    3.6M
 ```
 
-The `xhi make` stage uses the `buildify` to make a distribution. This script in turn uses `superpack` to analyze all symbols (variable names, object properties, and labels) and replaces them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. `superpack` reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>.diag` for mapping and key use). Projects with many object properities can be compressed an additional 50% using `superpack` and it can make reverse-engineering of the compressed code much harder.
+The `xhi build` stage uses uses `superpack` to analyze symbols (variable names, object properties, and labels) and replaces them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. `superpack` reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>.diag` for mapping and key use). Projects with many object properities can be compressed an additional 50% using `superpack` and hinder reverse-engineering of the compressed code.
 
-It is typical to see distributions require only 2-10% the storage of a development environment.There are substantial benefits beyond storage reduction. In particular, security is greatly improved because only a tiny, currated, obsfucated portion of your code is published and sensitive data such as SCMS metadata, documentation, lookup-maps, and development assets are omitted for use to publish elsewhere at our discretion. The distribution-ready application also reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
+The build process enhances security because only a tiny, currated, obsfucated portion of our code is published and sensitive data such as SCMS metadata, documentation, lookup-maps, and development assets are omitted for us to publish elsewhere at our discretion. The distribution also reduces the dozens of HTTP calls to just a few. This can reduce load time significantly as illustrated below.
 
 | Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
 |-------------|-----------------:|-----------------:|-----------------:|
@@ -299,6 +293,14 @@ It is typical to see distributions require only 2-10% the storage of a developme
 | Deploy Size |           121 MB |    8 MB (  6.6%) |    8 MB (  6.5%) |
 
 The load time measurements were made using a local HTTP server which is almost certainly a best-case scenario. We hope to add results for a remote server soon.
+
+---
+## Namespaces
+Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. Namespacing across JS and CSS can help one trace behaviors to the controlling code faster and with greater accuracy. We can open them in google-chrome (`xhi install && google-chrome ex*.html`) to see this in practice.
+
+When we view Example 1 (`ex01.html`) we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac), type `ex01` into the JavaScript console and press `<return>` to inspect that value. We can see that thisw single variable that contains our entire application. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 (`ex02.html`) instead we can see that `ex01` is `undefined` and `ex02` contains our app code using a similar process.
+
+We also namespace our CSS classes to avoid collisions. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module.
 
 ## Contribute
 Any improvements or suggestions are welcome through the [issues tracker][_29]. Pull requests are especially appreciated.
