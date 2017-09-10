@@ -5,31 +5,33 @@
 
 ---
 ## Overview
-This SPA starter project provides best-in-class assets, libraries, documentation, and tools to help guide best practice. But please do swap assets and libraries as required. [That's the point][_01].
+This SPA starter project provides best-in-class assets, libraries, documentation, and tools to help guide best practice using feature-module architecture. Please do swap assets and libraries as required - [that's the point][_01].
 
 ---
 ## Quick start
+Once the rerequisites are installed, 
 ```
-  $ cd hi_score; export PATH=`pwd`/bin:$PATH;
-  $ xhi build && google-chrome build/latest/dist/ex0*.html
+  git clone git@github.com:mmikowski/hi_score.git
+  cd hi_score; export PATH=`pwd`/bin:$PATH;
+  xhi build && google-chrome build/latest/dist/ex0*.html
 
 ```
-The `xhi build` command will install vendor assets; setup and patch files for development; configure a development HTTP server; test code with JSLint; check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with unique ID, and more. Yes, we know the examples are lame. We promise to make them more exciting in the future.
+The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with JSLint and other checkes,  check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. Yes, we know the examples are lame. We promise to make them more exciting in the future.
 
 ---
 ## Key benefits
 - Automated full-lifecycle best practice with the `xhi` tool
-- Installation and management of currated libs and assets
-- Fully managed of vendor assets including SCMS controlled patching
-- Type safety using [type-casting][_05]
-- Battle-tested `xhi` libraries with 98% coverage of core utilities
-- Integrated development server using HTTPS and HTTP2
-- Consistent JS and Bash code style [see Code standard][_03]
 - Integrated with GIT and NPM lifecycles
+- Fully managed vendor assets including SCMS controlled patching,
+  deployment, packaging, and distribution
+- Integrated development server using HTTPS and HTTP2 (WIP)
 - TDD with drop directory and code coverage reports
+- Battle-tested `xhi` libraries with 98% coverage of core utilities
 - One-touch build with deployment-ready distributions
+- Type safety using [type-casting][_05]
+- Consistent [code style][_03]
 - Example applications
-- Placeholders for future lifecycle phase marked WIP.
+- Placeholders for future lifecycle phases
 
 ---
 ## The xhi tool
@@ -137,8 +139,12 @@ Explicitly requested stages will run again regardless of their last success stat
 If all the stages of a range are successful an exit status of `0` is provided. If any stage fails  processing of the range stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable.
 
 ---
+## Feature-module architecture
+Please see `xhi design` for an overview of the architecture we've been advocating since 2011. We ecourge developer to create feature modules that contain their own isolated data and models when appropriate. This is pragmatic, recognizes the fractal nature of MVC, and is compatible with recent libraries such as React and Vue.
+
+---
 ## Code Style
-We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]). The [quick reference][_03] and the [full code standard][_04] are available online and are included in the `docs` directory.
+We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]) in the upcoming 2nd editions. The [quick reference][_03] and the [full code standard][_04] are available are included in the `docs` directory.
 
 ---
 ## Browser compatibility
@@ -372,13 +378,10 @@ MIT
 - (x) Configure setup completely in package.json
 
 ### Version 1.3.x
-- (o) Update code standard quick-reference    (2hr)
-- (i) Create VirtualBox OVA for development (8hr)
+- (o) Update code standard quick-reference
 - (i) Implement `xhi` tool development capabilities
-  - (o) 12 publish      : Push to coveralls         ( 4hr)
-  - (o) 13 dev\_restart : Implement feature         ( 2hr)
-  - (x) 11 build        : Debug build               ( 1hr)
-  - (x) 11 build        : Replace buildify module   (24hr)
+  - (o) 12 publish      : Implement push to coveralls
+  - (o) 13 dev\_restart : Implement dev server restart
   - (x) 00 xhi help
   - (x) 01 install
   - (x) 02 setup
@@ -390,21 +393,30 @@ MIT
   - (x) 08 dev\_lint
   - (x) 09 dev\_cover
   - (x) 10 dev\_commit
+  - (x) 11 build
   - (x) 14 dev\_stop
 - (x) Tool enhancements
   - (x) `xhi setup`     : Implement env prequisites and `lib/xhi_state.json`
-  - (x) `xhi setup`     : Auto-create `xhi_state.json` if required
+  - (x) `xhi setup`     : Auto-create `lib/xhi_state.json` if required
   - (x) `xhi build`     : Create build directory like `dist/\<build-number\>`
   - (x) `xhi build`     : Link `dist/latest` to latest build
   - (x) `xhi build`     : Do not auto-increment build until next commit
   - (x) `xhi dev_cover` : Move to `dist/\<build-number\>` directories
-- (x) Update code standard
 - (x) Update all NPM lifecycle scripts to use `xhi` 
-    - (x)"help" : "bin/xhi help",
-    - (x)"make" : "bin/xhi make",
-    - (x)"setup": "bin/xhi setup",
-    - (x)"test" : "bin/xhi test",
-    - (x)"xhi"  : "bin/xhi"
+  - (x)"help" : "bin/xhi help",
+  - (x)"make" : "bin/xhi make",
+  - (x)"setup": "bin/xhi setup",
+  - (x)"test" : "bin/xhi test",
+  - (x)"xhi"  : "bin/xhi"
+- (x) Move build manifest to `package.json`
+- (x) Implement build numbers and link last build to `latest`
+- (x) Move coverage reports into build directories
+- (x) Store build and env state in `lib/xhi_state.json`
+- (x) Create and update virtualBox [OVA for development][_39]
+- (x) Replace jslint setting from per-file to config/jslint.conf
+- (x) Expect browser env for js/xhi libraries
+- (x) Fix 01.util.js > makeSeriesMap method cross timezones
+- (x) Update code standard
     
 ### Version 1.4.x
 - (i) Create AMI image for deployment
@@ -463,3 +475,4 @@ MIT
 [_36]:https://www.npmjs.com/package/express
 [_37]:https://www.npmjs.com/package/websocket
 [_38]:https://docs.npmjs.com/misc/scripts
+[_40]:http://michaelmikowski.com/ova
