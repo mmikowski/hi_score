@@ -300,6 +300,22 @@ xhi._makeUtil_ = function ( aMap ) {
   }
   // . END Public prereq method /cloneData/
 
+  // BEGIN Public prereq method /extendList/
+  // Summary   : extendList( base_list, extend_list )
+  // Purpose   : Extends base_list with contents of extend_list
+  // Example   : extendList( [0], [1,2,3] ); // returns [0,1,2,3]
+  // Arguments : (positional)
+  //   <base_list>   - list to extend
+  //   <extend_list> - list to append to base_list
+  // Returns   : base_list after change
+  // Throws    : none
+  //
+  function extendList ( base_list, extend_list ) {
+    Array.prototype.push.apply( base_list, extend_list );
+    return base_list;
+  }
+  // . END Public prereq method /extendList/
+
   // BEGIN Public prereq method /getNowMs/
   // Purpose   : Get timestamp
   // Example   : getNowMs(); // returns 1486283077968
@@ -2118,6 +2134,7 @@ xhi._makeUtil_ = function ( aMap ) {
     _castObj_         : castObj,
     _castStr_         : castStr,
     _cloneData_       : cloneData,
+    _extendList_      : extendList,
     _getNowMs_        : getNowMs,
     _getNumSign_      : getNumSign,
     _makeArgList_     : makeArgList,
