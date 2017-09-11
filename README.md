@@ -5,22 +5,21 @@
 
 ---
 ## Overview
-This SPA starter project provides best-in-class assets, libraries, documentation, and tools to help guide best practice using feature-module architecture. Please do swap assets and libraries as required - [that's the point][_01].
+**`hi_score`** is a full-lifecycle starter project for web application client development. It embodies best (or at least pretty-darn-good) practices accumulated from over 20 years of continuous web development experience for every stage of deveplment. **`hi_score`** embraces the feature-module (or "web component") design pattern, so it should work well with React or Vue.js projects.  Please do swap assets and libraries as required - [that's the point][_01].
 
 ## Recent changes (2017-09-09)
 We just released Version 1.3.x and it is a huge update from 1.2.x. We created a virtual appliance so setup could hardly be easier. We also added a universal `xhi` tool to guide developers to necessary tasks and added sophisticated dependency checking to help them avoid mistakes.
 
 ---
 ## Quick start
-Installation is trivial once the [development platorm](#development-platform)
-is ready. Just open a terminal and type three lines:
+Installation is trivial once the [development environment](#development-platform) is ready. Just open a terminal and paste three lines:
 
+```bash
+  git clone git@github.com:mmikowski/hi_score.git
+  cd hi_score; export PATH=`pwd`/bin:$PATH;
+  xhi build && google-chrome build/latest/dist/ex0*.html
 ```
-  $ git clone git@github.com:mmikowski/hi_score.git
-  $ cd hi_score; export PATH=`pwd`/bin:$PATH;
-  $ xhi build && google-chrome build/latest/dist/ex0*.html
 
-```
 The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with JSLint and other checkes, check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. If it is successful, Chrome will open to show you two simple example applications.
 
 Yes, we know the examples are lame. We promise to make them more exciting in the future.
