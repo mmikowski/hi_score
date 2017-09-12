@@ -310,8 +310,13 @@ xhi._makeUtil_ = function ( aMap ) {
   // Returns   : base_list after change
   // Throws    : none
   //
-  function extendList ( base_list, extend_list ) {
-    Array.prototype.push.apply( base_list, extend_list );
+  function extendList ( arg_base_list, arg_extend_list ) {
+    var
+      base_list   = castList( arg_base_list,   [] ),
+      extend_list = castList( arg_extend_list, [] )
+      ;
+
+    __Array.prototype.push.apply( base_list, extend_list );
     return base_list;
   }
   // . END Public prereq method /extendList/

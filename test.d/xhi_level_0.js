@@ -500,6 +500,45 @@ function getBasename ( test_obj ) {
   test_obj.done();
 }
 
+function extendList ( test_obj ) {
+  var
+    assert_table = [
+      // [ arg_list, expect_return  ]
+      [ [                 ], []         ],
+      [ [ __undef         ], []         ],
+      [ [ __null, __null  ], []         ],
+      [ [ []              ], []         ],
+      [ [ [], __null      ], []         ],
+      [ [ [1], __null     ], [ 1 ]      ],
+      [ [ [1], 'a'        ], [ 1 ]      ],
+      [ [ [], ['a']       ], ['a']      ],
+      [ [ [1],['a']       ], [1,'a']    ],
+      [ [ [1,2,3],['a','b','c'] ], [1,2,3,'a','b','c'] ],
+      [ [ [1],['a','b','c'] ], [1,'a','b','c'] ],
+      [ [ [1,2,3],['a'] ], [1,2,3,'a'] ],
+      [ [ [ {}, [] ], [ {} ] ], [{},[],{}] ],
+      [ [ [ {}, [] ], [ {}, 'alpha' ] ], [{},[],{},'alpha'] ]
+    ],
+    assert_count = assert_table.length,
+    extend_fn    = __util._extendList_,
+
+    idx, expect_list, arg_list, msg_str,
+    solve_data, expect_data
+    ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list     = assert_table[ idx ];
+    arg_list        = expect_list[ __0 ];
+    expect_data     = expect_list[ __1 ];
+
+    solve_data = extend_fn.apply( __undef, arg_list );
+    msg_str = __Str( idx ) + '. ' + solve_data + ' === ' + expect_data;
+    test_obj.deepEqual( solve_data, expect_data, msg_str );
+  }
+  test_obj.done();
+}
+
 function getStructData ( test_obj ) {
   var
     deep0_map   = { foo : { bar : __1 } },
@@ -3585,6 +3624,7 @@ module.exports = {
   _clearMap_        : clearMap,
   _cloneData_       : cloneData,
   _encodeHtml_      : encodeHtml,
+  _extendList_      : extendList,
   _getBasename_     : getBasename,     // Includes getDirname
   _getStructData_   : getStructData,
   _getListAttrIdx_  : getListAttrIdx,  // Include getListAttrMap
