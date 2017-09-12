@@ -1,42 +1,43 @@
-/* * xhi_level_0.js
- * Node unit test suite xhi, util, utilb, lb
+/*
+ * xhi_level_0.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Michael S. Mikowski - mike.mikowski@gmail.com
+ * Node unit test suite xhi, util, utilb, lb
+ * Use JSLint settings config/jslint.conf
 */
-/*jslint           node   : true, continue : true,
-   devel  : true,  indent : 2,    maxerr   : 50,
-   newcap : true,  nomen  : true, plusplus : true,
-   regexp : true,  sloppy : true, vars     : false,
-   white  : true,  todo   : true, unparam  : true
-*/
+/*jslint node   : true */
 /*global xhi, module, process, window, console, $ */
 
 // == BEGIN MODULE SCOPE VARIABLES  ===================================
 'use strict';
 //noinspection JSUnusedLocalSymbols
 var
-  __ns        = 'xhi',
-  aKey        = 'test',
-  libDir      = '../js/',
-  libPrefix   = libDir + __ns + '/',
-  mockFn      = function () { console.log( aKey + '.' + this , arguments ); },
-  mockTestObj = {
-    deepEqual : mockFn.bind( 'deepEqual' ),
-    done      : mockFn.bind( 'done'      ),
-    expect    : mockFn.bind( 'expect'    ),
-    ok        : mockFn.bind( 'ok'        ),
-    test      : mockFn.bind( 'test'      )
-  },
-  jsdomObj = require( 'jsdom' ),
-  winRef   = new jsdomObj.JSDOM().window,
-  docRef   = winRef.document,
-  jQuery   = require( 'jquery' )( winRef ),
+  __ns      = 'xhi',
+  aKey      = 'test',
+  libDir    = '../js/',
+  libPrefix = libDir + __ns + '/',
+  jsdomObj  = require( 'jsdom' ),
+  winRef    = new jsdomObj.JSDOM().window,
+  docRef    = winRef.document,
+  jQuery    = require( 'jquery' )( winRef ),
 
   aMap, nMap, vMap, __Str, __blank, __false,
   __null, __true, __undef, __util, __utilb, __lb,
   __n1, __0, __1, __2, __3, __4,
   liteBoxMap
   ;
+
+// When debuging one can create a mock test object
+// function mockFn() {
+//    console.log( aKey + '.' + this , arguments );
+// };
+// mockTestObj = {
+//   deepEqual : mockFn.bind( 'deepEqual' ),
+//   done      : mockFn.bind( 'done'      ),
+//   expect    : mockFn.bind( 'expect'    ),
+//   ok        : mockFn.bind( 'ok'        ),
+//   test      : mockFn.bind( 'test'      )
+// };
 
 global.window   = winRef;
 global.document = docRef;
@@ -2240,12 +2241,12 @@ function makeSeriesMap ( test_obj ) {
       solve_map = make_map_fn( arg_map );
       tmp_data  = assert_table[ expect_count ];
 
-      // reuse prior data if directed
+      // Reuse prior data if directed
       if ( tmp_data !== 'ditto' ) {
         assert_data = tmp_data;
       }
 
-      // test for alternates (compensates for algo jitter)
+      // Test for alternates (compensates for algo jitter)
       if ( Array.isArray( assert_data ) ) {
         alt_list  = assert_data;
         alt_count = alt_list.length;
@@ -2256,15 +2257,12 @@ function makeSeriesMap ( test_obj ) {
           alt_bool  = solve_str === alt_str;
           if ( alt_bool ) { break ALT; }
         }
-        if ( ! alt_bool ) {
-          console.warn( solve_str, alt_list );
-        }
         test_obj.ok( alt_bool, 'No alternate matches' );
         expect_count++;
         continue INTV;
       }
 
-      // deep test
+      // Deep compare
       expect_map = assert_data;
       msg_str = __Str( expect_count ) + '. arg_map: '
         + JSON.stringify( arg_map ) + '\n solve_map: '
@@ -2531,7 +2529,7 @@ function mergeMaps ( test_obj ) {
       [ [ base1_map, { list: [] } ],   out2_map ],
       [ [ base0_map,    base2_map ],   out3_map ],
 
-      // Using a restricted list of key
+      // Use a restricted list of key
       [ [ [],[],[] ],          {} ],
       [ [ [],[],__null ],      {} ],
       [ [ __0,'fred',__null ], {} ],
@@ -2784,7 +2782,7 @@ function shuffleList ( test_obj ) {
     ;
 
 
-  // Every shuffled list gets two extra test
+  // Create 2 extra tests for each shuffled list
   assert_table.filter( function ( list ) {
     if ( list[ __1 ] ) { expect_count++; }
   });
@@ -2815,7 +2813,7 @@ function shuffleList ( test_obj ) {
         test_idx++;
       }
       else {
-        // longer lists should always (eventually) be shuffled
+        // Longer lists should always (eventually) be shuffled
         pass_bool  = __false;
         INR: for ( jdx = __0; jdx < 100; jdx++ ) {
           if ( clone_json !== JSON.stringify( orig_list ) ) {

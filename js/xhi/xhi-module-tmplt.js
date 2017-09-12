@@ -1,12 +1,12 @@
 /*
  * xhi-module-tmplt.js
- *
- * Use: cp xhi-module-tmplt.js 07.<newfeature>.js
- * Synopsis: Feature module template
- * Provides: A template that embodies best practice
- *
- * JSLint settings found in config/jslint.conf
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
+ *
+ * Summary : cp xhi-module-tmplt.js <newfeature-file>
+ * Purpose : Feature module template that embodies best practice
+ * Example : cp xhi-module-tmplt.js 07.compass.js
+ *
+ * Use JSLint settings config/jslint.conf
 */
 /*jslint browser : true */
 /*global $, xhi */
