@@ -15,7 +15,6 @@ var
   // Load core libraries
   childProcObj = require( 'child_process' ),
   fsObj        = require( 'fs'            ),
-  npmObj       = require( 'npm'           ),
   pathObj      = require( 'path'          ),
   readlineObj  = require( 'readline'      ),
   utilObj      = require( 'util'          ),
@@ -60,16 +59,17 @@ var
     "stage_status_map" : {}
   },
 
+  // Declare run-time commandTable
+  commandTable,
+
   // Declare curried functions
   abortFn, exitFn, logFn, warnFn,
 
-  // Declare config data
-  commandTable,
-
   // Declare after-install-variables
   LineReader,     applyPatchFn,     flowObj,
-  psObj,          shellJsObj,       uglifyCssObj,
-  uglifyJsObj,    xhiLibMap,        xhiUtilObj
+  npmObj,         psObj,            shellJsObj,
+  uglifyCssObj,   uglifyJsObj,      xhiLibMap,
+  xhiUtilObj
   ;
 
 // Use xhi browser util library
@@ -78,6 +78,7 @@ require( fqProjDirname + '/js/xhi/01.util.js' );
 xhiLibMap = global.xhi._makeRoot_( 'xhiLibMap' );
 global.xhi._makeUtil_( xhiLibMap );
 xhiUtilObj = xhiLibMap._util_;
+
 // == . END MODULE SCOPE VARIABLES =====================================
 
 // == BEGIN UTILITY METHODS ============================================
@@ -167,6 +168,43 @@ warnFn  = _outFn.bind({
   prompt_str : appName + '-warn> '
 });
 // . END utility /_outFn/
+
+// BEGIN utility /loadNpmModuleFn/
+// Purpose: Try to load latest npm using local or global.
+//          This is required to bootstrap the installation.
+//
+function loadNpmModuleFn () {
+  var
+    path_list = [
+      'npm', '/usr/lib/node_modules/npm', '/usr/local/lib/node_modules'
+    ],
+    path_count = path_list.length,
+    path_idx, path_str
+    ;
+
+  NPM_PATH: for ( path_idx = 0; path_idx < path_count; path_idx++ ) {
+    path_str = path_list[ path_idx ];
+    try {
+      npmObj = require( path_str );
+      logFn( 'Found npm at ' + path_str );
+      break NPM_PATH;
+    }
+    catch ( error_obj ) {
+      if ( path_idx === 0 ) {
+        warnFn( 'Local npm not found:' );
+      }
+      else {
+        warnFn( 'Npm path' + path_str + ' not found:' );
+      }
+      warnFn( promptStr + error_obj.toString() );
+    }
+  }
+
+  if ( ! npmObj ) {
+    abortFn( 'Could not load npm library. Exiting...' );
+  }
+}
+// . END utility /loadNpmModuleFn/
 
 // BEGIN utility /askFn/
 // Purpose: Wrap readObj question with prompt
@@ -690,6 +728,9 @@ function mainFn () {
   // Abort if node version < minVersionInt
   checkNodeVersionFn();
 
+  // Load NPM from global (required for bootstrap) or local
+  loadNpmModuleFn();
+
   param_map    = makeParamMap( param_list ); // cli parameters
   stage_list   = param_map.stage_list;       // stage list from range
   command_map  = stage_list[ 0 ];            // first stage
@@ -804,8 +845,10 @@ function mainFn () {
 // == . END PUBLIC METHOD /mainFn/ ====================================
 
 // Begin Create state file if needed
+// We can not use shellJs yet because there it may not be installed.
+//
 // TODO 2017-09-01 mmikowski info: Prefer routine to check all missing
-// files and fill with default content.
+//   files and fill with default content.
 fsObj.stat( fqStateFilename, function ( error_obj, ignore_map ) {
   var scratch_str;
   if ( error_obj ) {
