@@ -329,29 +329,33 @@ function clearMap ( test_obj ) {
     proto = { callback_fn : function () { return 1; } },
     complex_obj = Object.create( proto ),
     assert_table = [
-      // arg_data, expect_data
-      [ __1,        __undef ],
-      [ -694567,    __undef ],
-      [ __blank,    __undef ],
-      [ __null,     __undef ],
-      [ __undef,    __undef ],
-      [ 5.062e12,   __undef ],
-      [ __0,        __undef ],
-      [ /regex/,    __undef ],
-      [ 'string',   __undef ],
-      [ [ 1,2,3 ],  __undef ],
-      [ complex_obj, proto  ],
-      [ new Date(), __undef ],
-      [ [ 'a', { complex : 'array' } ], __undef ],
-      [ { a : 'simple', b : 'map' }, {} ],
-      [ { a : 'complex', map : { this : 'that' },
-        name_list : [ 'tim', 'bob' ] }, {} ]
+      // arg_list, expect_data
+      [ [ __1,        ], __undef ],
+      [ [ -694567,    ], __undef ],
+      [ [ __blank,    ], __undef ],
+      [ [ __null,     ], __undef ],
+      [ [ __undef,    ], __undef ],
+      [ [ 5.062e12,   ], __undef ],
+      [ [ __0,        ], __undef ],
+      [ [ /regex/,    ], __undef ],
+      [ [ 'string',   ], __undef ],
+      [ [ [ 1,2,3 ]   ], __undef ],
+      [ [ complex_obj ], proto   ],
+      [ [ new Date()  ], __undef ],
+      [ [ [ 'a', { complex : 'array' } ] ], __undef ],
+      [ [ { a : 'simple', b : 22 } ], {} ],
+      [ [ { a : 'simple', b : 22 }, [] ], { a : 'simple', b : 22 } ],
+      [ [ { a : 'simple', map : { this : 'that' },
+        name_list : [ 'tim', 'bob' ] } ], {} ],
+      [ [ { a : 'simple', map : { this : 'that' },
+        name_list : [ 'tim', 'bob' ] }, [ 'a', 'name_list' ] ],
+        { map : { this : 'that' } } ]
     ],
     assert_count = assert_table.length,
     test_fn      = __util._clearMap_,
 
     msg_str,  idx,         expect_list,
-    arg_data, expect_data, solve_data
+    arg_list, expect_data, solve_data
     ;
 
   complex_obj.this = '1';
@@ -360,11 +364,11 @@ function clearMap ( test_obj ) {
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list = assert_table[ idx ];
-    arg_data    = expect_list[ __0 ];
+    arg_list    = expect_list[ __0 ];
     expect_data = expect_list[ __1 ];
-    solve_data  = test_fn( arg_data );
+    solve_data  = test_fn.apply( null, arg_list );
     msg_str = __Str( idx ) + '. arg_list: '
-      + JSON.stringify( arg_data ) + '\n solve_map: '
+      + JSON.stringify( arg_list ) + '\n solve_map: '
       + JSON.stringify( solve_data )
       + '\n expect_map: ' + JSON.stringify( expect_data )
     ;

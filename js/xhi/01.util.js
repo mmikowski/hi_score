@@ -684,15 +684,15 @@ xhi._makeUtil_ = function ( aMap ) {
 
   // BEGIN Public method /clearMap/
   // Purpose: Empty a map by deleting all keys
-  function clearMap ( arg_map ) {
+  //   OR delete key provided by list
+  function clearMap ( arg_map, arg_key_list ) {
     var
-      map = castMap( arg_map ),
-
+      map       = castMap( arg_map ),
       key_list, key_count, idx, key;
 
     if ( ! map ) { return; }
 
-    key_list  = __keys( map );
+    key_list  = castList( arg_key_list, __keys( map ) );
     key_count = key_list[ __length ];
 
     for ( idx = __0; idx < key_count; idx++ ) {
