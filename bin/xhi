@@ -639,6 +639,7 @@ function makeXhiObj () {
     fqBinDirname     : fqBinDirname,    // Full path of bin scripts
     fqBuildDirname   : fqBuildDirname,  // Full path of builds directory
     fqHookFilename   : fqHookFilename,  // Full path of commit hook
+    fqLibDirname     : fqLibDirname,    // Full path to xhi lib
     fqModuleDirname  : fqModuleDirname, // Full path of node modules
     fqOrigDirname    : fqOrigDirname,   // Full path of PWD
     fqPkgFilename    : fqPkgFilename,   // Full path of package.json

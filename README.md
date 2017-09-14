@@ -400,7 +400,7 @@ MIT
 
 ### Version 1.3.x
 - (o) Update code standard quick-reference
-- (i) Implement `xhi` tool development capabilities
+- (x) Implement `xhi` tool development capabilities
   - (o) 12 publish      : Implement push to coveralls
   - (o) 13 dev\_restart : Implement dev server restart
   - (x) 00 xhi help
@@ -434,6 +434,7 @@ MIT
 - (x) Move coverage reports into build directories
 - (x) Store build and env state in `lib/xhi_state.json`
 - (x) Create and update virtualBox [OVA for development][_39]
+- (x) Create and update Parallels [VMX][_40] and [VMDK][_41]
 - (x) Replace jslint setting from per-file to config/jslint.conf
 - (x) Expect browser env for js/xhi libraries
 - (x) Fix 01.util.js > makeSeriesMap method cross timezones
@@ -499,5 +500,4 @@ MIT
 [_39]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-ova2.ova
 [_40]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001.vmx
 [_41]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-disk1.zip
-
 

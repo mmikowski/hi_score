@@ -349,12 +349,12 @@
     ],
     [
       [
-        "dev_restart"
+        "dev_stop"
       ],
-      "Cycle local HTTPS server",
+      "Stop local HTTPS server",
       [
-        "Cycle local HTTPS server",
-        "NPM SCRIPTS      : prerestart, restart, postrestart",
+        "Stop local HTTPS server",
+        "NPM SCRIPTS      : prestop, stop, poststop",
         "SUCCESS CRITERIA : Server return status"
       ],
       null,
@@ -364,12 +364,12 @@
     ],
     [
       [
-        "dev_stop"
+        "dev_restart"
       ],
-      "Stop local HTTPS server",
+      "Cycle local HTTPS server",
       [
-        "Stop local HTTPS server",
-        "NPM SCRIPTS      : prestop, stop, poststop",
+        "Cycle local HTTPS server",
+        "NPM SCRIPTS      : prerestart, restart, postrestart",
         "SUCCESS CRITERIA : Server return status"
       ],
       null,
@@ -412,11 +412,11 @@
     ],
     [
       [
-        "prod_restart"
+        "prod_stop"
       ],
-      "Cycle production server",
+      "Stop production server",
       [
-        "Cycle production server"
+        "Stop production server"
       ],
       null,
       [
@@ -425,11 +425,11 @@
     ],
     [
       [
-        "prod_stop"
+        "prod_restart"
       ],
-      "Stop production server",
+      "Cycle production server",
       [
-        "Stop production server"
+        "Cycle production server"
       ],
       null,
       [
