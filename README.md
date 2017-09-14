@@ -176,21 +176,27 @@ The server component of **hi\_score** is designed to run on industry-standard ha
 ---
 ## Development platform
 ### Appliance
-An appliance is recommended for MacOS or Windows users. Download [the OVA image][_39] and install on VirtualBox or VMWare (not tested). Then proceed with the instructions for [Ubuntu 17.04][#ubuntu].
+An appliance is recommended for MacOS or Windows users. Download [the OVA2 image][_39] and install on VirtualBox or download [the VMX manifest][_40] and [the VMDK image][_41] to install on Parallels or VMware.
 
-### Ubuntu
-Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or Kubuntu. The steps to install all required libraries are shown below.
+### Ubuntu Linux
+Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or Kubuntu. The steps to install all required and recommended libraries are shown below.
 
 ```
-  # Install development libs
-  sudo apt-get install build-essential openssh-server git pandoc \
-    libfile-slurp-perl liblist-moreutils-perl libgetopt-mixed-perl
+  # install development and useful libs
+  sudo wajig install apt-file build-essential git \
+    htop kdiff3 libfile-slurp-perl libgetopt-mixed-perl \
+    liblist-moreutils-perl meld mysql-client mysql-server \
+    net-tools openssh-server pandoc pandoc-citeproc \
+    ppa-purge sysstat unzip vim-gtk vim-nox \
+    vim-syntax-gtk zip
 
   # Install nodejs
   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   sudo apt-get install -y nodejs
-```
 
+  # Install MongoDB 3.x
+  # See their website for details.
+```
 
 ### Other Linux
 Other Linux distributions should generally work as long as the same libraries can be installed with Ubuntu. It works fine on current versions of CentOS. Development libraries should be installed as shown below.
@@ -202,7 +208,9 @@ Other Linux distributions should generally work as long as the same libraries ca
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
 ### Mac
-We have not been able to test developing natively on a Mac but it should be possible. At the very least one would need Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, and SSH.
+The easiest way path to get familiar with this project on Mac is probably to use a product like Parallels or VMFusion and import a [VMX manifest][_40] and the [VMDK][_41] disk. VirtualBox also runs on Mac but it doesn't integrate as well to the host OS as Parallels, for example.
+
+We should be able to run this natively on the Mac but we haven't tested it.  We would need at the very least Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, Perl Getopt::Mixed Perl File::Slurp, and SSH server.
 
 ### Windows
 We recommend using a virtual machine as detailed above.
@@ -258,7 +266,7 @@ Developent libraries are used for testing a building code. They **are** not copi
 - [nodeunit][_22]: Unit testing
 - [node-inspector][_23]: Debugging
 - [uglifycss][_24]: CSS minification
-- [uglifyjs][_25]: JS minitifcation
+- [uglifyjs][_25]: JS minification
 - buildify: Build script
 
 ### Styling assets
@@ -488,4 +496,8 @@ MIT
 [_36]:https://www.npmjs.com/package/express
 [_37]:https://www.npmjs.com/package/websocket
 [_38]:https://docs.npmjs.com/misc/scripts
-[_40]:http://michaelmikowski.com/ova
+[_39]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-ova2.ova
+[_40]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001.vmx
+[_41]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-disk1.zip
+
+
