@@ -10,7 +10,7 @@
     use List::Util;
     use Data::Dumper;
     use File::Slurp;
-    use Getopt::Mixed;
+    use Getopt::Long;
 
     ## BEGIN printHelpFn
     sub printHelpFn {
@@ -23,17 +23,6 @@ EOH
     }
     ## . END printHelpFn
   
-    ## TODO: switch Getopt::Mixed to Getopt::Long
-    #   See http://crumple-zone.it.uts.edu.au\
-    #     /pub/mirror/cpan/modules/by-category/12_Opt_Arg_Param_Proc/\
-    #     Getopt/Getopt-Mixed-1.11.readme
-    #   In short, Getopt::Long now supports long and short options, and
-    #   is part of the standard Perl distribution; therefore it is a better
-    #   choice.  Here is the setup:
-    #     use Getop::Long;
-    #     Getopt::Long::Configure(qw(bundling no_getopt_compat));
-    #     GetOptions( ...option-descriptions... );
-
     ## BEGIN config Dumper and setup data
     local $Data::Dumper::Terse    => 1;
     local $Data::Dumper::Indent   => 1;
@@ -112,31 +101,28 @@ EOH
     # 'with'         => 1
     ## . END config Dumper and setup data
 
-    ## BEGIN process command-line options
-    Getopt::Mixed::init( 'i=s o=s l=s h input>i output>o log>l help>h' );
-    my %opt_map;
+    my ( $help_flag, $input_file, $log_file, $output_file );
+    Getopt::Long::Configure qw( bundling );
+    Getopt::Long::GetOptions( 
+      'h|help'     => \$help_flag,
+      'i|input=s'  => \$input_file,
+      'l|log=s'    => \$log_file,
+      'o|output=s' => \$output_file
+    );
 
-    while ( my( $option, $value, $pretty ) = Getopt::Mixed::nextOption() ) {
-      $opt_map{ $option } = $value || 1;
-    };
-    Getopt::Mixed::cleanup();
-
-    if ( $opt_map{ 'h' } ) {
+    if ( $help_flag ) {
       printHelpFn();
       exit 0;
     }
-    # Get file paths for input file, output file, and log file
-    my $log_file    = $opt_map{ 'l' }
-      || die q(required [l]og not provided);
-    my $output_file = $opt_map{ 'o' }
-      || die q(required [o]utput not provided);
-    my $script_file = $opt_map{ 'i' }
-      || die q(required [i]nput not  provided);
-    ## . END process command-line options
+
+    # Get file paths for input, log, and output files
+    if ( ! $input_file  ) { die q(required [i]nput  file not provided); }
+    if ( ! $log_file    ) { die q(required [l]og    file not provided); }
+    if ( ! $output_file ) { die q(required [o]utput file not provided); }
 
     ## BEGIN extract tokens from input
     # slurp in file content
-    my $script_str = File::Slurp::read_file( $script_file );
+    my $script_str = File::Slurp::read_file( $input_file );
     # split into lines
     my @str_script_lines = split qq(\n), $script_str;
 

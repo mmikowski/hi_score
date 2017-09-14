@@ -184,7 +184,7 @@ Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or
 ```
   # install development and useful libs
   sudo wajig install apt-file build-essential git \
-    htop kdiff3 libfile-slurp-perl libgetopt-mixed-perl \
+    htop kdiff3 libfile-slurp-perl \
     liblist-moreutils-perl meld mysql-client mysql-server \
     net-tools openssh-server pandoc pandoc-citeproc \
     ppa-purge sysstat unzip vim-gtk vim-nox \
@@ -210,7 +210,7 @@ See [this guide][_06] for NodeJS package installation on other Linux distros. He
 ### Mac
 The easiest way path to get familiar with this project on Mac is probably to use a product like Parallels or VMFusion and import a [VMX manifest][_40] and the [VMDK][_41] disk. VirtualBox also runs on Mac but it doesn't integrate as well to the host OS as Parallels, for example.
 
-We should be able to run this natively on the Mac but we haven't tested it.  We would need at the very least Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, Perl Getopt::Mixed Perl File::Slurp, and SSH server.
+We should be able to run this natively on the Mac but we haven't tested it.  We would need at the very least Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, Perl File::Slurp, and SSH server.
 
 ### Windows
 We recommend using a virtual machine as detailed above.
