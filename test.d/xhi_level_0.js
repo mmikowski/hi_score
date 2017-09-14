@@ -1510,6 +1510,49 @@ function makeEscRxStr ( test_obj ) {
   test_obj.done();
 }
 
+function makeExtractMap ( test_obj ) {
+  var
+    base_map     = {
+      a_str : 'hello',
+      b_int : 1,
+      c_num : 1.6925,
+      d_fn  : makeEscRxStr,
+      e_map : {},
+      f_list: []
+    },
+    assert_table = [
+      // [ arg_list, expect_return  ]
+      [ [                  ], {}         ],
+      [ [ __undef          ], {}         ],
+      [ [ __null, __null   ], {}         ],
+      [ [ {}               ], {}         ],
+      [ [ {}, __null       ], {}         ],
+      [ [ base_map, ['a_str']  ], { a_str : 'hello'} ],
+      [ [ base_map, ['a_str', 'd_fn' ] ],
+        { a_str : 'hello', d_fn : makeEscRxStr } ],
+      [ [ base_map, ['a_str', 'foo' ] ],
+        { a_str : 'hello', foo : __undef } ]
+    ],
+    assert_count = assert_table.length,
+    extract_fn    = __util._makeExtractMap_,
+
+    idx, expect_list, arg_list, msg_str,
+    solve_data, expect_data
+  ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list     = assert_table[ idx ];
+    arg_list        = expect_list[ __0 ];
+    expect_data     = expect_list[ __1 ];
+
+    solve_data = extract_fn.apply( __undef, arg_list );
+    msg_str = __Str( idx ) + '. ' + solve_data + ' === ' + expect_data;
+    test_obj.deepEqual( solve_data, expect_data, msg_str );
+  }
+  test_obj.done();
+}
+
 function makeGuidStr ( test_obj ) {
   var
     seen_map     = {},
@@ -3648,6 +3691,7 @@ module.exports = {
   _makeEllipsisStr_ : makeEllipsisStr,
   _makeErrorObj_    : makeErrorObj,
   _makeEscRxStr_    : makeEscRxStr,
+  _makeExtractMap_  : makeExtractMap,
   _makeGuidStr_     : makeGuidStr,
   _makeMapUtilObj_  : makeMapUtilObj,
   _makeMetricStr_   : makeMetricStr,

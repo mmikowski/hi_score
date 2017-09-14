@@ -449,6 +449,35 @@ xhi._makeUtil_ = function ( aMap ) {
   }
   // . END Public prereq method /makeEscRxStr/
 
+  // BEGIN Public prereq method /makeExtractMap/
+  // Summary   : makeExtractMap( base_map, key_list )
+  // Purpose   : Makes and returns a new map using key_list
+  // Example   : extendList( { a:1, b:2 }, ['a'] ); // returns { a:1 }
+  // Arguments : (positional)
+  //   <base_map> - Map to extract values from
+  //   <key_list> - List of keys to copy (shallow)
+  //                Default: all keys
+  // Returns   : Newly created map
+  // Throws    : none
+  //
+  function makeExtractMap ( arg_base_map, arg_key_list ) {
+    var
+      base_map  = castMap(  arg_base_map, {} ),
+      key_list  = castList( arg_key_list, __keys( base_map ) ),
+      key_count = key_list.length,
+      solve_map = {},
+      idx, key
+      ;
+
+    for ( idx = __0; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      solve_map[ key ] = base_map[ key ];
+    }
+
+    return solve_map;
+  }
+  // . END Public prereq method /makeExtractMap/
+
   // BEGIN Public prereq method /makeRxObj/
   // Summary   : makeRxObj( <pattern>, <options> )
   // Purpose   : Create a regular expression object
@@ -2168,6 +2197,7 @@ xhi._makeUtil_ = function ( aMap ) {
     _makeDebounceFn_  : makeDebounceFn,
     _makeEllipsisStr_ : makeEllipsisStr,
     _makeErrorObj_    : makeErrorObj,
+    _makeExtractMap_  : makeExtractMap,
     _makeGuidStr_     : makeGuidStr,
     _makeMapUtilObj_  : makeMapUtilObj,
     _makeMetricStr_   : makeMetricStr,
