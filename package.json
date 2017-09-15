@@ -68,7 +68,6 @@
   "scripts": {
     "help": "bin/xhi help",
     "build": "bin/xhi build",
-    "coverage": "cat build/latest/coverage/lcov.info | node_modules/.bin/coveralls",
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test",
     "xhi": "bin/xhi"
