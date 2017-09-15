@@ -388,7 +388,8 @@
         "NPM SCRIPTS      : preshrinkwrap, shrinkwrap, postshrinkwrap",
         "SUCCESS CRITERIA : Upload return status"
       ],
-      null, null
+      null,
+      null
     ],
     [
       [
@@ -398,7 +399,8 @@
       [
         "Start production server(s)"
       ],
-      null, null
+      null,
+      null
     ],
     [
       [
@@ -408,7 +410,8 @@
       [
         "Stop production server"
       ],
-      null, null
+      null,
+      null
     ],
     [
       [
@@ -418,7 +421,8 @@
       [
         "Cycle production server"
       ],
-      null, null
+      null,
+      null
     ],
     [
       [
@@ -428,7 +432,8 @@
       [
         "Fetch feedback"
       ],
-      null, null
+      null,
+      null
     ],
     [
       [
@@ -440,7 +445,8 @@
         "NPM SCRIPTS      : preuninstall, uninstall, postuninstall",
         "SUCCESS CRITERIA : Removal success exit status"
       ],
-      null, null
+      null,
+      null
     ]
   ],
   "xhi_02_SetupMatrix": {

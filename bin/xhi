@@ -654,7 +654,7 @@ function makeXhiObj () {
     makeSpawnObj     : makeSpawnObj,    // Object create spawned proc
     makePostObj      : makePostObj,     // Get utils after stage 1
     makeWritePromFn  : makeWritePromFn, // Write file and return promise
-    nextFn           : exitFn,          // Fn for success
+    nextFn           : null,            // Fn for success
     npmObj           : npmObj,          // Npm API object
     pathObj          : pathObj,         // Path manipulation
     paramMap         : null,            // Parameters per CLI input
@@ -794,7 +794,7 @@ function mainFn () {
     }
     stage_idx++;
   }
-  stage_list.sort( function ( a, b ) { return a.idx > b.idx; } );
+  stage_list.sort( function ( a, b ) { return a.idx - b.idx; });
   // . End expand stage list
 
   // Begin run stage list
