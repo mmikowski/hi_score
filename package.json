@@ -73,7 +73,7 @@
     "test": "bin/xhi dev_test",
     "xhi": "bin/xhi"
   },
-  "version": "1.3.7",
+  "version": "1.3.8",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -388,14 +388,7 @@
         "NPM SCRIPTS      : preshrinkwrap, shrinkwrap, postshrinkwrap",
         "SUCCESS CRITERIA : Upload return status"
       ],
-      [
-        "dev_cover",
-        "dev_commit"
-      ],
-      [
-        "build"
-      ],
-      null
+      null, null
     ],
     [
       [
@@ -405,10 +398,7 @@
       [
         "Start production server(s)"
       ],
-      null,
-      [
-        "deploy"
-      ]
+      null, null
     ],
     [
       [
@@ -418,10 +408,7 @@
       [
         "Stop production server"
       ],
-      null,
-      [
-        "deploy"
-      ]
+      null, null
     ],
     [
       [
@@ -431,10 +418,7 @@
       [
         "Cycle production server"
       ],
-      null,
-      [
-        "deploy"
-      ]
+      null, null
     ],
     [
       [
@@ -444,10 +428,7 @@
       [
         "Fetch feedback"
       ],
-      null,
-      [
-        "deploy"
-      ]
+      null, null
     ],
     [
       [
@@ -459,8 +440,7 @@
         "NPM SCRIPTS      : preuninstall, uninstall, postuninstall",
         "SUCCESS CRITERIA : Removal success exit status"
       ],
-      null,
-      null
+      null, null
     ]
   ],
   "xhi_02_SetupMatrix": {
