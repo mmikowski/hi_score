@@ -654,7 +654,7 @@ function makeXhiObj () {
     makeSpawnObj     : makeSpawnObj,    // Object create spawned proc
     makePostObj      : makePostObj,     // Get utils after stage 1
     makeWritePromFn  : makeWritePromFn, // Write file and return promise
-    nextFn           : null,            // Fn for success
+    nextFn           : exitFn,          // Fn for success
     npmObj           : npmObj,          // Npm API object
     pathObj          : pathObj,         // Path manipulation
     paramMap         : null,            // Parameters per CLI input

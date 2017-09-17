@@ -1,6 +1,5 @@
 ## Code standard
-Please use the included [code standard][_01]. A
-[quick reference][_02] guide is also available. 
+Please use the included [code standard][_01].
 
 ## Architecture
 The `xhi` libraries are designed for loose coupling but strict call
@@ -42,5 +41,4 @@ Please use events to broadcast changes from the Model to the Shell and
 feature modules. This helps eliminate or minimize cross-talk between feature
 modules and maximizes their reusability.
 
-[_01]://doc/standard/js-code-standard.pdf
-[_02]://doc/standard/js-quick-ref.pdf
+[_01]://doc/standard/js-code-standard.html

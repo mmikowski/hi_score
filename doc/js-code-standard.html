@@ -1,0 +1,3246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.4">
+<meta name="author" content="Doc Writer">
+<title>JavaScript Code Standard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+body{-webkit-font-smoothing:antialiased}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+body{tab-size:4}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+</head>
+<body class="article">
+<div id="header">
+<h1>JavaScript Code Standard</h1>
+<div class="details">
+<span id="author" class="author">Doc Writer</span><br>
+<span id="email" class="email"><a href="mailto:mike.mikowski@gmail.com">mike.mikowski@gmail.com</a></span><br>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_purpose">1. Purpose</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This code standard is designed to help organizations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Facilitate team communication.</p>
+</li>
+<li>
+<p>Encourage documentation and reuse.</p>
+</li>
+<li>
+<p>Avoid common mistakes and dead code.</p>
+</li>
+<li>
+<p>Recognize and use the strengths of JavaScript.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_do_you_know">2. Do you know?</h2>
+<div class="sectionbody">
+<div class="dlist quanda">
+<dl>
+<dt>How does a code standard improve products?</dt>
+<dd>
+<p>Answer:</p>
+</dd>
+<dt>What are the current version of JavaScript?</dt>
+<dd>
+<p>Answer:</p>
+</dd>
+<dt>Why is indicating variable type especially useful for JavaScript?</dt>
+<dd>
+<p>Answer:</p>
+</dd>
+<dt>Should one avoid plurals in most variable names?</dt>
+<dd>
+<p>Answer:</p>
+</dd>
+<dt>What are the dangers of imprecise comparators like <code>==</code> or <code>!=</code>?</dt>
+<dd>
+<p>Answer:</p>
+</dd>
+<dt>Which is better, <code>setInterval</code> or <code>setTimeout</code>?</dt>
+<dd>
+<p>Answer:</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_code_base_audience">3. The code base audience</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Code is read by at least two audiences: the machines that execute
+the instructions and the humans who write, maintain, or extend it.
+Code written for human comprehension tends to result in carefully
+constructed and well documented assets that are inexpensive to
+maintain, extend, or reuse. This is often called <strong>Living Code</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Code that cannot be understood by humans after it is written is often
+called <strong>Dead Code</strong><sup class="footnote" id="_footnote_deadcode">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>. This code becomes
+prohibitively difficult and expensive to maintain, extend, or reuse
+and it is a <strong>technical debt</strong><sup class="footnote" id="_footnote_techdebt">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>
+that stifles innovation.</p>
+</div>
+<div class="paragraph">
+<p>A good standard helps us create well documented <strong>Living Code</strong> that can
+grow with our product and organization. A comprehensive standard is
+arguably more valuable for JavaScript than with other stricter languages.
+JavaScript’s flexibility can open a Pandora’s
+Box of syntax and practice. Stricter languages have a good deal of
+structure and consistency built-in. Developers must actively apply
+convention to attain the same results with JavaScript.</p>
+</div>
+<div class="paragraph">
+<p>This standard has continuously evolved over many years and is used in
+many open source and commercial projects. Appendix Y provides a three-page
+quick-reference guide which dispenses with any explanations. However,
+if you want to know <strong>why</strong> we recommend a convention, keep reading.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_javascript_versions">4. JavaScript versions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This standard considered ES5.1 as the most current useable version of
+JavaScript. Let&#8217;s review how JavaScript versions are named and why this
+standard considers ES5.1 the latest usable version.</p>
+</div>
+<div class="sect2">
+<h3 id="_ecma_ecmascript_and_es">4.1. ECMA, ECMAScript, and ES</h3>
+<div class="paragraph">
+<p>Development on the JavaScript language has accelerated over the past decade as
+vendors have stopped competing and started collaborating on making the
+lanugage better all centered around the ECMAScript specifications. All these
+acronymns can be confusing so let&#8217;s clear things up.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Ecma_International">ECMA International</a>.
+is a standards organization acquired its current name in 1994 when the
+European Computer Manufacturers Association changed its name. ECMA is no
+longer considered an acronymn.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/ECMAScript">ECMAScript</a> is a language standard
+created by ECMA International. <strong>ES</strong> is contraction of <strong>ECMAScript</strong>. Thus
+the JavaScript version <strong>ES6</strong> and <strong>ECMAScript 6</strong> refer to the same.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_current_es_versions_and_supported_platforms">4.2. Current ES Versions and supported platforms</h3>
+<div class="paragraph">
+<p>Table X.1 shows the JavaScript language specifications. Later versions
+are generally backward-compatible with prior versions.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Table X.1&#8201;&#8212;&#8201;Prefered names of JavaScript versions</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Year</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Preferred</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alternate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Highlights</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1997</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ECMAScript 1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">You gotta start somewhere</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1998</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ECMAScript 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compatible with ISO 16262</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1999</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ECMAScript 3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Regular expressions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">----</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">----</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Abandoned</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2009</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ECMAScript 5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Strict mode, JSON</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2011</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES5.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ECMASCript 5.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compatible with ISO 16262:2011</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2015</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES2015</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES6, ECMAScript 6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES6 Harmony, for/of, promises,</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2016</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES2016</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES7, ECMAScript 7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES7 Harmony, Exponent, Array includes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2017</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES2017</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES8, ECMaScript 8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SIMD types, await/sync</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ESNext</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">----</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cool stuff</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>As of 2015, ECMA discourages the use of a single version numbers in favor
+of the year of release. Thus while using ES5.1 is fine, they prefer we use
+ES2015, ES2016, ES2017 instead of ES6, ES7, or ES8.</p>
+</div>
+<div class="paragraph">
+<p>At the time of writing (fall 2017) IE 11 held around 11% market share and the
+highest version level supported is ES5.1. This is highest feature level that
+most public sites should expect and is the basis for this standard.
+Kanagax has provided a very <a href="https://kangax.github.io/compat-table/es6/">helpful chart</a>
+so we can keep an eye on popularity. Once IE 11 use drop below 1% we will
+update our support.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_variables">5. Variables</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Variables can contain array, functions, numbers, object, strings,
+<code>null</code>, or <code>undefined</code>. Some JavaScript implementations may make
+internal distinctions between integers, 32-bit signed, and 64-bit
+double-precision floating point numbers but there is no formal means to
+enforce this.</p>
+</div>
+<div class="paragraph">
+<p>Provide variables with meaningful names as shown in Listing X.1 so we
+won’t have to insert a clumsy time-and-focus-sapping description every
+time a variable is used.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.1&#8201;&#8212;&#8201;Variables with meaning</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var x = 'Fred';
+function p () { console.log( 'Hello ' + x ); }
+p();
+
+// == Prefer ==
+var person_name = 'Fred';
+function sayHelloFn () { console.log( 'Hello ' + person_name ); }
+sayHelloFn();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Minimize the effort required to understand why a variable exists and
+what it contains. This frees the mind to focus more important
+areas such as application structure and logic.</p>
+</div>
+<div class="sect2">
+<h3 id="_abbreviate_smartly">5.1. Abbreviate smartly</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Do not abbreviate short words.</p>
+</li>
+<li>
+<p>Remove most articles, adjectives, and prepositions from names.</p>
+</li>
+<li>
+<p>Use standard abbreviations and acronyms where they exist.</p>
+</li>
+<li>
+<p>Prefer truncated names to contractions.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.2&#8201;&#8212;&#8201;Abbreviations</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var dgClrStr = 'brown';
+function walkWithTheBrownDog () {...}
+for ( q = 0; q &lt; 9; q++ ) ...
+var denormalizationMap = {...};
+var dnmlztnMap = {...};
+
+// == Prefer ==
+var dogColorStr = 'brown';  <b class="conum">(1)</b>
+function walkDogFn () {...}   <b class="conum">(2)</b>
+for ( i = 0; i &lt; 9; i++ ) ... <b class="conum">(3)</b>
+var denormMap = {...};        <b class="conum">(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Do not abbreviate short words</p>
+</li>
+<li>
+<p>Discard articles and prepositions</p>
+</li>
+<li>
+<p>Use standard i, j, k for integers</p>
+</li>
+<li>
+<p>Truncate instead of contract</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_replace_comments_with_meaningful_names">5.2. Replace comments with meaningful names</h3>
+<div class="paragraph">
+<p>Name variables to describe why they needed and what data type we
+expected them to contain. The first consideration is important in any
+language; the second is useful for loosely-type languages
+like JavaScript. Listing X.3 shows variables named by purpose and type.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.3&#8201;&#8212;&#8201;Names with purpose</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+// 'creators' is an object constructor we get by
+// calling 'makers'. The first positional argument
+// of 'makers' must be a string, and it directs
+// the type of object constructor to be returned.
+// 'makers' uses a closure to remember the type
+// of object the returned function is to
+// meant to create.
+//
+var creators = makers( 'house' );
+
+// == Prefer ==
+var make_house_fn = curry_build_fn({ _item_type_ : 'house' });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Figure X.1 illustrates how we convey all the meaning of the comments in Listing X.3 using variable names.</p>
+</div>
+<div class="paragraph">
+<div class="title">Figure X.1&#8201;&#8212;&#8201;Variable name dissection</div>
+<p><span class="image"><img src="./images/ch01/syntax.png" alt="image" width="width:700"></span></p>
+</div>
+<div class="paragraph">
+<p>Precise variable names are not only more concise but they help avoid
+inaccurate comments. Consider, for example, what can happen when a
+teammate updates a few names. It is all too easy to make a mistake when
+updating the comments as shown in Listing X.4. If we instead rely on
+variable names this problem goes away.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.4&#8201;&#8212;&#8201;Good intentions and bad comments</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+// 'creators' is an object constructor we get by   <b class="conum">(1)</b>
+// calling 'makers'. The first positional argument <b class="conum">(2)</b> <b class="conum">(3)</b>
+// of 'makers' must be a string, and it directs
+// the type of object constructor to be returned.
+// 'makers' uses a closure to remember the type    <b class="conum">(4)</b>
+// of object the returned function is to
+// meant to create.
+//
+var makers = builders( null, 'house' );
+
+// == Prefer ==
+var make_abode = curry_make_fn({ _item_type_ : 'abode' });</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Mistake: <code>creators</code> is now <code>makers</code></p>
+</li>
+<li>
+<p>Mistake: <code>makers</code>   is now <code>builders</code></p>
+</li>
+<li>
+<p>Mistake: The string is now the second positional parameter</p>
+</li>
+<li>
+<p>Mistake: <code>makers</code> is now <code>builders</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The changes to the preferred code are far shorter and guaranteed
+correct. Good editors can apply variable-name changes throughout a
+project in second whereas comment management is the developer&#8217;s
+responsibility.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_common_characters">5.3. Use common characters</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Use the characters <code>a-z</code>, <code>A-Z</code>, <code>0-9</code>, underscore, and <code>$</code>, for
+variable names and all other symbols such as labels or property keys.</p>
+</li>
+<li>
+<p>Don’t begin a name with a number.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.5&#8201;&#8212;&#8201;Keyboard characters</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+my_obj[ '00-x__®__' ] = 'hello';
+
+// == Prefer ==
+my_obj._greet_str_ = 'hello';</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Limit variable names to characters available on most of the world’s
+keyboards. Apply the same character limits to object property names
+since all variables are object properties of their functional scope.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_communicate_variable_scope">5.4. Communicate variable scope</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Place each module in its own file</p>
+</li>
+<li>
+<p>Use <code>camelCase</code> when the variable is module scope.</p>
+</li>
+<li>
+<p>Use <code>snake_case</code> when the variable is local to a function
+nested inside the module.</p>
+</li>
+<li>
+<p>Use two or more syllables for module-scope variables.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.6&#8201;&#8212;&#8201;Variable scope names</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var stateMap = {};  <b class="conum">(1)</b>
+function initModule () {
+  var
+    localInt = 1,   <b class="conum">(2)</b>
+    localStr = 'Module initialized. Our number is ';
+ console.log( localStr + localInt );
+}
+return { _initModule_ : initModule };
+
+// == Prefer ==
+var stateMap = {};  <b class="conum">(1)</b>
+function initModule () {
+  var
+    local_int = 1,  <b class="conum">(3)</b>
+    local_str = 'Module initialized. Our number is ';
+ console.log( local_str + local_int );
+}
+return { _initModule_ : initModule };</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Module scope</p>
+</li>
+<li>
+<p>Avoid: Local scope variables use camelCase</p>
+</li>
+<li>
+<p>Prefer: Local scope variables use snake_case</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_communicate_variable_type">5.5. Communicate variable type</h3>
+<div class="paragraph">
+<p>Add a suffix or prefix to a variable name to identify its intended data
+type. Avoid changing a variable type after declaration because it causes
+confusion and rarely provides any benefit. When in doubt use an “unknown
+type” indicator.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.7&#8201;&#8212;&#8201;Type indicators</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var
+  places = 10,
+  users = '02',
+  calc = places + users;
+console.log ( calc ); <b class="conum">(1)</b>
+
+// == Prefer ===
+var
+  place_count = 10,
+  user_id     = '02',
+  calc_num    = place_count + Number( user_id );
+console.log ( calc_num ); <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Displays the string '1002'</p>
+</li>
+<li>
+<p>Displays the number '12'</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_booleans">5.5.1. Booleans</h4>
+<div class="paragraph">
+<p>Name boolean variables using <code>&lt;noun&gt;_&lt;type&gt;</code> or <code>&lt;type&gt;_&lt;noun&gt;</code>.
+Recommended <code>&lt;type&gt;</code> indicators are shown in Table X.1. Boolean
+<code>&lt;type&gt;</code> indicators are often prefixes because they read better in English.
+Most other <code>&lt;type&gt;</code> indicators are suffixes.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. Table X.1&#8201;&#8212;&#8201;Boolean indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_bool [generic]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">return_bool</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">returnBool</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">do_ (requests action)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">do_retract</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">doRetract</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">has_ (inclusion)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">has_whiskers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hasWhiskers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_ (state)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_retracted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IsRetracted</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_functions">5.5.2. Functions</h4>
+<div class="paragraph">
+<p>Name functions and function variables using <code>&lt;verb&gt;-&lt;noun&gt;-&lt;type&gt;</code>.
+Recommended <code>type</code> indicators are shown in Table X.2. Recommended
+verbs for are shown in tables X.3-5.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 3. Table X.2&#8201;&#8212;&#8201;Function indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;verb&gt;&lt;noun&gt;&lt;type&gt;_fn</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>bound_fn
+curry_get_list_fn
+get_car_list_fn
+fetch_car_list_fn
+remove_car_list_fn
+store_car_list_fn
+send_car_list_fn</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>boundFn
+curryGetListFn
+getCarListFn
+fetchCarListFn
+removeCarListFn
+storeCarListFn
+sendCarListFn
+curryGetListFn
+getCarListFn</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 4. Table X.3&#8201;&#8212;&#8201;Function verbs for local data</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Example</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Meaning</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bound</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boundFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A function with a bound context</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">curry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">curryMakeUserFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Return a function as specified by argument(s)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">delete</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deleteUserObjFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove data structure from memory</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">destroy, remove</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">destroyUserObjFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Same as delete, but implies
+references will be cleaned up as well</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">empty</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">emptyUserListFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove all members of a data structure without
+removing the container</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">getUserObjFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get data structure from memory</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">make</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">makeUserObjFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create a new data structure using input parameters</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">storeUserListFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Store data structure in memory</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">update</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updateUserListFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Change memory data structure in-place</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 5. Table X.4&#8201;&#8212;&#8201;Function verbs for remote data</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Example</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Meaning</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fetch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fetchUserListFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetch data from external source like AJAX,
+local storage, or cookie</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">put</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">putUserChangeFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send data to external source for update</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sendUserListFn</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send data to external source</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 6. Table X.5&#8201;&#8212;&#8201;Function verb for event handler</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verb</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Example</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Meaning</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">on</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>onMouseoverFn</p>
+</div>
+<div class="paragraph">
+<p>onClickHeaderFn</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An event handler. Use &lt;on&gt;&lt;event-name&gt;&lt;modifier&gt;</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_integers">5.5.3. Integers</h4>
+<div class="paragraph">
+<p>Name integer variables using <code>&lt;noun&gt;-&lt;type&gt;</code>. Recommended <code>&lt;type&gt;</code>
+indicators are shown in Table X.6.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 7. Table X.6-- Integer indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_int [generic]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">size_int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sizeInt</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user_count</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">userCount</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_idx</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user_idx</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">userIdx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_ms (milliseconds)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">click_delay_ms</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">clickDelayMs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">i, j, k (convention)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">i</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_toid, _intid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">show_popup_toid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">showPopUpToid</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>JavaScript requires an integer value for a number of purposes such as an
+index for an array, or as an argument for <code>indexOf</code>, or
+<code>subStr</code>. Consider, for example, what happens if we try to use a
+float for an array index as shown in Listing X.8.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.8&#8201;&#8212;&#8201;Array with a non-integer index</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var color_list = [ 'red', 'green', 'blue' ];
+color_list[1.5] = 'chartreuse';
+console.log( color_list.pop() ); // 'blue'
+console.log( color_list.pop() ); // 'green'
+console.log( color_list.pop() ); // 'red'
+console.log( color_list.pop() ); // *undefined???*
+console.log( color_list[1.5] ); // *oh, there it is*
+console.log( color_list ); // *["1.5":"chartreuse"]*</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_lists">5.5.4. Lists</h4>
+<div class="paragraph">
+<p>Name array variables using <code>&lt;noun&gt;-&lt;type&gt;</code>. Recommended <code>&lt;type&gt;</code>
+indicators are shown in Table X.7. Please use only singular nouns
+as the suffix indicates plurality. We recommend using the <code>&lt;table&gt;</code>
+suffix for complex data structures such as a list-of-lists or
+a list-of-objects.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 8. Table X.7&#8201;&#8212;&#8201;List indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_list [generic]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp_list, color_list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestampList, colorList</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_table [complex lists]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user_table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">userTable</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_numbers">5.5.5. Numbers</h4>
+<div class="paragraph">
+<p>Name floating-point number variables using <code>&lt;noun&gt;-&lt;type&gt;</code>. Recommended
+<code>&lt;type&gt;</code> indicators are shown in Table X.8. Please use only singular nouns
+as the suffix indicates plurality.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 9. Table X.8&#8201;&#8212;&#8201;Number indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_num [generic]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">size_num</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SizeNum</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_coord</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x_coord</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">xCoord</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_px (fractional unit)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x_px, y_px</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">xPx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_ratio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sale_ratio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">saleRatio</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x,y,z</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8201;&#8212;&#8201;</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_maps">5.5.6. Maps</h4>
+<div class="paragraph">
+<p>Name variables used as maps using <code>&lt;noun&gt;-&lt;type&gt;</code>. Recommended <code>&lt;type&gt;</code>
+indicators are shown in Table X.9. Please use only singular nouns as the
+suffix indicates plurality. We recommend using the <code>&lt;matrix&gt;</code>
+suffix for complex data structures such as a map-of-lists or a map-of-maps.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 10. Table X.9&#8201;&#8212;&#8201;Map indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>_map [generic]</p>
+</div>
+<div class="paragraph">
+<p>_matrix [complex maps]</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>employee_map</p>
+</div>
+<div class="paragraph">
+<p>receipt_map</p>
+</div>
+<div class="paragraph">
+<p>user_matrix</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>employeeMap</p>
+</div>
+<div class="paragraph">
+<p>receiptMap</p>
+</div>
+<div class="paragraph">
+<p>userMatrix</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Maps are simple objects used to store key-value pairs<sup class="footnote" id="_footnote_es5map">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup>. This is similar to a <code>map</code> in Java,
+a <code>dict</code> in Python, an <code>associative array</code> in PHP, or a <code>hash</code> in Perl.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_objects">5.5.7. Objects</h4>
+<div class="paragraph">
+<p>Name full-featured object variables using <code>&lt;noun&gt;-&lt;type&gt;. Recommended
+`&lt;type&gt;</code> indicators are shown in Table X.10.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 11. Table X.10&#8201;&#8212;&#8201;Object indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_obj [generic]</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>employee_obj</p>
+</div>
+<div class="paragraph">
+<p>receipt_obj</p>
+</div>
+<div class="paragraph">
+<p>error_obj</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>employeeObj</p>
+</div>
+<div class="paragraph">
+<p>receiptObj</p>
+</div>
+<div class="paragraph">
+<p>errorObj</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">$ (jQuery object)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>$header</p>
+</div>
+<div class="paragraph">
+<p>$area_tabs</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>$Header</p>
+</div>
+<div class="paragraph">
+<p>$areaTabs</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_proto (prototype)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user_proto</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">userProto</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_regular_expression_objects">5.5.8. Regular expression objects</h4>
+<div class="paragraph">
+<p>Name regular expression object variables using <code>&lt;noun&gt;-&lt;type&gt;</code>. The
+recommended <code>&lt;type&gt;</code> indicator is shown in Table X.11.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 12. Table X.11&#8201;&#8212;&#8201;Regex indicator</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_rx</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">match_rx</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">matchRx</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_strings">5.5.9. Strings</h4>
+<div class="paragraph">
+<p>Name strings variables using '&lt;noun-type&gt;'. Recommended <code>&lt;type&gt;</code>
+indicators are shown in Table X.12.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 13. Table X.12&#8201;&#8212;&#8201;String indicators</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_str [generic]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">direction_str</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">directionStr</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">email_date</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">emailDate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>_dirname, _filename, _linkname, _socketname,</p>
+</div>
+<div class="paragraph">
+<p>_pathname</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>config_filename</p>
+</div>
+<div class="paragraph">
+<p>test_dirname</p>
+</div>
+<div class="paragraph">
+<p>source_pathname</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>configFilename</p>
+</div>
+<div class="paragraph">
+<p>testDirname</p>
+</div>
+<div class="paragraph">
+<p>sourcePathname</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_html</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">body_html</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bodyHtml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_id, _code (identifier)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">email_id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">emailId</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_msg (message)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">employee_msg</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">employeeMsg</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">employee_name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">employeeName</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">email_text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">emailText</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">item_type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">itemType</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_unknown_types">5.5.10. Unknown types</h4>
+<div class="paragraph">
+<p>Name variable of an unknown type using <code>&lt;noun&gt;-&lt;type&gt;</code>. The recommended
+<code>&lt;type&gt;</code> indicator is shown in Table X.13.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 14. Table X.13&#8201;&#8212;&#8201;Unknown type indicator</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_data</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>http_data</p>
+</div>
+<div class="paragraph">
+<p>socket_data</p>
+</div>
+<div class="paragraph">
+<p>arg_data</p>
+</div>
+<div class="paragraph">
+<p>data</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>httpData,</p>
+</div>
+<div class="paragraph">
+<p>socketData</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Variables with unknown types are encountered in polymorphic functions
+where an argument may have one of many types. One such function might
+concatenate strings, numbers, arrays, or maps. We also encounter unknown
+data types when receiving data from an external source such as an AJAX
+response.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_avoid_plurals">5.6. Avoid plurals</h3>
+<div class="paragraph">
+<p>Avoid plurals in <strong>any</strong> variable name. A plural noun implies an
+indeterminate group of data. Instead use a variable name that more
+precisely identifies the type of data that contains the group.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.9&#8201;&#8212;&#8201;Collections of data</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var
+ cats = [ 'callico', 'tabby' ],
+ colors = { blue : '#00f', green : '#0f0', red : '#00f' },
+ persons = [ { name : 'Fred' }, [ name : 'Wilma' } ],
+ retracts = true,
+ users = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
+ ;
+
+// == Prefer ==
+var
+ cat_list      = [ 'callico', 'tabby' ],
+ color_map     = { blue : '#00f', green : '#0f0', red : '#00f' },
+ do_retract    = true,
+ person_table  = [ { name : 'fred' }, [ name : 'wilma' } ],
+ user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
+ ;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sort_declarations_and_assignments">5.7. Sort declarations and assignments</h3>
+<div class="paragraph">
+<p>Sort declarations and assignment of variables, lists, and maps in
+alphabetical order unless there is a precedence requirement or another
+obvious reason for a different order. Use an editor like Vim, Sublime,
+or WebStorm which support in-line sorting.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.10&#8201;&#8212;&#8201;Sorted declarations</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+
+var
+ do_retract = true,
+ color_map = { green : '#0f0', red : '#00f', blue : '#00f' },
+ person_table = [ { name : 'Wilma' }, { name : 'Fred' } ],
+ user_csv_list = 'Pebbles,Wilma,Betty,Bamm-Bamm,Fred',
+ cat_list = [ 'tabby', 'callico' ]
+ ;
+
+// == Prefer ==
+var
+ cat_list = [ 'callico', 'tabby', ],
+ color_map = { blue : '#00f', green : '#0f0', red : '#00f' },
+ do_retract = true,
+ person_table = [ { name : 'fred' }, [ name : 'wilma' } ],
+ user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma';
+ ;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_object_property_names">5.8. Object property names</h3>
+<div class="paragraph">
+<p>Name object properties using the same convention as other variables.
+Properties we intend to have compressed should be wrapped with
+underscores so they can be identified during the build process.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 15. Table X.14&#8201;&#8212;&#8201;Example property names</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Local scope</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Module scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map._person_list_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._personList_</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map._is_enabled_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._isReady_</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map._init_fn_</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>spa._initModule_
+spa._model_.initModule_
+spa._shell_.<em>initModule</em></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map.<em>leg_count</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._callbackCount_</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map._user_map_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._slider_._instanceMap_</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map._mix_ratio_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._sound_._mixRatio_</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map._username_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._userMap_</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Regex</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">local_map._match_rx_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._matchRx_</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_functions_2">6. Functions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Functions are a first-class data type in JavaScript. They can be
+used as with any other type. We can, for example, create a map or array
+with them as values, or use them as arguments in other functions.</p>
+</div>
+<div class="sect2">
+<h3 id="_use_namespaces">6.1. Use namespaces</h3>
+<div class="paragraph">
+<p>When running JavaScript in a browser we need to protect our code from
+conflict. Create a single global namespace map inside of which all our other
+variables are scoped<sup class="footnote" id="_footnote_iife">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</sup>.
+Use an Immediately Invoked Function Expression (<code>IIFE</code>) to create the
+namespace as shown in Listing X.11. When declaring an <code>IIFE</code> always wrap
+the outer function in parenthesis so that it’s clear obvious the value
+produced is the result of the function and not the function itself.
+Always use the <code>'use strict'</code> pragma for module-scope <code>IIFEs</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.11&#8201;&#8212;&#8201;A namespace map created using an <code>IIFE</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ==
+var greetStr = 'Hi there!';
+console.log( window.greetStr ); // prints 'Hi there!'
+
+// == Prefer ==
+var spa = (function () {
+ 'use strict';
+ var greetStr = 'Hi there!';
+ function initModule () { console.log( greetStr ); }
+ return { _initModule_ : initModule };
+}());
+spa._initModule_();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can break a namespace into manageable subdivisions. For example, we
+can add <code>spa._shell_</code> and <code>spa._slider_</code> to our <code>spa</code>
+namespace as shown in Listing X.12.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.12&#8201;&#8212;&#8201;A namespace subdivided</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
+// In the file spa.shell.js:
+var spa._shell_ = (function () {
+ 'use strict';
+
+ return {       <b class="conum">(1)</b>
+ _initModule_   : initModule,
+ _resetDisplay_ : resetDisplay
+ };
+}());
+
+// In the file spa.slider.js:
+var spa._slider_ = (function () {
+ 'use strict';
+
+ return {        <b class="conum">(1)</b>
+ _initModule_    : initModule,
+ _extendSlider_  : extendSlider,
+ _retractSlider_ : retractSlider
+ };
+}());
+// Initialize the spa from another module
+spa._initModule_();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Return private variables and methods</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Name CSS selectors in parallel with the JavaScript namespaces. For
+example, any classes used by <code>spa._shell_</code> should have an <code>spa-_shell_</code>
+prefix.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_minimize_module_scope_variables">6.2. Minimize module-scope variables</h3>
+<div class="paragraph">
+<p>Do not use global variables except when namespacing as above.
+It is also wise to minimize module-scope variables otherwise one can lose
+track of module state. We recommend grouping state and configuration data
+into <code>stateMap</code> and <code>configMap</code> respectively as shown in Listing X.13.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.13&#8201;&#8212;&#8201;Module scope variables</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var
+ doBigThings = true,
+ userMaxCount = 5,
+ isSliderActive = true,
+ isSliderOpen = false
+ ;
+
+// == Prefer ==
+var
+  configMap = {
+    _do_big_things_  : true,
+    _user_max_count_ : 5
+  },
+  stateMap = {
+   _is_slider_active_ : true,
+   _is_slider_open_   : false
+  };</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_named_functions">6.3. Use named functions</h3>
+<div class="paragraph">
+<p>Named functions are easier to debug than anonymous functions.
+For most purposes the declarations in Listing X.14 are
+equivalent. However, we <strong>will</strong> see a difference when debugging.
+When we declare functions with an explicit names, legible
+stack traces can be computed prior to run-time.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.14&#8201;&#8212;&#8201;Explicit function names</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+getMapCopy = function ( arg_map ) { ... }; <b class="conum">(1)</b>
+
+// == Prefer ==
+function getMapCopy( arg_map ) { ... };    <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>This is an anonymous function assigned to a variable.</p>
+</li>
+<li>
+<p>This is a named function.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_named_arguments_for_complex_functions">6.4. Use named arguments for complex functions</h3>
+<div class="paragraph">
+<p>Positional argument, while convenient for simple function, are not
+self documenting and become unwieldy when the list grows longer
+than two. Use named arguments instead as shown in Listing X.15.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.15&#8201;&#8212;&#8201;Named arguments</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Good ====
+hypotenuse_num = sqrt( 25 ); <b class="conum">(1)</b>
+
+// == Avoid ===
+coor_map = refactorCoords( 22, 28, 32, 48); <b class="conum">(2)</b>
+
+// == Prefer ==
+coord_map = refactorCoords({
+ x1 : 22, y1 : 28, x2 : 32, y2 : 48 <b class="conum">(3)</b>
+});</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Positional arguments are fine for simple functions.</p>
+</li>
+<li>
+<p>But they can get confusing when the list grows.</p>
+</li>
+<li>
+<p>The purpose of these named arguments is clearer.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_a_single_var_statement_per_function">6.5. Use a single var statement per function</h3>
+<div class="paragraph">
+<p>Declare all variables at the top of a function scope using a
+single <code>let</code> keyword which as of ES5.1 release <code>var</code> in most circumstances.</p>
+</div>
+<div class="paragraph">
+<p>If we declare a variable anywhere within a function using <code>var</code>, it will be
+initialized with a value of <code>undefined</code> immediately on invocatione.
+We can make this behavior obvious by placing declaring all the
+variables first as shown in Listing X.16.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.16&#8201;&#8212;&#8201;Single var statement</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+function copyMapKeysFn( arg_map ) { <b class="conum">(1)</b>
+  let solve_map = {};
+  let key_list = Object.keys( arg_map );
+  let key_count = key_list.length;
+
+  for ( var idx = 0; idx &lt; key_count; idx++ ) {
+    let key_name = key_list[ idx ];
+    let val_data = arg_map[ key_name ];
+    if ( val_data !== undefined ) {
+      solve_map[ key_name ] = val_data;
+    }
+  }
+  return solve_map;
+}
+
+// == Prefer ==
+function copyMapKeysFn( arg_map ) {
+  let
+    solve_map = {},
+    key_list  = Object.keys( arg_map ),
+    key_count = key_list.length,
+
+    idx, key_name, val_data
+    ;
+
+  for ( idx = 0; idx &lt; key_count; idx++ ) {
+    key_name = key_list[ idx ];
+    val_data = arg_map[ key_name ];
+    if ( val_data !== undefined ) {
+      solve_map[ key_name ] = val_data;
+    }
+  }
+  return solve_map;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>&lt;1&gt;Do we really need dozens of <code>let</code> keywords in every function?</p>
+</div>
+<div class="paragraph">
+<p>Declaring a variable is not the same as assigning a value to it.
+We declare variable to let the JS engine know which variables exists within
+a functional scope. Declarations are processed at compile-time. We assign a
+value to a variable and this occurs only at run-time<sup class="footnote" id="_footnote_hoist">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup>. As a convenience
+we may combine declaration and assignment with the <code>var</code> statement but
+this is not required.</p>
+</div>
+<div class="paragraph">
+<p>Two new types of declarations were introduced in circa ES5. The
+<code>let</code> keyword limits a variable to its containing block, statement, or
+expression and the <code>const</code> keyword creates immutable data
+structure.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.17&#8201;&#8212;&#8201;Confusing <code>const</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">'use strict';
+const foo_table = [ {}, {} ];
+foo_table[ 0 ]._brand_str_ = 'billy'; <b class="conum">(1)</b>
+foo_table[ 1 ]._type_      = 'beer';  <b class="conum">(1)</b>
+
+console.warn( JSON.stringify( foo_table ) );
+// [ { _brand_str_: 'billy' }, { _type_: 'beer' } ]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>So much for immutability.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_distinguish_function_declaration_and_invocation">6.6. Distinguish function declaration and invocation</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Declare a function with a single space between the name and
+opening left parenthesis.</p>
+</li>
+<li>
+<p>Invoke a function with no space between the name and
+the opening left parenthesis.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.18&#8201;&#8212;&#8201;Function declaration and invocation</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">function processMap( arg_map ){ ... }     // == Avoid ===
+function processMap ( arg_map ) { ... }   // == Prefer ==
+
+result_map = processMap ( example_map );  // == Avoid ===
+result_map = processMap( example_map );   // == Prefer ==</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_compare_with_precision">6.7. Compare with precision</h3>
+<div class="paragraph">
+<p>Use the precise <code>===</code> and <code>!==</code> comparators instead of <code>==</code> and <code>!=</code>.
+The latter operators apply type coercion which is inconsistent
+and confusing as shown Listing X.19.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.19&#8201;&#8212;&#8201;Check for truthiness</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">var count_list = [ 1 + 1 ];
+
+== Avoid ===
+if ( count_list == 2 ) { console.warn( 'Confusing match' ); } <b class="conum">(1)</b>
+
+== Prefer ===
+if ( count_list === 2 ) { console.warn( 'No match' ); }   <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Both the array and number are coerced into the string '2'.</p>
+</li>
+<li>
+<p>No type coercion occurs.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_catch_exceptions">6.8. Catch exceptions</h3>
+<div class="paragraph">
+<p>Exceptions should be caught using a try-catch block.
+Avoid nested blocks as shown in Listing X.20 and use a
+linear search instead as shown in Listing X.21.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.20&#8201;&#8212;&#8201;Try-catch block&#8201;&#8212;&#8201;nesting</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var fs_obj, lib_key;
+try {
+  lib_key = 'fancyFs';
+  console.log( 'attempt ' + lib_key );
+  fs_obj = require( lib_key );
+}
+catch ( error0_data ) {
+  console.warn( String( error0_data ) );
+  try {
+    lib_key = 'coolFs';
+    console.log( 'attempt ' + lib_key );
+    fs_obj = require( lib_key );
+  }
+  catch ( error1_data ) {
+    console.warn( String( error1_data ) );
+    try {
+      lib_key = 'neatFs';
+      console.log( 'attempt ' + lib_key );
+      fs_obj = require( lib_key );
+    }
+    catch( error2_data ) {
+      console.warn( String( error2_data ) );
+      try {
+        lib_key = 'fs';
+        console.log( 'attempt ' + lib_key );
+        fs_obj = require( lib_key );
+      }
+      catch ( error3_data ) {
+        console.warn( String( error3_data ) );
+      }
+    }
+  }
+}
+
+if ( fs_obj ) {
+  console.log( 'Found library ' + lib_key );
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.21&#8201;&#8212;&#8201;Try-catch block&#8201;&#8212;&#8201;linear search</div>
+<div class="content">
+<pre>// == Prefer ==
+var
+  lib_list  = [ 'fancyFs','coolFs', 'neatFs', 'fs' ],
+  lib_count = lib_list.length,
+
+  fs_idx, lib_key, fs_obj, error_data;
+
+for ( fs_idx = 0; fs_idx &lt; lib_count; fs_idx++ ) {
+  lib_key = lib_list[ fs_idx ];
+  error_data = undefined;
+  try {
+    fs_obj = require( lib_key );
+    break;
+  }
+  catch ( catch_data ) {
+    console.warn( String( catch_data ) );
+  }
+}
+
+if ( fs_obj ) {
+  console.log( 'Found library ' + lib_key );
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prefer_factory_objects">6.9. Prefer factory objects</h3>
+<div class="paragraph">
+<p>Use <code>{}</code> or <code>[]</code> instead of <code>new Object()</code> or <code>new Array()</code> to
+create a new object or array. If you require object inheritance, use
+<code>Object.create( obj_proto )</code> and use the factory pattern for object
+constructors shown in Listing X.22. This emphasizes the prototype object
+inheritance in JavaScript.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.22&#8201;&#8212;&#8201;Factory object constructor</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var dog = new Dog();
+
+// == Prefer ==
+var dog_obj = makeDogObjFn();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_labels_for_clarity">6.10. Use labels for clarity</h3>
+<div class="paragraph">
+<p>Labels may be used with <code>while</code>, <code>do</code>, <code>for</code>, or <code>switch</code> blocks.
+They clarify the purpose of a <code>continue</code> or <code>break</code> statement and make the
+logic more resistant to nesting errors as shown in Listing X.23.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.23&#8201;&#8212;&#8201;Labeled statements</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
+var
+  horse_list  = [ 'Anglo-Arabian', 'Clydsedale' ],
+  horse_count = horseList.length,
+  solve_list  = [],
+
+  breed_name, idx, idj
+  ;
+
+_HORSE_: for ( idx = 0; idx &lt; horse_count; idx++ ) {
+  breed_name = horse_list[ idx ];
+  _LEG_ : for ( idj = 0; idj &lt; 4; idj++ ) {
+    if ( Math.random() &lt; 0.5 ) { continue _LEG_; } <b class="conum">(1)</b>
+    if ( Math.random() &lt; 0.1 &amp;&amp; breed_name === 'Clydesdale' ) {
+      break _HORSE_; <b class="conum">(2)</b>
+    }
+    solve_list.push( breed_name + ' ' + String( idj ) );
+  }
+}
+
+console.log( JSON.stringify( solve_list ) );</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Skip iteration of inner loop</p>
+</li>
+<li>
+<p>Break out of outer loop</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_return_the_intended_value">6.11. Return the intended value</h3>
+<div class="paragraph">
+<p>The return value must start on the same line as the <code>return</code>
+keyword to avoid semicolon insertion as shown in Listing X.24.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.24&#8201;&#8212;&#8201;Return without errors</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+return
+  ( { _make_house_fn_ : make_house_fn } );
+
+// == Prefer ==
+return { _make_house_fn_ : make_house_fn };</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_copy_with_care">6.12. Copy with care</h3>
+<div class="paragraph">
+<p>The values in complex variables such as arrays and objects are not
+copied when they are assigned. Instead, the pointer to the data is copied
+as shown in Listing X.25. We highly recommend the use of deep copy routines
+to avoid data corruption.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.25</div>
+<div class="content">
+<pre>var age_map, copy_map;
+
+// == Avoid ===
+age_map = { 'Bob' : 36 };
+copy_map = age_map;              <b class="conum">(1)</b>
+
+copy_map.Amanda = 54;
+console.log( age_map );
+
+// == Prefer ==
+function cloneData ( data ) {
+  try { return JSON.parse( JSON.stringify( data ) ); }
+  catch ( error_data ) { return; }
+}
+age_map = { 'Bob' : 36 };
+copy_map = cloneData( age_map ); <b class="conum">(2)</b>
+
+copy_map.Amanda = 54;
+console.log( age_map );</pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>age_map and copy_map are pointers to the same map</p>
+</li>
+<li>
+<p>copy_map is a deep copy of age map</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_break_after_each_case_block">6.13. Break after each case block</h3>
+<div class="paragraph">
+<p>Every <code>case</code> block inside a <code>switch</code> closure&#8201;&#8212;&#8201;with the exception
+of <code>default</code>&#8201;&#8212;&#8201;should end with <code>break</code>, <code>return</code>, or <code>throw</code>
+as shown in Listing X.26.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.26&#8201;&#8212;&#8201;Avoid fall-through</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ==
+switch ( &lt;expression&gt; ) {
+  case &lt;value1&gt;:
+  case &lt;value2&gt;:
+    // statements
+  case &lt;value3&gt;:
+    // statements
+  default:
+    // statements <b class="conum">(1)</b>
+}
+
+// == Prefer ==
+switch ( &lt;expression&gt; ) {
+  case &lt;value1&gt;:
+  case &lt;value2&gt;:
+    // statements
+    break;
+  case &lt;value3&gt;:
+    // statements
+    break;
+  default:
+    // statements <b class="conum">(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>All case blocks will execute</p>
+</li>
+<li>
+<p>Only one matching case block will execute</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>One may safely nest <code>switch</code> statements by using labeled <code>breaks</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_don_t_use_these_features">6.14. Don&#8217;t use these features</h3>
+<div class="sect3">
+<h4 id="_the_comma_operator">6.14.1. The comma operator</h4>
+<div class="paragraph">
+<p>Avoid the use of the comma operator found in some <code>for</code> loop
+constructs. This doesn’t apply to the comma separator, which is used in
+object literals, array literals, variable declarations, and parameter
+lists.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_assignment_expressions">6.14.2. Assignment expressions</h4>
+<div class="paragraph">
+<p>Avoid using an assignment as as test condition as it is unexpected and
+confusing.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.27 Assignment expressions</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var
+  random_int = Math.floor( Math.random() * 2 ),
+  set_int
+  ;
+
+if ( set_int = random_int ) {
+  console.warn( 'random int is not 0' );
+}
+
+// == Prefer ==
+var
+  random_int = Math.floor( Math.random() * 2 ),
+  set_int = random_int
+  ;
+
+if ( random_int !== 0 ) {
+ console.warn( 'random int is not 0' );
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_endless_loops">6.14.3. Endless loops</h4>
+<div class="paragraph">
+<p>Avoid the <code>do</code>, <code>while</code> and <code>setInterval</code> statements as they are all prone
+to endless loop conditions by default. Instead, prefer the self limiting
+<code>for</code> and <code>setTimeout</code> statements, as shown in Listing X.28.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.28 Endless loop love</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+totalCount = 0;
+function bumpFn () { totalCount++ };
+setInterval( bumpFn, 1000 ); <b class="conum">(1)</b>
+
+// == Prefer
+totalCount = 0;
+function bumpFn () {
+  totalCount++;
+  if ( totalCount &lt; 10 ) {   <b class="conum">(2)</b>
+    setTimeout( bumpFn, 1000 );
+  }
+}
+bumpFn();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>This will continue as long as the application is loaded</p>
+</li>
+<li>
+<p>This is limited to 10 repetitions</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_with_statement">6.15. The with statement</h3>
+<div class="paragraph">
+<p>Avoid the <code>with</code> statement. Instead use the <code>object.call()</code> family
+of methods adjust the value of <code>this</code> during function
+invocation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_confusing_plus_and_minus_operators">6.16. Confusing plus and minus operators</h3>
+<div class="paragraph">
+<p>Be careful to not follow a + with a + or a ++. This pattern can be
+confusing. Insert parentheses between them to make your intention clear
+as shown in Listing X.29.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.29&#8201;&#8212;&#8201;Confusing signs</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+total = total_count + +arg_map._cost_int_;
+
+// == Prefer ==
+total = total_count + ( +arg_map._cost_int_);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This prevents the <code>+ +</code> from being misread as <code>++</code>. The same
+guideline applies for the minus sign.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_eval">6.17. eval</h3>
+<div class="paragraph">
+<p>JavaScript will attempt to <code>eval</code> (evaluate and execute) a string
+variable in numerous situations. Avoid them all to enhance security
+and performance.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Don’t use the <code>Function</code> constructor with a string as this performs
+an <code>eval</code>.</p>
+</li>
+<li>
+<p>Don’t pass strings to <code>setTimeout</code> or <code>setInterval</code> as this
+performs an <code>eval</code>.</p>
+</li>
+<li>
+<p>Don’t use <code>eval</code> to process <code>JSON</code> data. Use <code>JSON.parse( &lt;string&gt; )</code> to
+convert JSON string into a data structure and <code>JSON.stringify( &lt;data&gt; )</code> to
+convert a data structure into a string.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_format_and_documentation">7. Format and documentation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_format_for_80_column_displays">7.1. Format for 80 column displays</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Use a document width of 80 characters.</p>
+</li>
+<li>
+<p>Indent two spaces per code level.</p>
+</li>
+<li>
+<p>Don’t use tab characters.</p>
+</li>
+<li>
+<p>Place white space between operators and variables.</p>
+</li>
+<li>
+<p>Place white space after every comma.</p>
+</li>
+<li>
+<p>Use only one statement or variable assignment per line.</p>
+</li>
+<li>
+<p>Place a semicolon at the end of every statement.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Listing X.30 shows these rules in practice.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.30&#8201;&#8212;&#8201;Formatting for 80 columns</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+function makePctStr(arg_ratio,arg_count,arg_sigil_str){
+        var ratio=castNum(arg_ratio,0),
+        count=castNum(arg_count,0)
+        ,sigil_str=castStr(arg_sigil_str,'%'),
+        count=count&lt;0?0:Math.floor(count);
+
+        return <b class="conum">(1)</b>
+        { pct_str:(ratio*100).toFixed(count)+sigil_str };
+}
+
+// == Prefer ==
+function makePctStr ( arg_ratio, arg_count, arg_sigil_str ) {
+  var
+    count     = castNum( arg_count,       0 ),
+    ratio     = castNum( arg_ratio,       0 ),
+    sigil_str = castStr( arg_sigil_str, '%' ),
+    count     = count &lt; 0 ? 0 : Math.floor( count )
+    ;
+
+  return {
+    pct_str : ( ratio * __100 ).toFixed( count ) + sigil_str
+  };
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>This results in a semicolon insertion bug where the return value is
+undefined.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Keep the document width below 80 characters so that it fits within
+a standard terminal window and reads well on constrained displays such
+as those found on mobile devices and is easy to comprehend<sup class="footnote" id="_footnote_typog">[<a id="_footnoteref_6" class="footnote" href="#_footnote_6" title="View footnote.">6</a>]</sup>. Indent two spaces per level to avoid exceeding the document
+width when code is nested. Use spaces for indentation not tabs as they
+display consistently on all devices.</p>
+</div>
+<div class="paragraph">
+<p>Place white space around operators, variables, and commas to assist with
+legibility. This has no effect on application performance as it
+will be concatenated, minified, and compressed before it reaches end
+users.</p>
+</div>
+<div class="paragraph">
+<p>Place only one statement or assignment per line. One may, however, declare
+multiple variables on a single line to save space. Explicitly terminate
+every statement with a semicolon to avoid semicolon insertion bugs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_stroustrup_style_bracketing">7.2. Use Stroustrup-style bracketing</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Place the opening parenthesis, brace, or bracket at the end of the
+line.</p>
+</li>
+<li>
+<p>Indent the code inside the delimiters (parenthesis, brace, or bracket)
+one level.</p>
+</li>
+<li>
+<p>Place the closing parenthesis, brace or bracket on its own line with</p>
+</li>
+<li>
+<p>same indentation as the opening line.</p>
+</li>
+<li>
+<p>Do not omit braces on <strong>any</strong> single-line statement.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Listing X.31 shows these rules in practice.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.31&#8201;&#8212;&#8201;Stroustrup-style bracketing</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+function getSign(arg_data)
+{
+  var
+    arg_num   = arg_data + 0,
+    solve_int = 0;
+
+  if (arg_num &lt; 0) solve_int = -1
+  else if (arg_num === 0)
+  {
+    solve_int = 0;
+  } else {
+    solve_int = 1;
+  }
+  return solve_int;
+}
+
+// == Prefer ==
+function getSign( arg_data ) {
+  var
+    arg_num   = arg_data + 0,
+    solve_int = 0;
+
+  if ( arg_num &lt; 0 ) {
+    solve_int = -1;
+  }
+  else if ( arg_num === 0 ) {
+    solve_int = 0;
+  }
+  else {
+    solve_int = 1;
+  }
+  return solve_int;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Indent_style#Variant:_Stroustrup">Stroustrup
+style</a> is a <em>one-true-brace</em> variant of K&amp;R-style that does not cuddle
+else clauses. Many feel it nicely balances brevity, clarity, and
+safety.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_organize_and_comment_by_paragraphs">7.3. Organize and comment by paragraphs</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Group code in logical paragraphs and place blank lines between each.</p>
+</li>
+<li>
+<p>Vertically align operators within paragraphs.</p>
+</li>
+<li>
+<p>Indent comments the same amount as the code they explain.</p>
+</li>
+<li>
+<p>Comment once per paragraph.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Listing X.32 shows how cluttered and noisy comments can get. Listing X.33
+shows comments applied by paragraph.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.32&#8201;&#8212;&#8201;Avoid comments per line</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+function shuffle( items ) {
+  // Items should be an array.
+  // Return false if argument is not an array
+  if ( ! Array.isArray( items ) ) { return false; }
+  // Get the length of the items array. Size is an integer.
+  var size = items.length;
+  // Decrement i from the size of the list to 1
+  for ( var i = size; i &gt; 0; i-- ) {
+    // x is the int element index at the end of the section.
+    var x = i - 1;
+    // y is a random integer index within the section.
+    var y = Math.floor( Math.random() * i );
+    // Get random element value. Swap could be any data type.
+    var swap = items[ y ];
+    // Set random element value to same as end of section
+    items[ y ] = items[ x ];
+    // Set end of section value to random element value
+    items[ x ] = swap;
+  }
+  return true;
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.33&#8201;&#8212;&#8201;Prefer comments per paragraph</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
+// BEGIN public method /shuffleListFn/
+// Purpose   : Shuffle elements in a list
+// Example   : shuffleListFn( [1,2,3,4] ) returns [ 3,1,4,2 ]
+// Arguments : ( positional )
+//   0. arg_list - The list to shuffle
+// Returns   : boolean true on success
+// Throws    : none
+// Method    :
+//   1. Count down from end of array with last_idx
+//   2. Randomly pick element from between 0 and last_idx
+//   3. Swap pick element with last_idx element
+//
+function shuffleListFn ( arg_list ) {
+  var
+    list  = castList( arg_list ),
+    count, idj, last_idx, pick_idx, swap_data;
+
+  if ( ! list ) { return false; }
+  count = list.length;
+
+  for ( idj = count; idj &gt; 0; idj-- ) {
+    last_idx         = idj - 1;
+    pick_idx         = Math.floor( Math.random() * idj );
+    swap_data        = list[ last_idx ];
+    list[ last_idx ] = list[ pick_idx ];
+    list[ pick_idx ] = swap_data;
+  }
+  return true;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Rely on the name convention to explain variable content and purpose.
+Use a capable editor like Vim, Sublime, or WebStorm which support vertical
+selection and alignment. WebStorm can be configured align map
+values and assignments within paragraphs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_document_apis_in_line">7.4. Document APIs in-line</h3>
+<div class="paragraph">
+<p>Document any nontrivial function API inline. A template is provided in
+Listing X.34. Place architecture plans in documents separate from the code.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.34&#8201;&#8212;&#8201;Inline API documentation</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+function shuffle( items ) { ... }
+
+// == Prefer ==
+// BEGIN public method /&lt;method_name&gt;/
+// Purpose   : &lt;what does this do in a short sentence&gt;
+// Example   : &lt;example call and results&gt;
+// Arguments : ( positional )
+//  &lt;arg_name or number&gt; : &lt;value description&gt;
+// Returns   : &lt;return value on success and failure&gt;
+// Throws    : &lt;any exceptions, or 'none'&gt;
+// Method    : &lt;overview of algorithm&gt;
+//
+function shuffleListFn( arg_list ) { ... }
+// . END public method /shuffleListFn/</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mark_future_tasks_with_todos">7.5. Mark future tasks with TODOs</h3>
+<div class="paragraph">
+<p>Create <code>TODO</code> comments for tasks that can not be complete immediately
+as shown in Listing X.35. These have become standard enough that WebStorm,
+JSLint, Vim, and many other tools recognize them.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.35&#8201;&#8212;&#8201;A TODO comment</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// TODO &lt;date&gt; &lt;username&gt; &lt;urgency&gt;: &lt;notes&gt;
+// TODO 2019-05-01 bubba alert : Disabled while testing alternate</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;date&gt;</code> field conveys the freshness of the comment and should be
+expressed in ISO YYYY-MM-DD format, for example, 2019-05-01.
+The <code>&lt;username&gt;</code> field should be the identification of the author.
+The <code>&lt;urgency&gt;</code> field explains how critical the task is. We recommend using
+ syslog levels as these are well known <sup class="footnote" id="_footnote_syslog">[<a id="_footnoteref_7" class="footnote" href="#_footnote_7" title="View footnote.">7</a>]</sup>. We can check a list of all TODOs in a project
+as shown in Listing X.36.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.36&#8201;&#8212;&#8201;Listing TODOs</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">grep TODO $(find ./ -type f -name '*.js' \ +
+  grep -v node_modules |grep -v /vendor/) |sort -u</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_annotate_disabled_code">7.6. Annotate disabled code</h3>
+<div class="paragraph">
+<p>It is wise to disable a code block and only delete it when we are
+certain it will no longer be useful. This prevents team members from
+solving the same problem multiple times. Disabled code should be
+identified by a <code>TODO</code> comment as shown in Listing X.37.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.37&#8201;&#8212;&#8201;Disabled code with an explanation</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+// while ( k &gt; 0 ) { … }
+
+// == Prefer ==
+// BEGIN TODO 2019-05-01 bubba warn: Disabled for testing
+// while ( k &gt; 0 ) { … }
+// ...
+// . END TODO 2019-05-01 bubba warn</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Search and resolve <code>TODOs</code> regularly&#8201;&#8212;&#8201;once a week is good&#8201;&#8212;&#8201;by
+recording them in the organization’s issue tracking database. Convert
+each comment as each issue is entered as shown in Listing X.38</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.38&#8201;&#8212;&#8201;An issue comment</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Prefer == (issue ID used to explain disabled code)
+// Issue #96785: Disabled while testing alternative
+// while ( k &gt; 0 ) { ... }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_break_lines_on_operators">7.7. Break lines on operators</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Prefer single lines when possible.</p>
+</li>
+<li>
+<p>Break lines before operators or after comma separators.</p>
+</li>
+<li>
+<p>Indent subsequent lines of the statement one level.</p>
+</li>
+<li>
+<p>Optionally place the terminating semicolon on its own line to
+end multi-line statements.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing x.39&#8201;&#8212;&#8201;Break lines on operators</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+var full_address_str = first_name + ' ' + last_name +
+  '\n' + street1_str + '\n' + street2_str + '\n' +
+  city_str + ',' + state_code + ' ' + zip_code;
+
+// == Prefer ==
+var full_address_str
+  = first_name + ' ' + last_name + '\n'
+  + street1_str + '\n'
+  + street2_str + '\n'
+  + city_str + ','
+  + state_code + ' ' + zip_code
+  ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Place all statements and declarations within our document width on a
+single line. Break any statement or declaration that exceeds our document
+width into multiple lines. Break before operators so they are aligned on the
+left column. This highlights the action taking place on the data.
+Indent all continuation lines one level.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_delimit_literals_with_single_quotes">7.8. Delimit literals with single quotes</h3>
+<div class="paragraph">
+<p>Prefer single quotes (<code>'</code>) over double quotes (<code>"</code>) when delimiting string
+literals. This communicates that JavaScript does not expand embedded
+variables name just with single-quoted strings in many other popular
+languages. Quoting HTML is also much easier as shown in Listing X.40.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.40&#8201;&#8212;&#8201;Single quotes and literal strings</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+link_str = "&lt;a href=\"/wiki/fish\" title=\"fish\"&gt;fish&lt;/a&gt;";
+
+// == Prefer ==
+link_str = '&lt;a href="/wiki/fish" title="fish"&gt;fish&lt;/a&gt;';</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>ECMA2015 introduced template literals where grave accent delimiters (<code>`</code>)
+work much like double quotes (<code>"</code>) in many other languages. As of late
+2017, only Firefox supports template literals fully.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prefer_c_style_for_syntax">7.9. Prefer C-style ‘for’ syntax</h3>
+<div class="paragraph">
+<p>Use the C-style form of the <code>for</code> statement. Avoid the
+<code>for-in</code> form as this iterates over inherited object properties which
+are unreliable. Instead use <code>Object.keys()</code> to get a list of property
+names and iterate over that as shown in Listing X.41.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.41&#8201;&#8212;&#8201;C-style ‘for’ syntax</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+for ( key in cat_obj ) {
+  if ( cat_obj.hasOwnProperty( key ) ) {
+    // process key
+  }
+}
+
+// == Prefer ==
+key_list  = Object.keys( cat_obj );
+key_count = key_list.length;
+for ( idx = 0; idx &lt; key_count; idx++ ) {
+  key = obj_list[ idx ];
+  // process key
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_before_and_after">7.10. Before and after</h3>
+<div class="paragraph">
+<p>Listings X.42 and X.43 compare the readability of an object prototype
+before and after applying the recommended formatting.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.42&#8201;&#8212;&#8201;Avoid random style</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
+doggy = {
+  temperature : 36.5,
+  name : 'Guido',
+  greeting : 'Grrrr',
+  speech : 'I am a dog',
+  height : 1.0,
+  legs : 4,
+  ok : check,
+  remove : release,
+  greet_people : greet_people,
+  say_something : say_something,
+  speak_to_us : speak,
+  colorify : flash,
+  show : render
+};</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.43&#8201;&#8212;&#8201;Prefer applied standard</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
+dogProto = {
+  _greet_str     : 'Grrrr',
+  _height_m_num_ : 1.0,
+  _leg_count_    : 4,
+  _name          : 'Guido',
+  _speak_str_    : 'I am a dog',
+  _temp_c_num_   : 36.5,
+
+  _check_exist_fn_   : checkExistFn,
+  _print_greet_fn_   : printGreetFn,
+  _print_name_fn_    : printNameFn,
+  _print_speak_fn_   : printSpeakFn,
+  _redraw_dog_fn_    : redrawDogFn,
+  _remove_dog_fn_    : removeDogFn,
+  _show_flash_fn_    : showFlashFn
+};</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_layout_js_and_css_files_by_namespace">8. Layout JS and CSS files by namespace</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Place JavaScript files used by the web application under a directory
+called <code>js.</code></p>
+</li>
+<li>
+<p>Name JavaScript files according to the namespace they provide, one
+namespace per file. All files should have the <code>.js</code> suffix as shown in
+Listing X.44.</p>
+</li>
+<li>
+<p>Use the template to start any JavaScript module file. This is found
+in the <code>hi_score</code> project at <code>js/xhi/xhi-module-template.js</code>.</p>
+</li>
+<li>
+<p>Place all CSS files used by the web application in a directory
+called <code>css</code>.</p>
+</li>
+<li>
+<p>Maintain a parallel structure between JavaScript and CSS files and
+class names. Create a CSS file for each JavaScript file that generates
+HTML. All files should have the <code>.css</code> suffix as shown below.</p>
+</li>
+<li>
+<p>Prefix CSS selectors according to the name of the module they
+support. This practice helps greatly to avoid unintended interaction
+with classes from third-party modules as shown in Listing X.44.</p>
+</li>
+<li>
+<p>Use <code>&lt;namespace&gt;_x_&lt;descriptor&gt;_</code> for state-indicator selectors and other
+shared class names. Examples include <code>spa-_x_select_</code> and
+<code>spa-_x_disabled_</code>. Place these in the root namespace stylesheet,
+for example <code>spa.css</code>.</p>
+</li>
+<li>
+<p>When using PowerCSS, keep the same parallel structure, replacing CSS
+files with JS files as shown in Listing X.44.</p>
+</li>
+<li>
+<p>Include third-party JavaScript files first in HTML so their
+functions may be evaluated and made ready for our application.</p>
+</li>
+<li>
+<p>Include custom JavaScript files next, in order of namespace. We
+can’t load namespace <code>spa.shell</code>, for example, if the root
+namespace, <code>spa</code>, has not yet been loaded.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.44&#8201;&#8212;&#8201;Namespaced files</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">// == Prefer == JS files
+js/spa.js             <b class="conum">(1)</b>
+js/spa.shell.js       <b class="conum">(2)</b>
+js/spa.slider.js      <b class="conum">(3)</b>
+
+// == Prefer == CSS files
+css/spa.css           <b class="conum">(1)</b> <b class="conum">(4)</b>
+css/spa.shell.css     <b class="conum">(2)</b> <b class="conum">(5)</b>
+css/spa.slider.css    <b class="conum">(3)</b> <b class="conum">(6)</b>
+
+// == Alternate CSS generator files
+js/spa.css.js         <b class="conum">(1)</b> <b class="conum">(4)</b>
+js/spa.css_shell.js   <b class="conum">(2)</b> <b class="conum">(5)</b>
+js/spa.css_slider.js  <b class="conum">(3)</b> <b class="conum">(6)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Claims spa JavaScript namespace</p>
+</li>
+<li>
+<p>Claims spa._shell_ JavaScript namespace</p>
+</li>
+<li>
+<p>Claims spa._slider_ JavaScript namespace</p>
+</li>
+<li>
+<p>Defines #spa, .spa-_x_clearall_.</p>
+</li>
+<li>
+<p>Defines spa-_shell_, spa-_shell_header_, .spa-_shell_footer_,
+and .spa-_shell_main_</p>
+</li>
+<li>
+<p>Defines .spa-_slider_open_, .spa-_slider_closed_</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>These conventions make the interplay between CSS and JavaScript easier
+to manage and debug.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_code_validation">9. Code Validation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>JSLint is a popular JavaScript validation tool written and
+maintained by Douglas Crockford. Use it to identify errors and ensure
+best practice.</p>
+</div>
+<div class="sect2">
+<h3 id="_install_jslint">9.1. Install JSLint</h3>
+<div class="paragraph">
+<p>We may install JSLint globally as shown in Listing X.45.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.45&#8201;&#8212;&#8201;Install JSLint</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">sudo npm install -g jslint</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_jslint">9.2. Configure JSLint</h3>
+<div class="paragraph">
+<p>Our settings for JSLint are shown in Listing X.46.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing X.46&#8201;&#8212;&#8201;JSLint settings</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">/*jslint       browser : true, continue : true,
+ devel  : true, indent : 2,      maxerr : 50,
+ newcap : true, nomen  : true, plusplus : true,
+ regexp : true, sloppy : true,     vars : false,
+ white  : true, todo   : true,  unparam : true
+*/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Table X.15 describes each setting.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 16. Table X.15&#8201;&#8212;&#8201;Example property names</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">browser : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow browser keywords like document, history,
+clearInterval, etc.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">continue : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow the continue statement</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">devel : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow development keywords like alert, console, etc.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">indent : 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Expect two-space indentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxerr : 50</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Abort linting after 50 errors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">newcap : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tolerate leading underscores</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nomen : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tolerate uncapitalized constructors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">plusplus : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tolerate ++ and&#8201;&#8212;&#8201;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">regexp : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allow useful but potentially dangerous regular
+expression constructions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sloppy : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Require the use strict pragma</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">vars : false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Don’t allow multiple var statements per functional scope</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">white : true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Disable JSLint’s formatting checks</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>These settings can be embedded in each JavaScript file employed using a
+single configuration file as shown below.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_javascript">9.3. Verify JavaScript</h3>
+<div class="paragraph">
+<p>Check JavaScript validity as shown in Listing x.47.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing x.47&#8201;&#8212;&#8201;Lint changed files</div>
+<div class="content">
+<pre class="highlight"><code class="language-js" data-lang="js">/node_modules/.bin/jslint --config config/jslint.conf *.js</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_share_ide_configuration">9.4. Share IDE configuration</h3>
+<div class="paragraph">
+<p>WebStorm has excellent code inspection tools (see <code>Tools</code> &gt; <code>Inspect code</code>).
+The <code>hi_score</code> project has code inspection settings available at
+<code>config/webstorm_settings.jar</code> which may be imported using <code>File</code> &gt; <code>Import
+ settings</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_choose_libraries_wisely">10. Choose libraries wisely</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See "The Fog of SPA" on how too many libraries can result in greater
+complexity when developing a JavaScript application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercises">11. Exercises</h2>
+<div class="sectionbody">
+<div class="dlist quanda">
+<dl>
+<dt>How does a code standard improve products?</dt>
+<dd>
+<p>A standard provides team members a common dialect and practices so they
+may better understand and collaborate with each other. A good standard
+will encourage documentation, code reuse, and empahsize the benefits of
+the language. It also helps developers avoid common mistakes,
+and techical debt<sup class="footnoteref">[<a class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>.</p>
+</dd>
+<dt>Why is indicating variable type especially useful for JavaScript?</dt>
+<dd>
+<p>Because JavaScript variables can contain any type without any indication
+whatsoever. Directly naming variables by expected type can remove the
+constant need for expensive manual or automated introspection.</p>
+</dd>
+<dt>Should one avoid plurals in variable names?</dt>
+<dd>
+<p>Yes, plurals imply a collection of items. At worst this is simply wrong,
+when, for example, a developer users <code>runs</code> as a boolean. At best there
+are far more exact ways to indicate a collection of items.
+For example, instead of <code>users</code>, consider <code>user_list</code>, <code>user_map</code>, or
+<code>people_obj</code>.</p>
+</dd>
+<dt>What are the dangers of imprecise comparators like <code>==</code> or <code>!=</code>?</dt>
+<dd>
+<p>Imprecise comparators will convert values in complex and unpredictable
+ways. Using a a precise comparison forces the developer to fully understand
+the comparison and avoid subtle bugs.</p>
+</dd>
+<dt>Which is better: <code>setTimeout</code> instead of <code>setInterval</code>?</dt>
+<dd>
+<p>The <code>setInterval</code> method will invoke a function indefinitely unless
+actively stopped. This is easy to get wrong.
+Alternately we can use the <code>setTimeout</code> method to invoke a function once
+and then have it call itself if it needs to run again. This approach
+is self-limiting and hard to get wrong.</p>
+</dd>
+<dt>Why are labels useful with <code>break</code> or <code>continue</code>?</dt>
+<dd>
+<p>A <code>break &lt;label&gt;</code> or <code>continue &lt;label&gt;</code> statement explicitly declares
+which loop is effected. This illustrates logic and helps prevent errors.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_end">12. End</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Original author: Michael Mikowski for SPAr2</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. Dead code becomes unusable because blueprints and/or testing systems don&#8217;t exist, have become inaccurate, or no longer work. It&#8217;s a good thing structural, automotive, and aerospace engineers aren&#8217;t so lax about these controls.
+</div>
+<div class="footnote" id="_footnote_2">
+<a href="#_footnoteref_2">2</a>. Technical debt is the deferred cost of undocumented process and systems.
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. As of ES5 there also a new <code>Map</code> data type which provides somewhat more nuanced capabilities but with a clumsier interface and partial support in older browsers (notably IE 11).
+</div>
+<div class="footnote" id="_footnote_4">
+<a href="#_footnoteref_4">4</a>. NodeJS transparently creates an IIFE for each module file so you don&#8217;t have to
+</div>
+<div class="footnote" id="_footnote_5">
+<a href="#_footnoteref_5">5</a>. This is the source of the infamous "JavaScript Hoisting" 'bugs'.
+</div>
+<div class="footnote" id="_footnote_6">
+<a href="#_footnoteref_6">6</a>. Line widths of 66 characters are considered optimal for comprehension. See Binghust, R. (2004) The Elements of Typographic Style (3rd edition), New York.
+</div>
+<div class="footnote" id="_footnote_7">
+<a href="#_footnoteref_7">7</a>. Syslog levels in  decending order of urgency include <code>emerg</code>, <code>alert</code>, <code>crit</code>, <code>err</code>, <code>warn</code>, <code>notice</code>, <code>info</code>, or <code>debug</code>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-09-17 13:56:09 PDT
+</div>
+</div>
+</body>
+</html>

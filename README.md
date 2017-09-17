@@ -400,6 +400,7 @@ MIT
 
 ### Version 1.3.x
 - (o) Update code standard quick-reference
+- (x) Convert from `var` => `let`
 - (x) Implement `xhi` tool development capabilities
   - (o) 12 publish      : Implement push to coveralls
   - (o) 13 dev\_restart : Implement dev server restart
@@ -461,8 +462,7 @@ MIT
 [_00]:https://www.manning.com/books/single-page-web-applications
 [_01]:http://mmikowski.github.io/no-frameworks
 [_02]:http://www.amazon.com/dp/1617290750
-[_03]:https://github.com/mmikowski/hi_score/raw/master/doc/standard/js-quick-ref.pdf
-[_04]:https://github.com/mmikowski/hi_score/raw/master/doc/standard/js-code-standard.pdf
+[_04]:https://github.com/mmikowski/hi_score/raw/master/doc/standard/js-code-standard.html
 [_05]:http://mmikowski.github.io/type-casts/
 [_06]:https://nodejs.org/en/download/package-manager/
 [_07]:https://docs.google.com/spreadsheets/d/1kLIYKYRsan_nvqGSZF-xJNxMkivH7uNdd6F-xY0hAUM/edit#gid=598969125
