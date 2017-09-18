@@ -462,7 +462,7 @@ MIT
 [_00]:https://www.manning.com/books/single-page-web-applications
 [_01]:http://mmikowski.github.io/no-frameworks
 [_02]:http://www.amazon.com/dp/1617290750
-[_04]:https://github.com/mmikowski/hi_score/raw/master/doc/standard/js-code-standard.html
+[_04]:https://github.com/mmikowski/hi_score/blob/master/doc/js-code-standard.adoc
 [_05]:http://mmikowski.github.io/type-casts/
 [_06]:https://nodejs.org/en/download/package-manager/
 [_07]:https://docs.google.com/spreadsheets/d/1kLIYKYRsan_nvqGSZF-xJNxMkivH7uNdd6F-xY0hAUM/edit#gid=598969125
