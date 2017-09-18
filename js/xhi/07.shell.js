@@ -1,14 +1,12 @@
 /*
  * 07.shell.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeShell_( app_map );
  * Synopsis: Add _shell_ capabilities to app_map
  * Provides: Page Shell controller
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global $, xhi */
 
 // == BEGIN MODULE xhi._makeShell_ =====================================

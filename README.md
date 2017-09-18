@@ -20,7 +20,7 @@ Installation is trivial once the [development environment](#development-platform
   xhi build && google-chrome build/latest/dist/ex0*.html
 ```
 
-The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with JSLint and other checkes, check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. If it is successful, Chrome will open to show you two simple example applications.
+The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with ESLint and other checkes, check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. If it is successful, Chrome will open to show you two simple example applications.
 
 Yes, we know the examples are lame. We promise to make them more exciting in the future.
 
@@ -35,7 +35,7 @@ Yes, we know the examples are lame. We promise to make them more exciting in the
 - Vendor assets include JavaScript, CSS, Fonts, Images, and others
 - Development web server (WIP HTTPS and HTTP/2)
 - TDD with JSDOM, drop directory and code coverage reports
-- Linting (JSLint, whitespace check, strict check, TODO check)
+- Linting (ESLint, whitespace check, strict check, TODO check)
 - Automatic install of comprehensive commit-hook
 - Battle-tested `xhi` libraries with 99% coverage of core utilities
 - Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
@@ -97,8 +97,7 @@ The `xhi` tool help is detailed and extensive. We have deleted many sections of 
     xhi>    Four tests are performed on each file:
     xhi>      1. Fail if tabs characters or trailing space.
     xhi>      2. Fail if 'use strict'; is not found.
-    xhi>      3. Fail if 'jslint --config config/jslint.conf <file>'
-    xhi>         does not pass.
+    xhi>      3. Fail if 'eslint <file>' does not pass.
     xhi>      4. List TODO items for developer review.
     xhi>         Fail if developer does not approve.
     xhi>    NPM SCRIPTS      : none.
@@ -262,7 +261,7 @@ Developent libraries are used for testing a building code. They **are** not copi
 - [coveralls][_18]: Code coverage reporting
 - [istanbul][_19]: Code coverage
 - [jsdom][_20]: DOM mock for testing
-- [jslint][_21]: Linting for xhi, commit hook
+- [eslint][_21]: Linting for xhi, commit hook
 - [nodeunit][_22]: Unit testing
 - [node-inspector][_23]: Debugging
 - [uglifycss][_24]: CSS minification
@@ -400,6 +399,7 @@ MIT
 
 ### Version 1.3.x
 - (o) Update code standard quick-reference
+- (x) Replace JSLint with ESLint for ES2015 support
 - (x) Convert from `var` => `let`
 - (x) Implement `xhi` tool development capabilities
   - (o) 12 publish      : Implement push to coveralls
@@ -479,7 +479,7 @@ MIT
 [_18]:https://www.npmjs.com/package/coveralls
 [_19]:https://www.npmjs.com/package/istanbul
 [_20]:https://www.npmjs.com/package/jsdom
-[_21]:https://www.npmjs.com/package/jslint
+[_21]:https://www.npmjs.com/package/eslint
 [_22]:https://www.npmjs.com/package/nodeunit
 [_23]:https://www.npmjs.com/package/node-inspector
 [_24]:https://www.npmjs.com/package/uglifycss

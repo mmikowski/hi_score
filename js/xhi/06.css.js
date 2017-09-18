@@ -1,14 +1,12 @@
 /*
  * 06.css.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeCss_( app_map );
  * Synopsis: Add _css_ capabilities to app_map
  * Provides: Run-time CSS styling using PowerCSS
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global pcss, xhi */
 
 // == BEGIN MODULE xhi._makeCss_ ======================================

@@ -91,22 +91,25 @@ are generally backward-compatible with prior versions.
 | ---- | ES4       |         ----      | Abandoned
 | 2009 | ES5       | ECMAScript 5      | Strict mode, JSON
 | 2011 | ES5.1     | ECMASCript 5.1    | Compatible with ISO 16262:2011
-| 2015 | ES2015    | ES6, ECMAScript 6 | ES6 Harmony, for/of, promises, 
+| 2015 | ES2015    | ES6, ECMAScript 6 | ES6 Harmony, for/of, promises
 | 2016 | ES2016    | ES7, ECMAScript 7 | ES7 Harmony, Exponent, Array includes
 | 2017 | ES2017    | ES8, ECMaScript 8 | SIMD types, await/sync
 | ---  | ESNext    |         ----      | Cool stuff
 |============================================
+Thanks to 
+https://codeburst.io/javascript-wtf-is-es6-es8-es-2017-ecmascript-dca859e4821c[Codeburst.io]
+for help sorting this out!
 
 As of 2015, ECMA discourages the use of a single version numbers in favor
 of the year of release. Thus while using ES5.1 is fine, they prefer we use
 ES2015, ES2016, ES2017 instead of ES6, ES7, or ES8.
 
 At the time of writing (fall 2017) IE 11 held around 11% market share and the
-highest version level supported is ES5.1. This is highest feature level that
-most public sites should expect and is the basis for this standard. 
+highest level of JavaScript it supports well is ES5.1. This is the feature level that
+most public sites should and is the basis for this standard.
 Kanagax has provided a very https://kangax.github.io/compat-table/es6/[helpful chart]
-so we can keep an eye on popularity. Once IE 11 use drop below 1% we will 
-update our support.
+so we can keep an eye on popularity. Once IE 11 use drop below 1% we will
+will go all-in on ES2015.
 
 == Variables
 Variables can contain array, functions, numbers, object, strings,
@@ -861,7 +864,7 @@ function copyMapKeysFn( arg_map ) {
     ;
 
   for ( let idx = 0; idx < key_count; idx++ ) { # <2>
-    let 
+    let
       key_name = key_list[ idx ],
       val_data = arg_map[ key_name ]
       ;
@@ -1468,7 +1471,7 @@ function shuffleListFn( arg_list ) { ... }
 === Mark future tasks with TODOs
 Create `TODO` comments for tasks that can not be complete immediately
 as shown in Listing X.35. These have become standard enough that WebStorm,
-JSLint, Vim, and many other tools recognize them.
+ESLint, Vim, and many other tools recognize them.
 
 .Listing X.35 -- A TODO comment
 [source,js]
@@ -1706,57 +1709,72 @@ These conventions make the interplay between CSS and JavaScript easier
 to manage and debug.
 
 == Code Validation
-JSLint is a popular JavaScript validation tool written and
-maintained by Douglas Crockford. Use it to identify errors and ensure
+ESLint is a popular JavaScript validation tool that is more configurable
+than the venerable JSLint. Use it to identify errors and ensure
 best practice.
 
-=== Install JSLint
-We may install JSLint globally as shown in Listing X.45.
+=== Install ESLint
+We may install ESLint globally as shown in Listing X.45.
 
-.Listing X.45 -- Install JSLint
+.Listing X.45 -- Install ESLint
 [source,js]
 ----
-sudo npm install -g jslint
+sudo npm install -g eslint
 ----
 
-=== Configure JSLint
-Our settings for JSLint are shown in Listing X.46.
+=== Configure ESLint
+Our settings for are shown in Listing X.46. These are 
+added to the `package.json` file at the root of the project.
 
-.Listing X.46 -- JSLint settings
+.Listing X.46 -- ESLint settings
 [source,js]
 ----
-/*jslint       browser : true, continue : true,
- devel  : true, indent : 2,      maxerr : 50,
- newcap : true, nomen  : true, plusplus : true,
- regexp : true, sloppy : true,     vars : false,
- white  : true, todo   : true,  unparam : true
-*/
+{ 
+  ...,
+
+  "eslintConfig": {
+    "extends" : [
+      "eslint:recommended"
+    ],
+    "globals" : {
+      "$" : true,
+      "clearTimeout" : true,
+      "console" : true,
+      "document" : true,
+      "global" : true,
+      "Image" : true,
+      "localStorage" : true,
+      "jQuery" : true,
+      "module" : true,
+      "process" : true,
+      "require" : true,
+      "setTimeout" : true,
+      "window" : true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "plugins": [
+      "json"
+    ],
+    "rules": {
+      "continue" : "off",
+      "indent" : "off",
+      "no-console" : "off",
+      "one-var": [
+        "error",
+        { 
+          "var": "always",
+          "let": "always",
+          "const": "always"
+        }
+      ],
+      "no-plusplus" : "off"
+    }
+  },
+  ...
+}
 ----
-
-Table X.15 describes each setting.
-
-.Table X.15 -- Example property names
-[cols="",]
-|=======================================================================
-|browser : true |Allow browser keywords like document, history,
-clearInterval, etc.
-|continue : true |Allow the continue statement
-|devel : true |Allow development keywords like alert, console, etc.
-|es6 : true |Support good es6 features: `...`, `let`, `const`, `=>`
-|indent : 2 |Expect two-space indentation
-|maxerr : 50 |Abort linting after 50 errors
-|newcap : true |Tolerate leading underscores
-|nomen : true |Tolerate uncapitalized constructors
-|plusplus : true |Tolerate ++ and --
-|regexp : true |Allow useful but potentially dangerous regular
-expression constructions
-|sloppy : true |Require the use strict pragma
-|vars : false |Don’t allow multiple var statements per functional scope
-|white : true |Disable JSLint’s formatting checks
-|=======================================================================
-
-These settings can be embedded in each JavaScript file employed using a
-single configuration file as shown below.
 
 === Verify JavaScript
 Check JavaScript validity as shown in Listing x.47.
@@ -1764,7 +1782,10 @@ Check JavaScript validity as shown in Listing x.47.
 .Listing x.47 -- Lint changed files
 [source,js]
 ----
-/node_modules/.bin/jslint --config config/jslint.conf *.js
+node_modules/.bin/eslint $( \
+  find -type f -name '*.js' \
+    | grep -v vendor |grep -v node_modules |grep -v build \
+  )
 ----
 
 === Share IDE configuration

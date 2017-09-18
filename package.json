@@ -13,6 +13,8 @@
     "clusterjs": "0.7.1",
     "coveralls": "2.13.1",
     "diff": "3.3.1",
+    "eslint": "4.7.0",
+    "eslint-plugin-json": "1.2.0",
     "express": "4.15.4",
     "flow": "0.2.3",
     "font-awesome": "4.7.0",
@@ -25,7 +27,6 @@
     "jquery.scrolli": "1.0.1",
     "jquery.urianchor": "1.3.5",
     "jsdom": "11.2.0",
-    "jslint": "0.11.0",
     "line-by-line": "0.1.5",
     "mongodb": "2.2.31",
     "mysql2": "1.4.2",
@@ -40,6 +41,49 @@
     "uglify-js": "3.1.0",
     "uglifycss": "0.0.27",
     "websocket": "1.0.24"
+  },
+  "eslintConfig": {
+    "extends" : [
+      "eslint:recommended"
+    ],
+    "globals" : {
+      "__dirname" : true,
+      "__filename" : true,
+      "$" : true,
+      "clearTimeout" : true,
+      "console" : true,
+      "document" : true,
+      "global" : true,
+      "Image" : true,
+      "localStorage" : true,
+      "jQuery" : true,
+      "module" : true,
+      "process" : true,
+      "Promise" : true,
+      "require" : true,
+      "setTimeout" : true,
+      "window" : true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "plugins": [
+      "json"
+    ],
+    "rules": {
+      "continue" : "off",
+      "indent" : "off",
+      "no-console" : "off",
+      "one-var": [
+        "error",
+        {
+          "var": "always",
+          "let": "always",
+          "const": "always"
+        }
+      ],
+      "no-plusplus" : "off"
+    }
   },
   "homepage": "https://github.com/mmikowski/hi_score",
   "keywords": [
@@ -269,7 +313,7 @@
         "Four tests are performed on each file:",
         "  1. Fail if tabs characters or trailing space.",
         "  2. Fail if 'use strict'; is not found.",
-        "  3. Fail if 'jslint --config config/jslint.conf <file>'",
+        "  3. Fail if 'eshint --config config/eshint.conf <file>'",
         "     does not pass.",
         "  4. List TODO items for developer review.",
         "     Fail if developer does not approve.",

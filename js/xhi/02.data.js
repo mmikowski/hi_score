@@ -1,14 +1,12 @@
 /*
  * 02.data.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeData_( app_map );
  * Synopsis: Add _data_ capabilities to app_map
  * Provides: Shared data transfer methods (AJAX, Websockets)
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global $, xhi */
 
 // == BEGIN MODULE xhi._makeData_ =====================================

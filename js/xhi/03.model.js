@@ -1,14 +1,12 @@
 /*
  * 03.model.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeModel_( app_map );
  * Synopsis: Add _model_ capabilities to app_map
  * Provides: Business logic methods
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global xhi */
 
 // == BEGIN MODULE xhi._makeModel_ =====================================

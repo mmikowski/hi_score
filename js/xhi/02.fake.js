@@ -1,14 +1,12 @@
 /*
  * 02.fake.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeFake_( app_map );
  * Synopsis: Add mock _data_ capabilities to app_map
  * Provides: Shared mock data transfer methods (AJAX, Websockets)
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global xhi */
 
 // == BEGIN MODULE xhi._makeFake_ =====================================

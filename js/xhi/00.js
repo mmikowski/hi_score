@@ -1,15 +1,13 @@
 /*
  * 00.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeRoot_( '<namespace>' );
  * Synopsis: Create an app_map using named <namespace>
  * Provides: An application map containing shared symbols
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
-/*global xhi:true */
+/*global xhi */
 
 var xhi = {};
 // == BEGIN MODULE __NS._makeRoot_ =====================================
@@ -17,7 +15,7 @@ xhi._makeRoot_ = function ( aKey ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   //noinspection MagicNumberJS
-  var
+  let
     __Object  = Object,
     __Math    = Math,
     vMap = {
@@ -182,7 +180,6 @@ xhi._makeRoot_ = function ( aKey ) {
       _when_            : 'when',
       _whenAll_         : 'whenAll'
     },
-
     nMap = {
       _n4_     : -4,
       _n3_     : -3,
@@ -203,14 +200,15 @@ xhi._makeRoot_ = function ( aKey ) {
       _9_      : 9,
       _10_     : 10,
       _100_    : 100
-    };
+    }
+    ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN PUBLIC METHODS ===========================================
   return {
     _aKey_    : aKey,
     _nMap_    : nMap,
-    _vMap_    : vMap
+    _vMap_    : vMap,
   };
   // == . END PUBLIC METHODS ===========================================
 };
@@ -219,5 +217,5 @@ xhi._makeRoot_ = function ( aKey ) {
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */
 try { module.exports = xhi; }
-catch ( ignore ) {}
+catch ( ignore ) { console.log(''); }
 // == . END BROWSER AND NODE SUPPORT ===================================

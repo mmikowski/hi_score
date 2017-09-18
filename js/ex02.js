@@ -1,14 +1,9 @@
 /*
  * ex02.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
+ *
  * Example 02 application using xhi instances instead of modules.
  *
- *    Michael S. Mikowski - mike.mikowski@gmail.com
-*/
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
 */
 /*global $, xhi:true, ex02 */
 (function () {

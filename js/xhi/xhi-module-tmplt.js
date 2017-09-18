@@ -6,10 +6,8 @@
  * Purpose : Feature module template that embodies best practice
  * Example : cp xhi-module-tmplt.js 07.compass.js
  *
- * Use JSLint settings config/jslint.conf
 */
-/*jslint browser : true */
-/*global $, xhi */
+/*global xhi */
 
 // == BEGIN MODULE xhi._makeTmplt_ =====================================
 xhi._makeTmplt_ = function ( aMap ) {

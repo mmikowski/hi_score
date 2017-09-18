@@ -607,7 +607,7 @@ are generally backward-compatible with prior versions.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2015</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ES2015</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ES6, ECMAScript 6</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ES6 Harmony, for/of, promises,</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES6 Harmony, for/of, promises</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2016</p></td>
@@ -630,17 +630,22 @@ are generally backward-compatible with prior versions.</p>
 </tbody>
 </table>
 <div class="paragraph">
+<p>Thanks to
+<a href="https://codeburst.io/javascript-wtf-is-es6-es8-es-2017-ecmascript-dca859e4821c">Codeburst.io</a>
+for help sorting this out!</p>
+</div>
+<div class="paragraph">
 <p>As of 2015, ECMA discourages the use of a single version numbers in favor
 of the year of release. Thus while using ES5.1 is fine, they prefer we use
 ES2015, ES2016, ES2017 instead of ES6, ES7, or ES8.</p>
 </div>
 <div class="paragraph">
 <p>At the time of writing (fall 2017) IE 11 held around 11% market share and the
-highest version level supported is ES5.1. This is highest feature level that
-most public sites should expect and is the basis for this standard.
+highest level of JavaScript it supports well is ES5.1. This is the feature level that
+most public sites should and is the basis for this standard.
 Kanagax has provided a very <a href="https://kangax.github.io/compat-table/es6/">helpful chart</a>
 so we can keep an eye on popularity. Once IE 11 use drop below 1% we will
-update our support.</p>
+will go all-in on ES2015.</p>
 </div>
 </div>
 </div>
@@ -664,12 +669,12 @@ time a variable is used.</p>
 <div class="title">Listing X.1&#8201;&#8212;&#8201;Variables with meaning</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var x = 'Fred';
+let x = 'Fred';
 function p () { console.log( 'Hello ' + x ); }
 p();
 
 // == Prefer ==
-var person_name = 'Fred';
+let person_name = 'Fred';
 function sayHelloFn () { console.log( 'Hello ' + person_name ); }
 sayHelloFn();</code></pre>
 </div>
@@ -701,17 +706,17 @@ areas such as application structure and logic.</p>
 <div class="title">Listing X.2&#8201;&#8212;&#8201;Abbreviations</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var dgClrStr = 'brown';
+let dgClrStr = 'brown';
 function walkWithTheBrownDog () {...}
 for ( q = 0; q &lt; 9; q++ ) ...
-var denormalizationMap = {...};
-var dnmlztnMap = {...};
+let denormalizationMap = {...};
+let dnmlztnMap = {...};
 
 // == Prefer ==
-var dogColorStr = 'brown';  <b class="conum">(1)</b>
+let dogColorStr = 'brown';    <b class="conum">(1)</b>
 function walkDogFn () {...}   <b class="conum">(2)</b>
 for ( i = 0; i &lt; 9; i++ ) ... <b class="conum">(3)</b>
-var denormMap = {...};        <b class="conum">(4)</b></code></pre>
+let denormMap = {...};        <b class="conum">(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -751,10 +756,10 @@ like JavaScript. Listing X.3 shows variables named by purpose and type.</p>
 // of object the returned function is to
 // meant to create.
 //
-var creators = makers( 'house' );
+let creators = makers( 'house' );
 
 // == Prefer ==
-var make_house_fn = curry_build_fn({ _item_type_ : 'house' });</code></pre>
+let make_house_fn = curry_build_fn({ _item_type_ : 'house' });</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -783,10 +788,10 @@ variable names this problem goes away.</p>
 // of object the returned function is to
 // meant to create.
 //
-var makers = builders( null, 'house' );
+let makers = builders( null, 'house' );
 
 // == Prefer ==
-var make_abode = curry_make_fn({ _item_type_ : 'abode' });</code></pre>
+let make_abode = curry_make_fn({ _item_type_ : 'abode' });</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -864,9 +869,9 @@ nested inside the module.</p>
 <div class="title">Listing X.6&#8201;&#8212;&#8201;Variable scope names</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var stateMap = {};  <b class="conum">(1)</b>
+let stateMap = {};  <b class="conum">(1)</b>
 function initModule () {
-  var
+  let
     localInt = 1,   <b class="conum">(2)</b>
     localStr = 'Module initialized. Our number is ';
  console.log( localStr + localInt );
@@ -874,9 +879,9 @@ function initModule () {
 return { _initModule_ : initModule };
 
 // == Prefer ==
-var stateMap = {};  <b class="conum">(1)</b>
+let stateMap = {};  <b class="conum">(1)</b>
 function initModule () {
-  var
+  let
     local_int = 1,  <b class="conum">(3)</b>
     local_str = 'Module initialized. Our number is ';
  console.log( local_str + local_int );
@@ -910,14 +915,14 @@ type” indicator.</p>
 <div class="title">Listing X.7&#8201;&#8212;&#8201;Type indicators</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var
+let
   places = 10,
   users = '02',
   calc = places + users;
 console.log ( calc ); <b class="conum">(1)</b>
 
 // == Prefer ===
-var
+let
   place_count = 10,
   user_id     = '02',
   calc_num    = place_count + Number( user_id );
@@ -1203,14 +1208,14 @@ float for an array index as shown in Listing X.8.</p>
 <div class="title">Listing X.8&#8201;&#8212;&#8201;Array with a non-integer index</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var color_list = [ 'red', 'green', 'blue' ];
+const color_list = [ 'red', 'green', 'blue' ];
 color_list[1.5] = 'chartreuse';
 console.log( color_list.pop() ); // 'blue'
 console.log( color_list.pop() ); // 'green'
 console.log( color_list.pop() ); // 'red'
 console.log( color_list.pop() ); // *undefined???*
-console.log( color_list[1.5] ); // *oh, there it is*
-console.log( color_list ); // *["1.5":"chartreuse"]*</code></pre>
+console.log( color_list[1.5]  ); // *oh, there it is*
+console.log( color_list       ); // *["1.5":"chartreuse"]*</code></pre>
 </div>
 </div>
 </div>
@@ -1591,7 +1596,7 @@ precisely identifies the type of data that contains the group.</p>
 <div class="title">Listing X.9&#8201;&#8212;&#8201;Collections of data</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var
+let
  cats = [ 'callico', 'tabby' ],
  colors = { blue : '#00f', green : '#0f0', red : '#00f' },
  persons = [ { name : 'Fred' }, [ name : 'Wilma' } ],
@@ -1600,7 +1605,7 @@ var
  ;
 
 // == Prefer ==
-var
+let
  cat_list      = [ 'callico', 'tabby' ],
  color_map     = { blue : '#00f', green : '#0f0', red : '#00f' },
  do_retract    = true,
@@ -1623,7 +1628,7 @@ or WebStorm which support in-line sorting.</p>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 
-var
+let
  do_retract = true,
  color_map = { green : '#0f0', red : '#00f', blue : '#00f' },
  person_table = [ { name : 'Wilma' }, { name : 'Fred' } ],
@@ -1632,7 +1637,7 @@ var
  ;
 
 // == Prefer ==
-var
+let
  cat_list = [ 'callico', 'tabby', ],
  color_map = { blue : '#00f', green : '#0f0', red : '#00f' },
  do_retract = true,
@@ -1735,13 +1740,13 @@ Always use the <code>'use strict'</code> pragma for module-scope <code>IIFEs</co
 <div class="title">Listing X.11&#8201;&#8212;&#8201;A namespace map created using an <code>IIFE</code></div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ==
-var greetStr = 'Hi there!';
+let greetStr = 'Hi there!';
 console.log( window.greetStr ); // prints 'Hi there!'
 
 // == Prefer ==
 var spa = (function () {
  'use strict';
- var greetStr = 'Hi there!';
+ let greetStr = 'Hi there!';
  function initModule () { console.log( greetStr ); }
  return { _initModule_ : initModule };
 }());
@@ -1758,7 +1763,7 @@ namespace as shown in Listing X.12.</p>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
 // In the file spa.shell.js:
-var spa._shell_ = (function () {
+spa._shell_ = (function () {
  'use strict';
 
  return {       <b class="conum">(1)</b>
@@ -1768,7 +1773,7 @@ var spa._shell_ = (function () {
 }());
 
 // In the file spa.slider.js:
-var spa._slider_ = (function () {
+spa._slider_ = (function () {
  'use strict';
 
  return {        <b class="conum">(1)</b>
@@ -1806,7 +1811,7 @@ into <code>stateMap</code> and <code>configMap</code> respectively as shown in L
 <div class="title">Listing X.13&#8201;&#8212;&#8201;Module scope variables</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var
+let
  doBigThings = true,
  userMaxCount = 5,
  isSliderActive = true,
@@ -1814,7 +1819,7 @@ var
  ;
 
 // == Prefer ==
-var
+let
   configMap = {
     _do_big_things_  : true,
     _user_max_count_ : 5
@@ -1893,19 +1898,13 @@ coord_map = refactorCoords({
 </div>
 </div>
 <div class="sect2">
-<h3 id="_use_a_single_var_statement_per_function">6.5. Use a single var statement per function</h3>
+<h3 id="_use_a_single_let_statement_per_block">6.5. Use a single let statement per block</h3>
 <div class="paragraph">
-<p>Declare all variables at the top of a function scope using a
-single <code>let</code> keyword which as of ES5.1 release <code>var</code> in most circumstances.</p>
-</div>
-<div class="paragraph">
-<p>If we declare a variable anywhere within a function using <code>var</code>, it will be
-initialized with a value of <code>undefined</code> immediately on invocatione.
-We can make this behavior obvious by placing declaring all the
-variables first as shown in Listing X.16.</p>
+<p>Declare all variables at the top of a block scope using a
+single <code>let</code> keyword first as shown in Listing X.16.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing X.16&#8201;&#8212;&#8201;Single var statement</div>
+<div class="title">Listing X.16&#8201;&#8212;&#8201;Single let statement per block</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 function copyMapKeysFn( arg_map ) { <b class="conum">(1)</b>
@@ -1913,7 +1912,7 @@ function copyMapKeysFn( arg_map ) { <b class="conum">(1)</b>
   let key_list = Object.keys( arg_map );
   let key_count = key_list.length;
 
-  for ( var idx = 0; idx &lt; key_count; idx++ ) {
+  for ( let idx = 0; idx &lt; key_count; idx++ ) {
     let key_name = key_list[ idx ];
     let val_data = arg_map[ key_name ];
     if ( val_data !== undefined ) {
@@ -1928,14 +1927,15 @@ function copyMapKeysFn( arg_map ) {
   let
     solve_map = {},
     key_list  = Object.keys( arg_map ),
-    key_count = key_list.length,
-
-    idx, key_name, val_data
+    key_count = key_list.length
     ;
 
-  for ( idx = 0; idx &lt; key_count; idx++ ) {
-    key_name = key_list[ idx ];
-    val_data = arg_map[ key_name ];
+  for ( let idx = 0; idx &lt; key_count; idx++ ) { <b class="conum">(2)</b>
+    let
+      key_name = key_list[ idx ],
+      val_data = arg_map[ key_name ]
+      ;
+
     if ( val_data !== undefined ) {
       solve_map[ key_name ] = val_data;
     }
@@ -1944,8 +1944,22 @@ function copyMapKeysFn( arg_map ) {
 }</code></pre>
 </div>
 </div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Do we really need dozens of <code>let</code> keywords in every scope?</p>
+</li>
+<li>
+<p>A unique idx variable will be created for each iteration which is useful
+when declaring functions in a loop. But don&#8217;t do that.</p>
+</li>
+</ol>
+</div>
 <div class="paragraph">
-<p>&lt;1&gt;Do we really need dozens of <code>let</code> keywords in every function?</p>
+<p>As of ES5.1 <code>let</code> is preferred over <code>var</code> in most circumstances.
+If we declare a variable anywhere within a function using <code>var</code>,
+it will be initialized with a value of <code>undefined</code> immediately
+on invocation.</p>
 </div>
 <div class="paragraph">
 <p>Declaring a variable is not the same as assigning a value to it.
@@ -1956,10 +1970,9 @@ we may combine declaration and assignment with the <code>var</code> statement bu
 this is not required.</p>
 </div>
 <div class="paragraph">
-<p>Two new types of declarations were introduced in circa ES5. The
-<code>let</code> keyword limits a variable to its containing block, statement, or
-expression and the <code>const</code> keyword creates immutable data
-structure.</p>
+<p>The <code>const</code> keyword is also preferred over <code>var</code>. However, be careful as
+the variable it defines may not be as immutable as one might think as
+shown in Listing X.17.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing X.17&#8201;&#8212;&#8201;Confusing <code>const</code></div>
@@ -2016,7 +2029,7 @@ and confusing as shown Listing X.19.</p>
 <div class="listingblock">
 <div class="title">Listing X.19&#8201;&#8212;&#8201;Check for truthiness</div>
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">var count_list = [ 1 + 1 ];
+<pre class="highlight"><code class="language-js" data-lang="js">let count_list = [ 1 + 1 ];
 
 == Avoid ===
 if ( count_list == 2 ) { console.warn( 'Confusing match' ); } <b class="conum">(1)</b>
@@ -2047,7 +2060,7 @@ linear search instead as shown in Listing X.21.</p>
 <div class="title">Listing X.20&#8201;&#8212;&#8201;Try-catch block&#8201;&#8212;&#8201;nesting</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var fs_obj, lib_key;
+let fs_obj, lib_key;
 try {
   lib_key = 'fancyFs';
   console.log( 'attempt ' + lib_key );
@@ -2090,7 +2103,7 @@ if ( fs_obj ) {
 <div class="title">Listing X.21&#8201;&#8212;&#8201;Try-catch block&#8201;&#8212;&#8201;linear search</div>
 <div class="content">
 <pre>// == Prefer ==
-var
+let
   lib_list  = [ 'fancyFs','coolFs', 'neatFs', 'fs' ],
   lib_count = lib_list.length,
 
@@ -2127,10 +2140,10 @@ inheritance in JavaScript.</p>
 <div class="title">Listing X.22&#8201;&#8212;&#8201;Factory object constructor</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var dog = new Dog();
+let dog = new Dog();
 
 // == Prefer ==
-var dog_obj = makeDogObjFn();</code></pre>
+let dog_obj = makeDogObjFn();</code></pre>
 </div>
 </div>
 </div>
@@ -2145,7 +2158,7 @@ logic more resistant to nesting errors as shown in Listing X.23.</p>
 <div class="title">Listing X.23&#8201;&#8212;&#8201;Labeled statements</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
-var
+let
   horse_list  = [ 'Anglo-Arabian', 'Clydsedale' ],
   horse_count = horseList.length,
   solve_list  = [],
@@ -2207,7 +2220,7 @@ to avoid data corruption.</p>
 <div class="listingblock">
 <div class="title">Listing X.25</div>
 <div class="content">
-<pre>var age_map, copy_map;
+<pre>let age_map, copy_map;
 
 // == Avoid ===
 age_map = { 'Bob' : 36 };
@@ -2309,7 +2322,7 @@ confusing.</p>
 <div class="title">Listing X.27 Assignment expressions</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var
+let
   random_int = Math.floor( Math.random() * 2 ),
   set_int
   ;
@@ -2319,7 +2332,7 @@ if ( set_int = random_int ) {
 }
 
 // == Prefer ==
-var
+let
   random_int = Math.floor( Math.random() * 2 ),
   set_int = random_int
   ;
@@ -2463,7 +2476,7 @@ convert a data structure into a string.</p>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 function makePctStr(arg_ratio,arg_count,arg_sigil_str){
-        var ratio=castNum(arg_ratio,0),
+        let ratio=castNum(arg_ratio,0),
         count=castNum(arg_count,0)
         ,sigil_str=castStr(arg_sigil_str,'%'),
         count=count&lt;0?0:Math.floor(count);
@@ -2474,7 +2487,7 @@ function makePctStr(arg_ratio,arg_count,arg_sigil_str){
 
 // == Prefer ==
 function makePctStr ( arg_ratio, arg_count, arg_sigil_str ) {
-  var
+  let
     count     = castNum( arg_count,       0 ),
     ratio     = castNum( arg_ratio,       0 ),
     sigil_str = castStr( arg_sigil_str, '%' ),
@@ -2546,7 +2559,7 @@ one level.</p>
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 function getSign(arg_data)
 {
-  var
+  let
     arg_num   = arg_data + 0,
     solve_int = 0;
 
@@ -2562,7 +2575,7 @@ function getSign(arg_data)
 
 // == Prefer ==
 function getSign( arg_data ) {
-  var
+  let
     arg_num   = arg_data + 0,
     solve_int = 0;
 
@@ -2617,15 +2630,15 @@ function shuffle( items ) {
   // Return false if argument is not an array
   if ( ! Array.isArray( items ) ) { return false; }
   // Get the length of the items array. Size is an integer.
-  var size = items.length;
+  let size = items.length;
   // Decrement i from the size of the list to 1
-  for ( var i = size; i &gt; 0; i-- ) {
+  for ( let i = size; i &gt; 0; i-- ) {
     // x is the int element index at the end of the section.
-    var x = i - 1;
+    let x = i - 1;
     // y is a random integer index within the section.
-    var y = Math.floor( Math.random() * i );
+    let y = Math.floor( Math.random() * i );
     // Get random element value. Swap could be any data type.
-    var swap = items[ y ];
+    let swap = items[ y ];
     // Set random element value to same as end of section
     items[ y ] = items[ x ];
     // Set end of section value to random element value
@@ -2652,17 +2665,19 @@ function shuffle( items ) {
 //   3. Swap pick element with last_idx element
 //
 function shuffleListFn ( arg_list ) {
-  var
+  let
     list  = castList( arg_list ),
-    count, idj, last_idx, pick_idx, swap_data;
+    count = list ? list.length : 0
+    ;
 
   if ( ! list ) { return false; }
-  count = list.length;
 
-  for ( idj = count; idj &gt; 0; idj-- ) {
-    last_idx         = idj - 1;
-    pick_idx         = Math.floor( Math.random() * idj );
-    swap_data        = list[ last_idx ];
+  for ( let idj = count; idj &gt; 0; idj-- ) {
+    let
+      last_idx  = idj - 1,
+      pick_idx  = Math.floor( Math.random() * idj ),
+      swap_data = list[ last_idx ]
+      ;
     list[ last_idx ] = list[ pick_idx ];
     list[ pick_idx ] = swap_data;
   }
@@ -2709,7 +2724,7 @@ function shuffleListFn( arg_list ) { ... }
 <div class="paragraph">
 <p>Create <code>TODO</code> comments for tasks that can not be complete immediately
 as shown in Listing X.35. These have become standard enough that WebStorm,
-JSLint, Vim, and many other tools recognize them.</p>
+ESLint, Vim, and many other tools recognize them.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing X.35&#8201;&#8212;&#8201;A TODO comment</div>
@@ -2792,12 +2807,12 @@ end multi-line statements.</p>
 <div class="title">Listing x.39&#8201;&#8212;&#8201;Break lines on operators</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-var full_address_str = first_name + ' ' + last_name +
+let full_address_str = first_name + ' ' + last_name +
   '\n' + street1_str + '\n' + street2_str + '\n' +
   city_str + ',' + state_code + ' ' + zip_code;
 
 // == Prefer ==
-var full_address_str
+let full_address_str
   = first_name + ' ' + last_name + '\n'
   + street1_str + '\n'
   + street2_str + '\n'
@@ -3023,103 +3038,77 @@ to manage and debug.</p>
 <h2 id="_code_validation">9. Code Validation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>JSLint is a popular JavaScript validation tool written and
-maintained by Douglas Crockford. Use it to identify errors and ensure
+<p>ESLint is a popular JavaScript validation tool that is more configurable
+than the venerable JSLint. Use it to identify errors and ensure
 best practice.</p>
 </div>
 <div class="sect2">
-<h3 id="_install_jslint">9.1. Install JSLint</h3>
+<h3 id="_install_eslint">9.1. Install ESLint</h3>
 <div class="paragraph">
-<p>We may install JSLint globally as shown in Listing X.45.</p>
+<p>We may install ESLint globally as shown in Listing X.45.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing X.45&#8201;&#8212;&#8201;Install JSLint</div>
+<div class="title">Listing X.45&#8201;&#8212;&#8201;Install ESLint</div>
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">sudo npm install -g jslint</code></pre>
+<pre class="highlight"><code class="language-js" data-lang="js">sudo npm install -g eslint</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configure_jslint">9.2. Configure JSLint</h3>
+<h3 id="_configure_eslint">9.2. Configure ESLint</h3>
 <div class="paragraph">
-<p>Our settings for JSLint are shown in Listing X.46.</p>
+<p>Our settings for are shown in Listing X.46. These are
+added to the <code>package.json</code> file at the root of the project.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing X.46&#8201;&#8212;&#8201;JSLint settings</div>
+<div class="title">Listing X.46&#8201;&#8212;&#8201;ESLint settings</div>
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">/*jslint       browser : true, continue : true,
- devel  : true, indent : 2,      maxerr : 50,
- newcap : true, nomen  : true, plusplus : true,
- regexp : true, sloppy : true,     vars : false,
- white  : true, todo   : true,  unparam : true
-*/</code></pre>
+<pre class="highlight"><code class="language-js" data-lang="js">{
+  ...,
+
+  "eslintConfig": {
+    "extends" : [
+      "eslint:recommended"
+    ],
+    "globals" : {
+      "$" : true,
+      "clearTimeout" : true,
+      "console" : true,
+      "document" : true,
+      "global" : true,
+      "Image" : true,
+      "localStorage" : true,
+      "jQuery" : true,
+      "module" : true,
+      "process" : true,
+      "require" : true,
+      "setTimeout" : true,
+      "window" : true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "plugins": [
+      "json"
+    ],
+    "rules": {
+      "continue" : "off",
+      "indent" : "off",
+      "no-console" : "off",
+      "one-var": [
+        "error",
+        {
+          "var": "always",
+          "let": "always",
+          "const": "always"
+        }
+      ],
+      "no-plusplus" : "off"
+    }
+  },
+  ...
+}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Table X.15 describes each setting.</p>
-</div>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 16. Table X.15&#8201;&#8212;&#8201;Example property names</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">browser : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow browser keywords like document, history,
-clearInterval, etc.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">continue : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow the continue statement</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">devel : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow development keywords like alert, console, etc.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">indent : 2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Expect two-space indentation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">maxerr : 50</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Abort linting after 50 errors</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">newcap : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tolerate leading underscores</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nomen : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tolerate uncapitalized constructors</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">plusplus : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tolerate ++ and&#8201;&#8212;&#8201;</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">regexp : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow useful but potentially dangerous regular
-expression constructions</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sloppy : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Require the use strict pragma</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">vars : false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Don’t allow multiple var statements per functional scope</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">white : true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Disable JSLint’s formatting checks</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>These settings can be embedded in each JavaScript file employed using a
-single configuration file as shown below.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3130,7 +3119,10 @@ single configuration file as shown below.</p>
 <div class="listingblock">
 <div class="title">Listing x.47&#8201;&#8212;&#8201;Lint changed files</div>
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">/node_modules/.bin/jslint --config config/jslint.conf *.js</code></pre>
+<pre class="highlight"><code class="language-js" data-lang="js">node_modules/.bin/eslint $( \
+  find -type f -name '*.js' \
+    | grep -v vendor |grep -v node_modules |grep -v build \
+  )</code></pre>
 </div>
 </div>
 </div>
@@ -3239,7 +3231,7 @@ which loop is effected. This illustrates logic and helps prevent errors.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-17 13:56:09 PDT
+Last updated 2017-09-17 17:00:51 PDT
 </div>
 </div>
 </body>

@@ -1,14 +1,12 @@
 /*
  * 06.lb.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeLb_( app_map );
  * Synopsis: Add _lb_ capabilities to app_map
  * Provides: Lightbox feature module
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global $, pcss, xhi */
 
 // == BEGIN MODULE xhi._makeLb_ =======================================

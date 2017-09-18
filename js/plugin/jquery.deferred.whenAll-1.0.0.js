@@ -4,7 +4,7 @@
 // $.whenAll extends $.when by only resolving or rejecting after
 //   ALL promises have been resolved or rejected.  This avoids
 //   race conditions.
-;(function($) {
+(function($) {
   var slice = [].slice;
 
   $.whenAll = function(array) {
@@ -35,7 +35,7 @@
         }
       };
     }
-    
+
     for (; i < length; i++) {
       if ((value = resolveValues[i]) && $.isFunction(value.promise)) {
         value.promise()

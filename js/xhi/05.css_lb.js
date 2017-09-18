@@ -1,14 +1,12 @@
 /*
  * 05.css_lb.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeCssLb_( app_map );
  * Synopsis: Add _css_lb_ capabilities to app_map
  * Provides: CSS symbols for litebox (_lb_) used by PowerCSS
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global xhi */
 
 // == BEGIN MODULE xhi._makeCssLb_ =====================================

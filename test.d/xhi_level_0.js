@@ -3,9 +3,7 @@
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Node unit test suite xhi, util, utilb, lb
- * Use JSLint settings config/jslint.conf
 */
-/*jslint node   : true */
 /*global xhi, module, process, window, console, $ */
 
 // == BEGIN MODULE SCOPE VARIABLES  ===================================
@@ -806,6 +804,7 @@ function getTzCode ( test_obj ) {
   var tz_code = __util._getTzCode_();
   test_obj.expect( __1 );
 
+  // eslint-disable-next-line no-useless-escape
   test_obj.ok( tz_code.match( /^[A-Z0-9+\-]+$/ ),
     'Code fails to match regex: ' + tz_code
   );

@@ -1,15 +1,13 @@
 /*
  * 01.util.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeUtil_( app_map );
  * Synopsis: Add _util_ capabilities to app_map
  * Provides: Utilities which do not require jQuery or a browser
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
-/*global jQuery, xhi */
+/*global xhi */
 
 // == BEGIN MODULE xhi._makeUtil_ =====================================
 xhi._makeUtil_ = function ( aMap ) {
@@ -444,7 +442,7 @@ xhi._makeUtil_ = function ( aMap ) {
   //
   function makeEscRxStr( arg_str ) {
     var str = castStr( arg_str, __blank );
-    // noinspection Annotator
+    // eslint-disable-next-line no-useless-escape
     return str.replace( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
   }
   // . END Public prereq method /makeEscRxStr/
@@ -2102,8 +2100,10 @@ xhi._makeUtil_ = function ( aMap ) {
 
       _get_now_fn_  : Date.now,
       _date_us_rx_  :
+        // eslint-disable-next-line no-useless-escape
         /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]([0-9]{4})\b/,
       _date_utc_rx_ :
+        // eslint-disable-next-line no-useless-escape
         /^([0-9]{4})[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\b/,
 
       _comma_rx_        : makeRxObj( '(\\d)(?=(\\d\\d\\d)+(?!\\d))', 'g' ),

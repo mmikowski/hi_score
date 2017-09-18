@@ -1,14 +1,12 @@
 /*
  * 05.css_base.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use     : xhi._makeCssBase_( app_map );
  * Synopsis: Add _css_base_ capabilities to app_map
  * Provides: Shared CSS symbols used by PowerCSS
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
 /*global xhi */
 
 // == BEGIN MODULE xhi._makeCssBase_ ==================================

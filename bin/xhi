@@ -6,8 +6,6 @@
  * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
-/*jslint node : true */
-/*global Promise */
 // == BEGIN SCRIPT xhi - the hi_score cli life-stage tool ==============
 // == BEGIN MODULE SCOPE VARIABLES =====================================
 'use strict';
@@ -343,7 +341,7 @@ function makeParamMap ( param_list, arg_skip_idx ) {
     edge_list, temp_list
     ;
 
-  param_list.forEach( function ( str, ignore_idx ) {
+  param_list.forEach( function ( str ) {
     var i, first_map, middle_map, last_map, first_idx, last_idx;
     if ( str === '-v' ) {
       do_verbose = true;
@@ -404,7 +402,7 @@ function makeParamMap ( param_list, arg_skip_idx ) {
       }
       edge_list = str.split(',');
       temp_list = [];
-      edge_list.forEach( function ( data, ignore_idx ) {
+      edge_list.forEach( function ( data ) {
         middle_map = getCommandMapFn( data );
         if ( ! middle_map ) { return; }
         temp_list.push( middle_map );
@@ -850,7 +848,7 @@ function mainFn () {
 //
 // TODO 2017-09-01 mmikowski info: Prefer routine to check all missing
 //   files and fill with default content.
-fsObj.stat( fqStateFilename, function ( error_obj, ignore_map ) {
+fsObj.stat( fqStateFilename, function ( error_obj ) {
   var scratch_str;
   if ( error_obj ) {
     scratch_str = JSON.stringify( emptyStateMatrix, null, '  ' );

@@ -1,15 +1,15 @@
 /*
  * 08.app.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Use: xhi._makeApp_( '<namespace>' );
  * Synopsis: Assembles an application in the provided namespace
  * Provides: app_map which has the global name '<namespace>'
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint browser : true */
-/*global $, xhi */
+/* global xhi */
+
+// == BEGIN MODULE xhi._makeApp_ ======================================
 xhi._makeApp_ = function ( app_key ) {
   'use strict';
 

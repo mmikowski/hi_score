@@ -1,14 +1,13 @@
 /*
  * xhi-ws-context.js
+ * @author Michael S. Mikowski - mike.mikowski@gmail.com
+ *
  * This file is used by WebStorm to resolve properties
  * key received from external sources such as AJAX.
  * It is also useful as a reference.
  * It should *NOT* be included in production code.
  *
- * JSLint settings found in config/jslint.conf
- * @author Michael S. Mikowski - mike.mikowski@gmail.com
 */
-
 (function () {
   'use strict';
   var
@@ -44,7 +43,7 @@
     _title_map_  : map,
     name : str,
 
-    // _NS._lb_
+    // __NS._lb_
     _do_block_click_ : bool,
     _do_draggable_   : bool,
     _do_title_close_ : bool,
