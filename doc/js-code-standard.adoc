@@ -58,8 +58,7 @@ quick-reference guide which dispenses with any explanations. However,
 if you want to know *why* we recommend a convention, keep reading.
 
 == JavaScript versions
-This standard considered ES5.1 as the most current useable version of
-JavaScript. Let's review how JavaScript versions are named and why this
+Let's review how JavaScript versions are named and why this
 standard considers ES5.1 the latest usable version.
 
 === ECMA, ECMAScript, and ES
@@ -68,41 +67,41 @@ vendors have stopped competing and started collaborating on making the
 lanugage better all centered around the ECMAScript specifications. All these
 acronymns can be confusing so let's clear things up.
 
-https://en.wikipedia.org/wiki/Ecma_International[ECMA International].
-is a standards organization acquired its current name in 1994 when the
-European Computer Manufacturers Association changed its name. ECMA is no
-longer considered an acronymn.
+https://en.wikipedia.org/wiki/Ecma_International[ECMA International]
+is a standards organization that changed its name from European Computer 
+Manufacturers Association in 1994 to reflect its broader ambitions. ECMA is no
+longer considered an acronymn but is apparently retained for the pleasant
+sounds that occur when one tries to pronounce it.
 
 https://en.wikipedia.org/wiki/ECMAScript[ECMAScript] is a language standard
 created by ECMA International. **ES** is contraction of **ECMAScript**. Thus
-the JavaScript version **ES6** and **ECMAScript 6** refer to the same.
+the **ES6** and **ECMAScript 6** are the same thing. Clever, eh?
 
 === Current ES Versions and supported platforms
-Table X.1 shows the JavaScript language specifications. Later versions
-are generally backward-compatible with prior versions.
+Table X.1 shows the major JavaScript versions that have been released. Later
+specifications have been mostly backward-compatible.
 
 .Table X.1 -- Prefered names of JavaScript versions
 [cols="",]
 |============================================
-|Year  | Preferred | Alternate         | Highlights
-| 1997 | ES1       | ECMAScript 1      | You gotta start somewhere
-| 1998 | ES2       | ECMAScript 2      | Compatible with ISO 16262
-| 1999 | ES3       | ECMAScript 3      | Regular expressions
-| ---- | ES4       |         ----      | Abandoned
-| 2009 | ES5       | ECMAScript 5      | Strict mode, JSON
-| 2011 | ES5.1     | ECMASCript 5.1    | Compatible with ISO 16262:2011
-| 2015 | ES2015    | ES6, ECMAScript 6 | ES6 Harmony, for/of, promises
-| 2016 | ES2016    | ES7, ECMAScript 7 | ES7 Harmony, Exponent, Array includes
-| 2017 | ES2017    | ES8, ECMaScript 8 | SIMD types, await/sync
-| ---  | ESNext    |         ----      | Cool stuff
+| Year | Pref. Name | Alternate         | Highlights
+| 1997 | ES1        | ECMAScript 1      | You gotta start somewhere
+| 1998 | ES2        | ECMAScript 2      | Compatible with ISO 16262
+| 1999 | ES3        | ECMAScript 3      | Regular expressions
+| ---- | ES4        |         ----      | Abandoned
+| 2009 | ES5        | ECMAScript 5      | Strict mode, JSON
+| 2011 | ES5.1      | ECMASCript 5.1    | Compatible with ISO 16262:2011
+| 2015 | ES2015     | ES6, ECMAScript 6 | ES6 Harmony, for/of, promises
+| 2016 | ES2016     | ES7, ECMAScript 7 | ES7 Harmony, Exponent, Array includes
+| 2017 | ES2017     | ES8, ECMaScript 8 | SIMD types, await/sync
+| ---  | ESNext     |         ----      | Cool stuff
 |============================================
-Thanks to 
-https://codeburst.io/javascript-wtf-is-es6-es8-es-2017-ecmascript-dca859e4821c[Codeburst.io]
-for help sorting this out!
 
 As of 2015, ECMA discourages the use of a single version numbers in favor
 of the year of release. Thus while using ES5.1 is fine, they prefer we use
-ES2015, ES2016, ES2017 instead of ES6, ES7, or ES8.
+ES2015, ES2016, ES2017 instead of ES6, ES7, or ES8. Thanks to 
+https://codeburst.io/javascript-wtf-is-es6-es8-es-2017-ecmascript-dca859e4821c[Codeburst.io]
+for help sorting this out!
 
 At the time of writing (fall 2017) IE 11 held around 11% market share and the
 highest level of JavaScript it supports well is ES5.1. This is the feature level that
@@ -885,8 +884,8 @@ When a variable is declared, the JS engine know which it exists within
 a functional scope and this is processed at compile-time. A value can be
 assigned to a variable only at run-timefootnoteref:[hoist,This is
 the source of the infamous "JavaScript Hoisting" 'bugs'.]. As a convenience
-we may combine declaration and assignment with the `var` statement as a
-convenience but internally the JavaScript engine will always process both 
+we may combine declaration and assignment with the `var` statement 
+but internally the JavaScript engine will always process both 
 stages at different times.
 
 As of ES5.1 `let` is preferred over `var` in most cases. But there
