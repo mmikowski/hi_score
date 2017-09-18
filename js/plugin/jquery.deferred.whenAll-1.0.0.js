@@ -4,7 +4,9 @@
 // $.whenAll extends $.when by only resolving or rejecting after
 //   ALL promises have been resolved or rejected.  This avoids
 //   race conditions.
-(function($) {
+
+// eslint-disable-next-line no-extra-semi
+;(function($) {
   var slice = [].slice;
 
   $.whenAll = function(array) {

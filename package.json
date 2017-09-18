@@ -43,26 +43,26 @@
     "websocket": "1.0.24"
   },
   "eslintConfig": {
-    "extends" : [
+    "extends": [
       "eslint:recommended"
     ],
-    "globals" : {
-      "__dirname" : true,
-      "__filename" : true,
-      "$" : true,
-      "clearTimeout" : true,
-      "console" : true,
-      "document" : true,
-      "global" : true,
-      "Image" : true,
-      "localStorage" : true,
-      "jQuery" : true,
-      "module" : true,
-      "process" : true,
-      "Promise" : true,
-      "require" : true,
-      "setTimeout" : true,
-      "window" : true
+    "globals": {
+      "__dirname": true,
+      "__filename": true,
+      "$": true,
+      "clearTimeout": true,
+      "console": true,
+      "document": true,
+      "global": true,
+      "Image": true,
+      "localStorage": true,
+      "jQuery": true,
+      "module": true,
+      "process": true,
+      "Promise": true,
+      "require": true,
+      "setTimeout": true,
+      "window": true
     },
     "parserOptions": {
       "ecmaVersion": 6
@@ -71,9 +71,9 @@
       "json"
     ],
     "rules": {
-      "continue" : "off",
-      "indent" : "off",
-      "no-console" : "off",
+      "continue": "off",
+      "indent": "off",
+      "no-console": "off",
       "one-var": [
         "error",
         {
@@ -82,7 +82,7 @@
           "const": "always"
         }
       ],
-      "no-plusplus" : "off"
+      "no-plusplus": "off"
     }
   },
   "homepage": "https://github.com/mmikowski/hi_score",
@@ -116,7 +116,7 @@
     "test": "bin/xhi dev_test",
     "xhi": "bin/xhi"
   },
-  "version": "1.3.8",
+  "version": "1.3.9",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [

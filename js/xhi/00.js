@@ -15,7 +15,7 @@ xhi._makeRoot_ = function ( aKey ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   //noinspection MagicNumberJS
-  let
+  var
     __Object  = Object,
     __Math    = Math,
     vMap = {

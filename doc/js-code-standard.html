@@ -669,12 +669,12 @@ time a variable is used.</p>
 <div class="title">Listing X.1&#8201;&#8212;&#8201;Variables with meaning</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let x = 'Fred';
+var x = 'Fred';
 function p () { console.log( 'Hello ' + x ); }
 p();
 
 // == Prefer ==
-let person_name = 'Fred';
+var person_name = 'Fred';
 function sayHelloFn () { console.log( 'Hello ' + person_name ); }
 sayHelloFn();</code></pre>
 </div>
@@ -706,17 +706,17 @@ areas such as application structure and logic.</p>
 <div class="title">Listing X.2&#8201;&#8212;&#8201;Abbreviations</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let dgClrStr = 'brown';
+var dgClrStr = 'brown';
 function walkWithTheBrownDog () {...}
-for ( q = 0; q &lt; 9; q++ ) ...
-let denormalizationMap = {...};
-let dnmlztnMap = {...};
+for ( var q = 0; q &lt; 9; q++ ) ...
+var denormalizationMap = {...};
+var dnmlztnMap = {...};
 
 // == Prefer ==
-let dogColorStr = 'brown';    <b class="conum">(1)</b>
-function walkDogFn () {...}   <b class="conum">(2)</b>
-for ( i = 0; i &lt; 9; i++ ) ... <b class="conum">(3)</b>
-let denormMap = {...};        <b class="conum">(4)</b></code></pre>
+var dogColorStr = 'brown';        <b class="conum">(1)</b>
+function walkDogFn () {...}       <b class="conum">(2)</b>
+for ( var i = 0; i &lt; 9; i++ ) ... <b class="conum">(3)</b>
+var denormMap = {...};            <b class="conum">(4)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -756,10 +756,10 @@ like JavaScript. Listing X.3 shows variables named by purpose and type.</p>
 // of object the returned function is to
 // meant to create.
 //
-let creators = makers( 'house' );
+var creators = makers( 'house' );
 
 // == Prefer ==
-let make_house_fn = curry_build_fn({ _item_type_ : 'house' });</code></pre>
+var make_house_fn = curry_build_fn({ _item_type_ : 'house' });</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -788,10 +788,10 @@ variable names this problem goes away.</p>
 // of object the returned function is to
 // meant to create.
 //
-let makers = builders( null, 'house' );
+var makers = builders( null, 'house' );
 
 // == Prefer ==
-let make_abode = curry_make_fn({ _item_type_ : 'abode' });</code></pre>
+var make_abode = curry_make_fn({ _item_type_ : 'abode' });</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -869,21 +869,23 @@ nested inside the module.</p>
 <div class="title">Listing X.6&#8201;&#8212;&#8201;Variable scope names</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let stateMap = {};  <b class="conum">(1)</b>
+var stateMap = {};  <b class="conum">(1)</b>
 function initModule () {
-  let
+  var
     localInt = 1,   <b class="conum">(2)</b>
-    localStr = 'Module initialized. Our number is ';
+    localStr = 'Module initialized. Our number is '
+    ;
  console.log( localStr + localInt );
 }
 return { _initModule_ : initModule };
 
 // == Prefer ==
-let stateMap = {};  <b class="conum">(1)</b>
+var stateMap = {};  <b class="conum">(1)</b>
 function initModule () {
-  let
+  var
     local_int = 1,  <b class="conum">(3)</b>
-    local_str = 'Module initialized. Our number is ';
+    local_str = 'Module initialized. Our number is '
+    ;
  console.log( local_str + local_int );
 }
 return { _initModule_ : initModule };</code></pre>
@@ -915,14 +917,14 @@ type” indicator.</p>
 <div class="title">Listing X.7&#8201;&#8212;&#8201;Type indicators</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let
+var
   places = 10,
   users = '02',
   calc = places + users;
 console.log ( calc ); <b class="conum">(1)</b>
 
 // == Prefer ===
-let
+var
   place_count = 10,
   user_id     = '02',
   calc_num    = place_count + Number( user_id );
@@ -1596,22 +1598,22 @@ precisely identifies the type of data that contains the group.</p>
 <div class="title">Listing X.9&#8201;&#8212;&#8201;Collections of data</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let
- cats = [ 'callico', 'tabby' ],
- colors = { blue : '#00f', green : '#0f0', red : '#00f' },
- persons = [ { name : 'Fred' }, [ name : 'Wilma' } ],
- retracts = true,
- users = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
+var
+  cats = [ 'callico', 'tabby' ],
+  colors = { blue : '#00f', green : '#0f0', red : '#00f' },
+  persons = [ { name : 'Fred' }, [ name : 'Wilma' } ],
+  retracts = true,
+  users = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
  ;
 
 // == Prefer ==
-let
- cat_list      = [ 'callico', 'tabby' ],
- color_map     = { blue : '#00f', green : '#0f0', red : '#00f' },
- do_retract    = true,
- person_table  = [ { name : 'fred' }, [ name : 'wilma' } ],
- user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
- ;</code></pre>
+var
+  cat_list      = [ 'callico', 'tabby' ],
+  color_map     = { blue : '#00f', green : '#0f0', red : '#00f' },
+  do_retract    = true,
+  person_table  = [ { name : 'fred' }, [ name : 'wilma' } ],
+  user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
+  ;</code></pre>
 </div>
 </div>
 </div>
@@ -1628,22 +1630,22 @@ or WebStorm which support in-line sorting.</p>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 
-let
- do_retract = true,
- color_map = { green : '#0f0', red : '#00f', blue : '#00f' },
- person_table = [ { name : 'Wilma' }, { name : 'Fred' } ],
- user_csv_list = 'Pebbles,Wilma,Betty,Bamm-Bamm,Fred',
- cat_list = [ 'tabby', 'callico' ]
- ;
+var
+  do_retract = true,
+  color_map = { green : '#0f0', red : '#00f', blue : '#00f' },
+  person_table = [ { name : 'Wilma' }, { name : 'Fred' } ],
+  user_csv_list = 'Pebbles,Wilma,Betty,Bamm-Bamm,Fred',
+  cat_list = [ 'tabby', 'callico' ]
+  ;
 
 // == Prefer ==
-let
- cat_list = [ 'callico', 'tabby', ],
- color_map = { blue : '#00f', green : '#0f0', red : '#00f' },
- do_retract = true,
- person_table = [ { name : 'fred' }, [ name : 'wilma' } ],
- user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma';
- ;</code></pre>
+var
+  cat_list = [ 'callico', 'tabby', ],
+  color_map = { blue : '#00f', green : '#0f0', red : '#00f' },
+  do_retract = true,
+  person_table = [ { name : 'fred' }, [ name : 'wilma' } ],
+  user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma';
+  ;</code></pre>
 </div>
 </div>
 </div>
@@ -1740,15 +1742,15 @@ Always use the <code>'use strict'</code> pragma for module-scope <code>IIFEs</co
 <div class="title">Listing X.11&#8201;&#8212;&#8201;A namespace map created using an <code>IIFE</code></div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ==
-let greetStr = 'Hi there!';
+var greetStr = 'Hi there!';
 console.log( window.greetStr ); // prints 'Hi there!'
 
 // == Prefer ==
 var spa = (function () {
- 'use strict';
- let greetStr = 'Hi there!';
- function initModule () { console.log( greetStr ); }
- return { _initModule_ : initModule };
+  'use strict';
+  var greetStr = 'Hi there!';
+  function initModule () { console.log( greetStr ); }
+  return { _initModule_ : initModule };
 }());
 spa._initModule_();</code></pre>
 </div>
@@ -1811,15 +1813,15 @@ into <code>stateMap</code> and <code>configMap</code> respectively as shown in L
 <div class="title">Listing X.13&#8201;&#8212;&#8201;Module scope variables</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let
- doBigThings = true,
- userMaxCount = 5,
- isSliderActive = true,
- isSliderOpen = false
- ;
+var
+  doBigThings = true,
+  userMaxCount = 5,
+  isSliderActive = true,
+  isSliderOpen = false
+  ;
 
 // == Prefer ==
-let
+var
   configMap = {
     _do_big_things_  : true,
     _user_max_count_ : 5
@@ -1898,23 +1900,23 @@ coord_map = refactorCoords({
 </div>
 </div>
 <div class="sect2">
-<h3 id="_use_a_single_let_statement_per_block">6.5. Use a single let statement per block</h3>
+<h3 id="_use_a_single_var_statement_per_function">6.5. Use a single var statement per function</h3>
 <div class="paragraph">
-<p>Declare all variables at the top of a block scope using a
-single <code>let</code> keyword first as shown in Listing X.16.</p>
+<p>Declare all variables at the top of a function using a
+single <code>var</code> keyword first as shown in Listing X.16.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing X.16&#8201;&#8212;&#8201;Single let statement per block</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-function copyMapKeysFn( arg_map ) { <b class="conum">(1)</b>
-  let solve_map = {};
-  let key_list = Object.keys( arg_map );
-  let key_count = key_list.length;
+function copyMapKeysFn( arg_map ) {
+  var solve_map = {};
+  var key_list = Object.keys( arg_map );
+  var key_count = key_list.length;
 
-  for ( let idx = 0; idx &lt; key_count; idx++ ) {
-    let key_name = key_list[ idx ];
-    let val_data = arg_map[ key_name ];
+  for ( var idx = 0; idx &lt; key_count; idx++ ) {
+    var key_name = key_list[ idx ];
+    var val_data = arg_map[ key_name ];
     if ( val_data !== undefined ) {
       solve_map[ key_name ] = val_data;
     }
@@ -1924,17 +1926,16 @@ function copyMapKeysFn( arg_map ) { <b class="conum">(1)</b>
 
 // == Prefer ==
 function copyMapKeysFn( arg_map ) {
-  let
-    solve_map = {},
-    key_list  = Object.keys( arg_map ),
-    key_count = key_list.length
-    ;
+ var
+   solve_map = {},
+   key_list  = Object.keys( arg_map ),
+   key_count = key_list.length,
+   idx, key_name, val_data
+   ;
 
-  for ( let idx = 0; idx &lt; key_count; idx++ ) { <b class="conum">(2)</b>
-    let
-      key_name = key_list[ idx ],
-      val_data = arg_map[ key_name ]
-      ;
+  for ( idx = 0; idx &lt; key_count; idx++ ) {
+    key_name = key_list[ idx ];
+    val_data = arg_map[ key_name ];
 
     if ( val_data !== undefined ) {
       solve_map[ key_name ] = val_data;
@@ -1944,35 +1945,29 @@ function copyMapKeysFn( arg_map ) {
 }</code></pre>
 </div>
 </div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Do we really need dozens of <code>let</code> keywords in every scope?</p>
-</li>
-<li>
-<p>A unique idx variable will be created for each iteration which is useful
-when declaring functions in a loop. But don&#8217;t do that.</p>
-</li>
-</ol>
-</div>
 <div class="paragraph">
-<p>As of ES5.1 <code>let</code> is preferred over <code>var</code> in most circumstances.
-If we declare a variable anywhere within a function using <code>var</code>,
+<p>If we declare a variable anywhere within a function using <code>var</code>,
 it will be initialized with a value of <code>undefined</code> immediately
-on invocation.</p>
+on invocation. Declaring a variable is not the same as assigning a value to it.
+When a variable is declared, the JS engine know which it exists within
+a functional scope and this is processed at compile-time. A value can be
+assigned to a variable only at run-time<sup class="footnote" id="_footnote_hoist">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup>. As a convenience
+we may combine declaration and assignment with the <code>var</code> statement as a
+convenience but internally the JavaScript engine will always process both
+stages at different times.</p>
 </div>
 <div class="paragraph">
-<p>Declaring a variable is not the same as assigning a value to it.
-We declare variable to let the JS engine know which variables exists within
-a functional scope. Declarations are processed at compile-time. We assign a
-value to a variable and this occurs only at run-time<sup class="footnote" id="_footnote_hoist">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup>. As a convenience
-we may combine declaration and assignment with the <code>var</code> statement but
-this is not required.</p>
+<p>As of ES5.1 <code>let</code> is preferred over <code>var</code> in most cases. But there
+is one glaring problem: not all tool chains support it. For example, jQuery
+and UglifyJS and a bunch of other libraries still expect <code>var</code> behavior.
+We&#8217;ve discovered this the hard way. So despite all the benefits of <code>let</code>,
+we&#8217;re going to allow its use catch up with its promise before we join the
+party.</p>
 </div>
 <div class="paragraph">
-<p>The <code>const</code> keyword is also preferred over <code>var</code>. However, be careful as
-the variable it defines may not be as immutable as one might think as
-shown in Listing X.17.</p>
+<p>The <code>const</code> keyword is also preferred over <code>var</code>. Just like with <code>let</code> there
+are tool-chain issues. Listing X.17 shows how a <code>const</code> symbol is not as
+immutable as one might think.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing X.17&#8201;&#8212;&#8201;Confusing <code>const</code></div>
@@ -2029,7 +2024,7 @@ and confusing as shown Listing X.19.</p>
 <div class="listingblock">
 <div class="title">Listing X.19&#8201;&#8212;&#8201;Check for truthiness</div>
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">let count_list = [ 1 + 1 ];
+<pre class="highlight"><code class="language-js" data-lang="js">var count_list = [ 1 + 1 ];
 
 == Avoid ===
 if ( count_list == 2 ) { console.warn( 'Confusing match' ); } <b class="conum">(1)</b>
@@ -2060,7 +2055,7 @@ linear search instead as shown in Listing X.21.</p>
 <div class="title">Listing X.20&#8201;&#8212;&#8201;Try-catch block&#8201;&#8212;&#8201;nesting</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let fs_obj, lib_key;
+var fs_obj, lib_key;
 try {
   lib_key = 'fancyFs';
   console.log( 'attempt ' + lib_key );
@@ -2103,7 +2098,7 @@ if ( fs_obj ) {
 <div class="title">Listing X.21&#8201;&#8212;&#8201;Try-catch block&#8201;&#8212;&#8201;linear search</div>
 <div class="content">
 <pre>// == Prefer ==
-let
+var
   lib_list  = [ 'fancyFs','coolFs', 'neatFs', 'fs' ],
   lib_count = lib_list.length,
 
@@ -2140,10 +2135,10 @@ inheritance in JavaScript.</p>
 <div class="title">Listing X.22&#8201;&#8212;&#8201;Factory object constructor</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let dog = new Dog();
+var dog = new Dog();
 
 // == Prefer ==
-let dog_obj = makeDogObjFn();</code></pre>
+var dog_obj = makeDogObjFn();</code></pre>
 </div>
 </div>
 </div>
@@ -2158,7 +2153,7 @@ logic more resistant to nesting errors as shown in Listing X.23.</p>
 <div class="title">Listing X.23&#8201;&#8212;&#8201;Labeled statements</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
-let
+var
   horse_list  = [ 'Anglo-Arabian', 'Clydsedale' ],
   horse_count = horseList.length,
   solve_list  = [],
@@ -2220,7 +2215,7 @@ to avoid data corruption.</p>
 <div class="listingblock">
 <div class="title">Listing X.25</div>
 <div class="content">
-<pre>let age_map, copy_map;
+<pre>var age_map, copy_map;
 
 // == Avoid ===
 age_map = { 'Bob' : 36 };
@@ -2322,7 +2317,7 @@ confusing.</p>
 <div class="title">Listing X.27 Assignment expressions</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let
+var
   random_int = Math.floor( Math.random() * 2 ),
   set_int
   ;
@@ -2332,7 +2327,7 @@ if ( set_int = random_int ) {
 }
 
 // == Prefer ==
-let
+var
   random_int = Math.floor( Math.random() * 2 ),
   set_int = random_int
   ;
@@ -2476,10 +2471,10 @@ convert a data structure into a string.</p>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 function makePctStr(arg_ratio,arg_count,arg_sigil_str){
-        let ratio=castNum(arg_ratio,0),
-        count=castNum(arg_count,0)
-        ,sigil_str=castStr(arg_sigil_str,'%'),
-        count=count&lt;0?0:Math.floor(count);
+        var ratio=castNum(arg_ratio,0),
+                count=castNum(arg_count,0),
+                sigil_str=castStr(arg_sigil_str,'%'),
+                count=count&lt;0?0:Math.floor(count);
 
         return <b class="conum">(1)</b>
         { pct_str:(ratio*100).toFixed(count)+sigil_str };
@@ -2487,7 +2482,7 @@ function makePctStr(arg_ratio,arg_count,arg_sigil_str){
 
 // == Prefer ==
 function makePctStr ( arg_ratio, arg_count, arg_sigil_str ) {
-  let
+  var
     count     = castNum( arg_count,       0 ),
     ratio     = castNum( arg_ratio,       0 ),
     sigil_str = castStr( arg_sigil_str, '%' ),
@@ -2559,7 +2554,7 @@ one level.</p>
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 function getSign(arg_data)
 {
-  let
+  var
     arg_num   = arg_data + 0,
     solve_int = 0;
 
@@ -2575,7 +2570,7 @@ function getSign(arg_data)
 
 // == Prefer ==
 function getSign( arg_data ) {
-  let
+  var
     arg_num   = arg_data + 0,
     solve_int = 0;
 
@@ -2630,15 +2625,15 @@ function shuffle( items ) {
   // Return false if argument is not an array
   if ( ! Array.isArray( items ) ) { return false; }
   // Get the length of the items array. Size is an integer.
-  let size = items.length;
+  var size = items.length;
   // Decrement i from the size of the list to 1
-  for ( let i = size; i &gt; 0; i-- ) {
+  for ( var i = size; i &gt; 0; i-- ) {
     // x is the int element index at the end of the section.
-    let x = i - 1;
+    var x = i - 1;
     // y is a random integer index within the section.
-    let y = Math.floor( Math.random() * i );
+    var y = Math.floor( Math.random() * i );
     // Get random element value. Swap could be any data type.
-    let swap = items[ y ];
+    var swap = items[ y ];
     // Set random element value to same as end of section
     items[ y ] = items[ x ];
     // Set end of section value to random element value
@@ -2665,19 +2660,19 @@ function shuffle( items ) {
 //   3. Swap pick element with last_idx element
 //
 function shuffleListFn ( arg_list ) {
-  let
+  var
     list  = castList( arg_list ),
-    count = list ? list.length : 0
+    count = list ? list.length : 0,
+    idx, last_idx, pick_idx
     ;
 
   if ( ! list ) { return false; }
 
-  for ( let idj = count; idj &gt; 0; idj-- ) {
-    let
-      last_idx  = idj - 1,
-      pick_idx  = Math.floor( Math.random() * idj ),
-      swap_data = list[ last_idx ]
-      ;
+  for ( idx = count; idx &gt; 0; idx-- ) {
+    last_idx  = idx - 1;
+    pick_idx  = Math.floor( Math.random() * idx );
+    swap_data = list[ last_idx ];
+
     list[ last_idx ] = list[ pick_idx ];
     list[ pick_idx ] = swap_data;
   }
@@ -2807,12 +2802,12 @@ end multi-line statements.</p>
 <div class="title">Listing x.39&#8201;&#8212;&#8201;Break lines on operators</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
-let full_address_str = first_name + ' ' + last_name +
+var full_address_str = first_name + ' ' + last_name +
   '\n' + street1_str + '\n' + street2_str + '\n' +
   city_str + ',' + state_code + ' ' + zip_code;
 
 // == Prefer ==
-let full_address_str
+var full_address_str
   = first_name + ' ' + last_name + '\n'
   + street1_str + '\n'
   + street2_str + '\n'
@@ -3231,7 +3226,7 @@ which loop is effected. This illustrates logic and helps prevent errors.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-17 17:00:51 PDT
+Last updated 2017-09-17 18:52:46 PDT
 </div>
 </div>
 </body>
