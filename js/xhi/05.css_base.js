@@ -121,7 +121,7 @@ xhi._makeCssBase_ = function ( aMap ) {
           _rgba_shdw_08_     : 'rgba(192,222,255,.215)',
           _rgba_shdw_09_     : 'rgba(192,222,255,.194)',
           _txt_shdw_01_      : '0 1px 1px #000000',
-          _txt_shdw_01_inv_  : '0 1px 1px #7fb5ed',
+          _txt_shdw_01_inv_  : '0 1px 1px #7fb5ed'
         }
       ],
       _selector_list_ : [

@@ -31,8 +31,8 @@ xhi._makeLb_ = function ( aMap ) {
     __true  = vMap._true_,
     __undef = vMap._undef_,
 
-    __setTo   = vMap._fnSetTimeout_,
-    __clearTo = vMap._fnClearTimeout_,
+    __setTo   = vMap._setTimeoutFn_,
+    __clearTo = vMap._clearTimeoutFn_,
 
     __castBool = __util._castBool_,
     __castFn   = __util._castFn_,
@@ -564,10 +564,10 @@ xhi._makeLb_ = function ( aMap ) {
       h_px     = $litebox[ cssKmap._height_ ]();
 
       $litebox[ vMap._css_ ]({
-        top  : vMap._fnGetFloor_(
+        top  : vMap._makeFloorNumFn_(
           ( body_h_px - h_px ) / nMap._2_ + nMap._d5_
         ),
-        left : vMap._fnGetFloor_(
+        left : vMap._makeFloorNumFn_(
           ( body_w_px - w_px ) / nMap._2_ + nMap._d5_
         )
       });
@@ -607,7 +607,7 @@ xhi._makeLb_ = function ( aMap ) {
       content_html = __tmplt({
         _input_str_  : configMap._success_tmplt_,
         _lookup_map_ : {
-          _msg_str_ : msg_str,
+          _msg_str_ : msg_str
         }
       });
 

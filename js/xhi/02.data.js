@@ -35,7 +35,10 @@ xhi._makeData_ = function ( aMap ) {
     __logMsg  = __logObj._logMsg_,
 
     configMap = {},
-    stateMap  = {}
+    stateMap  = {
+      _active_jqxhr_list_ : [],
+      _auth_key_          : __undef
+    }
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 

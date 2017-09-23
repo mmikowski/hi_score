@@ -28,14 +28,14 @@ xhi._makeRoot_ = function ( aKey ) {
       _Object_          : __Object,
       _JSON_            : JSON,
 
-      _fnTypeof_        : function ( a ) { return typeof a; },
-      _fnClearTimeout_  : clearTimeout,
-      _fnGetKeyList_    : __Object.keys,
-      _fnGetAbs_        : __Math.abs,
-      _fnGetFloor_      : __Math.floor,
-      _fnGetRandom_     : __Math.random,
-      _fnGetRound_      : __Math.round,
-      _fnSetTimeout_    : setTimeout,
+      _typeofFn_        : function ( a ) { return typeof a; },
+      _clearTimeoutFn_  : clearTimeout,
+      _makeKeyListFn_   : __Object.keys,
+      _makeAbsNumFn_    : __Math.abs,
+      _makeFloorNumFn_  : __Math.floor,
+      _makeRandomNumFn_ : __Math.random,
+      _makeRoundNumFn_  : __Math.round,
+      _setTimeoutFn_    : setTimeout,
 
       _activeElement_   : 'activeElement',
       _addClass_        : 'addClass',
@@ -208,7 +208,7 @@ xhi._makeRoot_ = function ( aKey ) {
   return {
     _aKey_    : aKey,
     _nMap_    : nMap,
-    _vMap_    : vMap,
+    _vMap_    : vMap
   };
   // == . END PUBLIC METHODS ===========================================
 };

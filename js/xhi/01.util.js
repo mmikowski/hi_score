@@ -43,11 +43,11 @@ xhi._makeUtil_ = function ( aMap ) {
     __100     = nMap._100_,
     __n1      = nMap._n1_,
 
-    __floor   = vMap._fnGetFloor_,
-    __random  = vMap._fnGetRandom_,
-    __setTo   = vMap._fnSetTimeout_,
-    __typeof  = vMap._fnTypeof_,
-    __keys    = vMap._fnGetKeyList_,
+    __floor   = vMap._makeFloorNumFn_,
+    __random  = vMap._makeRandomNumFn_,
+    __setTo   = vMap._setTimeoutFn_,
+    __typeof  = vMap._typeofFn_,
+    __keys    = vMap._makeKeyListFn_,
 
     typeofMap = {
       'boolean'   : '_Boolean_',
@@ -414,7 +414,7 @@ xhi._makeUtil_ = function ( aMap ) {
     }
 
     sign_int = getNumSign( num );
-    num_str  = __Str( vMap._fnGetAbs_( num ) );
+    num_str  = __Str( vMap._makeAbsNumFn_( num ) );
     zero_count = count - num_str[ __length ]
       - ( sign_int === __n1 ? __1 : __0 );
 
@@ -685,7 +685,7 @@ xhi._makeUtil_ = function ( aMap ) {
   function makeMetricStr( arg_num ) {
     var
       num     = castNum( arg_num, __0 ),
-      abs_num = vMap._fnGetAbs_( num ),
+      abs_num = vMap._makeAbsNumFn_( num ),
       root_num, suffix
       ;
 
@@ -994,7 +994,7 @@ xhi._makeUtil_ = function ( aMap ) {
     var
       time_ms   = castInt( arg_time_ms,  __0 ),
       time_idx  = castInt( arg_time_idx, __3 ),
-      abs_idx   = vMap._fnGetAbs_( time_idx  ),
+      abs_idx   = vMap._makeAbsNumFn_( time_idx  ),
 
       sec_ms    = configMap._sec_ms_,
       min_sec   = configMap._min_sec_,
@@ -1080,7 +1080,7 @@ xhi._makeUtil_ = function ( aMap ) {
       solve_num, solve_str, solve_list, list_count, idx
       ;
 
-    if ( vMap._fnGetAbs_( input_num ) >= round_limit_num ) {
+    if ( vMap._makeAbsNumFn_( input_num ) >= round_limit_num ) {
       solve_num    = input_num / round_unit_num;
       solve_suffix = round_unit_str;
       solve_str    = solve_num[ vMap._toFixed_]( round_dec_count );

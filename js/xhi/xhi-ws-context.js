@@ -38,6 +38,10 @@
     _target_map_     : map,
     _tgt_count_      : num,
 
+    // __NS._data_
+    _full_url_ : str,
+    _content_type_ : str,
+
     // __NS._utilb_
     _select_str_ : str,
     _title_map_  : map,
@@ -45,6 +49,7 @@
 
     // __NS._lb_
     _do_block_click_ : bool,
+    _do_dflt_class_  : bool,
     _do_draggable_   : bool,
     _do_title_close_ : bool,
     _layout_key_     : str,

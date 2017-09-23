@@ -74,7 +74,7 @@ xhi._makeCssLb_ = function ( aMap ) {
         { _selector_str_ : __p('.{_p_}-_lb_content_'),
           _rule_map_ : {
             _position_ : '_relative_',
-            _padding_    : '_1rem_',
+            _padding_    : '_1rem_'
           }
         },
         { _selector_str_ : __p('.{_p_}-_lb_content_ p'),

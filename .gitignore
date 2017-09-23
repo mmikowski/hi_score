@@ -15,4 +15,5 @@ js/vendor
 node_modules
 npm-debug.log
 lib/xhi_state.json
+package-lock.json
 
