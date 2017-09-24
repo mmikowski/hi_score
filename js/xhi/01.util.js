@@ -9,8 +9,8 @@
 */
 /*global xhi */
 
-// == BEGIN MODULE xhi._makeUtil_ =====================================
-xhi._makeUtil_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeUtilFn_ ===================================
+xhi._makeUtilFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -18,8 +18,8 @@ xhi._makeUtil_ = function ( aMap ) {
     vMap      = aMap._vMap_,
     nMap      = aMap._nMap_,
 
-    __j2str   = vMap._JSON_[ vMap._stringify_ ],
-    __jparse  = vMap._JSON_[ vMap._parse_ ],
+    __data2strFn  = vMap._data2strFn_,
+    __str2DataFn  = vMap._str2dataFn_,
 
     __Array   = vMap._Array_,
     __Date    = vMap._Date_,
@@ -33,7 +33,6 @@ xhi._makeUtil_ = function ( aMap ) {
     __true    = vMap._true_,
     __undef   = vMap._undef_,
 
-    __d5      = nMap._d5_,
     __0       = nMap._0_,
     __1       = nMap._1_,
     __2       = nMap._2_,
@@ -44,6 +43,7 @@ xhi._makeUtil_ = function ( aMap ) {
     __n1      = nMap._n1_,
 
     __floor   = vMap._makeFloorNumFn_,
+    __round   = vMap._makeRoundNumFn_,
     __random  = vMap._makeRandomNumFn_,
     __setTo   = vMap._setTimeoutFn_,
     __typeof  = vMap._typeofFn_,
@@ -67,9 +67,8 @@ xhi._makeUtil_ = function ( aMap ) {
       'Undefined' : '_Undefined_'
     },
 
-    configMap, stateMap,  // Set in initModule
-
-    getBasename, getDirname, logObj
+    configMap, stateMap,  // Set in initModuleFn
+    logObj
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -161,7 +160,7 @@ xhi._makeUtil_ = function ( aMap ) {
         ? parseFloat( data ) : __undef
         ;
     if ( isNaN( num ) ) { return alt_data; }
-    return __floor( num + __d5 );
+    return __round( num );
   }
   // . END Public prereq method /castInt/
 
@@ -292,7 +291,7 @@ xhi._makeUtil_ = function ( aMap ) {
   function cloneData ( data ) {
     var clone_data;
     if ( data === __undef ) { return data; }
-    try { clone_data = __jparse( __j2str( data ) ); }
+    try { clone_data = __str2DataFn( __data2strFn( data ) ); }
     catch ( ignore_obj ) { clone_data = __undef; }
     return clone_data;
   }
@@ -314,7 +313,7 @@ xhi._makeUtil_ = function ( aMap ) {
       extend_list = castList( arg_extend_list, [] )
       ;
 
-    __Array.prototype.push.apply( base_list, extend_list );
+    __Array.prototype.push[ vMap._apply_ ]( base_list, extend_list );
     return base_list;
   }
   // . END Public prereq method /extendList/
@@ -419,8 +418,8 @@ xhi._makeUtil_ = function ( aMap ) {
       - ( sign_int === __n1 ? __1 : __0 );
 
     // See repeat funciton in ES6
-    list.length = zero_count > __0 ? zero_count + 1 : 0;
-    num_str = list.join( '0' ) + num_str;
+    list[ vMap._length_ ] = zero_count > __0 ? zero_count + __1 : __0;
+    num_str = list[ vMap._join_ ]( '0' ) + num_str;
 
     if ( sign_int === __n1 ) {
       num_str = '-' + num_str;
@@ -443,7 +442,7 @@ xhi._makeUtil_ = function ( aMap ) {
   function makeEscRxStr( arg_str ) {
     var str = castStr( arg_str, __blank );
     // eslint-disable-next-line no-useless-escape
-    return str.replace( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
+    return str[ vMap._replace_ ]( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
   }
   // . END Public prereq method /makeEscRxStr/
 
@@ -462,7 +461,7 @@ xhi._makeUtil_ = function ( aMap ) {
     var
       base_map  = castMap(  arg_base_map, {} ),
       key_list  = castList( arg_key_list, __keys( base_map ) ),
-      key_count = key_list.length,
+      key_count = key_list[ vMap._length_ ],
       solve_map = {},
       idx, key
       ;
@@ -658,14 +657,14 @@ xhi._makeUtil_ = function ( aMap ) {
         ;
 
       if ( order_str === '_us_') {
-        match_list = date_str.match( date_us_rx );
+        match_list = date_str[ vMap._match_ ]( date_us_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 3 ] - 1900;
         mm_int = +match_list[ 1 ] - 1;
         dd_int = +match_list[ 2 ];
       }
       else {
-        match_list = date_str.match( date_utc_rx );
+        match_list = date_str[ vMap._match_ ]( date_utc_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 1 ] - 1900;
         mm_int = +match_list[ 2 ] - 1;
@@ -673,7 +672,7 @@ xhi._makeUtil_ = function ( aMap ) {
       }
 
       // Check that utc timestamps match
-      date_obj = new Date( Date.UTC( yy_int, mm_int, dd_int ));
+      date_obj = new __Date( __Date.UTC( yy_int, mm_int, dd_int ));
       check_int = date_obj.getUTCDate();
 
       // Invalid dates will not match
@@ -724,7 +723,7 @@ xhi._makeUtil_ = function ( aMap ) {
 
     for ( idx = __0; idx < key_count; idx++ ) {
       key = key_list[ idx ];
-      if ( map[ vMap._hasOwnProp_ ]( key ) ) {
+      if ( map[ vMap._hasOwnProperty_ ]( key ) ) {
         delete map[ key ];
       }
     }
@@ -769,15 +768,19 @@ xhi._makeUtil_ = function ( aMap ) {
     match_rx   = do_exclude_amp
       ? configMap._encode_noamp_rx_ : configMap._encode_html_rx_;
 
-    return source_str.replace( match_rx, match_fn );
+    return source_str[ vMap._replace_ ]( match_rx, match_fn );
   }
   // . END Public method /encodeHtml/
 
-  // BEGIN utilities /getBasename/ and /getDirname/
-  // Purpose   : Returns the last bit of a path
-  // Example   : getBasename('/Common/demo99/192.168.11_97_demo1')
-  //             returns '192.168.11.97_demo1'
+  // BEGIN utility /getBaseDirname/
+  // Purpose   : Returns the last filename of a path or the dirname.
+  // Examples  : getBaseDirname.call( '_base_', /var/log/demo.log')
+  //           :   returns 'demo.log'
+  //           : getBaseDirname.call( null, '/var/log/demo.log' )
+  //           :   returns '/var/log'
+  //
   // Arguments : ( positional )
+  //   this - if '_base_' returns basename, otherwise dirname
   //   0 - (required) Path string
   //   1 - (optional) Delimeter string (default is /)
   //
@@ -797,8 +800,6 @@ xhi._makeUtil_ = function ( aMap ) {
     match_list = path_str[ vMap._match_ ]( rx_obj );
     return ( match_list && match_list[ __1 ] ) || __blank;
   }
-  getBasename = getBaseDirname[ vMap._bind_ ]( '_base_' );
-  getDirname  = getBaseDirname[ vMap._bind_ ]( '_dir_'  );
   // . END utilities /getBasename/ and /getDirname/
 
   // BEGIN Public method /getListAttrIdx/
@@ -1001,7 +1002,7 @@ xhi._makeUtil_ = function ( aMap ) {
       hrs_min   = configMap._hrs_min_,
       day_hrs   = configMap._day_hrs_,
 
-      raw_sec_int = __floor( time_ms / sec_ms + __d5 ),
+      raw_sec_int = __round( time_ms / sec_ms ),
       sec_int     = raw_sec_int % min_sec,
 
       raw_min_int = __floor( raw_sec_int / min_sec ),
@@ -1142,8 +1143,8 @@ xhi._makeUtil_ = function ( aMap ) {
       ;
 
     if ( date_ms ) {
-      // new Date( ms ) does not work in node 4.4.3
-      date_obj = new Date();
+      // new __Date( ms ) does not work in node 4.4.3
+      date_obj = new __Date();
       date_obj.setTime( date_ms );
     }
     if ( ! date_obj ) { return __blank; }
@@ -1202,10 +1203,14 @@ xhi._makeUtil_ = function ( aMap ) {
 
     return function () {
       var arg_list = makeArgList( arguments );
-      if ( do_asap && ! delay_toid ) { fn.apply( ctx_data, arg_list ); }
-      clearTimeout( delay_toid );
+      if ( do_asap && ! delay_toid ) {
+        fn[ vMap._apply_ ]( ctx_data, arg_list );
+      }
+      vMap._clearTimeoutFn_( delay_toid );
       delay_toid = __setTo( function() {
-        if ( ! do_asap ) { fn.apply( ctx_data, arg_list ); }
+        if ( ! do_asap ) {
+          fn[ vMap._apply_]( ctx_data, arg_list );
+        }
         delay_toid = __undef;
       }, delay_ms );
     };
@@ -1238,8 +1243,8 @@ xhi._makeUtil_ = function ( aMap ) {
       if ( delta_ms <= __0 ) {
         // A timeout id should never be defined except in race conditions
         /* istanbul ignore next */
-        if ( delay_toid ) { clearTimeout( delay_toid ); }
-        fn.apply( ctx_data, arg_list );
+        if ( delay_toid ) { vMap._clearTimeoutFn_( delay_toid ); }
+        fn[ vMap._apply_ ]( ctx_data, arg_list );
         delay_toid = __undef;
         last_ms    = now_ms;
         return;
@@ -1248,7 +1253,7 @@ xhi._makeUtil_ = function ( aMap ) {
       if ( delay_toid ) { return; }
       delay_toid = __setTo(
         function () {
-          fn.apply( ctx_data, arg_list );
+          fn[ vMap._apply_ ]( ctx_data, arg_list );
           delay_toid = __undef;
           last_ms    = now_ms;
         },
@@ -1699,9 +1704,9 @@ xhi._makeUtil_ = function ( aMap ) {
       _INTERPOLATE_: for ( idx = __0; idx < unit_count; idx++ ) {
         // Calculate ranges
         check_idx   = btm_idx
-          + __floor( ( ( top_idx - btm_idx ) / __2 ) + nMap._d5_ );
+          + __round( ( ( top_idx - btm_idx ) / __2 ) );
         check_map   = unit_ms_list[ check_idx ];
-        check_count = __floor( ( span_ms / check_map._ms_ ) + nMap._d5_);
+        check_count = __round( ( span_ms / check_map._ms_ ) );
         if ( ( top_idx - btm_idx ) === __1 && last_btm_idx !== __undef ) {
           if ( btm_idx === last_btm_idx && top_idx === last_top_idx ) {
             break _INTERPOLATE_;
@@ -1818,8 +1823,8 @@ xhi._makeUtil_ = function ( aMap ) {
     function lookupFn ( ignore_match_str, lookup_name ) {
       var
         return_data  = this,
-        lookup_list  = lookup_name.split( '.' ),
-        lookup_count = lookup_list.length,
+        lookup_list  = lookup_name[ vMap._split_ ]( '.' ),
+        lookup_count = lookup_list[ vMap._length_ ],
         idx, key_name
         ;
 
@@ -1830,7 +1835,7 @@ xhi._makeUtil_ = function ( aMap ) {
       return castStr( return_data, __blank );
     }
 
-    bound_fn   = lookupFn.bind( lookup_map );
+    bound_fn   = lookupFn[ vMap._bind_ ]( lookup_map );
     return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
   }
   // . END Public method /makeTmpltStr/
@@ -2009,7 +2014,7 @@ xhi._makeUtil_ = function ( aMap ) {
         break _SET_KEY_;
       }
 
-      if ( ! walk_struct[ vMap._hasOwnProp_ ]( solve_key ) ) {
+      if ( ! walk_struct[ vMap._hasOwnProperty_ ]( solve_key ) ) {
         int_next_key = castInt( raw_next_key );
         if ( raw_next_key === __null || int_next_key !== __undef ) {
           walk_struct[ solve_key ] = [];
@@ -2044,7 +2049,7 @@ xhi._makeUtil_ = function ( aMap ) {
 
     if ( ! list ) { return __false; }
 
-    count = list.length;
+    count = list[ vMap._length_ ];
     for ( idj = count; idj > __0; idj-- ) {
       last_idx         = idj - __1;
       pick_idx         = __floor( __random() * idj );
@@ -2073,7 +2078,7 @@ xhi._makeUtil_ = function ( aMap ) {
   // == . END PUBLIC METHODS ==========================================
 
   // BEGIN initialize module
-  function initModule ()  {
+  function initModuleFn ()  {
     stateMap = {
       _date_obj_     : __undef,
       _tz_offset_ms_ : __undef
@@ -2098,7 +2103,7 @@ xhi._makeUtil_ = function ( aMap ) {
         '<' : '&#60;'
       },
 
-      _get_now_fn_  : Date.now,
+      _get_now_fn_  : __Date.now,
       _date_us_rx_  :
         // eslint-disable-next-line no-useless-escape
         /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]([0-9]{4})\b/,
@@ -2152,7 +2157,7 @@ xhi._makeUtil_ = function ( aMap ) {
       stateMap._has_jq_ = __false;
     }
   }
-  initModule();
+  initModuleFn();
   // . END initialize module
 
   aMap._util_ = {
@@ -2181,8 +2186,8 @@ xhi._makeUtil_ = function ( aMap ) {
     _checkDateStr_    : checkDateStr,
     _clearMap_        : clearMap,
     _encodeHtml_      : encodeHtml,
-    _getBasename_     : getBasename,
-    _getDirname_      : getDirname,
+    _getBasename_     : getBaseDirname[ vMap._bind_ ]( '_base_' ),
+    _getDirname_      : getBaseDirname[ vMap._bind_ ]( '_dir_'  ),
     _getListAttrIdx_  : getListAttrIdx,
     _getListAttrMap_  : getListAttrMap,
     _getListDiff_     : getListDiff,
@@ -2219,4 +2224,4 @@ xhi._makeUtil_ = function ( aMap ) {
     _trimStrList_     : trimStrList
   };
 };
-// == . END MODULE xhi._makeUtil_ =====================================
+// == . END MODULE xhi._makeUtilFn_ ===================================

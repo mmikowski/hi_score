@@ -73,8 +73,8 @@ var
 // Use xhi browser util library
 global.xhi = require( fqProjDirname + '/js/xhi/00.js' );
 require( fqProjDirname + '/js/xhi/01.util.js' );
-xhiLibMap = global.xhi._makeRoot_( 'xhiLibMap' );
-global.xhi._makeUtil_( xhiLibMap );
+xhiLibMap = global.xhi._makeRootFn_( 'xhiLibMap' );
+global.xhi._makeUtilFn_( xhiLibMap );
 xhiUtilObj = xhiLibMap._util_;
 
 // == . END MODULE SCOPE VARIABLES =====================================

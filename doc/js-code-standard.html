@@ -867,25 +867,25 @@ nested inside the module.</p>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 var stateMap = {};  <b class="conum">(1)</b>
-function initModule () {
+function initModuleFn () {
   var
     localInt = 1,   <b class="conum">(2)</b>
     localStr = 'Module initialized. Our number is '
     ;
  console.log( localStr + localInt );
 }
-return { _initModule_ : initModule };
+return { _initModuleFn_ : initModuleFn };
 
 // == Prefer ==
 var stateMap = {};  <b class="conum">(1)</b>
-function initModule () {
+function initModuleFn () {
   var
     local_int = 1,  <b class="conum">(3)</b>
     local_str = 'Module initialized. Our number is '
     ;
  console.log( local_str + local_int );
 }
-return { _initModule_ : initModule };</code></pre>
+return { _initModuleFn_ : initModuleFn };</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1680,9 +1680,9 @@ underscores so they can be identified during the build process.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Function</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._init_fn_</p></td>
 <td class="tableblock halign-left valign-top"><div><div class="paragraph">
-<p>spa._initModule_
-spa._model_.initModule_
-spa._shell_.<em>initModule</em></p>
+<p>spa._initModuleFn_
+spa._model_.initModuleFn_
+spa._shell_.<em>initModuleFn</em></p>
 </div></div></td>
 </tr>
 <tr>
@@ -1746,10 +1746,10 @@ console.log( window.greetStr ); // prints 'Hi there!'
 var spa = (function () {
   'use strict';
   var greetStr = 'Hi there!';
-  function initModule () { console.log( greetStr ); }
-  return { _initModule_ : initModule };
+  function initModuleFn () { console.log( greetStr ); }
+  return { _initModuleFn_ : initModuleFn };
 }());
-spa._initModule_();</code></pre>
+spa._initModuleFn_();</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1766,8 +1766,8 @@ spa._shell_ = (function () {
  'use strict';
 
  return {       <b class="conum">(1)</b>
- _initModule_   : initModule,
- _resetDisplay_ : resetDisplay
+ _initModuleFn_   : initModuleFn,
+ _resetDisplayFn_ : resetDisplayFn
  };
 }());
 
@@ -1776,13 +1776,13 @@ spa._slider_ = (function () {
  'use strict';
 
  return {        <b class="conum">(1)</b>
- _initModule_    : initModule,
- _extendSlider_  : extendSlider,
- _retractSlider_ : retractSlider
+ _initModuleFn_    : initModuleFn,
+ _extendSliderFn_  : extendSliderFn,
+ _retractSliderFn_ : retractSliderFn
  };
 }());
 // Initialize the spa from another module
-spa._initModule_();</code></pre>
+spa._initModuleFn_();</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -3223,7 +3223,7 @@ which loop is effected. This illustrates logic and helps prevent errors.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-17 19:15:37 PDT
+Last updated 2017-09-23 21:26:33 PDT
 </div>
 </div>
 </body>

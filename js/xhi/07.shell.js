@@ -9,8 +9,8 @@
 */
 /*global $, xhi */
 
-// == BEGIN MODULE xhi._makeShell_ =====================================
-xhi._makeShell_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeShellFn_ ===================================
+xhi._makeShellFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -19,7 +19,7 @@ xhi._makeShell_ = function ( aMap ) {
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
 
-    __j2str = vMap._JSON_[ vMap._stringify_ ],
+    __data2strFn = vMap._data2strFn_,
 
     __0     = nMap._0_,
     __1     = nMap._1_,
@@ -49,10 +49,10 @@ xhi._makeShell_ = function ( aMap ) {
   // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  // BEGIN Public method /initModule/
-  function initModule ( $top_box ) {
+  // BEGIN Public method /initModuleFn/
+  function initModuleFn ( $top_box ) {
     // Set styles
-    aMap._css_._initModule_();
+    aMap._css_._initModuleFn_();
 
     // Initial DOM content using methods above
     // and then set jQuery colection cache
@@ -65,17 +65,17 @@ xhi._makeShell_ = function ( aMap ) {
       '\n  __1       === ' + __1,
       '\n  __blank   === ' + __blank,
       '\n  aKey      === ' +   aKey,
-      '\n  $Map      === ' + __j2str( $Map      ),
-      '\n  aMap      === ' + __j2str( aMap      ),
-      '\n  configMap === ' + __j2str( configMap ),
-      '\n  stateMap  === ' + __j2str( stateMap  )
+      '\n  $Map      === ' + __data2strFn( $Map      ),
+      '\n  aMap      === ' + __data2strFn( aMap      ),
+      '\n  configMap === ' + __data2strFn( configMap ),
+      '\n  stateMap  === ' + __data2strFn( stateMap  )
     );
 
     // Bind shell event handlers (taps, drags, long-press, etc)
   }
-  // . END Public method /initModule/
+  // . END Public method /initModuleFn/
 
-  aMap._shell_ = { _initModule_ : initModule };
+  aMap._shell_ = { _initModuleFn_ : initModuleFn };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE xhi._makeShell_ =====================================
+// == . END MODULE xhi._makeShellFn_ ===================================

@@ -10,7 +10,7 @@
 /*global xhi */
 
 // == BEGIN MODULE xhi._makeFake_ =====================================
-xhi._fake_ = function ( aMap ) {
+xhi._makeFakeFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   //noinspection MagicNumberJS
@@ -41,7 +41,7 @@ xhi._fake_ = function ( aMap ) {
   function logInfo () {
     __logMsg( '_info_', aKey, vMap, nMap );
   }
-  aMap._fake_ = {
+  aMap._makeFakeFn_ = {
     _logInfo_         : logInfo,
     _fetchExampleMap_ : fetchExampleMap,
     _configModule_    : configModule

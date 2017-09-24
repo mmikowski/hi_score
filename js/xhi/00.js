@@ -8,178 +8,21 @@
  *
 */
 /*global xhi */
-
-var xhi = {};
-// == BEGIN MODULE __NS._makeRoot_ =====================================
-xhi._makeRoot_ = function ( aKey ) {
+var xhi          = {};
+// == BEGIN MODULE xhi._makeRootFn_ ====================================
+xhi._makeRootFn_ = function ( aKey, argOptionMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
-  //noinspection MagicNumberJS
   var
-    __Object  = Object,
-    __Math    = Math,
-    vMap = {
-      _100p_            : '100%',
-      _Date_            : Date,
-      _Array_           : Array,
-      _String_          : String,
-      _Number_          : Number,
-      _Math_            : __Math,
-      _Object_          : __Object,
-      _JSON_            : JSON,
+    __JSON   = JSON,
+    __Math   = Math,
+    __Object = Object,
+    __undef  = void 0,
 
-      _typeofFn_        : function ( a ) { return typeof a; },
-      _clearTimeoutFn_  : clearTimeout,
-      _makeKeyListFn_   : __Object.keys,
-      _makeAbsNumFn_    : __Math.abs,
-      _makeFloorNumFn_  : __Math.floor,
-      _makeRandomNumFn_ : __Math.random,
-      _makeRoundNumFn_  : __Math.round,
-      _setTimeoutFn_    : setTimeout,
-
-      _activeElement_   : 'activeElement',
-      _addClass_        : 'addClass',
-      _add_             : 'add',
-      _ajax_            : 'ajax',
-      _always_          : 'always',
-      _appendChild_     : 'appendChild',
-      _appendTo_        : 'appendTo',
-      _append_          : 'append',
-      _apply_           : 'apply',
-      _attr_            : 'attr',
-      _bind_            : 'bind',
-      _blank_           : '',
-      _blur_            : 'blur',
-      _body_            : 'body',
-      _call_            : 'call',
-      _cancel_          : 'cancel',
-      _carouscroll_     : 'carouscroll',
-      _change_          : 'change',
-      _children_        : 'children',
-      _clone_           : 'clone',
-      _closest_         : 'closest',
-      _concat_          : 'concat',
-      _createElement_   : 'createElement',
-      _createTextNode_  : 'createTextNode',
-      _cssText_         : 'cssText',
-      _css_             : 'css',
-      _data_            : 'data',
-      _disabled_        : 'disabled',
-      _done_            : 'done',
-      _each_            : 'each',
-      _empty_           : 'empty',
-      _eq_              : 'eq',
-      _extend_          : 'extend',
-      _fadeIn_          : 'fadeIn',
-      _fadeOut_         : 'fadeOut',
-      _fail_            : 'fail',
-      _false_           : false,
-      _filter_          : 'filter',
-      _find_            : 'find',
-      _focus_           : 'focus',
-      _font_weight_     : 'font-weight',
-      _forEach_         : 'forEach',
-      _fromCharCode_    : 'fromCharCode',
-      _getElsByTagName_ : 'getElementsByTagName',
-      _get_             : 'get',
-      _hasClass_        : 'hasClass',
-      _hashchange_      : 'hashchange',
-      _hasOwnProp_      : 'hasOwnProperty',
-      _head_            : 'head',
-      _hide_            : 'hide',
-      _html_            : 'html',
-      _id_              : 'id',
-      _indexOf_         : 'indexOf',
-      _index_           : 'index',
-      _innerHTML_       : 'innerHTML',
-      _innerText_       : 'innerText',
-      _join_            : 'join',
-      _key_             : 'key',
-      _keydown_         : 'keydown',
-      _keypress_        : 'keypress',
-      _keyup_           : 'keyup',
-      _length_          : 'length',
-      _makeDsObj_       : 'makeDragScrollObj',
-      _map_             : 'map',
-      _match_           : 'match',
-      _not_             : 'not',
-      _now_             : 'now',
-      _null_            : null,
-      _off_             : 'off',
-      _offset_          : 'offset',
-      _on_              : 'on',
-      _onload_          : 'onload',
-      _outerHTML_       : 'outerHTML',
-      _outerHeight_     : 'outerHeight',
-      _outerWidth_      : 'outerWidth',
-      _parent_          : 'parent',
-      _parse_           : 'parse',
-      _pop_             : 'pop',
-      _prepend_         : 'prepend',
-      _prev_            : 'prev',
-      _preventDefault_  : 'preventDefault',
-      _prop_            : 'prop',
-      _publish_         : 'publish',
-      _push_            : 'push',
-      _reject_          : 'reject',
-      _removeAttr_      : 'removeAttr',
-      _removeChild_     : 'removeChild',
-      _removeClass_     : 'removeClass',
-      _remove_          : 'remove',
-      _replace_         : 'replace',
-      _resize_          : 'resize',
-      _resolve_         : 'resolve',
-      _scrollHeight_    : 'scrollHeight',
-      _scrollLeft_      : 'scrollLeft',
-      _scrollTop_       : 'scrollTop',
-      _setAttribute_    : 'setAttribute',
-      _shift_           : 'shift',
-      _show_            : 'show',
-      _slice_           : 'slice',
-      _sort_            : 'sort',
-      _splice_          : 'splice',
-      _split_           : 'split',
-      _status_          : 'status',
-      _stopPropagation_ : 'stopPropagation',
-      _string_          : 'string',
-      _stringify_       : 'stringify',
-      _style_           : 'style',
-      _submit_          : 'submit',
-      _subscribe_       : 'subscribe',
-      _substr_          : 'substr',
-      _target_          : 'target',
-      _textContent_     : 'textContent',
-      _text_            : 'text',
-      _text_css_        : 'text/css',
-      _then_            : 'then',
-      _title_           : 'title',
-      _toFixed_         : 'toFixed',
-      _toLowerCase_     : 'toLowerCase',
-      _toString_        : 'toString',
-      _toUpperCase_     : 'toUpperCase',
-      _toggleClass_     : 'toggleClass',
-      _toggle_          : 'toggle',
-      _transitionend_   : 'transitionend',
-      _trigger_         : 'trigger',
-      _trim_            : 'trim',
-      _true_            : true,
-      _type_            : 'type',
-      _udragend_        : 'udragend',
-      _udragmove_       : 'udragmove',
-      _udragstart_      : 'udragstart',
-      _uheld_           : 'uheld',
-      _uheldend_        : 'uheldend',
-      _uheldmove_       : 'uheldmove',
-      _uheldstart_      : 'uheldstart',
-      _undef_           : undefined,
-      _unshift_         : 'unshift',
-      _unsubscribe_     : 'unsubscribe',
-      _utap_            : 'utap',
-      _val_             : 'val',
-      _value_           : 'value',
-      _when_            : 'when',
-      _whenAll_         : 'whenAll'
-    },
+    // The nMap and vMap symbols are the minimimum to support the
+    // full breadth of xhi client libs. Use the argOptionMap
+    // to expand these lists for project specific requirements.
+    //
     nMap = {
       _n4_     : -4,
       _n3_     : -3,
@@ -200,11 +43,150 @@ xhi._makeRoot_ = function ( aKey ) {
       _9_      : 9,
       _10_     : 10,
       _100_    : 100
+    },
+
+    vMap = {
+      _Array_           : Array,
+      _Date_            : Date,
+      _Math_            : __Math,
+      _Number_          : Number,
+      _Object_          : __Object,
+      _String_          : String,
+
+      _clearTimeoutFn_  : clearTimeout,
+      _createObjectFn_  : __Object.create,
+      _data2strFn_      : __JSON.stringify,
+      _makeAbsNumFn_    : __Math.abs,
+      _makeFloorNumFn_  : __Math.floor,
+      _makeKeyListFn_   : __Object.keys,
+      _makeRandomNumFn_ : __Math.random,
+      _makeRoundNumFn_  : __Math.round,
+      _setTimeoutFn_    : setTimeout,
+      _str2dataFn_      : __JSON.parse,
+      _typeofFn_        : function ( a ) { return typeof a; },
+
+      _addClass_        : 'addClass',
+      _apply_           : 'apply',
+      _append_          : 'append',
+      _attr_            : 'attr',
+      _bind_            : 'bind',
+      _blank_           : '',
+      _body_            : 'body',
+      _call_            : 'call',
+      _cancel_          : 'cancel',
+      _concat_          : 'concat',
+      _css_             : 'css',
+      _empty_           : 'empty',
+      _false_           : false,
+      _filter_          : 'filter',
+      _find_            : 'find',
+      _getElsByTagName_ : 'getElementsByTagName',
+      _hasOwnProperty_  : 'hasOwnProperty',
+      _html_            : 'html',
+      _indexOf_         : 'indexOf',
+      _join_            : 'join',
+      _length_          : 'length',
+      _map_             : 'map',
+      _match_           : 'match',
+      _null_            : null,
+      _off_             : 'off',
+      _on_              : 'on',
+      _onload_          : 'onload',
+      _outerHeight_     : 'outerHeight',
+      _outerWidth_      : 'outerWidth',
+      _parse_           : 'parse',
+      _pop_             : 'pop',
+      _prop_            : 'prop',
+      _push_            : 'push',
+      _removeAttr_      : 'removeAttr',
+      _removeChild_     : 'removeChild',
+      _removeClass_     : 'removeClass',
+      _replace_         : 'replace',
+      _scrollHeight_    : 'scrollHeight',
+      _scrollLeft_      : 'scrollLeft',
+      _scrollTop_       : 'scrollTop',
+      _shift_           : 'shift',
+      _show_            : 'show',
+      _slice_           : 'slice',
+      _sort_            : 'sort',
+      _splice_          : 'splice',
+      _split_           : 'split',
+      _src_             : 'src',
+      _status_          : 'status',
+      _string_          : 'string',
+      _style_           : 'style',
+      _submit_          : 'submit',
+      _subscribe_       : 'subscribe',
+      _substr_          : 'substr',
+      _target_          : 'target',
+      _text_            : 'text',
+      _then_            : 'then',
+      _toFixed_         : 'toFixed',
+      _toString_        : 'toString',
+      _trigger_         : 'trigger',
+      _trim_            : 'trim',
+      _true_            : true,
+      _udragend_        : 'udragend',
+      _udragmove_       : 'udragmove',
+      _udragstart_      : 'udragstart',
+      _uheld_           : 'uheld',
+      _uheldend_        : 'uheldend',
+      _uheldmove_       : 'uheldmove',
+      _uheldstart_      : 'uheldstart',
+      _undef_           : __undef,
+      _unshift_         : 'unshift',
+      _unsubscribe_     : 'unsubscribe',
+      _utap_            : 'utap',
+      _val_             : 'val'
     }
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
+  // == BEGIN expand vMap and nMaps with app-specific symbols ==========
+  // Purpose : Expand symbol maps as needed for project
+  // Example :
+  //   app_map = xhi._makeRootFn_( 'tb02', { _vMap_ : { _foo_: 'bar' } } );
+  // This sets xhi._vMap_._foo_ === 'bar'
+  //
+  function extendSymbolMapsFn ( arg_option_map ) {
+    var
+      option_map = ( typeof arg_option_map === 'object' )
+        ? arg_option_map : {},
+      expand_list  = [ [ '_nmap_', nMap ], [ '_vmap_', vMap ] ],
+      expand_count = expand_list.length,
+
+      expand_idx, row_list, source_name, source_map, target_map,
+      source_key_list, source_key_count, key_idx, source_key
+      ;
+
+    for ( expand_idx = nMap._0_; expand_idx < expand_count; expand_idx++ ) {
+      row_list    = expand_list[ expand_idx ];
+      source_name = row_list[ nMap._0_ ];
+      target_map  = row_list[ nMap._1_ ];
+      source_map  = option_map[ source_name ];
+
+      if ( source_map && target_map ) {
+        source_key_list  = vMap._makeKeyListFn_( source_map );
+        source_key_count = source_key_list[ vMap._length_ ];
+        for ( key_idx = nMap._0_; key_idx < source_key_count; key_idx++ ) {
+          source_key = source_key_list[ key_idx ];
+          if ( target_map[ vMap._hasOwnProperty_ ]( source_key ) ) {
+            console.warn(
+              'Symbol expansion error.\n Will not override default value'
+              + ' for |' + source_key + '| in ' + source_name
+            );
+          }
+          else {
+            target_map[ source_key ] = source_map[ source_key ];
+          }
+        }
+      }
+    }
+  }
+  // == . END expand vMap and nMaps with app-specific symbols ==========
+
   // == BEGIN PUBLIC METHODS ===========================================
+  extendSymbolMapsFn( argOptionMap );
   return {
     _aKey_    : aKey,
     _nMap_    : nMap,
@@ -212,7 +194,7 @@ xhi._makeRoot_ = function ( aKey ) {
   };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE __NS._makeRoot_ =====================================
+// == . END MODULE xhi._makeRootFn_ ====================================
 
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */

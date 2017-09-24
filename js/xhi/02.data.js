@@ -9,8 +9,8 @@
 */
 /*global $, xhi */
 
-// == BEGIN MODULE xhi._makeData_ =====================================
-xhi._makeData_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeDataFn_ ===================================
+xhi._makeDataFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -19,7 +19,7 @@ xhi._makeData_ = function ( aMap ) {
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
 
-    __j2str = vMap._JSON_[ vMap._stringify_ ],
+    __data2strFn = vMap._data2strFn_,
 
     __0     = nMap._0_,
     __1     = nMap._1_,
@@ -65,7 +65,7 @@ xhi._makeData_ = function ( aMap ) {
       list_idx   = jqxhr_list[ vMap._indexOf_ ]( jqxhr_obj );
 
     if ( list_idx === __n1 ) { return; }
-    jqxhr_list[ vMap._splice_ ]( list_idx, 1 );
+    jqxhr_list[ vMap._splice_ ]( list_idx, __1 );
   }
 
   function cancelJqxhrList () {
@@ -201,24 +201,24 @@ xhi._makeData_ = function ( aMap ) {
   // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  // BEGIN Public method /initModule/
-  function initModule () {
+  // BEGIN Public method /initModuleFn/
+  function initModuleFn () {
     __logMsg( '_info_', $,
       '\n  __0       === ' + __0,
       '\n  __1       === ' + __1,
       '\n  __blank   === ' + __blank,
       '\n  aKey      === ' +   aKey,
-      '\n  aMap      === ' + __j2str( aMap      ),
-      '\n  configMap === ' + __j2str( configMap ),
-      '\n  stateMap  === ' + __j2str( stateMap  ),
+      '\n  aMap      === ' + __data2strFn( aMap      ),
+      '\n  configMap === ' + __data2strFn( configMap ),
+      '\n  stateMap  === ' + __data2strFn( stateMap  ),
       encodeUriComp,
       sendHttpGet,  sendHttpDelete,
       sendHttpPost, sendHttpPut
     );
   }
-  // . END Public method /initModule/
+  // . END Public method /initModuleFn/
 
-  aMap._data_ = { _initModule_ : initModule };
+  aMap._data_ = { _initModuleFn_ : initModuleFn };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE xhi._makeData_ ======================================
+// == . END MODULE xhi._makeDataFn_ ====================================

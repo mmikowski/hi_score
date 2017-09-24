@@ -9,8 +9,8 @@
 */
 /*global xhi */
 
-// == BEGIN MODULE xhi._makeCssLb_ =====================================
-xhi._makeCssLb_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeCssLbFn_ ===================================
+xhi._makeCssLbFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -149,5 +149,5 @@ xhi._makeCssLb_ = function ( aMap ) {
   aMap._css_lb_ = { _selectorList_ : configMap._selector_list_ };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE xhi._makeCssLb_ =====================================
+// == . END MODULE xhi._makeCssLbFn_ ===================================
 

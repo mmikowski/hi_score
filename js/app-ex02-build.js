@@ -14,8 +14,8 @@
 /*global $, xhi:true, ex02 */
 $(function () {
   'use strict';
-  var app_map = xhi._makeApp_( 'ex02' );
-  ex02._shell_._initModule_( $('body') );
+  var app_map = xhi._makeAppFn_( 'ex02' );
+  ex02._shell_._initModuleFn_( $('body') );
   ex02._lb_._showLb_({
     _title_html_ : 'Example 02',
     _content_html_ :

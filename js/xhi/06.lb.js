@@ -9,8 +9,8 @@
 */
 /*global $, pcss, xhi */
 
-// == BEGIN MODULE xhi._makeLb_ =======================================
-xhi._makeLb_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeLbFn_ =====================================
+xhi._makeLbFn_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   var
@@ -120,7 +120,7 @@ xhi._makeLb_ = function ( aMap ) {
   // BEGIN DOM method /set$Map/
   function set$Map () {
     $Map = {
-      _$body_    : $( 'body' ),
+      _$body_    : $( vMap._body_ ),
       _$litebox_ : $( '#' + aKey + '-_lb_'      ),
       _$mask_    : $( '#' + aKey + '-_lb_mask_' ),
       _$spin_    : $( '#' + aKey + '-_lb_spin_' )
@@ -128,13 +128,13 @@ xhi._makeLb_ = function ( aMap ) {
   }
   // . END DOM method /set$Map/
 
-  // BEGIN DOM method /initModule/
+  // BEGIN DOM method /initModuleFn/
   // Checks to see if we have been initialized; if not, we do so
-  function initModule () {
+  function initModuleFn () {
     if ( stateMap._is_ready_ ) { return; }
 
     // Add to DOM
-    $('body')[ vMap._append_ ]( configMap._main_html_ );
+    $( vMap._body_ )[ vMap._append_ ]( configMap._main_html_ );
 
     // Cache jQuery collections and set state
     set$Map();
@@ -142,13 +142,13 @@ xhi._makeLb_ = function ( aMap ) {
     $Map._$mask_[    vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
     stateMap._is_ready_ = __true;
   }
-  // . END DOM method /initModule/
+  // . END DOM method /initModuleFn/
 
   // BEGIN DOM method /addLocalSpin/
   function addLocalSpin( arg_$box ) {
     var $box = __castJQ( arg_$box );
 
-    if ( $box ) { $box.html( configMap._local_html_ ); }
+    if ( $box ) { $box[ vMap._html_ ]( configMap._local_html_ ); }
   }
   // . END DOM method /addLocalSpin/
 
@@ -196,7 +196,7 @@ xhi._makeLb_ = function ( aMap ) {
       active_class = configMap._active_class_,
       clean_smap, clean_fn;
 
-    initModule();
+    initModuleFn();
 
     if ( stateMap._close_toid_ ) {
       __clearTo( stateMap._close_toid_ );
@@ -226,7 +226,7 @@ xhi._makeLb_ = function ( aMap ) {
   //
   function closeLb () {
     var is_good;
-    initModule();
+    initModuleFn();
     // Do not close litebox on falsey return from _onclose_fn_
     if ( stateMap._onclose_fn_ ) {
       is_good = stateMap._onclose_fn_( $Map._$litebox_, $Map._$mask_ );
@@ -246,7 +246,7 @@ xhi._makeLb_ = function ( aMap ) {
   // BEGIN method /showBusy/
   function showBusy ( /*msg_str*/ ) {
     var active_class = configMap._active_class_;
-    initModule();
+    initModuleFn();
     hideLb();
 
     $Map._$mask_[ vMap._css_ ]( cssKmap._display_, cssVmap._block_ )[
@@ -371,7 +371,7 @@ xhi._makeLb_ = function ( aMap ) {
   // Returns  : $litebox
   //
   function showLb ( arg_map ) {
-    initModule();
+    initModuleFn();
     var
       map = __castMap(  arg_map, {} ),
 
@@ -419,7 +419,7 @@ xhi._makeLb_ = function ( aMap ) {
         _title_html_   : title_html
       }
     });
-    $litebox.html( inner_html );
+    $litebox[ vMap._html_ ]( inner_html );
 
     // Cache jQuery collections
     $close   = $litebox[ vMap._find_ ]( '.' + aKey + '-_lb_close_'   );
@@ -430,7 +430,7 @@ xhi._makeLb_ = function ( aMap ) {
     $Map._$content_ = $content;
     $Map._$title_   = $title;
 
-    $content.find( '.' + aKey + '-_lb_spin_' )[
+    $content[ vMap._find_ ]( '.' + aKey + '-_lb_spin_' )[
       vMap._addClass_ ]( active_class );
 
     // Store close button function
@@ -456,7 +456,7 @@ xhi._makeLb_ = function ( aMap ) {
         $mask[ vMap._off_ ]( vMap._utap_, closeLb );
       }
       else {
-        $mask.removeClass( aKey + '-_lb_x_noclick_' )[
+        $mask[ vMap._removeClass_ ]( aKey + '-_lb_x_noclick_' )[
           vMap._on_ ]( vMap._utap_, closeLb );
       }
     }
@@ -611,7 +611,7 @@ xhi._makeLb_ = function ( aMap ) {
         }
       });
 
-    initModule();
+    initModuleFn();
     return showLb({ _content_html_ : content_html });
   }
   // . END showSuccess
@@ -624,7 +624,7 @@ xhi._makeLb_ = function ( aMap ) {
 
       idx, row_map, lookup_map, content_html;
 
-    initModule();
+    initModuleFn();
     ROW: for ( idx = __0; idx < row_count; idx++ ) {
       row_map = __castMap( row_list[ idx ] );
 
@@ -658,9 +658,9 @@ xhi._makeLb_ = function ( aMap ) {
     _showLb_        : showLb,
     _showSuccess_   : showSuccess,
 
-    _initModule_    : initModule
+    _initModuleFn_ : initModuleFn
   };
   // == . END PUBLIC METHODS ==========================================
 };
-// == . END MODULE xhi._makeLb_ =======================================
+// == . END MODULE xhi._makeLbFn_ =====================================
 

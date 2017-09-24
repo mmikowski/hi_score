@@ -9,8 +9,8 @@
 */
 /*global xhi */
 
-// == BEGIN MODULE xhi._makeCssShell_ =================================
-xhi._makeCssShell_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeCssShellFn_ ===============================
+xhi._makeCssShellFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -395,5 +395,5 @@ xhi._makeCssShell_ = function ( aMap ) {
   aMap._css_shell_ = { _selectorList_ : configMap._selector_list_ };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE xhi._makeCssShell_ =================================
+// == . END MODULE xhi._makeCssShellFn_ ================================
 

@@ -50,12 +50,12 @@ require( libPrefix + '01.util.js'  );
 require( libPrefix + '04.utilb.js' );
 require( libPrefix + '06.lb.js'    );
 
-aMap = xhi._makeRoot_( aKey );
+aMap = xhi._makeRootFn_( aKey );
 global[ aKey ] = aMap;
 
-xhi._makeUtil_(  aMap );
-xhi._makeUtilb_( aMap );
-xhi._makeLb_(    aMap );
+xhi._makeUtilFn_(  aMap );
+xhi._makeUtilbFn_( aMap );
+xhi._makeLbFn_(    aMap );
 
 vMap    = aMap._vMap_;
 nMap    = aMap._nMap_;

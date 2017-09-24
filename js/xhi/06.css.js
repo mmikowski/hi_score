@@ -9,8 +9,8 @@
 */
 /*global pcss, xhi */
 
-// == BEGIN MODULE xhi._makeCss_ ======================================
-xhi._makeCss_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeCssFn_ ====================================
+xhi._makeCssFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -92,8 +92,8 @@ xhi._makeCss_ = function ( aMap ) {
   }
   // . END public method /setThemeIdx/
 
-  // BEGIN public method /initModule/
-  function initModule ( arg_idx ) {
+  // BEGIN public method /initModuleFn/
+  function initModuleFn ( arg_idx ) {
     var
       local_key = aKey + '-_theme_map_',
       theme_idx = __Number( arg_idx ) || __0,
@@ -124,7 +124,7 @@ xhi._makeCss_ = function ( aMap ) {
     });
 
     // Begin use local theme map if available
-    if ( localStorage[ vMap._hasOwnProp_ ]( local_key ) ) {
+    if ( localStorage[ vMap._hasOwnProperty_ ]( local_key ) ) {
       theme_json = localStorage[ local_key ];
       try {
         theme_map = JSON[ vMap._parse_ ]( theme_json );
@@ -152,7 +152,7 @@ xhi._makeCss_ = function ( aMap ) {
     });
     topSmap._is_ready_ = __true;
   }
-  // . END public method /initModule/
+  // . END public method /initModuleFn/
 
   aMap._css_ = {
     _getCssKeyMap_     : pcss._getCssKeyMap_,
@@ -161,9 +161,9 @@ xhi._makeCss_ = function ( aMap ) {
     _getThemeMixinMap_ : getThemeMixinMap,
     _setThemeIdx_      : setThemeIdx,
 
-    _initModule_       : initModule
+    _initModuleFn_ : initModuleFn
   };
   // == . END PUBLIC METHODS ==========================================
 };
-// == . END MODULE xhi._makeCss_ ======================================
+// == . END MODULE xhi._makeCssFn_ ====================================
 

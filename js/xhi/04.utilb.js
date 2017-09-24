@@ -9,8 +9,8 @@
 */
 /*global xhi, pcss */
 
-// == BEGIN MODULE xhi._makeUtilb_ ====================================
-xhi._makeUtilb_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeUtilbFn_ ==================================
+xhi._makeUtilbFn_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   // Add when needed: aKey  = aMap._aKey_
@@ -76,7 +76,7 @@ xhi._makeUtilb_ = function ( aMap ) {
     if ( ! $form ) { return __false; }
     $.each( lookup_map, function ( k, v ) {
       var solve_str = __castStr( v );
-      $form.find('[name=' + k + ']').each(function() {
+      $form[ vMap._find_ ]('[name=' + k + ']').each(function() {
         var
           $input      = $( this ),
           current_str = $input.val()
@@ -139,8 +139,7 @@ xhi._makeUtilb_ = function ( aMap ) {
 
     if ( ! $form ) { return; }
 
-    $form
-      .find( 'input:not(:disabled)' )
+    $form[ vMap._find_ ]( 'input:not(:disabled)' )
       .each( function () {
         var
           $input     = $( this ),
@@ -156,8 +155,7 @@ xhi._makeUtilb_ = function ( aMap ) {
         }
       });
 
-    $form
-      .find( 'select, textarea' )
+    $form[ vMap._find_ ]( 'select, textarea' )
       .each( function() {
         var
           $input     = $( this ),
@@ -273,5 +271,4 @@ xhi._makeUtilb_ = function ( aMap ) {
   };
   // == . END PUBLIC METHODS ==========================================
 };
-// == . END MODULE xhi._makeUtilb_ ====================================
-
+// == . END MODULE xhi._makeUtilbFn_ ==================================

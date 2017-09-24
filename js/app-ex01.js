@@ -41,8 +41,8 @@
     $, scriptObj, libIdx, libSrcStr;
 
   function main () {
-    var app_map = xhi._makeApp_( 'ex01' );
-    ex01._shell_._initModule_( $('body') );
+    var app_map = xhi._makeAppFn_( 'ex01' );
+    ex01._shell_._initModuleFn_( $('body') );
     ex01._lb_._showLb_({
       _title_html_ : 'Example 01',
       _content_html_ :

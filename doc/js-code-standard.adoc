@@ -81,7 +81,7 @@ the **ES6** and **ECMAScript 6** are the same thing. Clever, eh?
 Table X.1 shows the major JavaScript versions that have been released. Later
 specifications have been mostly backward-compatible.
 
-.Table X.1 -- Prefered names of JavaScript versions
+.Table X.1 -- Preferred names of JavaScript versions
 [cols="",]
 |============================================
 | Year | Pref. Name | Alternate         | Highlights
@@ -93,7 +93,7 @@ specifications have been mostly backward-compatible.
 | 2011 | ES5.1      | ECMASCript 5.1    | Compatible with ISO 16262:2011
 | 2015 | ES2015     | ES6, ECMAScript 6 | ES6 Harmony, for/of, promises
 | 2016 | ES2016     | ES7, ECMAScript 7 | ES7 Harmony, Exponent, Array includes
-| 2017 | ES2017     | ES8, ECMaScript 8 | SIMD types, await/sync
+| 2017 | ES2017     | ES8, ECMAScript 8 | SIMD types, await/sync
 | ---  | ESNext     |         ----      | Cool stuff
 |============================================
 
@@ -259,25 +259,25 @@ since all variables are object properties of their functional scope.
 ----
 // == Avoid ===
 var stateMap = {};  # <1>
-function initModule () {
+function initModuleFn () {
   var 
     localInt = 1,   # <2>
     localStr = 'Module initialized. Our number is '
     ;
  console.log( localStr + localInt );
 }
-return { _initModule_ : initModule };
+return { _initModuleFn_ : initModuleFn };
 
 // == Prefer ==
 var stateMap = {};  # <1>
-function initModule () {
+function initModuleFn () {
   var 
     local_int = 1,  # <3>
     local_str = 'Module initialized. Our number is '
     ;
  console.log( local_str + local_int );
 }
-return { _initModule_ : initModule };
+return { _initModuleFn_ : initModuleFn };
 ----
 <1> Module scope
 <2> Avoid: Local scope variables use camelCase
@@ -682,9 +682,9 @@ underscores so they can be identified during the build process.
 |Array |local_map.\_person_list_ |spa.\_model_.\_personList_
 |Boolean |local_map.\_is_enabled_ |spa.\_model_.\_isReady_
 |Function |local_map.\_init_fn_ a|
-spa.\_initModule_
-spa.\_model_.initModule_
-spa.\_shell_._initModule_
+spa.\_initModuleFn_
+spa.\_model_.initModuleFn_
+spa.\_shell_._initModuleFn_
 |Integer |local_map._leg_count_ |spa.\_model_.\_callbackCount_
 |Map |local_map.\_user_map_ |spa.\_slider_.\_instanceMap_
 |Number |local_map.\_mix_ratio_ |spa.\_sound_.\_mixRatio_
@@ -719,10 +719,10 @@ console.log( window.greetStr ); // prints 'Hi there!'
 var spa = (function () {
   'use strict';
   var greetStr = 'Hi there!';
-  function initModule () { console.log( greetStr ); }
-  return { _initModule_ : initModule };
+  function initModuleFn () { console.log( greetStr ); }
+  return { _initModuleFn_ : initModuleFn };
 }());
-spa._initModule_();
+spa._initModuleFn_();
 ----
 
 We can break a namespace into manageable subdivisions. For example, we
@@ -738,8 +738,8 @@ spa._shell_ = (function () {
  'use strict';
 
  return {       # <1>
- _initModule_   : initModule,
- _resetDisplay_ : resetDisplay
+ _initModuleFn_   : initModuleFn,
+ _resetDisplayFn_ : resetDisplayFn
  };
 }());
 
@@ -748,13 +748,13 @@ spa._slider_ = (function () {
  'use strict';
 
  return {        # <1>
- _initModule_    : initModule,
- _extendSlider_  : extendSlider,
- _retractSlider_ : retractSlider
+ _initModuleFn_    : initModuleFn,
+ _extendSliderFn_  : extendSliderFn,
+ _retractSliderFn_ : retractSliderFn
  };
 }());
 // Initialize the spa from another module
-spa._initModule_();
+spa._initModuleFn_();
 ----
 <1> Return private variables and methods
 
@@ -1495,8 +1495,8 @@ as shown in Listing X.36.
 .Listing X.36 -- Listing TODOs
 [source,js]
 ----
-grep TODO $(find ./ -type f -name '*.js' \ +
-  grep -v node_modules |grep -v /vendor/) |sort -u
+grep TODO $(find ./ -type f -name '*.js' \
+  | grep -v node_modules |grep -v /vendor/) |sort -u
 ----
 
 === Annotate disabled code

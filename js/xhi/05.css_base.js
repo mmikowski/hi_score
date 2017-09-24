@@ -9,8 +9,8 @@
 */
 /*global xhi */
 
-// == BEGIN MODULE xhi._makeCssBase_ ==================================
-xhi._makeCssBase_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeCssBaseFn_ =================================
+xhi._makeCssBaseFn_ = function ( aMap ) {
   'use strict';
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   //noinspection MagicNumberJS
@@ -416,4 +416,4 @@ xhi._makeCssBase_ = function ( aMap ) {
   };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE xhi._makeCssBase_ ==================================
+// == . END MODULE xhi._makeCssBaseFn_ =================================

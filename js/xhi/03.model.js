@@ -9,8 +9,8 @@
 */
 /*global xhi */
 
-// == BEGIN MODULE xhi._makeModel_ =====================================
-xhi._makeModel_ = function ( aMap ) {
+// == BEGIN MODULE xhi._makeModelFn_ ===================================
+xhi._makeModelFn_ = function ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -19,14 +19,14 @@ xhi._makeModel_ = function ( aMap ) {
     nMap    = aMap._nMap_,
     __util  = aMap._util_,
 
-    __j2str = vMap._JSON_[ vMap._stringify_ ],
+    __data2strFn = vMap._data2strFn_,
 
     __0     = nMap._0_,
     __1     = nMap._1_,
     __blank = vMap._blank_,
 
     __logObj = __util._getLogObj_(),
-    __logMsg  = __logObj._logMsg_,
+    __logMsg = __logObj._logMsg_,
 
     configMap = {},
     stateMap  = {}
@@ -43,22 +43,22 @@ xhi._makeModel_ = function ( aMap ) {
   // == . END EVENT HANDLERS ===========================================
 
   // == BEGIN PUBLIC METHODS ===========================================
-  // BEGIN Public method /initModule/
-  function initModule () {
+  // BEGIN Public method /initModuleFn/
+  function initModuleFn () {
     __logMsg( '_info_',
       '\n  __0       === ' + __0,
       '\n  __1       === ' + __1,
       '\n  __blank   === ' + __blank,
       '\n  aKey      === ' +   aKey,
-      '\n  aMap      === ' + __j2str( aMap      ),
-      '\n  configMap === ' + __j2str( configMap ),
-      '\n  stateMap  === ' + __j2str( stateMap  )
+      '\n  aMap      === ' + __data2strFn( aMap      ),
+      '\n  configMap === ' + __data2strFn( configMap ),
+      '\n  stateMap  === ' + __data2strFn( stateMap  )
     );
   }
-  // . END Public method /initModule/
+  // . END Public method /initModuleFn/
 
-  aMap._model_ = { _initModule_ : initModule };
+  aMap._model_ = { _initModuleFn_ : initModuleFn };
   // == . END PUBLIC METHODS ===========================================
 };
-// == . END MODULE xhi._makeModel_ =====================================
+// == . END MODULE xhi._makeModelFn_ ===================================
 
