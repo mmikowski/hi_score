@@ -26,7 +26,7 @@ xhi._makeCssFn_ = function ( aMap ) {
     __logObj = __util._getLogObj_(),
     __logMsg = __logObj._logMsg_,
 
-    topSmap = {
+    stateMap = {
       _is_ready_  : __false,
       _theme_idx_ : __0
     };
@@ -51,7 +51,7 @@ xhi._makeCssFn_ = function ( aMap ) {
   function getThemeMixinMap () {
     var
       theme_map_list = aMap._css_base_._themeMapList_,
-      theme_idx      = topSmap._theme_idx_;
+      theme_idx      = stateMap._theme_idx_;
     return theme_map_list[ theme_idx ];
   }
   // . END public method /getThemeMixinMap/
@@ -61,7 +61,7 @@ xhi._makeCssFn_ = function ( aMap ) {
     var
       idx            = __util._castInt_( arg_idx, 0 ),
       theme_map_list = aMap._css_base_._themeMapList_,
-      theme_idx      = topSmap._theme_idx_,
+      theme_idx      = stateMap._theme_idx_,
       theme_count    = theme_map_list[ vMap._length_ ],
       theme_mixin_map;
 
@@ -87,7 +87,7 @@ xhi._makeCssFn_ = function ( aMap ) {
       _mixin_map_      : theme_mixin_map,
       _regen_type_     : '_use_'
     });
-    topSmap._theme_idx_ = theme_idx;
+    stateMap._theme_idx_ = theme_idx;
     return theme_idx;
   }
   // . END public method /setThemeIdx/
@@ -100,7 +100,7 @@ xhi._makeCssFn_ = function ( aMap ) {
 
       theme_json, theme_map_list, theme_map;
 
-    if ( topSmap._is_ready_ === __true ) { return; }
+    if ( stateMap._is_ready_ === __true ) { return; }
 
     pcss._initModule_({ _style_el_prefix_ : aKey });
     pcss._setGlobalMixinMap_({ _mixin_map_: aMap._css_base_._globalMixinMap_ });
@@ -150,7 +150,7 @@ xhi._makeCssFn_ = function ( aMap ) {
       _mixin_map_      : theme_map,
       _regen_type_     : '_use_'
     });
-    topSmap._is_ready_ = __true;
+    stateMap._is_ready_ = __true;
   }
   // . END public method /initModuleFn/
 

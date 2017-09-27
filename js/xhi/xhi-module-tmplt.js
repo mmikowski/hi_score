@@ -47,7 +47,7 @@ xhi._makeTmpltFn_ = function ( aMap ) {
   // Settings  : Module-scoped $Map is populated by this function.
   // Returns   : undef
   // Throws    : none
-  // Method    : Merges a literal map to the module-scope $Map
+  // Technique : Merges a literal map to the module-scope $Map
   //
   function set$Map ( $top_box ) {
     __util._mergeMaps_( $Map, { _$top_box_ : $top_box } );

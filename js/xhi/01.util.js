@@ -2037,7 +2037,7 @@ xhi._makeUtilFn_ = function ( aMap ) {
   //   0. arg_list - The list to shuffle
   // Returns   : boolean true on success
   // Throws    : none
-  // Method    :
+  // Technique :
   //   1. Count down from end of array with last_idx
   //   2. Randomly pick element from between 0 and last_idx
   //   3. Swap pick element with last_idx element
