@@ -25,7 +25,7 @@
     // svg
     correspondingUseElement : obj,
 
-    // __NS._util_
+    // aMap._01_util_
     _attr_list_      : list,
     _bool_           : bool,
     _fn_             : fn,
@@ -38,13 +38,18 @@
     _target_map_     : map,
     _tgt_count_      : num,
 
-    // __NS._utilb_
+    // aMap._02_data_
+    _full_url_ : str,
+    _content_type_ : str,
+
+    // aMap._04_utilb_
     _select_str_ : str,
     _title_map_  : map,
     name : str,
 
-    // __NS._lb_
+    // aMap._06_lb_
     _do_block_click_ : bool,
+    _do_dflt_class_  : bool,
     _do_draggable_   : bool,
     _do_title_close_ : bool,
     _layout_key_     : str,

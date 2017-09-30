@@ -81,7 +81,7 @@ the **ES6** and **ECMAScript 6** are the same thing. Clever, eh?
 Table X.1 shows the major JavaScript versions that have been released. Later
 specifications have been mostly backward-compatible.
 
-.Table X.1 -- Prefered names of JavaScript versions
+.Table X.1 -- Preferred names of JavaScript versions
 [cols="",]
 |============================================
 | Year | Pref. Name | Alternate         | Highlights
@@ -93,7 +93,7 @@ specifications have been mostly backward-compatible.
 | 2011 | ES5.1      | ECMASCript 5.1    | Compatible with ISO 16262:2011
 | 2015 | ES2015     | ES6, ECMAScript 6 | ES6 Harmony, for/of, promises
 | 2016 | ES2016     | ES7, ECMAScript 7 | ES7 Harmony, Exponent, Array includes
-| 2017 | ES2017     | ES8, ECMaScript 8 | SIMD types, await/sync
+| 2017 | ES2017     | ES8, ECMAScript 8 | SIMD types, await/sync
 | ---  | ESNext     |         ----      | Cool stuff
 |============================================
 
@@ -193,7 +193,7 @@ var make_house_fn = curry_build_fn({ _item_type_ : 'house' });
 Figure X.1 illustrates how we convey all the meaning of the comments in Listing X.3 using variable names.
 
 .Figure X.1 -- Variable name dissection
-image:ch01/syntax.png[image,width:700]
+image:syntax.png[image,width:700]
 
 Precise variable names are not only more concise but they help avoid
 inaccurate comments. Consider, for example, what can happen when a
@@ -259,25 +259,25 @@ since all variables are object properties of their functional scope.
 ----
 // == Avoid ===
 var stateMap = {};  # <1>
-function initModule () {
+function initModuleFn () {
   var 
     localInt = 1,   # <2>
     localStr = 'Module initialized. Our number is '
     ;
  console.log( localStr + localInt );
 }
-return { _initModule_ : initModule };
+return { _initModuleFn_ : initModuleFn };
 
 // == Prefer ==
 var stateMap = {};  # <1>
-function initModule () {
+function initModuleFn () {
   var 
     local_int = 1,  # <3>
     local_str = 'Module initialized. Our number is '
     ;
  console.log( local_str + local_int );
 }
-return { _initModule_ : initModule };
+return { _initModuleFn_ : initModuleFn };
 ----
 <1> Module scope
 <2> Avoid: Local scope variables use camelCase
@@ -679,17 +679,16 @@ underscores so they can be identified during the build process.
 [cols="",]
 |===========================================================
 |Type |Local scope |Module scope
-|Array |local_map.\_person_list_ |spa.\_model_.\_personList_
-|Boolean |local_map.\_is_enabled_ |spa.\_model_.\_isReady_
+|Array |local_map.\_person_list_ |spa.\_03_model_.\_personList_
+|Boolean |local_map.\_is_enabled_ |spa.\_03_model_.\_isReady_
 |Function |local_map.\_init_fn_ a|
-spa.\_initModule_
-spa.\_model_.initModule_
-spa.\_shell_._initModule_
-|Integer |local_map._leg_count_ |spa.\_model_.\_callbackCount_
-|Map |local_map.\_user_map_ |spa.\_slider_.\_instanceMap_
-|Number |local_map.\_mix_ratio_ |spa.\_sound_.\_mixRatio_
-|String |local_map.\_username_ |spa.\_model_.\_userMap_
-|Regex |local_map.\_match_rx_ |spa.\_matchRx_
+spa.\_03_model_.initModuleFn_
+spa.\_07_shell_._initModuleFn_
+|Integer |local_map._leg_count_ |spa.\_03_model_.\_callbackCount_
+|Map |local_map.\_user_map_ |spa.\_06_slider_.\_instanceMap_
+|Number |local_map.\_mix_ratio_ |spa.\_06_sound_.\_mixRatio_
+|String |local_map.\_username_ |spa.\_03_model_.\_userMap_
+|Regex |local_map.\_match_rx_ |spa.\01_util_._matchRx_
 |===========================================================
 
 == Functions
@@ -719,48 +718,71 @@ console.log( window.greetStr ); // prints 'Hi there!'
 var spa = (function () {
   'use strict';
   var greetStr = 'Hi there!';
-  function initModule () { console.log( greetStr ); }
-  return { _initModule_ : initModule };
+  function initModuleFn () { console.log( greetStr ); }
+  return { _initModuleFn_ : initModuleFn };
 }());
-spa._initModule_();
+spa._initModuleFn_();
 ----
 
 We can break a namespace into manageable subdivisions. For example, we
-can add `spa.\_shell_` and `spa.\_slider_` to our `spa`
+can add `spa.\_06_slider_` and `spa.\_07_shell_` to our `spa`
 namespace as shown in Listing X.12.
 
-.Listing X.12 -- A namespace subdivided
+.Listing X.12 -- A namespace divided
 [source,js]
 ----
 // == Prefer ==
-// In the file spa.shell.js:
-spa._shell_ = (function () {
- 'use strict';
-
- return {       # <1>
- _initModule_   : initModule,
- _resetDisplay_ : resetDisplay
- };
-}());
-
 // In the file spa.slider.js:
-spa._slider_ = (function () {
+spa._06_slider_ = (function () {
  'use strict';
 
  return {        # <1>
- _initModule_    : initModule,
- _extendSlider_  : extendSlider,
- _retractSlider_ : retractSlider
+ _initModuleFn_    : initModuleFn,
+ _extendSliderFn_  : extendSliderFn,
+ _retractSliderFn_ : retractSliderFn
  };
 }());
-// Initialize the spa from another module
-spa._initModule_();
+
+// In the file spa.shell.js:
+spa._07_shell_ = (function () {
+ 'use strict';
+
+ return {       # <1>
+ _initModuleFn_   : initModuleFn,
+ _resetDisplayFn_ : resetDisplayFn
+ };
+}());
+
+// In the file spa._08_app.js:
+spa._07_shell_._initModuleFn();
 ----
 <1> Return private variables and methods
 
+The numbers in the modules show inclusion precedence
+as shown in Diagram X.1 and Figure X.2.
+
+.Diagram X.1 -- Module precedence
+
+[source]
+----
+spa           # Root, also referred to as _00_root_
+spa._01_util_ # Core utility
+_02_data_     # Data management (AJAX, Websockets)
+_03_model_    # Core logic
+_04_utilb_    # Browser utilities
+_05_css_lb_   # Feature support
+_06_lb_       # Feature modules
+_07_shell_    # Browser interface
+_08_app_      # Application bundle
+----
+
+.Figure X.2 -- SPA architecture
+
+image:architecture.png[image,width:700]
+
 Name CSS selectors in parallel with the JavaScript namespaces. For
-example, any classes used by `spa.\_shell_` should have an `spa-\_shell_`
-prefix.
+example, any classes used by `spa.\_07_shell_` should have an
+`spa-\_07_shell_` prefix.
 
 === Minimize module-scope variables
 Do not use global variables except when namespacing as above.
@@ -1415,7 +1437,7 @@ function shuffle( items ) {
 //   0. arg_list - The list to shuffle
 // Returns   : boolean true on success
 // Throws    : none
-// Method    :
+// Technique :
 //   1. Count down from end of array with last_idx
 //   2. Randomly pick element from between 0 and last_idx
 //   3. Swap pick element with last_idx element
@@ -1464,7 +1486,7 @@ function shuffle( items ) { ... }
 //  <arg_name or number> : <value description>
 // Returns   : <return value on success and failure>
 // Throws    : <any exceptions, or 'none'>
-// Method    : <overview of algorithm>
+// Technique : <overview of algorithm>
 //
 function shuffleListFn( arg_list ) { ... }
 // . END public method /shuffleListFn/
@@ -1495,8 +1517,8 @@ as shown in Listing X.36.
 .Listing X.36 -- Listing TODOs
 [source,js]
 ----
-grep TODO $(find ./ -type f -name '*.js' \ +
-  grep -v node_modules |grep -v /vendor/) |sort -u
+grep TODO $(find ./ -type f -name '*.js' \
+  | grep -v node_modules |grep -v /vendor/) |sort -u
 ----
 
 === Annotate disabled code

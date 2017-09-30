@@ -343,7 +343,7 @@ MIT
 ### Version 0.3.x
 - (x) Add code coverage
 - (x) Replace `getDeepMapVal` and `setDeepMapVal` with more powerful and tested `getStructData` and `setStructData`
-- (x) Updates to `xhi/01.util.js`
+- (x) Updates to `xhi/01_util.js`
 
 ### Version 0.4.x
 - (x) Replace `jscoverage` with much more complete and recent `istanbul`
@@ -438,7 +438,7 @@ MIT
 - (x) Create and update Parallels [VMX][_40] and [VMDK][_41]
 - (x) Replace jslint setting from per-file to config/jslint.conf
 - (x) Expect browser env for js/xhi libraries
-- (x) Fix 01.util.js > makeSeriesMap method cross timezones
+- (x) Fix 01_util.js > makeSeriesMap method cross timezones
 - (x) Update code standard
     
 ### Version 1.4.x

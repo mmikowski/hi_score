@@ -71,11 +71,11 @@ var
   ;
 
 // Use xhi browser util library
-global.xhi = require( fqProjDirname + '/js/xhi/00.js' );
-require( fqProjDirname + '/js/xhi/01.util.js' );
-xhiLibMap = global.xhi._makeRoot_( 'xhiLibMap' );
-global.xhi._makeUtil_( xhiLibMap );
-xhiUtilObj = xhiLibMap._util_;
+global.xhi = require( fqProjDirname + '/js/xhi/00_root.js' );
+require( fqProjDirname + '/js/xhi/01_util.js' );
+xhiLibMap = global.xhi._00_root_._makeInstanceFn_( 'xhiLibMap' );
+global.xhi._01_util_._makeInstanceFn_( xhiLibMap );
+xhiUtilObj = xhiLibMap._01_util_;
 
 // == . END MODULE SCOPE VARIABLES =====================================
 
@@ -94,7 +94,7 @@ function writeStateFileFn ( onwrite_fn ) {
     fqStateFilename, state_str, { encoding : 'utf8' }, onwrite_fn
   );
 }
-// END utilities /writePkgFileFn/ and /writeStateFileFn/
+// . END utilities /writePkgFileFn/ and /writeStateFileFn/
 
 function makeWritePromFn ( filename, content_str ) {
   return new PromiseObj ( function ( resolve_fn, catch_fn ) {

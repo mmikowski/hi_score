@@ -553,7 +553,7 @@ the <strong>ES6</strong> and <strong>ECMAScript 6</strong> are the same thing. C
 specifications have been mostly backward-compatible.</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Table X.1&#8201;&#8212;&#8201;Prefered names of JavaScript versions</caption>
+<caption class="title">Table 1. Table X.1&#8201;&#8212;&#8201;Preferred names of JavaScript versions</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -618,7 +618,7 @@ specifications have been mostly backward-compatible.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2017</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ES2017</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ES8, ECMaScript 8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ES8, ECMAScript 8</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SIMD types, await/sync</p></td>
 </tr>
 <tr>
@@ -764,7 +764,7 @@ var make_house_fn = curry_build_fn({ _item_type_ : 'house' });</code></pre>
 </div>
 <div class="paragraph">
 <div class="title">Figure X.1&#8201;&#8212;&#8201;Variable name dissection</div>
-<p><span class="image"><img src="./images/ch01/syntax.png" alt="image" width="width:700"></span></p>
+<p><span class="image"><img src="./images/syntax.png" alt="image" width="width:700"></span></p>
 </div>
 <div class="paragraph">
 <p>Precise variable names are not only more concise but they help avoid
@@ -867,25 +867,25 @@ nested inside the module.</p>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Avoid ===
 var stateMap = {};  <b class="conum">(1)</b>
-function initModule () {
+function initModuleFn () {
   var
     localInt = 1,   <b class="conum">(2)</b>
     localStr = 'Module initialized. Our number is '
     ;
  console.log( localStr + localInt );
 }
-return { _initModule_ : initModule };
+return { _initModuleFn_ : initModuleFn };
 
 // == Prefer ==
 var stateMap = {};  <b class="conum">(1)</b>
-function initModule () {
+function initModuleFn () {
   var
     local_int = 1,  <b class="conum">(3)</b>
     local_str = 'Module initialized. Our number is '
     ;
  console.log( local_str + local_int );
 }
-return { _initModule_ : initModule };</code></pre>
+return { _initModuleFn_ : initModuleFn };</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1669,46 +1669,45 @@ underscores so they can be identified during the build process.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._person_list_</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._personList_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._03_model_._personList_</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._is_enabled_</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._isReady_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._03_model_._isReady_</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Function</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._init_fn_</p></td>
 <td class="tableblock halign-left valign-top"><div><div class="paragraph">
-<p>spa._initModule_
-spa._model_.initModule_
-spa._shell_.<em>initModule</em></p>
+<p>spa._03_model_.initModuleFn_
+spa._07_shell_.<em>initModuleFn</em></p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Integer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map.<em>leg_count</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._callbackCount_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._03_model_._callbackCount_</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Map</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._user_map_</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spa._slider_._instanceMap_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._06_slider_._instanceMap_</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._mix_ratio_</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spa._sound_._mixRatio_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._06_sound_._mixRatio_</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._username_</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spa._model_._userMap_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa._03_model_._userMap_</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Regex</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">local_map._match_rx_</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">spa._matchRx_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spa.\01_util_.<em>matchRx</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -1746,43 +1745,44 @@ console.log( window.greetStr ); // prints 'Hi there!'
 var spa = (function () {
   'use strict';
   var greetStr = 'Hi there!';
-  function initModule () { console.log( greetStr ); }
-  return { _initModule_ : initModule };
+  function initModuleFn () { console.log( greetStr ); }
+  return { _initModuleFn_ : initModuleFn };
 }());
-spa._initModule_();</code></pre>
+spa._initModuleFn_();</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>We can break a namespace into manageable subdivisions. For example, we
-can add <code>spa._shell_</code> and <code>spa._slider_</code> to our <code>spa</code>
+can add <code>spa._06_slider_</code> and <code>spa._07_shell_</code> to our <code>spa</code>
 namespace as shown in Listing X.12.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing X.12&#8201;&#8212;&#8201;A namespace subdivided</div>
+<div class="title">Listing X.12&#8201;&#8212;&#8201;A namespace divided</div>
 <div class="content">
 <pre class="highlight"><code class="language-js" data-lang="js">// == Prefer ==
-// In the file spa.shell.js:
-spa._shell_ = (function () {
- 'use strict';
-
- return {       <b class="conum">(1)</b>
- _initModule_   : initModule,
- _resetDisplay_ : resetDisplay
- };
-}());
-
 // In the file spa.slider.js:
-spa._slider_ = (function () {
+spa._06_slider_ = (function () {
  'use strict';
 
  return {        <b class="conum">(1)</b>
- _initModule_    : initModule,
- _extendSlider_  : extendSlider,
- _retractSlider_ : retractSlider
+ _initModuleFn_    : initModuleFn,
+ _extendSliderFn_  : extendSliderFn,
+ _retractSliderFn_ : retractSliderFn
  };
 }());
-// Initialize the spa from another module
-spa._initModule_();</code></pre>
+
+// In the file spa.shell.js:
+spa._07_shell_ = (function () {
+ 'use strict';
+
+ return {       <b class="conum">(1)</b>
+ _initModuleFn_   : initModuleFn,
+ _resetDisplayFn_ : resetDisplayFn
+ };
+}());
+
+// In the file spa._08_app.js:
+spa._07_shell_._initModuleFn();</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1793,9 +1793,31 @@ spa._initModule_();</code></pre>
 </ol>
 </div>
 <div class="paragraph">
+<p>The numbers in the modules show inclusion precedence
+as shown in Diagram X.1 and Figure X.2.</p>
+</div>
+<div class="listingblock">
+<div class="title">Diagram X.1&#8201;&#8212;&#8201;Module precedence</div>
+<div class="content">
+<pre class="highlight"><code>spa           # Root, also referred to as _00_root_
+spa._01_util_ # Core utility
+_02_data_     # Data management (AJAX, Websockets)
+_03_model_    # Core logic
+_04_utilb_    # Browser utilities
+_05_css_lb_   # Feature support
+_06_lb_       # Feature modules
+_07_shell_    # Browser interface
+_08_app_      # Application bundle</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Figure X.2&#8201;&#8212;&#8201;SPA architecture</div>
+<p><span class="image"><img src="./images/architecture.png" alt="image" width="width:700"></span></p>
+</div>
+<div class="paragraph">
 <p>Name CSS selectors in parallel with the JavaScript namespaces. For
-example, any classes used by <code>spa._shell_</code> should have an <code>spa-_shell_</code>
-prefix.</p>
+example, any classes used by <code>spa._07_shell_</code> should have an
+<code>spa-_07_shell_</code> prefix.</p>
 </div>
 </div>
 <div class="sect2">
@@ -2651,7 +2673,7 @@ function shuffle( items ) {
 //   0. arg_list - The list to shuffle
 // Returns   : boolean true on success
 // Throws    : none
-// Method    :
+// Technique :
 //   1. Count down from end of array with last_idx
 //   2. Randomly pick element from between 0 and last_idx
 //   3. Swap pick element with last_idx element
@@ -2704,7 +2726,7 @@ function shuffle( items ) { ... }
 //  &lt;arg_name or number&gt; : &lt;value description&gt;
 // Returns   : &lt;return value on success and failure&gt;
 // Throws    : &lt;any exceptions, or 'none'&gt;
-// Method    : &lt;overview of algorithm&gt;
+// Technique : &lt;overview of algorithm&gt;
 //
 function shuffleListFn( arg_list ) { ... }
 // . END public method /shuffleListFn/</code></pre>
@@ -2736,8 +2758,8 @@ as shown in Listing X.36.</p>
 <div class="listingblock">
 <div class="title">Listing X.36&#8201;&#8212;&#8201;Listing TODOs</div>
 <div class="content">
-<pre class="highlight"><code class="language-js" data-lang="js">grep TODO $(find ./ -type f -name '*.js' \ +
-  grep -v node_modules |grep -v /vendor/) |sort -u</code></pre>
+<pre class="highlight"><code class="language-js" data-lang="js">grep TODO $(find ./ -type f -name '*.js' \
+  | grep -v node_modules |grep -v /vendor/) |sort -u</code></pre>
 </div>
 </div>
 </div>
@@ -3223,7 +3245,7 @@ which loop is effected. This illustrates logic and helps prevent errors.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-17 19:15:37 PDT
+Last updated 2017-09-29 22:53:16 PDT
 </div>
 </div>
 </body>
