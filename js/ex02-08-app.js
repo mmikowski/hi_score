@@ -20,19 +20,19 @@
       'js/vendor/jquery.event.ue-1.3.2.js',
       'js/vendor/jquery.scrolli-1.0.1.js',
       'js/vendor/jquery.urianchor-1.3.5.js',
-      'js/xhi/00.js',
-      'js/xhi/01.util.js',
-      'js/xhi/02.data.js',
-      'js/xhi/02.fake.js',
-      'js/xhi/03.model.js',
-      'js/xhi/04.utilb.js',
-      'js/xhi/05.css_base.js',
-      'js/xhi/05.css_lb.js',
-      'js/xhi/05.css_shell.js',
-      'js/xhi/06.css.js',
-      'js/xhi/06.lb.js',
-      'js/xhi/07.shell.js',
-      'js/xhi/08.app.js'
+      'js/xhi/00_root.js',
+      'js/xhi/01_util.js',
+      'js/xhi/02_data.js',
+      'js/xhi/02_fake.js',
+      'js/xhi/03_model.js',
+      'js/xhi/04_utilb.js',
+      'js/xhi/05_css_base.js',
+      'js/xhi/05_css_lb.js',
+      'js/xhi/05_css_shell.js',
+      'js/xhi/06_css.js',
+      'js/xhi/06_lb.js',
+      'js/xhi/07_shell.js',
+      'js/xhi/08_app.js'
     ],
     libCount  = libList.length,
     loadCount = 0,
@@ -42,8 +42,8 @@
 
   function main () {
     var app_map = xhi._makeAppFn_( 'ex02' );
-    ex02._shell_._initModuleFn_( $('body') );
-    ex02._lb_._showLb_({
+    ex02._07_shell_._initModuleFn_( $('body') );
+    ex02._06_lb_._showLbFn_({
       _title_html_ : 'Example 02',
       _content_html_ :
         '<p><strong>hi_score</strong> appears to be properly installed!</p>'

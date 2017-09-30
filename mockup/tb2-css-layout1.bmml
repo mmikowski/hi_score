@@ -1,0 +1,168 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="2126" measuredH="945" mockupW="2119" mockupH="941">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::Paragraph" x="43" y="19" w="384" h="22" measuredW="275" measuredH="80" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <align>center</align>
+        <color>3700253</color>
+        <size>16</size>
+        <text>This%20is%20the%20CSS%20layout%20plan%20for%20TypeBomb</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::CallOut" x="7" y="4" w="-1" h="-1" measuredW="36" measuredH="39" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>2</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::FieldSet" x="585" y="175" w="326" h="72" measuredW="200" measuredH="170" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>.tb-shell-subtext%20</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::FieldSet" x="585" y="256" w="326" h="166" measuredW="200" measuredH="170" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>.tb-shell-hiscore</text>
+      </controlProperties>
+    </control>
+    <control controlID="21" controlTypeID="com.balsamiq.mockups::FieldSet" x="566" y="785" w="405" h="121" measuredW="200" measuredH="170" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>16776960</color>
+        <text>.tb-shell-typebox</text>
+      </controlProperties>
+    </control>
+    <control controlID="29" controlTypeID="__group__" x="86" y="785" w="405" h="121" measuredW="405" measuredH="121" zOrder="5" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="405" h="121" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="29">
+          <controlProperties>
+            <text>.tb-shell-lives</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="__group__" x="14" y="17" w="378" h="92" measuredW="378" measuredH="92" zOrder="1" locked="false" isInGroup="29">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="1" w="121" h="91" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="1">
+              <controlProperties>
+                <text>.tb-shell-lives-count</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="129" y="0" w="121" h="91" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="1">
+              <controlProperties>
+                <text>.tb-shell-lives-gfx</text>
+              </controlProperties>
+            </control>
+            <control controlID="2" controlTypeID="com.balsamiq.mockups::FieldSet" x="257" y="1" w="121" h="91" measuredW="200" measuredH="170" zOrder="2" locked="false" isInGroup="1">
+              <controlProperties>
+                <text>.tb-shell-lives-label</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="39" controlTypeID="__group__" x="585" y="103" w="326" h="72" measuredW="326" measuredH="72" zOrder="7" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="__group__" x="0" y="0" w="326" h="72" measuredW="326" measuredH="72" zOrder="0" locked="false" isInGroup="39">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="326" h="72" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="0">
+              <controlProperties>
+                <text>.tb-shell-title</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="148" y="10" w="48" h="52" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="0">
+              <controlProperties>
+                <text>span</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="28" y="12" w="123" h="-1" measuredW="121" measuredH="48" zOrder="1" locked="false" isInGroup="39">
+          <controlProperties>
+            <bold>true</bold>
+            <size>40</size>
+            <text>TypeB</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="158" y="14" w="27" h="-1" measuredW="23" measuredH="48" zOrder="2" locked="false" isInGroup="39">
+          <controlProperties>
+            <bold>true</bold>
+            <color>13576743</color>
+            <size>40</size>
+            <text>o</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="200" y="12" w="64" h="-1" measuredW="59" measuredH="48" zOrder="3" locked="false" isInGroup="39">
+          <controlProperties>
+            <bold>true</bold>
+            <size>40</size>
+            <text>mb</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="48" controlTypeID="__group__" x="86" y="649" w="304" h="121" measuredW="304" measuredH="121" zOrder="8" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="304" h="121" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="48">
+          <controlProperties>
+            <text>.tb-shell-level</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="15" y="15" w="126" h="91" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="48">
+          <controlProperties>
+            <text>.tb-shell-level-label</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::FieldSet" x="157" y="15" w="133" h="91" measuredW="200" measuredH="170" zOrder="2" locked="false" isInGroup="48">
+          <controlProperties>
+            <text>.tb-shell-level-count</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="54" controlTypeID="__group__" x="50" y="45" w="1437" h="900" measuredW="1437" measuredH="900" zOrder="2" locked="true" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="1437" h="900" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="54">
+          <controlProperties>
+            <text>body</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="15" y="24" w="1407" h="854" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="54">
+          <controlProperties>
+            <color>10066329</color>
+            <text>.tb-shell-bg-svg</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::RoundButton" x="15" y="37" w="1409" h="836" measuredW="32" measuredH="32" zOrder="2" locked="false" isInGroup="54">
+          <controlProperties>
+            <borderColor>16777215</borderColor>
+            <shape>triangle</shape>
+            <shapeRotation>180</shapeRotation>
+            <text/>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="56" controlTypeID="__group__" x="1146" y="769" w="304" h="121" measuredW="304" measuredH="121" zOrder="9" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="304" h="121" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="56">
+          <controlProperties>
+            <text>.tb-shell-score</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::FieldSet" x="15" y="15" w="126" h="91" measuredW="200" measuredH="170" zOrder="1" locked="false" isInGroup="56">
+          <controlProperties>
+            <text>.tb-shell-score-label</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::FieldSet" x="157" y="15" w="133" h="91" measuredW="200" measuredH="170" zOrder="2" locked="false" isInGroup="56">
+          <controlProperties>
+            <text>.tb-shell-score-count</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="58" controlTypeID="com.balsamiq.mockups::Paragraph" x="1548" y="41" w="578" h="262" measuredW="275" measuredH="80" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>Steps%20for%20completion%202015-03-09%20%28updated%202015-03-14%29%0A%20%0Ax%20%282hr%29%20Implement%20start%20in%20tb-shell-subtext%20%22Select%20level%20to%20start%20%5B%200-3%20%5D%22%0Ax%20%282hr%29%20Colors%20and%20size%20per%20speed%0Ax%20%288hr%29%20Refine%20word%20selection%0Ax%20%288hr%29%20Refine%20levels%0A-%20%286/8hr%29%20Add%20hi-score%20support%0A-%20%282hr%29%20Animate%20lives%20and%20levels%20update%20with%20sounds%0A-%20%288hr%29%20Instructions%20-%20show%20diagram%0A-%20%2816hr%29%20Package%20for%20Chrome%0A%20%0AEstimates%3A%20%2826/54%29</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

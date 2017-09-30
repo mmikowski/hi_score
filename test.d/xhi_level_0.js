@@ -45,24 +45,24 @@ global.$        = jQuery;
 global.pcss = require( libDir + 'vendor/pcss-1.4.2.js' );
 require( libDir + 'vendor/pcss.cfg-1.4.2.js' );
 
-global[ __ns ] = require( libPrefix + '00.js' );
-require( libPrefix + '01.util.js'  );
-require( libPrefix + '04.utilb.js' );
-require( libPrefix + '06.lb.js'    );
+global[ __ns ] = require( libPrefix + '00_root.js' );
+require( libPrefix + '01_util.js'  );
+require( libPrefix + '04_utilb.js' );
+require( libPrefix + '06_lb.js'    );
 
-aMap = xhi._makeRootFn_( aKey );
+aMap = xhi._00_root_._makeInstanceFn_( aKey );
 global[ aKey ] = aMap;
 
-xhi._makeUtilFn_(  aMap );
-xhi._makeUtilbFn_( aMap );
-xhi._makeLbFn_(    aMap );
+xhi._01_util_  ._makeInstanceFn_( aMap );
+xhi._04_utilb_ ._makeInstanceFn_( aMap );
+xhi._06_lb_    ._makeInstanceFn_( aMap );
 
 vMap    = aMap._vMap_;
 nMap    = aMap._nMap_;
 
-__util  = aMap._util_;
-__utilb = aMap._utilb_;
-__lb    = aMap._lb_;
+__util  = aMap._01_util_;
+__utilb = aMap._04_utilb_;
+__lb    = aMap._06_lb_;
 
 __blank = vMap._blank_;
 __false = vMap._false_;
@@ -1477,7 +1477,6 @@ function makeErrorObj ( test_obj ) {
   }
   test_obj.done();
 }
-
 
 function makeEscRxStr ( test_obj ) {
   var
@@ -3146,7 +3145,7 @@ function resizeTextarea ( test_obj ) {
 liteBoxMap = {
   _outer01_tmplt_ : __blank
     + '<div id="' + aKey + '-_lb_" style="display: block; top: 50%; '
-      + 'left: 50%; margin-top: 0px; margin-left: 0px;" '
+      + 'left: 50%; margin-top: 0px; margin-left: 0px; width: 0px;" '
       + 'class="' + aKey + '-_lb_ ' + aKey + '-_x_active_"><div class="'
       + aKey + '-_lb_title_" '
       + 'style="display: block;">{_title_}</div>'
@@ -3156,7 +3155,7 @@ liteBoxMap = {
   _outer02_tmplt_ : __blank
     + '<div id="' + aKey + '-_lb_" class="' + aKey + '-_lb_ ' + aKey + '-_x_active_" '
       + 'style="display: block; top: 50%; left: 50%; '
-      + 'margin-top: 0px; margin-left: 0px;"><div '
+      + 'margin-top: 0px; margin-left: 0px; width: 0px;"><div '
       + 'class="' + aKey + '-_lb_title_" style="display: block;">{_title_}</div>'
       + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
       + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
@@ -3169,7 +3168,7 @@ liteBoxMap = {
     + '<div class="' + aKey + '-_lb_error_">'
       + '<h1>Error</h1>'
       + '<div class="' + aKey + '-_lb_error_list_">'
-      + '{_rows_html_}'
+      + '{_inner_html_}'
       + '</div>'
     + '</div>',
   _erow_tmplt_    : __blank
@@ -3193,13 +3192,13 @@ function addLocalSpin ( test_obj ) {
     solve_str
     ;
 
-  __lb._addLocalSpin_( $div );
+  __lb._addLocalSpinFn_( $div );
   solve_str = $div.html();
   test_obj.ok( solve_str === spin_html,
     '0. Apply 0 - ' + solve_str  + ' | ' + spin_html
   );
 
-  __lb._addLocalSpin_( $div );
+  __lb._addLocalSpinFn_( $div );
   solve_str = $div.html();
   test_obj.ok( solve_str === spin_html,
     '1. Apply 1' + solve_str  + ' | ' + spin_html
@@ -3211,7 +3210,7 @@ function addLocalSpin ( test_obj ) {
     '2. Clear 0 ' + solve_str  + ' | __blank'
   );
 
-  __lb._addLocalSpin_( $div );
+  __lb._addLocalSpinFn_( $div );
   solve_str = $div.html();
   test_obj.ok( solve_str === spin_html,
     '3. Fresh Apply 0 ' + solve_str  + ' | ' + spin_html
@@ -3229,7 +3228,7 @@ function addLocalSpin ( test_obj ) {
     '5. Apply blow html ' + solve_str  + ' | ' + blow_html
   );
 
-  __lb._addLocalSpin_( $div );
+  __lb._addLocalSpinFn_( $div );
   solve_str = $div.html();
   test_obj.ok( solve_str === spin_html,
     '6. Blow html destroyed ' + solve_str  + ' | ' + spin_html
@@ -3270,15 +3269,15 @@ function showErrorList ( test_obj ) {
     }),
     content00_html = __util._makeTmpltStr_({
       _input_str_  : liteBoxMap._error_tmplt_,
-      _lookup_map_ : { _rows_html_ : rows00_html }
+      _lookup_map_ : { _inner_html_ : rows00_html }
     }),
     content01_html = __util._makeTmpltStr_({
       _input_str_  : liteBoxMap._error_tmplt_,
-      _lookup_map_ : { _rows_html_ : rows01_html }
+      _lookup_map_ : { _inner_html_ : rows01_html }
     }),
     content02_html = __util._makeTmpltStr_({
       _input_str_  : liteBoxMap._error_tmplt_,
-      _lookup_map_ : { _rows_html_ : rows02_html }
+      _lookup_map_ : { _inner_html_ : rows02_html }
     }),
     blank1_html = __util._makeTmpltStr_( {
       _input_str_  : liteBoxMap._outer01_tmplt_,
@@ -3321,8 +3320,8 @@ function showErrorList ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    show_fn      = __lb._showErrorList_,
-    hide_fn      = __lb._hideLb_,
+    show_fn      = __lb._showErrorTableFn_,
+    hide_fn      = __lb._hideLbFn_,
 
     idx,       expect_list, arg_list,
     solve_$lb, expect1_str, expect2_str, expect3_str,
@@ -3434,14 +3433,14 @@ function showLb ( test_obj ) {
            _content_html_ : 'mello world',
            _onclose_fn_   : __showLbCb,
            _position_map_ : { top : '50%', left : '50%',
-             'margin-top' : 0, 'margin-left' :  0
+             'margin-top' : 0, 'margin-left' : 0, width : 0
            }
         } ], t01_a_html, t01_b_html ]
     ],
 
     assert_count = assert_table.length,
-    show_fn      = __lb._showLb_,
-    close_fn     = __lb._closeLb_,
+    show_fn      = __lb._showLbFn_,
+    close_fn     = __lb._closeLbFn_,
 
     idx,       expect_list, arg_list,
     solve_$lb, expect_a_str, expect_b_str,
@@ -3474,7 +3473,7 @@ function showLb ( test_obj ) {
         _test_obj_    : test_obj
       });
     }
-    __lb._setCloseFn_( check_fn );
+    __lb._setConfigMapFn_( { _onclose_fn_ : check_fn  } );
     test_obj.ok(
       ( solve_str === expect_a_str || solve_str === expect_b_str ),
       msg_str
@@ -3487,19 +3486,19 @@ function handleResize ( test_obj ) {
   test_obj.expect( 4 );
   var ret_bool;
 
-  ret_bool = __lb._handleResize_();
+  ret_bool = __lb._handleResizeFn_();
   test_obj.ok( ret_bool === __false, '0. empty call should return false' );
 
   test_obj.ok( ret_bool === __false,
     '1. Second call should return false as the resize is already scheduled'
   );
 
-  ret_bool = __lb._handleResize_({ _body_w_px_ : 1024, _body_h_px_ : 768 });
+  ret_bool = __lb._handleResizeFn_({ _body_w_px_ : 1024, _body_h_px_ : 768 });
   test_obj.ok( ret_bool === __true, '2. Resize should work' );
 
-  __lb._showBusy_() ;
+  __lb._showBusyFn_() ;
 
-  ret_bool = __lb._handleResize_({ _body_w_px_ : 1248, _body_h_px_ : 768 });
+  ret_bool = __lb._handleResizeFn_({ _body_w_px_ : 1248, _body_h_px_ : 768 });
   test_obj.ok( ret_bool === __true, '3. Resize should work' );
 
   test_obj.done();
@@ -3517,15 +3516,15 @@ function showBusy ( test_obj ) {
 
   test_obj.expect( 3 );
 
-  __lb._hideLb_();
+  __lb._hideLbFn_();
   outer_html = $mask[0].outerHTML;
   test_obj.ok( outer_html === off_html, '1. Mask has no active class' );
 
-  __lb._showBusy_();
+  __lb._showBusyFn_();
   outer_html = $mask[0].outerHTML;
   test_obj.ok( outer_html === on_html,  '2. Mask contains active class' );
 
-  __lb._hideLb_();
+  __lb._hideLbFn_();
   outer_html = $mask[0].outerHTML;
   test_obj.ok( outer_html === off_html, '3. Mask has no active class' );
 
@@ -3605,8 +3604,8 @@ function showSuccess ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    show_fn      = __lb._showSuccess_,
-    close_fn     = __lb._closeLb_,
+    show_fn      = __lb._showSuccessFn_,
+    close_fn     = __lb._closeLbFn_,
 
     idx,       expect_list, arg_list,
     solve_$lb, expect1_str, expect2_str,
@@ -3638,7 +3637,7 @@ function showSuccess ( test_obj ) {
       _test_obj_    : test_obj
     });
 
-    __lb._setCloseFn_( check_fn );
+    __lb._setConfigMapFn_( { _onclose_fn_ : check_fn } );
     test_obj.ok(
       ( solve_str === expect1_str || solve_str === expect2_str ),
       msg_str

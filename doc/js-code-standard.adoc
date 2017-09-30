@@ -193,7 +193,7 @@ var make_house_fn = curry_build_fn({ _item_type_ : 'house' });
 Figure X.1 illustrates how we convey all the meaning of the comments in Listing X.3 using variable names.
 
 .Figure X.1 -- Variable name dissection
-image:ch01/syntax.png[image,width:700]
+image:syntax.png[image,width:700]
 
 Precise variable names are not only more concise but they help avoid
 inaccurate comments. Consider, for example, what can happen when a
@@ -679,17 +679,16 @@ underscores so they can be identified during the build process.
 [cols="",]
 |===========================================================
 |Type |Local scope |Module scope
-|Array |local_map.\_person_list_ |spa.\_model_.\_personList_
-|Boolean |local_map.\_is_enabled_ |spa.\_model_.\_isReady_
+|Array |local_map.\_person_list_ |spa.\_03_model_.\_personList_
+|Boolean |local_map.\_is_enabled_ |spa.\_03_model_.\_isReady_
 |Function |local_map.\_init_fn_ a|
-spa.\_initModuleFn_
-spa.\_model_.initModuleFn_
-spa.\_shell_._initModuleFn_
-|Integer |local_map._leg_count_ |spa.\_model_.\_callbackCount_
-|Map |local_map.\_user_map_ |spa.\_slider_.\_instanceMap_
-|Number |local_map.\_mix_ratio_ |spa.\_sound_.\_mixRatio_
-|String |local_map.\_username_ |spa.\_model_.\_userMap_
-|Regex |local_map.\_match_rx_ |spa.\_matchRx_
+spa.\_03_model_.initModuleFn_
+spa.\_07_shell_._initModuleFn_
+|Integer |local_map._leg_count_ |spa.\_03_model_.\_callbackCount_
+|Map |local_map.\_user_map_ |spa.\_06_slider_.\_instanceMap_
+|Number |local_map.\_mix_ratio_ |spa.\_06_sound_.\_mixRatio_
+|String |local_map.\_username_ |spa.\_03_model_.\_userMap_
+|Regex |local_map.\_match_rx_ |spa.\01_util_._matchRx_
 |===========================================================
 
 == Functions
@@ -726,25 +725,15 @@ spa._initModuleFn_();
 ----
 
 We can break a namespace into manageable subdivisions. For example, we
-can add `spa.\_shell_` and `spa.\_slider_` to our `spa`
+can add `spa.\_06_slider_` and `spa.\_07_shell_` to our `spa`
 namespace as shown in Listing X.12.
 
-.Listing X.12 -- A namespace subdivided
+.Listing X.12 -- A namespace divided
 [source,js]
 ----
 // == Prefer ==
-// In the file spa.shell.js:
-spa._shell_ = (function () {
- 'use strict';
-
- return {       # <1>
- _initModuleFn_   : initModuleFn,
- _resetDisplayFn_ : resetDisplayFn
- };
-}());
-
 // In the file spa.slider.js:
-spa._slider_ = (function () {
+spa._06_slider_ = (function () {
  'use strict';
 
  return {        # <1>
@@ -753,14 +742,47 @@ spa._slider_ = (function () {
  _retractSliderFn_ : retractSliderFn
  };
 }());
-// Initialize the spa from another module
-spa._initModuleFn_();
+
+// In the file spa.shell.js:
+spa._07_shell_ = (function () {
+ 'use strict';
+
+ return {       # <1>
+ _initModuleFn_   : initModuleFn,
+ _resetDisplayFn_ : resetDisplayFn
+ };
+}());
+
+// In the file spa._08_app.js:
+spa._07_shell_._initModuleFn();
 ----
 <1> Return private variables and methods
 
+The numbers in the modules show inclusion precedence
+as shown in Diagram X.1 and Figure X.2.
+
+.Diagram X.1 -- Module precedence
+
+[source]
+----
+spa           # Root, also referred to as _00_root_
+spa._01_util_ # Core utility
+_02_data_     # Data management (AJAX, Websockets)
+_03_model_    # Core logic
+_04_utilb_    # Browser utilities
+_05_css_lb_   # Feature support
+_06_lb_       # Feature modules
+_07_shell_    # Browser interface
+_08_app_      # Application bundle
+----
+
+.Figure X.2 -- SPA architecture
+
+image:architecture.png[image,width:700]
+
 Name CSS selectors in parallel with the JavaScript namespaces. For
-example, any classes used by `spa.\_shell_` should have an `spa-\_shell_`
-prefix.
+example, any classes used by `spa.\_07_shell_` should have an
+`spa-\_07_shell_` prefix.
 
 === Minimize module-scope variables
 Do not use global variables except when namespacing as above.

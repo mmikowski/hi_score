@@ -5,7 +5,7 @@ Please use the included [code standard][_01].
 The `xhi` libraries are designed for loose coupling but strict call
 precidence. For example the `00` library should be loaded before any
 other `xhi` library, and it may not call any library with a higher
-precidence. The `08.app` library, in comparison, should be loaded 
+precidence. The `08_app` library, in comparison, should be loaded 
 after all the lower precidence libraries, but it may call any of them.
 See the diagram below.
 
@@ -13,26 +13,26 @@ See the diagram below.
  <<<<< ========================== API CALLS =================================
 
  +---------+    +----------+                     +----------+   +--------+
- | 02.data |    | 03.model |<--------------------|  Shell   |<--|  App   |
- |  Data   |<---|  Model   | ..... events ...))) | 07.shell |   | 08.app |
+ | 02_data |    | 03_model |<--------------------| 07_shell |<--| 08_app |
+ |  Data   |<---|  Model   | ..... events ...))) |   Shell  |   |   App  |
  |  Fetch  |    +----------+           :         +----------+   +--------+
  +---------+      |                    :                    |
       |           |                    :      +---------+   |
-      |           |                    :      | 06.lb   |   |
-      |           |                    :..))) | litebox |<--+
-      |           |  +----------+      :      | feature |   |
-      v           |  | Browser  |<--+---------+---------+   |
- +---------+      |  |  Utils   |   |  :                    |
- | 01.util |      |  | 04.utilb |   |  :      +---------+   |
- |  Utils  |<-----+--+----------+   |  :      | 06.*    |   |
- +---------+                        |  ...))) | feature |<--+
-       |                            |         | modules |   |
+      |           |                    :      | 06_lb   |   |
+      |           |                    :..))) | Litebox |<--+
+      |           |  +----------+      :      | Feature |   |
+      v           |  | 04_utilb |<--+---------+---------+   |
+ +---------+      |  | Browser  |   |  :                    |
+ | 01_util |      |  |  Utils   |   |  :      +---------+   |
+ |  Utils  |<-----+--+----------+   |  :      | 06_*    |   |
+ +---------+                        |  ...))) | Feature |<--+
+       |                            |         | Modules |   |
        v                            +---------+---------+   |
  +-----------+                      |                       |
- |   00.js   |                      |     +-------------+   |
- | namespace |                      |     | 05.css_*    |   |
- +-----------+                      |     | 06.css      |<--+
-                                    |     | feature css |
+ | 00_root   |                      |     +-------------+   |
+ | namespace |                      |     | 05_css_*    |   |
+ +-----------+                      |     | 06_css      |<--+
+                                    |     | Feature CSS |
                                     +-----+-------------+
 
  ================================ DATA FLOW ============================ >>>>

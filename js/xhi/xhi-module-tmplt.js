@@ -17,7 +17,6 @@ xhi._makeTmpltFn_ = function ( aMap ) {
     aKey     = aMap._aKey_,
     vMap     = aMap._vMap_,
     nMap     = aMap._nMap_,
-    __util   = aMap._util_,
 
     __data2strFn = vMap._data2strFn_,
 
@@ -25,6 +24,7 @@ xhi._makeTmpltFn_ = function ( aMap ) {
     __1      = nMap._1_,
     __blank  = vMap._blank_,
 
+    __util   = aMap._01_util_,
     __logObj = __util._getLogObj_(),
     __logMsg = __logObj._logMsg_,
 

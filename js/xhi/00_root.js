@@ -1,16 +1,17 @@
 /*
- * 00.js
+ * 00_root.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use     : xhi._makeRoot_( '<namespace>' );
- * Synopsis: Create an app_map using named <namespace>
- * Provides: An application map containing shared symbols
+ * Use      : xhi._00_root_._makeInstanceFn_( '<namespace_key>', option_map );
+ * Synopsis : Create an app_map using named <namespace_key> as the root
+ * Provides : An application map containing shared symbols
+ * Requires : ---
  *
 */
 /*global xhi */
-var xhi          = {};
-// == BEGIN MODULE xhi._makeRootFn_ ====================================
-xhi._makeRootFn_ = function ( aKey, argOptionMap ) {
+var xhi = {};
+// == BEGIN MODULE xhi._00_root_ =======================================
+xhi._00_root_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -142,59 +143,102 @@ xhi._makeRootFn_ = function ( aKey, argOptionMap ) {
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
-  // == BEGIN expand vMap and nMaps with app-specific symbols ==========
-  // Purpose : Expand symbol maps as needed for project
-  // Example :
-  //   app_map = xhi._makeRootFn_( 'tb02', { _vMap_ : { _foo_: 'bar' } } );
-  // This sets xhi._vMap_._foo_ === 'bar'
-  //
-  function extendSymbolMapsFn ( arg_option_map ) {
-    var
-      option_map = ( typeof arg_option_map === 'object' )
-        ? arg_option_map : {},
-      expand_list  = [ [ '_nmap_', nMap ], [ '_vmap_', vMap ] ],
-      expand_count = expand_list.length,
+  // == BEGIN PUBLIC METHODS ===========================================
+  // BEGIN public method /getGlobalObjFn/
+  function getGlobalObjFn () {
+    var global_obj;
+    try { global_obj = window; }
+    catch ( ignore ) { global_obj = global; }
+    if ( ! global_obj ) { throw '_no_global_object_found_'; }
+    return global_obj;
+  }
+  // . END public method /getGlobalObjFn/
 
-      expand_idx, row_list, source_name, source_map, target_map,
-      source_key_list, source_key_count, key_idx, source_key
+  // BEGIN public method /makeInstanceFn/
+  function makeInstanceFn ( aKey, arg_option_map ) {
+    var
+      instanceNmap = Object.assign( {}, nMap ),
+      instanceVmap = Object.assign( {}, vMap ),
+      option_map = vMap._typeofFn_( arg_option_map ) === 'object'
+        ? arg_option_map : {},
+
+      global_obj, instance_map
       ;
 
-    for ( expand_idx = nMap._0_; expand_idx < expand_count; expand_idx++ ) {
-      row_list    = expand_list[ expand_idx ];
-      source_name = row_list[ nMap._0_ ];
-      target_map  = row_list[ nMap._1_ ];
-      source_map  = option_map[ source_name ];
+    // BEGIN public method /extendSymbolMapFn/
+    // Purpose : Expand symbol maps as needed for project
+    // Example :
+    //   xhi._00_root_._extendSymbolMapFn_(
+    //     'vMap',  { _user_name_: 'Fred' }
+    //   );
+    // This sets xhi._vMap_._user_name_ === 'Fred'
+    //
+    function extendSymbolMapFn ( symbol_key, extend_map ) {
+      var
+        lookup_map = { nMap : instanceNmap, vMap : instanceVmap },
+        target_map = lookup_map[ symbol_key ],
 
-      if ( source_map && target_map ) {
-        source_key_list  = vMap._makeKeyListFn_( source_map );
-        source_key_count = source_key_list[ vMap._length_ ];
-        for ( key_idx = nMap._0_; key_idx < source_key_count; key_idx++ ) {
-          source_key = source_key_list[ key_idx ];
-          if ( target_map[ vMap._hasOwnProperty_ ]( source_key ) ) {
-            console.warn(
-              'Symbol expansion error.\n Will not override default value'
-              + ' for |' + source_key + '| in ' + source_name
-            );
-          }
-          else {
-            target_map[ source_key ] = source_map[ source_key ];
-          }
+        extend_key_list, extend_key_count, key_idx, extend_key
+      ;
+
+      if ( !target_map ) {
+        return console.warn( '_symbol_map_key_not_supported_', symbol_key );
+      }
+      if ( vMap._typeofFn_( extend_map ) !== 'object' ) {
+        return console.warn( '_merge_data_must_be_an_object_', extend_map );
+      }
+
+      extend_key_list  = vMap._makeKeyListFn_( extend_map );
+      extend_key_count = extend_key_list[ vMap._length_ ];
+      for ( key_idx = nMap._0_; key_idx < extend_key_count; key_idx++ ) {
+        extend_key = extend_key_list[ key_idx ];
+        if ( target_map[ vMap._hasOwnProperty_ ]( extend_key ) ) {
+          console.warn(
+            'Symbol expansion error.\n Will not override default value'
+            + ' for |' + extend_key + '| in ' + symbol_key
+          );
+        }
+        else {
+          target_map[ extend_key ] = extend_map[ extend_key ];
         }
       }
+      return target_map;
     }
-  }
-  // == . END expand vMap and nMaps with app-specific symbols ==========
+    // . END public method /extendSymbolMapFn/
 
-  // == BEGIN PUBLIC METHODS ===========================================
-  extendSymbolMapsFn( argOptionMap );
+    instance_map = {
+      _extendSymbolMapFn_ : extendSymbolMapFn,
+      _aKey_ : aKey,
+      _nMap_ : instanceNmap,
+      _vMap_ : instanceVmap
+    };
+
+    if ( option_map._dont_autoadd_ !== vMap._true_ ) {
+      global_obj = getGlobalObjFn();
+      global_obj[ aKey ] = instance_map;
+    }
+    return instance_map;
+  }
+  // BEGIN public method /makeInstanceFn/
+
+  // BEGIN public method /getFn/
+  function getMapFn() {
+    var mode_str = this;
+    if ( mode_str === '_vMap_' ) { return vMap; }
+    if ( mode_str === '_nMap_' ) { return nMap; }
+  }
+  // . END public method /getFn/
+
+  // getMapFn gets the default nMap and vMap, not the instance values
   return {
-    _aKey_    : aKey,
-    _nMap_    : nMap,
-    _vMap_    : vMap
+    _getGlobalObjFn_ : getGlobalObjFn,
+    _getNmap_        : getMapFn.bind( '_nMap_' ),
+    _getVmap_        : getMapFn.bind( '_vMap_' ),
+    _makeInstanceFn_ : makeInstanceFn
   };
   // == . END PUBLIC METHODS ===========================================
-};
-// == . END MODULE xhi._makeRootFn_ ====================================
+}());
+// == . END MODULE xhi._00_root_ =======================================
 
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */

@@ -62,8 +62,9 @@ EOH
       'transient',  'true',      'try',         
       'typeof',     'var',       'void',        
       'volatile',   'while',     'with',        
-      'yield'
+      'yield',      '_'
     );
+
     my $skip_key_mref = {};
     for my $skip_word ( @skip_list ) {
       $skip_key_mref->{ $skip_word } = 1;
@@ -127,7 +128,7 @@ EOH
     my @str_script_lines = split qq(\n), $script_str;
 
     # create a list of tokens to replace
-    my @raw_patterns = $script_str =~ m{_[^_][A-Za-z0-9\$_]*_}g;
+    my @raw_patterns = $script_str =~ m{\b_[A-Za-z0-9\$_]*_\b}g;
 
     # TODO : Create a general solution to add and exclude tokens
     my @boundry_patterns = ( 'TAFFY', 'jQuery', 'EXIT' );
@@ -136,7 +137,7 @@ EOH
       push @raw_patterns, @bonus_matches;
     }
 
-    # count frequency
+    # Calculate frequency
     my $seen_mref = {};
     for my $raw_pattern( @raw_patterns ) {
       my $count = $seen_mref->{$raw_pattern} || 0;
@@ -144,7 +145,7 @@ EOH
       $seen_mref->{$raw_pattern} = $count;
     }
 
-    # create sorted, unique tokens
+    # Create sorted unique tokens
     my @token_list
       = sort { $seen_mref->{$b} <=> $seen_mref->{$a} } keys(%{$seen_mref});
     # DEBUG: print STDERR join( q(, ), @token_list ) . "\n";
@@ -175,14 +176,14 @@ EOH
     }
     ## . END deck management
 
-    ## BEGIN initialize vars to create token_x_munge_map map
+    ## BEGIN initialize vars to create token_x_munge_map
     my %token_x_munge_map = ();
 
     # Variables for metrics
     my $skipped_count = 0;
     my @skipped_list  = ();
 
-    # Initialize our list of deck_list by adding our first one
+    # Initialize list of deck_list by adding the first one
     my $deck_count = add_deck();
     my @munge_digit_list = ();
     ## . END initialize vars to create token_x_munge_map map
@@ -191,6 +192,12 @@ EOH
     for my $token_str( @token_list ) {
       my $munge_str;
       my $found_count = 1;
+
+      # Skip munge patterns that match reserved words
+      if ( $skip_key_mref->{$token_str} ) {
+        $munge_str = $token_str;
+        $found_count = 0;
+      }
 
       ## BEGIN find valid replacement token (munge_str)
       while ( $found_count != 0 ) {
@@ -231,12 +238,12 @@ EOH
         ## . END build munge string
 
         ## BEGIN test munge string
-        # Check to see if munge already exists in file ...
+        # Check to see if munge already exists in file,
+        #   if it is, this is non-zero so build a new munge will be created
         my @match_list = grep { /\b$munge_str\b/ } @str_script_lines;
-        # ... if it is, this is non-zero so we will build a new munge
         $found_count = scalar @match_list;
 
-        # add in reserved words
+        # Add in reserved words
         $found_count += ( $skip_key_mref->{ $munge_str } || 0 );
         if ( $found_count > 0 ) {
           push @skipped_list, $munge_str;
@@ -252,25 +259,28 @@ EOH
     ## . END Create %token_x_munge_map
 
     ## BEGIN collate and output
-    # Replace tokens in script
+    # Replace specific symbols
     for my $pattern( @boundry_patterns ) {
       $script_str  =~ s{\b$pattern\b}{$token_x_munge_map{$pattern}}g;
       delete $token_x_munge_map{$pattern};
     }
-    $script_str  =~ s{\b(_[^_][A-Za-z0-9\$_]*_)\b}{$token_x_munge_map{$1}}ge;
-    $script_str  =~ s{[\n\r]}{}g;
 
+    # Replace all munge tokens
+    $script_str  =~ s{\b(_[A-Za-z0-9\$_]*_)\b}{$token_x_munge_map{$1}}ge;
+
+    # Write output file
     open my $fh_output, '>', $output_file;
     print $fh_output $script_str;
     close $fh_output;
 
-    # modify dumper to turn into JSON
+    # Convert Dumper string into JSON (TODO: use a perl-JSON package instead)
     my $json_str = Dumper( \%token_x_munge_map );
     $json_str    =~ s{\s*=>\s*}{:}g;
     $json_str    =~ s{'}{"}g;
     $json_str    =~ s{\$VAR1 = }{};
     $json_str    =~ s{;$}{};
 
+    # Write log file
     open my $fh_log,'>', $log_file;
     print $fh_log $json_str;
     close $fh_log;
