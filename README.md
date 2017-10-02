@@ -5,28 +5,25 @@
 
 ---
 ## Overview
-**`hi_score`** is a full-lifecycle starter project for web application client development. It embodies best (or at least pretty-darn-good) practices accumulated from over 20 years of continuous web development experience for every stage of deveplment. **`hi_score`** embraces the feature-module (or "web component") design pattern, so it should work well with React or Vue.js projects.  Please do swap assets and libraries as required - [that's the point][_01].
+**`hi_score`** is a full-lifecycle starter project for web application development. It embodies good practice from over 20 years of experience for every lifecycle stage. **`hi_score`** embraces the feature-module (or "web component") design pattern, so it should work well with React or Vue.js projects. Please do swap assets and libraries as required - [that's the point][_01].
 
-## Recent changes (2017-10-01)
+## Recent changes
 ### Version 1.4.x (2017-10-01)
-- Add Typebomb2 example application
-- Add patch for font-awesome css
-- More robust libraries
-- Fix various bugs
-(TODO) update virtual appliance image
-
-
-### Version 1.3.x (2017-09-09)
-- Add virtual appliance for ease of setup
-- Add universal `xhi` lifecycle managment tool
-- All configuration now in `package.json`
-- Most tools move to NodeJS
+- (x) Add Typebomb2 example application
+- (x) Add patch for font-awesome CSS
+- (x) Convert build system to JavaScript using `package.json` as manifest
+- (x) Enhance `js/xhi` libs and documentation
+- (x) Expand doc in `xhi help build`
+- (x) Revise code standards and images
+- (x) Update docs
+- (x) Fix `superpack` to be more reliable
+- (x) Fix `xhi dev_cover` dependencies
 
 The `xhi` tool guides developers through lifecycle stages and employs sophisticated dependency checking to help avoid mistakes
 
 ---
 ## Quick start
-Installation is trivial once the [development environment](#development-platform) is ready. Just open a terminal and paste three lines:
+First set up a [development environment](#development-platform). Open a terminal and enter the following lines. Wait for each to complete before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
 
 ```bash
   git clone git@github.com:mmikowski/hi_score.git
@@ -35,12 +32,11 @@ Installation is trivial once the [development environment](#development-platform
   google-chrome http://localhost:8080/build/latest/dist
 ```
 
-The `xhi build,dev_start` command installs vendor assets; copies, configures, and patches vendor files for development; configures and starts an HTTP server; lints code with ESLint and other checkes, lists TODO items for developer review; runs all regression test suites in `test.d`; calculates and reports test coverage; minimizes, obsfucates, and packages a distribution with a unique build number containing multiple applications.
+The `xhi build,dev_start` command installs vendor assets; copies, configures, and patches vendor files for development; configures and starts an HTTP server; lints code with ESLint and other checks, lists TODO items for developer review; runs all regression test suites in `test.d`; calculates and reports test coverage; minimizes, obsfucates, and creates a unique distribution directory containing multiple applications. The latest build can always be found in `build/latest/dist`.
 
-There are now three example applications to inspect. Two (`app-ex01.html` and `app-ex02.html`) are
-simple applications that use the default libraries. Typebomb2 is the latest addition and it is far from trivial.
+There are now three example applications to inspect. Two (`app-ex01.html` and `app-ex02.html`) are quite simple. The third, Typebomb2 (`app-tb02.html`). is the latest addition and it is far less trivial. Use the Chrome developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how CSS classes are obsfucated and namespaced. A snapshot of the Typebomb2 game in action is shown below.
 
-We encourage you to use the Chrome developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how CSS classes are obsfucated and namespaced.
+![Typebomb2][_0B]
 
 ---
 ## Key benefits
@@ -48,8 +44,7 @@ We encourage you to use the Chrome developer tools to inspect the CSS, the DOM, 
 
 - Automated full-lifecycle best practice with the `xhi` tool
 - Integration with GIT and NPM lifecycles
-- Fully managed vendor assets including SCMS controlled patching,
-  deployment, packaging, and distribution
+- Fully managed vendor assets including SCMS controlled patching, deployment, packaging, and distribution
 - Vendor assets include JavaScript, CSS, Fonts, Images, and others
 - Development web server (WIP HTTPS and HTTP/2)
 - TDD with JSDOM, drop directory and code coverage reports
@@ -63,19 +58,19 @@ We encourage you to use the Chrome developer tools to inspect the CSS, the DOM, 
 - Two simple example applications
 - Placeholders for future lifecycle phases
 - Compression and shuffling of property key symbols
-- One-touch make ensures dozens of prequisites and tests pass and then
-  creates a unique build id with pristine distribution directory, metadata,
-  and coverage reports.
+- One-touch make ensures dozens of prequisites and tests pass and then creates a unique build id with pristine distribution directory, metadata, and coverage reports.
 
 ---
 ## The xhi tool
 The `xhi` tool automates best practice for almost every conceivable stage of the SPA development life cycle. All configuration in the NPM `package.json` file.
 
-The `xhi` tool resolves goal and environment prerequisites so we won't forget to run a necessary stage to attain a desired goal. For example, if we run 'xhi build' right after cloning the Github repository, it will run all the stages needed to ensure a quality build including *installation of the npm librares*. If we run it again, many stages will be omitted because they aren't needed again. If we run `dev_upgrade` all the `npm` packages be updated to the latest revision the system will do the right thing and re-install our `npm` packages, re-setup the environment, and re-test the codebase. See the [Run Lifecycle Stages section](#run-lifecycle-stages) below for more detail.
+The `xhi` tool resolves goal and environment prerequisites to ensure necessary stages are completed to meet a desired goal. For example, if we run 'xhi build' right after cloning the Github repository, it will run all the stages needed to ensure a quality build including *installation of the npm librares*. If we run it again, many stages will be omitted because they aren't needed again. If we run `dev_upgrade` all the `npm` packages be updated to the latest revision. On any subsequent run, `xhi` will do the right thing and re-install our `npm` packages, reset the environment, and re-test the codebase. See the [Run Lifecycle Stages section](#run-lifecycle-stages) below for more detail.
 
-The full-lifecycle stages supported by `xhi` are shown below. Those marked 1.4.x are placeholder which will be addressed in the next major release.
+### Get help
+The full-lifecycle stages supported by `xhi` are shown below. Those marked 1.4.x are placeholder which will be addressed in the next major release. Use the command `bin/xhi help all` to see this list.
+
 ```
-  $ xhi help all
+  $ bin/xhi help all
     xhi>  START Stage 00 help
     xhi>  00 help        : Help on 'xhi' tool, use -v for verbose
     xhi>  01 install     : Download and install npm modules
@@ -101,15 +96,14 @@ The full-lifecycle stages supported by `xhi` are shown below. Those marked 1.4.x
     xhi>  END Stage 00 help
 ```
 
-We use `xhi` for all [NPM lifecycle scripts][_38] (such as `npm test`).
+This tool is used for all [NPM lifecycle scripts][_38] (such as `npm test`).
 
-### Get help
-The `xhi` tool help is detailed and extensive. We have deleted many sections of this document because the information is now directly integrated. One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
+Many sections of this document have been removed because the information is now directly available from `xhi help`. One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
 
 ```
   $ bin/xhi help dev_lint -v
   xhi>  START Stage 00 help
-  xhi>  08 dev_lint: 
+  xhi>  08 dev_lint:
   xhi>    Check lint quality of changed JS code.
   xhi>    Files in 'vendor|node_modules' directories are ignored.
   xhi>    Four tests are performed on each file:
@@ -118,7 +112,7 @@ The `xhi` tool help is detailed and extensive. We have deleted many sections of 
   xhi>      3. Run 'eslint' on each file (config in package.json)
   xhi>      4. List TODO items for developer to review and approve
   xhi>    Any failed step causes this stage to report failure.
-  xhi>    
+  xhi>
   xhi>    This stage does not "short-circuit" so any and all issues are
   xhi>    shown for each run.
   xhi>
@@ -160,7 +154,7 @@ The `xhi` tool takes a `<stage-range>` argument. Stages that are provided out-of
   $ xhi help 0-5
 ```
 
-The `xhi` tool will often run more than one stage even when we specify just one. That is because many stage require prequisite as discussed in the following section.
+The `xhi` tool will often run more than one stage even when we specify just one. That is because many stages require prequisites as discussed in the following section.
 
 ### Prerequisite resolution
 The `xhi` has a sophisticated prerequisite resolver that ensures required stages are run only if required.
@@ -176,11 +170,13 @@ Environment prerequisites may be invalidated. For example, if `xhi install` or `
 Explicitly requested stages will run again regardless of their last success statuses. For example, `xhi dev_lint` may or may not run the `install` stage, but `xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `xhi help-dev_lint` will also run `install` since it is explicitly within the range provided. We can reset the status by removing the `stage_status_map` from the `lib/xhi_state.json` file.
 
 ### Exit status
-If all the stages of a range are successful an exit status of `0` is provided. If any stage fails  processing of the range stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable.
+If all the stages of a range are successful an exit status of `0` is provided. If any stage fails processing of the range stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable. With minor
 
 ---
 ## Feature-module architecture
-Please see `xhi design` for an overview of the architecture we've been advocating since 2011. We ecourge developer to create feature modules that contain their own isolated data and models when appropriate. This is pragmatic, recognizes the fractal nature of MVC, and is compatible with recent libraries such as React and Vue.
+Please see `xhi design` for an overview of the architecture we've been advocating since 2011. We ecourge developer to create feature modules that contain their own isolated data and models when appropriate. This is pragmatic, recognizes the fractal nature of MVC, and is compatible with recent libraries such as React and Vue. A slicker image is shown below.
+
+![Feature module architecture][_0C]
 
 ---
 ## Code Style
@@ -231,7 +227,7 @@ See [this guide][_06] for NodeJS package installation on other Linux distros. He
 ### Mac
 The easiest way path to get familiar with this project on Mac is probably to use a product like Parallels or VMFusion and import a [VMX manifest][_40] and the [VMDK][_41] disk. VirtualBox also runs on Mac but it doesn't integrate as well to the host OS as Parallels, for example.
 
-We should be able to run this natively on the Mac but we haven't tested it.  We would need at the very least Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, Perl File::Slurp, and SSH server.
+We should be able to run this natively on the Mac but we haven't tested it. We would need at the very least Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, Perl File::Slurp, and SSH server.
 
 ### Windows
 We recommend using a virtual machine as detailed above.
@@ -369,7 +365,7 @@ MIT
 
 ### Version 0.4.x
 - (x) Replace `jscoverage` with much more complete and recent `istanbul`
-- (x) Added `cast` routines and detail their use
+- (x) Add `cast` routines and detail their use
 - (x) Consolidate utilities to increase coverage
 - (x) Update lite-box using `cast` methods
 
@@ -382,12 +378,11 @@ MIT
 ### Version 0.6.x
 - (x) Remove vendor code from repo and auto-copy on install
 - (x) Add native utils `makeThrottleFn` and `makeDebounceFn`
-- (x) Add links to updated code style guides
+- (x) Add links to revised code style guides
 - (x) Replace `install` script with `prep-libs` (v0.6.17+)
 
 ### Version 0.7.x
-- (x) Move to consturctor approach to easily create multiple
-   concurrent namespaced apps using the common xhi core
+- (x) Move to consturctor approach to easily create multiple concurrent namespaced apps using the common xhi core
 - (x) Update index page to illustrate
 - (x) Make example app less trivial
 - (x) Number code library level
@@ -420,12 +415,9 @@ MIT
 - (x) Configure setup completely in package.json
 
 ### Version 1.3.x
-- (o) Update code standard quick-reference
 - (x) Replace JSLint with ESLint for ES2015 support
 - (x) Convert from `var` => `let`
 - (x) Implement `xhi` tool development capabilities
-  - (o) 12 publish      : Implement push to coveralls
-  - (o) 13 dev\_restart : Implement dev server restart
   - (x) 00 xhi help
   - (x) 01 install
   - (x) 02 setup
@@ -438,6 +430,8 @@ MIT
   - (x) 09 dev\_cover
   - (x) 10 dev\_commit
   - (x) 11 build
+  - (x) 12 publish
+  - (x) 13 dev\_restart
   - (x) 14 dev\_stop
 - (x) Tool enhancements
   - (x) `xhi setup`     : Implement env prequisites and `lib/xhi_state.json`
@@ -446,7 +440,7 @@ MIT
   - (x) `xhi build`     : Link `dist/latest` to latest build
   - (x) `xhi build`     : Do not auto-increment build until next commit
   - (x) `xhi dev_cover` : Move to `dist/\<build-number\>` directories
-- (x) Update all NPM lifecycle scripts to use `xhi` 
+- (x) Update all NPM lifecycle scripts to use `xhi`
   - (x)"help" : "bin/xhi help",
   - (x)"make" : "bin/xhi make",
   - (x)"setup": "bin/xhi setup",
@@ -460,20 +454,29 @@ MIT
 - (x) Create and update Parallels [VMX][_40] and [VMDK][_41]
 - (x) Replace jslint setting from per-file to config/jslint.conf
 - (x) Expect browser env for js/xhi libraries
-- (x) Fix 01_util.js > makeSeriesMap method cross timezones
+- (x) Fix `js/xhi/01_util.js::makeSeriesMap` across timezones
 - (x) Update code standard
-    
-### Version 1.4.x
 - (x) Create AMI image for deployment
-- (x) Introduce and refine typebomb2 as example app
+
+### Version 1.4.x
+- (x) Add Typebomb2 example application
+- (x) Add patch for font-awesome CSS
+- (x) Convert build system to JavaScript using `package.json` as manifest
+- (x) Enhance `js/xhi` libs and documentation
+- (x) Expand doc in `xhi help build`
+- (x) Revise code standards and images
+- (x) Update docs
+- (x) Fix `superpack` to be more reliable
+- (x) Fix `xhi dev_cover` dependencies
+- (o) Add UUID snippet from Git to build number
 
 ### Version 1.5.x (next)
+- (o) Update code standard quick-reference
 - (o) Test load times using remote server
 - (o) `xhi` tools enhancements
+  - (o) `xhi build` convert: superpack Perl to JS, use `package.json` config
   - (o) `xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
   - (o) `xhi dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
-  - (o) `xhi build` convert: buildify Bash to JS, use `package.json` config
-  - (o) `xhi build` convert: superpack Perl to JS, use `package.json` config
   - (o) `xhi deploy` implement: Add configuration and capability
   - (o) `xhi publish` : Push to NPM
 ---
@@ -483,6 +486,9 @@ MIT
 ## End
 
 [_0A]:img/hi_score.png
+[_0B]:doc/images/tb2-001.png
+[_0C]:doc/images/architecture.png
+[_0D]:doc/images/syntax.png
 [_00]:https://www.manning.com/books/single-page-web-applications
 [_01]:http://mmikowski.github.io/no-frameworks
 [_02]:http://www.amazon.com/dp/1617290750

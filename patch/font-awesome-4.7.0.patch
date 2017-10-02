@@ -1,0 +1,17 @@
+--- node_modules/font-awesome/css/font-awesome.css 2016-10-24 14:33:21.000000000 -0700
++++ node_modules/font-awesome/css/font-awesome.css 2017-10-01 13:23:44.033586888 -0700
+@@ -4,13 +4,7 @@
+  */
+ /* FONT PATH
+  * -------------------------- */
+-@font-face {
+-  font-family: 'FontAwesome';
+-  src: url('../fonts/fontawesome-webfont.eot?v=4.7.0');
+-  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.7.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.7.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.7.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');
+-  font-weight: normal;
+-  font-style: normal;
+-}
++/* Patch removed redundant and incorrect font paths */
+ .fa {
+   display: inline-block;
+   font: normal normal normal 14px/1 FontAwesome;
