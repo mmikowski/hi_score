@@ -30,7 +30,7 @@ tb02._07_shell_ = (function () {
         + '</svg>'
         + '<div class="{_p_}-_shell_title_">TypeB'
         + '<span class="{_p_}-_x_down_">o</span>mb'
-        + '<span class="{_p_}-_x_greeny_">alpha</span>'
+        + '<span class="{_p_}-_x_release_">beta</span>'
         + '</div>'
         + '<div class="{_p_}-_shell_subtext_"></div>'
         + '<div class="{_p_}-_shell_hi_score_">High Score</div>'
@@ -54,7 +54,7 @@ tb02._07_shell_ = (function () {
       _start_html_ : 'Select start level: ',
 
       _bomb_id_prefix_  : aKey + '-_shell_bomb_-',
-      _lives_char_code_ : '&#9825;',
+      _lives_char_code_ : '&#xf004;',
       _key_sound_map_   : {
         _bkspc_    : 'clack',
         _returnd_  : 'kick',
@@ -209,7 +209,7 @@ tb02._07_shell_ = (function () {
     for ( i = __0; i < lives_count; i++ ) {
       lives_list[ vMap._push_ ]( configMap._lives_char_code_ );
     }
-    lives_str = lives_list[ vMap._join_ ]( vMap._blank_ );
+    lives_str = lives_list[ vMap._join_ ]( ' ' );
     $Map._$lives_gfx_[ vMap._html_ ]( lives_str );
   }
 

@@ -10,8 +10,8 @@
 @font-face {
   font-family: 'FontAwesome';
   src: url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.eot?v=4.7.0');
-  src: url('../font/vendor/font-awesome-4.7.0/ /fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),
-       url('../font/vendor/font-awesome-4.7.0/ontawesome-webfont.woff2?v=4.7.0') format('woff2'),
+  src: url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.eot?#iefix&v=4.7.0') format('embedded-opentype'),
+       url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.woff2?v=4.7.0') format('woff2'),
        url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.woff?v=4.7.0') format('woff'),
        url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.ttf?v=4.7.0') format('truetype'),
        url('../font/vendor/font-awesome-4.7.0/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') format('svg');

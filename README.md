@@ -7,8 +7,22 @@
 ## Overview
 **`hi_score`** is a full-lifecycle starter project for web application client development. It embodies best (or at least pretty-darn-good) practices accumulated from over 20 years of continuous web development experience for every stage of deveplment. **`hi_score`** embraces the feature-module (or "web component") design pattern, so it should work well with React or Vue.js projects.  Please do swap assets and libraries as required - [that's the point][_01].
 
-## Recent changes (2017-09-09)
-We just released Version 1.3.x and it is a huge update from 1.2.x. We created a virtual appliance so setup could hardly be easier. We also added a universal `xhi` tool to guide developers to necessary tasks and added sophisticated dependency checking to help them avoid mistakes.
+## Recent changes (2017-10-01)
+### Version 1.4.x (2017-10-01)
+- Add Typebomb2 example application
+- Add patch for font-awesome css
+- More robust libraries
+- Fix various bugs
+(TODO) update virtual appliance image
+
+
+### Version 1.3.x (2017-09-09)
+- Add virtual appliance for ease of setup
+- Add universal `xhi` lifecycle managment tool
+- All configuration now in `package.json`
+- Most tools move to NodeJS
+
+The `xhi` tool guides developers through lifecycle stages and employs sophisticated dependency checking to help avoid mistakes
 
 ---
 ## Quick start
@@ -16,17 +30,21 @@ Installation is trivial once the [development environment](#development-platform
 
 ```bash
   git clone git@github.com:mmikowski/hi_score.git
-  cd hi_score; export PATH=`pwd`/bin:$PATH;
-  xhi build && google-chrome build/latest/dist/ex0*.html
+  cd hi_score
+  bin/xhi build,dev_start
+  google-chrome http://localhost:8080/build/latest/dist
 ```
 
-The `xhi build` command will install vendor assets; manage, setup, and patch vendor files for development; configure and start an HTTP server; Lint code with ESLint and other checkes, check TODO items; run all regression test suites; calculate and report test coverage; minimize, obsfucate, and package a distribution with a unique build number. If it is successful, Chrome will open to show you two simple example applications.
+The `xhi build,dev_start` command installs vendor assets; copies, configures, and patches vendor files for development; configures and starts an HTTP server; lints code with ESLint and other checkes, lists TODO items for developer review; runs all regression test suites in `test.d`; calculates and reports test coverage; minimizes, obsfucates, and packages a distribution with a unique build number containing multiple applications.
 
-Yes, we know the examples are lame. We promise to make them more exciting in the future.
+There are now three example applications to inspect. Two (`app-ex01.html` and `app-ex02.html`) are
+simple applications that use the default libraries. Typebomb2 is the latest addition and it is far from trivial.
+
+We encourage you to use the Chrome developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how CSS classes are obsfucated and namespaced.
 
 ---
 ## Key benefits
-**`hi_score`** can really jump-start web client development. With lots of hard stuff resolved out-of-the-box, we can focus on improving things that really matter, like the JavaScript, HTML, CSS and application logic. It provides many highly desirable capabilities that can be otherwise very difficult to orchestrate:
+**`hi_score`** solves lots of hard stuff out-of-the-box so we can focus on improving things that really matter, like the JavaScript, HTML, CSS and application logic.:
 
 - Automated full-lifecycle best practice with the `xhi` tool
 - Integration with GIT and NPM lifecycles
@@ -89,20 +107,24 @@ We use `xhi` for all [NPM lifecycle scripts][_38] (such as `npm test`).
 The `xhi` tool help is detailed and extensive. We have deleted many sections of this document because the information is now directly integrated. One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
 
 ```
-  $ xhi help dev_lint -v
-    xhi>  START Stage 00 help
-    xhi>  08 dev_lint:
-    xhi>    Check lint quality of changed JS code.
-    xhi>    Files in 'vendor' directors are ignored.
-    xhi>    Four tests are performed on each file:
-    xhi>      1. Fail if tabs characters or trailing space.
-    xhi>      2. Fail if 'use strict'; is not found.
-    xhi>      3. Fail if 'eslint <file>' does not pass.
-    xhi>      4. List TODO items for developer review.
-    xhi>         Fail if developer does not approve.
-    xhi>    NPM SCRIPTS      : none.
-    xhi>    SUCCESS CRITERIA : All tests complete without error
-    xhi>  END   Stage 00 help
+  $ bin/xhi help dev_lint -v
+  xhi>  START Stage 00 help
+  xhi>  08 dev_lint: 
+  xhi>    Check lint quality of changed JS code.
+  xhi>    Files in 'vendor|node_modules' directories are ignored.
+  xhi>    Four tests are performed on each file:
+  xhi>      1. Check for tab characters or trailing space
+  xhi>      2. Ensure 'use strict'; is employed
+  xhi>      3. Run 'eslint' on each file (config in package.json)
+  xhi>      4. List TODO items for developer to review and approve
+  xhi>    Any failed step causes this stage to report failure.
+  xhi>    
+  xhi>    This stage does not "short-circuit" so any and all issues are
+  xhi>    shown for each run.
+  xhi>
+  xhi>    NPM SCRIPTS      : none.
+  xhi>    SUCCESS CRITERIA : All tests complete without error
+  xhi>  END   Stage 00 help
 ```
 
 ### Run lifecycle stages
@@ -442,7 +464,10 @@ MIT
 - (x) Update code standard
     
 ### Version 1.4.x
-- (i) Create AMI image for deployment
+- (x) Create AMI image for deployment
+- (x) Introduce and refine typebomb2 as example app
+
+### Version 1.5.x (next)
 - (o) Test load times using remote server
 - (o) `xhi` tools enhancements
   - (o) `xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
@@ -451,7 +476,6 @@ MIT
   - (o) `xhi build` convert: superpack Perl to JS, use `package.json` config
   - (o) `xhi deploy` implement: Add configuration and capability
   - (o) `xhi publish` : Push to NPM
-- (o) Increase richness of example app(s)
 ---
 ## Similar Projects
 [absurd.js][_26], [responsive.js][_27]

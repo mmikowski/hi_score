@@ -51,10 +51,10 @@ tb02._06_css_ = (function () {
             __moz_user_select_     : '__moz_none_',
             __o_user_select_       : '_none_',
             _user_select_          : '_none_',
-            __ms_user_select_      : '_none_'
 
             // TODO 2017-09-25 msm : Consider adding-back these keys.
             //   We can set the key list using pcss._initModule_()
+            // __ms_user_select_      : '_none_'
             // __webkit_user_drag_    : '_none_',
             // __moz_user_drag_       : '_none_',
             // _user_drag_            : '_none_',
@@ -65,7 +65,6 @@ tb02._06_css_ = (function () {
         { _selector_str_ : __p( 'input, textarea,.{_p_}-_x-user-select_' ),
           _rule_map_     : {
             __moz_user_select_    : '_text_',
-            __ms_user_select_    : '_text_',
             __o_user_select_      : '_text_',
             __webkit_user_select_ : '_text_',
             _user_select_         : '_text_'
@@ -74,7 +73,7 @@ tb02._06_css_ = (function () {
         { _selector_str_ : 'html',
           _rule_map_     : {
             _font_size_   : '_14px_',
-            _font_family_ : '_std_font_face_'
+            _font_family_ : '_font_family_sans_'
           }
         },
         { _selector_str_ : 'body',
@@ -103,35 +102,68 @@ tb02._06_css_ = (function () {
         },
         { _selector_str_ : __p( '.{_p_}-_shell_subtext_ select' ),
           _rule_map_     : {
-            _color_     : '_x444_',
+            _color_     : '_txt_alt_hex_',
             _font_size_ : '_1d875rem_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_x_down_' ),
           _rule_map_     : {
             _vertical_align_ : '_sub_',
-            _color_          : '_xc00_'
+            _color_          : '_accent_hex_'
           }
         },
-        { _selector_str_ : __p( '.{_p_}-_x_greeny_' ),
+        { _selector_str_ : __p( '.{_p_}-_x_release_' ),
           _rule_map_     : {
             _vertical_align_ : '_sub_',
             _font_size_      : '_2d5rem_',
-            _color_          : '_x080_'
+            _color_          : '_txt_alt_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_title_' ),
           _rule_map_     : {
             _font_size_ : '_4rem_',
             _top_       : '_4rem_',
-            _color_     : '_xaaa_'
+            _color_     : '_txt_lt_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_subtext_' ),
           _rule_map_     : {
             _font_size_ : '_3rem_',
             _top_       : '_10d5rem_',
-            _color_     : '_x999_'
+            _color_     : '_txt_dk_hex_'
+          }
+        },
+        { _selector_str_ : __p( '.{_p_}-_shell_bg_svg_' ),
+          _rule_map_     : {
+            _position_     : '_absolute_',
+            _width_        : '_100p_',
+            _height_       : '_100p_',
+            _fill_         : '_area_mid_hex_',
+            _stroke_width_ : ['.375'],
+            _stroke_       : '_txt_lt_hex_'
+          }
+        },
+        { _selector_str_ : __p( '.{_p_}-_shell_typebox_' ),
+          _rule_map_     : {
+            _display_          : '_block_',
+            _position_         : '_absolute_',
+            _font_size_        : '_2d5rem_',
+            _bottom_           : '_0_',
+            _height_           : '_5rem_',
+            _width_            : '_60p_',
+            _line_height_      : '_5rem_',
+            _left_             : '_50p_',
+            _margin_left_      : '_n30p_',
+            _font_family_      : '_font_family_mono_',
+            _border_width_     : '_d25rem_',
+            _border_style_     : '_solid_',
+            _border_color_     : '_txt_lt_hex_',
+            _border_bottom_    : '_0_',
+            _background_color_ : '_area_accent_hex_',
+            _border_radius_    : [[ '_5rem_', '_5rem_', '_0_', '_0_' ]],
+            _text_align_       : '_center_',
+            _box_shadow_       : '_shdw_02_',
+            _overflow_         : '_hidden_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_hi_score_' ),
@@ -159,17 +191,18 @@ tb02._06_css_ = (function () {
             _line_height_   : '_4rem_',
             _font_weight_   : '_800_',
             _border_bottom_ : '_underscore_border_',
-            _color_         : '_x666_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_level_label_' ),
           _rule_map_     : {
-            _float_ : '_left_'
+            _float_ : '_left_',
+            _color_ : '_txt_alt_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_level_count_' ),
           _rule_map_     : {
-            _float_ : '_right_'
+            _float_ : '_right_',
+            _color_ : '_txt_dk_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_lives_' ),
@@ -188,35 +221,15 @@ tb02._06_css_ = (function () {
         },
         { _selector_str_ : __p( '.{_p_}-_shell_lives_count_' ),
           _rule_map_     : {
-            _color_ : '_x666_',
             _float_ : '_right_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_lives_gfx_' ),
           _rule_map_     : {
             _float_       : '_left_',
-            _font_weight_ : '_800_',
-            _color_       : '_x800_'
-          }
-        },
-        { _selector_str_ : __p( '.{_p_}-_shell_typebox_' ),
-          _rule_map_     : {
-            _display_          : '_block_',
-            _position_         : '_absolute_',
-            _font_size_        : '_2d5rem_',
-            _bottom_           : '_0_',
-            _height_           : '_6d25rem_',
-            _width_            : '_60p_',
-            _line_height_      : '_5rem_',
-            _left_             : '_50p_',
-            _margin_left_      : '_n30p_',
-            _font_family_      : '_fix_font_face_',
-            _border_           : '_typebox_border_',
-            _background_color_ : '_xddd_',
-            _border_radius_    : '_typebox_radius_',
-            _text_align_       : '_center_',
-            _box_shadow_       : '_shadow_white_str_',
-            _overflow_         : '_hidden_'
+            _font_family_ : '_font_family_awesome_',
+            _font_size_   : '_1d5rem_',
+            _color_       : '_area_alert_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_score_' ),
@@ -230,12 +243,13 @@ tb02._06_css_ = (function () {
             _height_        : '_6d5rem_',
             _font_weight_   : '_800_',
             _border_bottom_ : '_underscore_border_',
-            _color_         : '_x666_'
+            _color_         : '_txt_dk_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_score_label_' ),
           _rule_map_     : {
             _line_height_ : '_3rem_',
+            _color_ : '_txt_alt_hex_',
             _text_align_  : '_center_'
           }
         },
@@ -245,65 +259,39 @@ tb02._06_css_ = (function () {
             _text_align_  : '_center_'
           }
         },
-        { _selector_str_ : __p( '.{_p_}-_shell_bg_svg_' ),
-          _rule_map_     : {
-            _position_     : '_absolute_',
-            _width_        : '_100p_',
-            _height_       : '_100p_',
-            _fill_         : '_xccc_',
-            _stroke_width_ : '_0_',
-            _stroke_       : '_xaaa_'
-          }
-        },
         { _selector_str_ : __p( '.{_p_}-_shell_bomb_' ),
           _rule_map_     : {
             _position_         : '_absolute_',
-            _font_size_        : '_2d5rem_',
-            _border_           : '_bomb_border_',
-            _height_           : '_2rem_',
-            _line_height_      : '_1d625rem_',
-            _border_radius_    : '_d5rem_',
-            _padding_          : '_bomb_padding_',
-            _font_family_      : '_fix_font_face_',
-            _box_shadow_       : '_shadow_med_dark_str_',
-            _color_            : '_xfff_',
-            _background_color_ : '_bomb_bkgd_hex_'
+            _font_size_        : [ '2em' ],
+            _border_color_     : '_frame_hex_',
+            _border_radius_    : [ '.25em' ],
+            _border_style_     : '_solid_',
+            _border_width_     : '_d125rem_',
+            _height_           : [ '1.25emm' ],
+            _line_height_      : [ '1em' ],
+            _padding_          : [['_d25rem_', '_d75rem_' ]],
+            _font_family_      : '_font_family_mono_',
+            _box_shadow_       : '_shdw_09_',
+            _color_            : '_txt_dk_hex_',
+            _background_color_ : '_area_warn_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_x_fast_' ),
           _rule_map_     : {
             _font_size_        : '_3rem_',
-            _color_            : '_xfff_',
-            _background_color_ : '_fast_text_hex_',
-            _border_color_     : '_fast_border_hex_'
+            _background_color_ : '_area_alert_hex_',
+            _border_color_     : '_frame_dk_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_x_slow_' ),
           _rule_map_     : {
             _font_size_        : '_2rem_',
-            _background_color_ : '_slow_bkgd_hex_',
-            _border_color_     : '_xfff_'
-
-          }
-        },
-        { _selector_str_ : __p('.{_p_}-_x_big_bomb_'),
-          _rule_map_ : {
-            _font_size_        : '_2rem_',
-            _background_color_ : '_big_bkgd_hex_',
-            _border_color_     : '_big_border_hex_'
+            _background_color_ : '_area_info_hex_',
+            _border_color_     : '_frame_lt_hex_'
           }
         }
       ],
       _mixin_map_ : {
-        _big_bkgd_hex_    : '#333',
-        _big_border_hex_  : '#f05',
-        _fast_text_hex_   : '#080',
-        _fast_border_hex_ : '#0f0',
-        _slow_bkgd_hex_   : '#800',
-        _bomb_bkgd_hex_   : '#880',
-        _bomb_border_     : '.2rem solid #ee8',
-        _bomb_padding_    : '0 .5rem 0 .5rem',
-
         _14px_ : '14px',
 
         _3d25rem_ : '_3d25rem_',
@@ -322,21 +310,9 @@ tb02._06_css_ = (function () {
         _n30p_    : '-30%',
 
         _sub_  : 'sub',
-        _x080_ : '#080',
-        _x666_ : '#666',
-        _x800_ : '#800',
-        _x999_ : '#999',
-        _xc00_ : '#c00',
-
-        _typebox_radius_ : '5rem 5rem 0 0',
 
         __moz_none_           : '-moz-none',
-        _shadow_med_dark_str_ : '#444 0 0 0.2em 0',
-        _shadow_white_str_    : '#fff 0 0 0 0.33em',
-        _typebox_border_      : '0.25em solid #080',
-        _underscore_border_   : '1px solid #aaa',
-        _std_font_face_       : 'open-sans,arial,helvetica,sans-serif',
-        _fix_font_face_       : 'Courier New,Courier,monospace'
+        _underscore_border_   : [[ '_d125rem_', '_solid_', '_txt_dk_hex_' ]]
       }
     },
     stateMap = {

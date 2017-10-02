@@ -116,7 +116,7 @@
     "test": "bin/xhi dev_test",
     "xhi": "bin/xhi"
   },
-  "version": "1.3.11",
+  "version": "1.4.0",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -309,14 +309,17 @@
       "Lint changed code",
       [
         "Check lint quality of changed JS code.",
-        "Files in 'vendor' directors are ignored.",
+        "Files in 'vendor|node_modules' directories are ignored.",
         "Four tests are performed on each file:",
-        "  1. Fail if tabs characters or trailing space.",
-        "  2. Fail if 'use strict'; is not found.",
-        "  3. Fail if 'eshint --config config/eshint.conf <file>'",
-        "     does not pass.",
-        "  4. List TODO items for developer review.",
-        "     Fail if developer does not approve.",
+        "  1. Check for tab characters or trailing space.",
+        "  2. Ensure 'use strict'; is employed",
+        "  3. Run 'eslint' on each file (config in package.json)",
+        "  4. List TODO items for developer to review and approve.",
+        "Any failed step causes this stage to report failure.",
+        "",
+        "The test do not short-circuit so any and all issues are",
+        "shown for each run.",
+        "",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : All tests complete without error"
       ],
@@ -366,7 +369,53 @@
       ],
       "Build a distribution",
       [
-        "Build a distribution",
+        "Build a distribution. The config, like for all 'xhi' tools",
+        "is found in 'package.json' as shown below.",
+        "",
+        "  xhi_11_BuildMatrix : {",
+        "    bundle_map : {",
+        "      bundle1_list : [",
+        "        <src_path> OR",
+        "        [ <src_path>, <dest_path>, <do_dir_copy> ]",
+        "        ...",
+        "      ],",
+        "      ...",
+        "    }",
+        "    app_table : [",
+        "      {",
+        "        app_id : <app_id>,",
+        "        css_make_matrix : {",
+        "          <do_vendor> : true|false",
+        "          asset_list  : [",
+        "            <src_path> OR",
+        "            [ <src_path>, <dest_path>, <do_dir_copy> ] OR",
+        "            { bundle_key_list : [",
+        "                <key_from_bundle_map>, ...",
+        "              ]",
+        "            }",
+        "          ]",
+        "        },",
+        "        js_make_matrix : { <same_as_css_make_matrix> },",
+        "        path_copy_matrix : { <same_as_css_make_matrix> }",
+        "      },",
+        "      ...",
+        "    ]",
+        "  }",
+        "",
+        "Use the 'bundle_map' to create group definitions of assets to",
+        "deploy.  If only the <src_path> is provided the build process",
+        "assumes: The path is a file in the development environment AND",
+        "The file is to be copied to the same location in the",
+        "'build/<build_number>/dist' directory.",
+        "",
+        "If we want a directory copy or a different source and destination, the ",
+        "second form must be used: [ <src_path>, <dest_path>, <do_dir_copy> ].",
+        "If <dest_path> is 'null' it is calculated to be the same as <src_path>.",
+        "If <do_dir_copy> is 'true' then a directory copy is attempted.",
+        "",
+        "The 'app_table' section lists all applicaitons to build in a map.",
+        "Each map has the following fields: 'app_id' which is used to set the id",
+        "",
         "NPM SCRIPTS      : prepare",
         "SUCCESS CRITERIA : All tests complete without error"
       ],
@@ -587,10 +636,17 @@
           "patch_filename": "uglify-js-3.0.21.patch",
           "pattern_str": "^// BEGIN hi_score patch line 324",
           "relative_name": "patch/uglify-js-3.0.21.patch"
+        },
+        {
+          "check_filename": "node_modules/font-awesome/css/font-awesome.css",
+          "patch_filename": "font-awesome-4.7.0.patch",
+          "pattern_str": "Patch removed redundant and incorrect font paths",
+          "relative_name": "patch/font-awesome-4.7.0.patch"
         }
       ]
     }
   },
+
   "xhi_11_BuildMatrix": {
     "note01_str": "Deploy fields: src_pathname, tgt_pathname, is_dircopy.",
     "note02_str": "Flags do_compress, do_isolate may be added.",
@@ -736,7 +792,8 @@
               "img/hi_score.png",
               null,
               false
-            ]
+            ],
+            [ "sound", null, true ]
           ]
         }
       }

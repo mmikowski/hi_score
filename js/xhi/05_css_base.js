@@ -75,6 +75,10 @@ xhi._05_css_base_ = (function () {
             _area_mid_lt_hex_   : '#474e54',
             _area_mid_xlt_hex_  : '#393f44',
 
+            _area_info_hex_     : '#282',
+            _area_warn_hex_     : '#882',
+            _area_alert_hex_    : '#822',
+
             // Standard button colors.
             _btn_area_hex_      : '#6cafff', // === _link_hex_
             _btn_area_hover_hex_: '#89c3ff', // === _link_dk_hex_
@@ -103,7 +107,7 @@ xhi._05_css_base_ = (function () {
             // Text colors are generally more saturated and are darker
             // (lighter in inverse scheme) than correlating area colors.
             _txt_hex_           : '#acb9c3', // document font
-            _txt_alt_hex_       : '#a47330', // altr ~ invert of hex_txt_link
+            _txt_alt_hex_       : '#ffa62c', // 'ltr ~ invert of link_hex
             _txt_dk_hex_        : '#c3ccd4',
             _txt_inv_hex_       : '#5b666e',
             _txt_inv_dk_hex_    : '#77848f',
@@ -146,19 +150,23 @@ xhi._05_css_base_ = (function () {
             // _gradbtm_hex_   : '#02353e',
             // Accent colors complement primary hue but a distinctly different.
             // Use to draw attention to features.
-            _accent_hex_        : '#4e7585',
-            _accent_dk_hex_     : '#527582',
-            _accent_lt_hex_     : '#385966',
+            _accent_hex_        : '#046273',  // gradtop_hex
+            _accent_dk_hex_     : '#527582',  // gradbtm_hex
+            _accent_lt_hex_     : '#06788c',  // * new lighter color
 
             // Area colors are intended to fill large swaths of area.
             // Generally they are less intense than comparable text colors.
-            _area_hex_          : '#ececec', // bkgd_hex     default background;
-            _area_accent_hex_   : '#d5d5f8', // *bkgd_ac_hex_ box background
-            _area_hover_hex_    : '#fff',    // bright_hex   full-bright
+            _area_hex_          : '#ececec', //  bkgd_hex     default bkgd
+            _area_accent_hex_   : '#d5d5f8', // *bkgd_ac_hex_ textbox bkgd
+            _area_hover_hex_    : '#fff',    //  bright_hex   full hover bright
             _area_mid_hex_      : '#889',    // *bkgd_mid_hex
-            _area_mid_dk_hex_   : '#667',    // bkgd_dk_hex
+            _area_mid_dk_hex_   : '#667',    //  bkgd_dk_hex
             _area_mid_lt_hex_   : '#aab',    // *bkgd_mid_lt_hex
             _area_mid_xlt_hex_  : '#ccd',    // *bkgd_mid_xlt_hex
+
+            _area_info_hex_     : '#262',
+            _area_warn_hex_     : '#662',
+            _area_alert_hex_    : '#622',
 
             // Standard button colors.
             _btn_area_hex_      : '#6cafff', // === _link_hex_
