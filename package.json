@@ -110,13 +110,12 @@
     "url": "git+https://github.com/mmikowski/hi_score.git"
   },
   "scripts": {
-    "help": "bin/xhi help",
     "build": "bin/xhi build",
+    "help": "bin/xhi help",
     "setup": "bin/xhi setup",
-    "test": "bin/xhi dev_test",
-    "xhi": "bin/xhi"
+    "test": "bin/xhi dev_test"
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
