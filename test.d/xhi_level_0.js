@@ -3145,7 +3145,7 @@ function resizeTextarea ( test_obj ) {
 liteBoxMap = {
   _outer01_tmplt_ : __blank
     + '<div id="' + aKey + '-_lb_" style="display: block; top: 50%; '
-      + 'left: 50%; margin-top: 0px; margin-left: 0px; width: 0px;" '
+      + 'left: 50%; margin-top: -192px; margin-left: -256px; width: 512px;" '
       + 'class="' + aKey + '-_lb_ ' + aKey + '-_x_active_"><div class="'
       + aKey + '-_lb_title_" '
       + 'style="display: block;">{_title_}</div>'
@@ -3153,9 +3153,10 @@ liteBoxMap = {
       + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _outer02_tmplt_ : __blank
-    + '<div id="' + aKey + '-_lb_" class="' + aKey + '-_lb_ ' + aKey + '-_x_active_" '
+    + '<div id="' + aKey + '-_lb_" class="' + aKey + '-_lb_ '
+      + aKey + '-_x_active_" '
       + 'style="display: block; top: 50%; left: 50%; '
-      + 'margin-top: 0px; margin-left: 0px; width: 0px;"><div '
+      + 'margin-top: -192px; margin-left: -256px; width: 512px;"><div '
       + 'class="' + aKey + '-_lb_title_" style="display: block;">{_title_}</div>'
       + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
       + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
@@ -3432,9 +3433,9 @@ function showLb ( test_obj ) {
       [ [{ _close_html_   : 'x',
            _content_html_ : 'mello world',
            _onclose_fn_   : __showLbCb,
-           _position_map_ : { top : '50%', left : '50%',
-             'margin-top' : 0, 'margin-left' : 0, width : 0
-           }
+//          _position_map_ : { top : '50%', left : '50%',
+//            'margin-top' : 0, 'margin-left' : 0, width : 0
+//          }
         } ], t01_a_html, t01_b_html ]
     ],
 

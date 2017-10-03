@@ -106,7 +106,8 @@ xhi._05_css_lb_ = (function () {
               _padding_    : [ [ '_d25rem_', '_1rem_' ] ],
               _font_size_  : '_1d5rem_',
               _background_ : '_area_mid_hex_',
-              _cursor_     : '_move_'
+              _cursor_     : '_move_',
+              _white_space_ : '_nowrap_'
             }
           },
           { _selector_str_ : '@keyframes spinIt {'

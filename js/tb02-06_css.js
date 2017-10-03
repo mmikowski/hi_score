@@ -221,7 +221,8 @@ tb02._06_css_ = (function () {
         },
         { _selector_str_ : __p( '.{_p_}-_shell_lives_count_' ),
           _rule_map_     : {
-            _float_ : '_right_'
+            _float_ : '_right_',
+            _color_ : '_txt_dk_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_lives_gfx_' ),

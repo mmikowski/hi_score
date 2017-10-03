@@ -145,10 +145,10 @@ xhi._06_lb_ = (function () {
     // BEGIN DOM method /set$Map/
     function set$Map () {
       $Map = {
-        _$body_    : $( vMap._body_ ),
-        _$litebox_ : $( '#' + aKey + '-_lb_' ),
-        _$mask_    : $( '#' + aKey + '-_lb_mask_' ),
-        _$spin_    : $( '#' + aKey + '-_lb_spin_' )
+        _$view_     : $( window ),
+        _$litebox_  : $( '#' + aKey + '-_lb_' ),
+        _$mask_     : $( '#' + aKey + '-_lb_mask_' ),
+        _$spin_     : $( '#' + aKey + '-_lb_spin_' )
       };
     }
     // . END DOM method /set$Map/
@@ -342,20 +342,22 @@ xhi._06_lb_ = (function () {
         onshow_fn    = smap._onshow_fn_,
         active_class = configMap._active_class_,
 
-        width_px, margin_left_px,
+        view_h_px, view_w_px, margin_left_px,
         margin_top_px, css_map
-      ;
+        ;
 
       if ( do_sizing ) {
-        width_px = $litebox[ vMap._outerHeight_ ]();
-        margin_top_px  = ( __0 - width_px / __2 );
-        margin_left_px = ( __0 - $litebox[ vMap._outerWidth_  ]() / __2 );
-        css_map        = {
+        view_h_px = $Map._$view_[ vMap._outerHeight_ ]();
+        view_w_px = $Map._$view_[ vMap._outerWidth_  ]();
+        margin_left_px = ( __0 - view_w_px / 4 );
+        margin_top_px  = ( __0 - view_h_px / 4 );
+
+        css_map = {
           'margin-top'  : margin_top_px,
           'margin-left' : margin_left_px,
           left          : cssVmap._50p_,
           top           : cssVmap._50p_,
-          width         : width_px
+          width         : view_w_px / __2
         };
         $litebox[ vMap._css_ ]( css_map );
       }

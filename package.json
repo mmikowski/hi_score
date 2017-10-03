@@ -115,7 +115,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.1",
+  "version": "1.4.2",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -645,7 +645,6 @@
       ]
     }
   },
-
   "xhi_11_BuildMatrix": {
     "note01_str": "Deploy fields: src_pathname, tgt_pathname, is_dircopy.",
     "note02_str": "Flags do_compress, do_isolate may be added.",
@@ -792,7 +791,11 @@
               null,
               false
             ],
-            [ "sound", null, true ]
+            [
+              "sound",
+              null,
+              true
+            ]
           ]
         }
       }
