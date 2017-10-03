@@ -1,4 +1,4 @@
-/*global $, xhi, tb02, Audio*/
+/*global $, tb02, Audio*/
 // == BEGIN MODULE tb02._07_shell_ ====================================
 tb02._07_shell_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
@@ -443,8 +443,6 @@ tb02._07_shell_ = (function () {
     __$sub( $body, '_bomb_allclear_', onBombAllclearFn );
     // . END model event bindings
 
-    // Initialize litebox
-    xhi._06_lb_._makeInstanceFn_( aMap );
     // Initialize model *after* we have subscribed all our handlers
     aMap._03_model_._initModuleFn_();
 

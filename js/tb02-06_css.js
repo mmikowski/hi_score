@@ -1,5 +1,5 @@
-/*global $, pcss, xhi, tb02*/
-// == BEGIN MODULE tb02._05_css_ =======================================
+/*global $, pcss, tb02*/
+// == BEGIN MODULE tb02._06_css_ =======================================
 tb02._06_css_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
@@ -458,9 +458,6 @@ tb02._06_css_ = (function () {
     var palette_map;
 
     if ( stateMap._is_ready_ ) { return; }
-    // Add base and litebox css to tb02.css_base_ and tb02._css_lb
-    xhi._05_css_base_ ._makeInstanceFn_( aMap );
-    xhi._05_css_lb_   ._makeInstanceFn_( aMap );
 
     // Initialize pcss and merge mixin maps
     pcss._initModule_({ _style_el_prefix_ : aKey });
@@ -515,4 +512,4 @@ tb02._06_css_ = (function () {
   };
   // == . END PUBLIC METHODS ===========================================
 }());
-// == . END MODULE tb02._05_css_ =======================================
+// == . END MODULE tb02._06_css_ =======================================
