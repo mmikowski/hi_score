@@ -190,7 +190,7 @@ tb02._06_css_ = (function () {
             _height_        : '_4rem_',
             _line_height_   : '_4rem_',
             _font_weight_   : '_800_',
-            _border_bottom_ : '_underscore_border_',
+            _border_bottom_ : '_underscore_border_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_level_label_' ),

@@ -21,7 +21,11 @@
 
 ---
 ## Quick start
-First set up a [development environment](#development-platform). Open a terminal and enter the following lines. Wait for each to complete before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
+Download the latest [latest virual appliance][_39] to try `hi_score` with the minimum of time and hassle. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
+
+![virual_appliance][_0E]
+
+Open a terminal and enter the following lines. Wait for each to complete before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
 
 ```bash
   git clone git@github.com:mmikowski/hi_score.git
@@ -464,6 +468,7 @@ MIT
 - (x) Update docs
 - (x) Fix `superpack` to be more reliable
 - (x) Fix `bin/xhi dev_cover` dependencies
+- (x) Update AMI image for deployment, add screen shot
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
 - (o) Fix commit hook conflict in `bin/xhi` run range
 - (o) Update [quick reference][_03] code standard
@@ -486,6 +491,7 @@ MIT
 [_0B]:doc/images/tb2-001.png
 [_0C]:doc/images/architecture.png
 [_0D]:doc/images/syntax.png
+[_0E]:img/hi_score-appliance.png
 [_00]:https://www.manning.com/books/single-page-web-applications
 [_01]:http://mmikowski.github.io/no-frameworks
 [_02]:http://www.amazon.com/dp/1617290750
@@ -527,4 +533,5 @@ MIT
 [_39]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-ova2.ova
 [_40]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001.vmx
 [_41]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-disk1.zip
+
 
