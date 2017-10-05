@@ -17,7 +17,7 @@ xhi._makeAppFn_ = function ( app_key ) {
   // a pre-defined group that does not include everything.
   // Something like this:
   //   app_map = xhi._08_app_._makeInstanceFn_({
-  //     _namespace_key_ : 'tb02',
+  //     _namespace_key_ : 'xxx',
   //     _module_list_   : [
   //       [ '_00_root_', { ...root_options...} ],
   //       [ '_01_util_', { ...util_options...} ],
