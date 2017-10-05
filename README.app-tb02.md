@@ -1,36 +1,36 @@
 ```
 DEPENDENCY ORDER, LOAD ORDER, EVENT PROPOGATION
 ===============================================
-tb<xx>.00_root.js
+tb02.00_root.js
     V
-tb<xx>.01_util.js
+tb02.01_util.js
     V
-tb<xx>.03_model.js   <== tb<xx>.03.model.data.js
+tb02.03_model.js   <== tb02.03.model.data.js
     V
-tb<xx>.05.css_<feature>.js
+tb02.05.css_<feature>.js
     V
-tb<xx>.06_css.js
+tb02.06_css.js
     V
-tb<xx>.07_shell.js
+tb02.07_shell.js
     V
-tb<xx>.08_app.js
+tb02.08_app.js
 
 
 CALL AND INITIALIATION ORDER
 ============================
-tb<xx>.08_app.js
+tb02.08_app.js
     V
-tb<xx>.07_shell.js
+tb02.07_shell.js
     V
-tb<xx>.06_css.js 
+tb02.06_css.js 
     V
-tb<xx>.05.css_<feature>.js  
+tb02.05.css_<feature>.js  
     V
-tb<xx>.03_model.js => tb<xx>.03.model.data.js
+tb02.03_model.js => tb02.03.model.data.js
     V
-tb<xx>.01_util.js*
+tb02.01_util.js*
     V
-tb<xx>.00_root.js
+tb02.00_root.js
 ```
 
 # Problems

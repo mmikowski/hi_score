@@ -5,23 +5,25 @@
 
 ---
 ## Overview
-**`hi_score`** is a full-lifecycle starter project for web application development. It embodies good practice from over 20 years of experience for every lifecycle stage. **`hi_score`** embraces the feature-module (or "web component") design pattern, so it should work well with React or Vue.js. Please do swap assets and libraries as required - [that's the point][_01].
+`hi_score` is a full-lifecycle starter project for web application development. It embodies good practice from over 20 years of experience for every lifecycle stage. `hi_score` embraces the feature-module (or "web component") design pattern, so it should work well with React or Vue.js. Please do swap assets and libraries as required - [that's the point][_01].
 
 ## Recent changes
 ### Version 1.4.x (2017-10-01)
-- (x) Add Typebomb2 example application
-- (x) Add patch for font-awesome CSS
-- (x) Convert build system to JavaScript using `package.json` as manifest
-- (x) Enhance `js/xhi` libs and documentation
-- (x) Expand doc in `bin/xhi help build`
-- (x) Revise code standards and images
-- (x) Update docs
-- (x) Fix `superpack` to be more reliable
-- (x) Fix `bin/xhi dev_cover` dependencies
+- Add Typebomb2 example application
+- Fix font path errors with patch for font-awesome CSS 
+- Convert build system to JavaScript using `package.json` as manifest
+- Enhance `js/xhi` libs and documentation
+- Expand doc in `bin/xhi help build`
+- Revise code standards
+- Update README with images
+- Fix `superpack` to be more reliable
+- Fix `bin/xhi dev_cover` dependencies
 
 ---
 ## Quick start
-Download the latest [latest virual appliance][_39] to try `hi_score` with the minimum of time and hassle. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
+Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels. If you need more help with installing a VM or wish to consider other options, please consult the "Development platform" section in the [hi_score][_01] documentation.
+
+Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
 
 ![virual_appliance][_0E]
 
@@ -36,13 +38,13 @@ Open a terminal and enter the following lines. Wait for each to complete before 
 
 The `bin/xhi` tool guides developers through lifecycle stages and employs sophisticated dependency checking to help avoid mistakes. The `bin/xhi build,dev_start` command installs vendor assets; copies, configures, and patches vendor files for development; configures and starts an HTTP server; lints code with ESLint and other checks, lists TODO items for developer review; runs all regression test suites in `test.d`; calculates and reports test coverage; minimizes, obsfucates, and creates a unique distribution directory containing multiple applications. The latest build can always be found in `build/latest/dist`.
 
-The project is provided with three example applications. Two (`app-ex01.html` and `app-ex02.html`) are quite simple. The third, Typebomb2 (`app-tb02.html`). is the latest addition and it is far less trivial. Use the Chrome developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how CSS classes are obsfucated and namespaced. A snapshot of the Typebomb2 game in action is shown below.
+`hi_score` has three example applications. Two (`app-ex01.html` and `app-ex02.html`) are quite simple. The third, Typebomb2 (`app-tb02.html`) is the latest addition and it is far less trivial. Use the Chrome developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how CSS classes are obsfucated and namespaced. A snapshot of the game in action is shown below.
 
 ![Typebomb2][_0B]
 
 ---
 ## Key benefits
-**`hi_score`** solves lots of hard stuff out-of-the-box so we can focus on improving things that really matter, like JavaScript, HTML, CSS and application logic. Key benefits are listed below.
+`hi_score` solves lots of hard stuff out-of-the-box so we can focus on improving things that really matter, like JavaScript, HTML, CSS and application logic. Key benefits are listed below.
 
 - Automated full-lifecycle best practice with the `bin/xhi` tool
 - Integration with Git and NPM lifecycles
@@ -62,6 +64,92 @@ The project is provided with three example applications. Two (`app-ex01.html` an
 - Placeholders for future lifecycle phases
 - Compression and shuffling of property key symbols
 - One-touch make ensures dozens of prequisites and tests pass and then creates a unique build id with pristine distribution directory, metadata, and coverage reports.
+
+---
+## How to use
+The best way to use `hi_score` is as a `git` upstream source. One may then create new application using the `hi_score` infrastructure without losing upstream improvements or bug fixes. 
+
+First create a new empty repository on Github and copy the `ssh` repository URL, which should look similar to `git@github.com:<user>/<repo_name>` and then proceed as below:
+
+```bash
+  mkdir -p ~/Github
+  cd ~/Github
+
+  # Clone the empty repository
+  git clone git@github.com:<user>/<repo_name>
+  cd <repo_name>
+
+  # Create master branch
+  touch README.<app_name>.md # Add app specific docs here
+  git add .
+  git commit -m 'First commit for <repo_name>'
+  git push
+
+  # Verify origin
+  git remote -v
+  # origin  git@github.com:<user>/<repo_name>.git (fetch)
+  # origin  git@github.com:<user>/<repo_name>.git (push)
+
+  # Add upstream repository
+  git remote add upstream git@github.com:mmikowski/hi_score.git
+
+  # Verify upstream
+  git remote -v
+  # origin    git@github.com:<user>/<repo_name>.git (fetch)
+  # origin    git@github.com:<user>/<repo_name>.git (push)
+  # upstream  git@github.com:mmikowski/hi_score.git (fetch)
+  # upstream  git@github.com:mmikowski/hi_score.git (push)
+
+  # Merge changes from upstream and push to origin
+  git fetch upstream
+  git merge --allow-unrelated-histories upstream/master
+  git push
+```
+
+We suggest you structure your apps as illustrated by the Typebomb2 app. This follows the *feature module* pattern which has been embraced by the recent libraries such as React and Vue.js (we've been advocating it since 2011, go figure). You may view this guide any time using `bin/xhi design`. The core concept is to create feature modules that contain their own isolated data and models when appropriate. This is pragmatic, recognizes the fractal nature of MVC. A slicker image is shown below.
+
+![Feature module architecture][_0C]
+
+We have provided the `js/xhi` libraries to either provide capabilities 
+directly or as an illustration. For example, in Typebomb2 you will notice the following files for each layer shown in the diagram:
+
+```
+Dependency order, load order, event propogation order
+=====================================================
+tb02-00_root.js
+tb02-01_util.js
+tb02-03_model.data.js
+tb02-03_model.js
+tb02-05_css_base.js
+tb02-05_css_lb.js
+tb02-06_css.js
+tb02-06_lb.js
+tb02-07_shell.js
+tb02-08_app-build.js
+tb02-08_app.js
+
+Call and initialization order
+=============================
+tb02-08_app.js
+tb02-08_app-build.js
+tb02-07_shell.js
+tb02-06_lb.js
+tb02-06_css.js
+tb02-05_css_lb.js
+tb02-05_css_base.js
+tb02-03_model.js
+tb02-03_model.data.js
+tb02-01_util.js
+tb02-00_root.js
+```
+ 
+All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi` libraries in one of three ways:
+
+1. Create an instance and use unchanged
+1. Create an instance and decorate
+1. Refer to for inspiration
+
+More specific notes about Typebomb2 app are provide in `README.app-tb02.md`.
 
 ---
 ## The xhi tool
@@ -174,12 +262,6 @@ Explicitly requested stages will run again regardless of their last success stat
 If all the stages of a range are successful an exit status of `0` is provided. If any stage fails processing of the range stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable. If we apply minor adjustments to disable terminal interaction `bin/xhi` should be capable of integration to other tool chains.
 
 ---
-## Feature-module architecture
-Please see `bin/xhi design` for an overview of the architecture we've been advocating since 2011. We create feature modules that contain their own isolated data and models when appropriate. This is pragmatic, recognizes the fractal nature of MVC, and is compatible with recent libraries such as React and Vue. A slicker image is shown below.
-
-![Feature module architecture][_0C]
-
----
 ## Code Style
 We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]) in the upcoming 2nd edition. The [full code standard][_04] is found in the `docs` directory.
 
@@ -194,7 +276,7 @@ The server component of **hi\_score** is designed to run on industry-standard ha
 ---
 ## Development platform
 ### Appliance
-An appliance is recommended for MacOS or Windows users. Download [the OVA2 image][_39] and install on VirtualBox or download [the VMX manifest][_40] and [the VMDK image][_41] to install on Parallels or VMware.
+An appliance is recommended for MacOS or Windows users. Download [the OVA2 image][_39] and install on VirtualBox or download [the VMX image][_40] to install on Parallels or VMware.
 
 ### Ubuntu Linux
 Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or Kubuntu. The steps to install all required and recommended libraries are shown below.
@@ -226,7 +308,7 @@ Other Linux distributions should generally work as long as the same libraries ca
 See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
 ### Mac
-The easiest way path to get familiar with this project on Mac is probably to use a product like Parallels or VMFusion and import a [VMX manifest][_40] and the [VMDK][_41] disk. VirtualBox also runs on Mac but it doesn't integrate as well to the host OS as Parallels, for example.
+The easiest way path to get familiar with this project on Mac is probably to use a product like Parallels or VMFusion to import the [VMX image][_40] (unzip this file before use). VirtualBox also runs on Mac but it doesn't integrate as well to the host OS as Parallels, for example.
 
 We should be able to run this natively on the Mac but we haven't tested it. We would need at the very least Bash 4+, [GNU Core utilities][_08], NodeJS, Git, PanDoc, Perl File::Slurp, and SSH server.
 
@@ -451,7 +533,7 @@ MIT
 - (x) Move coverage reports into build directories
 - (x) Store build and env state in `lib/xhi_state.json`
 - (x) Create and update virtualBox [OVA for development][_39]
-- (x) Create and update Parallels [VMX][_40] and [VMDK][_41]
+- (x) Create and update Parallels [VMX][_40] image
 - (x) Replace jslint setting from per-file to config/jslint.conf
 - (x) Expect browser env for js/xhi libraries
 - (x) Fix `js/xhi/01_util.js::makeSeriesMap` across timezones
@@ -530,8 +612,7 @@ MIT
 [_36]:https://www.npmjs.com/package/express
 [_37]:https://www.npmjs.com/package/websocket
 [_38]:https://docs.npmjs.com/misc/scripts
-[_39]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-ova2.ova
-[_40]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001.vmx
-[_41]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-001-disk1.zip
-
+[_39]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-002-ova2.ova
+[_40]:http://michaelmikowski.com/ova/kubuntu-17.04-hi_score-002.vmx.zip
+[_42]:http://michaelmikowski.com/ova/
 
