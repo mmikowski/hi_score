@@ -115,7 +115,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.5",
+  "version": "1.4.6",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -764,16 +764,17 @@
                 "xhi_js_list"
               ]
             },
-            "js/tb02-00_root.js",
-            "js/tb02-01_util.js",
-            "js/tb02-03_model.js",
-            "js/tb02-03_model.data.js",
-            "js/tb02-05_css_base.js",
-            "js/tb02-05_css_lb.js",
-            "js/tb02-06_css.js",
-            "js/tb02-06_lb.js",
-            "js/tb02-07_shell.js",
-            "js/tb02-08_app-build.js"
+            "js/tb02.00_root.js",
+            "js/tb02.01_util.js",
+            "js/tb02.02_data.js",
+            "js/tb02.03_model.js",
+            "js/tb02.04_utilb.js",
+            "js/tb02.05_css_base.js",
+            "js/tb02.05_css_lb.js",
+            "js/tb02.06_css.js",
+            "js/tb02.06_lb.js",
+            "js/tb02.07_shell.js",
+            "js/tb02.08_app-build.js"
           ],
           "do_vendor": true
         },
@@ -805,5 +806,3 @@
     ]
   }
 }
-
-

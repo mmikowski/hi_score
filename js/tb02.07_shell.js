@@ -425,12 +425,12 @@ tb02._07_shell_ = (function () {
     $body[ vMap._html_ ]( configMap._main_html_ );
     set$MapFn( $body );
 
-    // BEGIN browser event bindings
+    // Begin browser event bindings
     $body[ vMap._on_ ]( vMap._keypress_, onKeypressFn );
     $body[ vMap._on_ ]( vMap._keydown_, onKeydownFn );
-    // . END browser event bindings
+    // . End browser event bindings
 
-    // BEGIN model event bindings
+    // Begin model event bindings
     __$sub( $body, '_set_mode_', onSetModeFn );
     __$sub( $body, '_update_field_', onUpdateFieldFn );
     __$sub( $body, '_acknowledge_key_', onAcknowledgeKeyFn );
@@ -441,20 +441,25 @@ tb02._07_shell_ = (function () {
     __$sub( $body, '_bomb_explode_', onBombExplodeFn );
     __$sub( $body, '_bomb_destroy_', onBombDestroyFn );
     __$sub( $body, '_bomb_allclear_', onBombAllclearFn );
-    // . END model event bindings
+    // . End model event bindings
 
     // Initialize model *after* we have subscribed all our handlers
     aMap._03_model_._initModuleFn_();
 
-    // Open a lightbox to test
-    aMap._06_lb_._showLbFn_( {
-      _title_html_   : 'Example 01',
+    // Begin greet player
+    tb02._06_lb_._showLbFn_({
+      _title_html_ : 'Welcome to Typebomb 2!',
       _content_html_ :
-      '<p><strong>hi_score</strong> appears to be properly installed!</p>'
-      + '<p>The hi_score application map (app_map) attributes are as '
-      + 'follows: <br>' + Object.keys( aMap ).join( '<br>' )
-      + '</p><p>Drag the title bar to move this lightbox.</p>'
-    } );
+        '<p>Have fun while learning to type!</p>'
+
+        + '<p>Click anywhere outside this lightbox to close it. '
+        + 'Then click on the pulldown at the top-right to select a level.'
+        + 'The game will begin. Type to remove bombs from the screen.</p>'
+
+        + '<p>The levels have been researched and designed to progressively '
+        + 'emphasize important fingering.</p>'
+    });
+    // . End greet player
   }
   // . END public method /initModuleFn/
   return { _initModuleFn_ : initModuleFn };

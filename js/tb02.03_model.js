@@ -497,7 +497,7 @@ tb02._03_model_ = (function () {
         ;
 
       wave_map  = sMap._wave_map_;
-      label_str = aMap._03_model_._data_._getWord_(
+      label_str = aMap._02_data_._getWord_(
         stateMap._level_count_, stateMap._weight_ratio_
       );
       if ( ! label_str ) { return; }
@@ -838,7 +838,7 @@ tb02._03_model_ = (function () {
 
   // BEGIN public method /initModuleFn/
   function initModuleFn () {
-    aMap._03_model_._data_._initModuleFn_();
+    aMap._02_data_._initModuleFn_();
     stateMap._level_count_ = __0;
     setSellModeFn();
     initGameFieldsFn();

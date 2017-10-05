@@ -1,13 +1,13 @@
 /*
- * tb02-03_model.data.js
+ * tb02-02_data.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Typebomb 2 model component.
+ * Typebomb 2 data component.
 */
 /*global $, tb02*/
 
-// == BEGIN MODULE tb02._03_model_._data_ =============================
-tb02._03_model_._data_ = (function () {
+// == BEGIN MODULE tb02._02_data_ =====================================
+tb02._02_data_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -211,4 +211,4 @@ tb02._03_model_._data_ = (function () {
   };
   // == . END PUBLIC METHODS ==========================================
 }());
-// == . END MODULE tb02._03_model_._data_ =============================
+// == . END MODULE tb02._02_data_ =====================================

@@ -114,42 +114,63 @@ We have provided the `js/xhi` libraries to either provide capabilities
 directly or as an illustration. For example, in Typebomb2 you will notice the following files for each layer shown in the diagram:
 
 ```
-Dependency order, load order, event propogation order
-=====================================================
-tb02-00_root.js
-tb02-01_util.js
-tb02-03_model.data.js
-tb02-03_model.js
-tb02-05_css_base.js
-tb02-05_css_lb.js
-tb02-06_css.js
-tb02-06_lb.js
-tb02-07_shell.js
-tb02-08_app-build.js
-tb02-08_app.js
+Dependency order, load order, event propagation
+===============================================
+tb02.00_root.js          v
+tb02.01_util.js          v
+tb02.02_data.js          v
+tb02.03_model.js         v
+tb02.04_utilb.js         v
+tb02.05.css_<feature>.js v
+tb02.06_css.js           v
+tb02.06_<feature>.js     v
+tb02.07_shell.js         v
+tb02.08_app.js           v
 
 Call and initialization order
-=============================
-tb02-08_app.js
-tb02-08_app-build.js
-tb02-07_shell.js
-tb02-06_lb.js
-tb02-06_css.js
-tb02-05_css_lb.js
-tb02-05_css_base.js
-tb02-03_model.js
-tb02-03_model.data.js
-tb02-01_util.js
-tb02-00_root.js
+============================
+tb02.08_app.js           v
+tb02.07_shell.js         v
+tb02.06_<feature>.js     v
+tb02.06_css.js           v
+tb02.05.css_<feature>.js v
+tb02.04_utilb.js         v
+tb02.03_model.js         v
+tb02.02_data.js          v
+tb02.01_util.js          v
+tb02.00_root.js          v
 ```
  
 All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi` libraries in one of three ways:
 
-1. Create an instance and use unchanged
+1. Create a configured instance and use as-is
 1. Create an instance and decorate
-1. Refer to for inspiration
+1. Use the module to guide development
 
-More specific notes about Typebomb2 app are provide in `README.app-tb02.md`.
+More specific notes about Typebomb2 app are provide in `README.app-tb02.md`. One can omit unused layers for a given app. However, for illustrative purposes, we have included all layers for Typebomb2. One can copy these to a new namespace to create a new app and then edit from there.
+
+```bash
+  cd hi_score
+  cp app-tb02.html app-<ns>.html
+
+  cd js
+  cp tb02.00_root.js          <ns>.00_root.js
+  cp tb02.01_util.js          <ns>.01_util.js
+  cp tb02.02_data.js          <ns>.02_data.js
+  cp tb02.03_model.js         <ns>.03_model.js
+  cp tb02.04_utilb.js         <ns>.04_utilb.js
+  cp tb02.05.css_<feature>.js <ns>.05.css_<feature>.js
+  cp tb02.06_css.js           <ns>.06_css.js
+  cp tb02.06_<feature>.js     <ns>.06_<feature>.js
+  cp tb02.07_shell.js         <ns>.07_shell.js
+  cp tb02.08_app.js           <ns>.08_app.js
+  cp tb02.08_app-build.js     <ns>.08_app-build.js
+  git add .
+
+  cd ../template
+  cp app-tb02.html app-<ns>.html
+```
+We need to change all references from `tb02` in these new files to your new namespace. `<ns>`. We will also need to add a new build manifest in package.json. See the `xhi_11_BuildMatrix` configuration for tb02 as your guide.
 
 ---
 ## The xhi tool

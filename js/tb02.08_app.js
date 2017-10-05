@@ -24,27 +24,28 @@
       // Arch libs
       'js/xhi/00_root.js',
       'js/xhi/01_util.js',
-      // not used here: 'js/xhi/02_data.js'
-      // not used here: 'js/xhi/02_fake.js'
-      'js/xhi/03_model.js',
-      // not used here: 'js/xhi/04_utilb.js'
+      // 'js/xhi/02_data.js',      // custom
+      // 'js/xhi/02_fake.js',      // not used currently
+      // 'js/xhi/03_model.js',     // custom
+      'js/xhi/04_utilb.js',
       'js/xhi/05_css_base.js',
       'js/xhi/05_css_lb.js',
-      'js/xhi/05_css_shell.js',
-      'js/xhi/06_css.js',
+      // 'js/xhi/05_css_shell.js', // custom
+      // 'js/xhi/06_css.js',       // custom
       'js/xhi/06_lb.js',
-      'js/xhi/07_shell.js',
+      // 'js/xhi/07_shell.js',     // custom
 
       // App libs
-      'js/tb02-00_root.js',
-      'js/tb02-01_util.js',
-      'js/tb02-03_model.js',
-      'js/tb02-03_model.data.js',
-      'js/tb02-05_css_base.js',
-      'js/tb02-05_css_lb.js',
-      'js/tb02-06_css.js',
-      'js/tb02-06_lb.js',
-      'js/tb02-07_shell.js'
+      'js/tb02.00_root.js',
+      'js/tb02.01_util.js',
+      'js/tb02.02_data.js',
+      'js/tb02.03_model.js',
+      'js/tb02.04_utilb.js',
+      'js/tb02.05_css_base.js',
+      'js/tb02.05_css_lb.js',
+      'js/tb02.06_css.js',
+      'js/tb02.06_lb.js',
+      'js/tb02.07_shell.js'
     ],
     libCount    = libList.length,
     loadCount   = 0,
@@ -52,21 +53,8 @@
 
     $, scriptObj, libIdx, libSrcStr;
   // == . END MODULE SCOPE VARIABLES ===================================
-
   function startAppFn () {
     tb02._07_shell_._initModuleFn_();
-    tb02._06_lb_._showLbFn_({
-      _title_html_ : 'Welcome to Typebomb 2!',
-      _content_html_ :
-        '<p>Have fun while learning to type!</p>'
-
-        + '<p>Click anywhere outside this lightbox to close it. '
-        + 'Then click on the pulldown at the top-right to select a level.'
-        + 'The game will begin. Type to remove bombs from the screen.</p>'
-
-        + '<p>The levels have been researched and designed to progressively '
-        + 'emphasize important fingering.</p>'
-    });
   }
 
   function testLoadFn() {

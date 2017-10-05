@@ -1,36 +1,29 @@
 ```
 DEPENDENCY ORDER, LOAD ORDER, EVENT PROPOGATION
 ===============================================
-tb02.00_root.js
-    V
-tb02.01_util.js
-    V
-tb02.03_model.js   <== tb02.03.model.data.js
-    V
-tb02.05.css_<feature>.js
-    V
-tb02.06_css.js
-    V
-tb02.07_shell.js
-    V
-tb02.08_app.js
-
+tb02.00_root.js          v
+tb02.01_util.js          v
+tb02.02_data.js          v
+tb02.03_model.js         v
+tb02.04_utilb.js         v
+tb02.05.css_<feature>.js v
+tb02.06_css.js           v
+tb02.06_<feature>.js     v
+tb02.07_shell.js         v
+tb02.08_app.js           v
 
 CALL AND INITIALIATION ORDER
 ============================
-tb02.08_app.js
-    V
-tb02.07_shell.js
-    V
-tb02.06_css.js 
-    V
-tb02.05.css_<feature>.js  
-    V
-tb02.03_model.js => tb02.03.model.data.js
-    V
-tb02.01_util.js*
-    V
-tb02.00_root.js
+tb02.08_app.js           v
+tb02.07_shell.js         v
+tb02.06_<feature>.js     v
+tb02.06_css.js           v
+tb02.05.css_<feature>.js v
+tb02.04_utilb.js         v
+tb02.03_model.js         v
+tb02.02_data.js          v
+tb02.01_util.js          v
+tb02.00_root.js          v
 ```
 
 # Problems
@@ -95,7 +88,7 @@ are met:
 - A reasonable amount of time has passed since the last "Big Bomb"
 - Other criteria as they become obvious
 
-The `addBomb` method will request a "Big Bomb" word from `03.model.data`.
+The `addBomb` method will request a "Big Bomb" word from `02\_data`.
 A "Big Bomb" will then be made with the following adjustments:
 - The `\_is\_big\_bomb\_` shall be set to `true`
 
