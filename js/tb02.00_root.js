@@ -1,5 +1,5 @@
 /*global $, xhi, tb02 */
-// == BEGIN MODULE tb00 ===============================================
+// == BEGIN MODULE tb02 ===============================================
 // Create root namespace map 'tb02'
 xhi._00_root_._makeInstanceFn_( 'tb02' );
 tb02._extendSymbolMapFn_(
@@ -20,4 +20,4 @@ tb02._extendSymbolMapFn_(
     _remove_         : 'remove'
   }
 );
-// == . END MODULE tb00 ===============================================
+// == . END MODULE tb02 ===============================================

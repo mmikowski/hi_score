@@ -170,7 +170,15 @@ More specific notes about Typebomb2 app are provide in `README.app-tb02.md`. One
   cd ../template
   cp app-tb02.html app-<ns>.html
 ```
-We need to change all references from `tb02` in these new files to your new namespace. `<ns>`. We will also need to add a new build manifest in package.json. See the `xhi_11_BuildMatrix` configuration for tb02 as your guide.
+We need to change all references from `tb02` in these new files to our new namespace. `<ns>`. We will also need to add a new build manifest in package.json. See the `xhi_11_BuildMatrix` configuration for tb02 as your guide. The result is an app architecture that is designed to work well for every phase of the SPA lifecycle.
+
+One can delete all the example apps (`tb02`, `ex01`, `ex02`) from the project if they get in our way. However, like to at least retain `tb02` for reference because it will continue to be refined along with the `hi_score` project. One can refresh upstream at any time as shown below.
+
+```bash
+  git fetch upstream
+  git merge --allow-unrelated-histories upstream/master
+```
+We recommend you run `bin/xhi install,setup` after any such merge.
 
 ---
 ## The xhi tool

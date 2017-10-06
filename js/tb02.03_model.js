@@ -13,8 +13,8 @@ tb02._03_model_ = (function () {
     // Declare local symbols
     aMap = tb02,
     aKey = aMap._aKey_,
-    nMap = tb02._nMap_,
-    vMap = tb02._vMap_,
+    nMap = aMap._nMap_,
+    vMap = aMap._vMap_,
 
     __0 = nMap._0_,
     __1 = nMap._1_,
