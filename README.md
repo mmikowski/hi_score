@@ -21,9 +21,7 @@
 
 ---
 ## Quick start
-Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels. If you need more help with installing a VM or wish to consider other options, please consult the "Development platform" section in the [hi_score][_01] documentation.
-
-Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
+Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
 
 ![virual_appliance][_0E]
 
@@ -106,39 +104,24 @@ First create a new empty repository on Github and copy the `ssh` repository URL,
   git push
 ```
 
-We suggest you structure your apps as illustrated by the Typebomb2 app. This follows the *feature module* pattern which has been embraced by the recent libraries such as React and Vue.js (we've been advocating it since 2011, go figure). You may view this guide any time using `bin/xhi design`. The core concept is to create feature modules that contain their own isolated data and models when appropriate. This is pragmatic, recognizes the fractal nature of MVC. A slicker image is shown below.
+We suggest you structure your apps as illustrated by the Typebomb2 app. This follows the *feature module* pattern which has been embraced by the recent libraries such as React and Vue.js (we've been advocating it since 2011, go figure). You may view this guide any time using `bin/xhi design`. The core concept is to create feature modules that contain their own isolated data and models when appropriate. This is pragmatic and recognizes the fractal nature of MVC. A slicker image is shown below.
 
 ![Feature module architecture][_0C]
 
-We have provided the `js/xhi` libraries to either provide capabilities 
-directly or as an illustration. For example, in Typebomb2 you will notice the following files for each layer shown in the diagram:
+We have provided the `js/xhi` libraries to either provide capabilities directly or as an illustration. For example, in Typebomb2 you will notice the following files for each layer shown in the diagram:
 
 ```
-Dependency order, load order, event propagation
-===============================================
-tb02.00_root.js          v
-tb02.01_util.js          v
-tb02.02_data.js          v
-tb02.03_model.js         v
-tb02.04_utilb.js         v
-tb02.05.css_<feature>.js v
-tb02.06_css.js           v
-tb02.06_<feature>.js     v
-tb02.07_shell.js         v
-tb02.08_app.js           v
-
-Call and initialization order
-============================
-tb02.08_app.js           v
-tb02.07_shell.js         v
-tb02.06_<feature>.js     v
-tb02.06_css.js           v
-tb02.05.css_<feature>.js v
-tb02.04_utilb.js         v
-tb02.03_model.js         v
-tb02.02_data.js          v
-tb02.01_util.js          v
-tb02.00_root.js          v
+Module layers
+=======================================
+tb02.00_root.js            |        ^
+tb02.01_util.js          load       |
+tb02.02_data.js          order      |
+tb02.03_model.js           |      call,
+tb02.04_utilb.js           |      init 
+tb02.06_css.js           events   order
+tb02.06_<feature>.js       |        | 
+tb02.07_shell.js           |        |
+tb02.08_app.js             v        |
 ```
  
 All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi` libraries in one of three ways:
@@ -172,11 +155,12 @@ More specific notes about Typebomb2 app are provide in `README.app-tb02.md`. One
 ```
 We need to change all references from `tb02` in these new files to our new namespace. `<ns>`. We will also need to add a new build manifest in package.json. See the `xhi_11_BuildMatrix` configuration for tb02 as your guide. The result is an app architecture that is designed to work well for every phase of the SPA lifecycle.
 
-One can delete all the example apps (`tb02`, `ex01`, `ex02`) from the project if they get in our way. However, like to at least retain `tb02` for reference because it will continue to be refined along with the `hi_score` project. One can refresh upstream at any time as shown below.
+One can delete all the example apps (`tb02`, `ex01`, `ex02`) from the project if they get in our way. However we recommend retaining at least `tb02` for reference because it will continue to be refined along with the `hi_score` project. One can refresh upstream at any time as shown below.
 
 ```bash
   git fetch upstream
-  git merge --allow-unrelated-histories upstream/master
+  git merge upstream/master
+  # use --allow-unrelated-histories if needed
 ```
 We recommend you run `bin/xhi install,setup` after any such merge.
 
@@ -323,7 +307,7 @@ Everything should just work on recent Ubuntu 16.04+ and derivatives like Mint or
   curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
   sudo apt-get install -y nodejs
 
-  # Install MongoDB 3.x
+  # Install MongoDB 3.x (optional)
   # See their website for details.
 ```
 
