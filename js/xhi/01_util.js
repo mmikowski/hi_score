@@ -174,7 +174,7 @@ xhi._01_util_ = (function () {
         }
       }
 
-      if ( log_list[ vMap._length ] === __0 ) {
+      if ( log_list[ vMap._length_ ] === __0 ) {
         solve_data = num;
       }
       else {
