@@ -115,7 +115,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.9",
+  "version": "1.4.10",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -692,7 +692,7 @@
                 "xhi_js_list"
               ]
             },
-            "js/ex01-08_app-build.js"
+            "js/ex01.08_app-build.js"
           ],
           "do_vendor": true
         },
@@ -728,7 +728,7 @@
                 "xhi_js_list"
               ]
             },
-            "js/ex02-08_app-build.js"
+            "js/ex02.08_app-build.js"
           ],
           "do_vendor": true
         },
