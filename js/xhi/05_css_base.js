@@ -58,6 +58,82 @@ xhi._05_css_base_ = (function () {
           _trans_long_          : 'all .5s ease'
         },
         _palette_map_list_ : [
+          { _palette_name_  : 'Newspaper',
+            // Accent colors complement primary hue but a distinctly different.
+            // Use to draw attention to features.
+            _accent_hex_        : '#046273',  // gradtop_hex
+            _accent_dk_hex_     : '#527582',  // gradbtm_hex
+            _accent_lt_hex_     : '#06788c',  // * new lighter color
+
+            // Area colors are intended to fill large swaths of area.
+            // Generally they are less intense than comparable text colors.
+            _area_hex_          : '#ececec', //  bkgd_hex     default bkgd
+            _area_accent_hex_   : '#d5d5f8', // *bkgd_ac_hex  textbox bkgd
+            _area_hover_hex_    : '#ffffff', //  bright_hex   full hover bright
+            _area_mid_hex_      : '#dddddd', // *bkgd_mid_hex
+            _area_mid_dk_hex_   : '#666666', //  bkgd_dk_hex
+            _area_mid_lt_hex_   : '#aaaabb', // *bkgd_mid_lt_hex
+            _area_mid_xlt_hex_  : '#ccccdd', // *bkgd_mid_xlt_hex
+
+            _area_info_hex_     : '#282',
+            _area_warn_hex_     : '#882',
+            _area_alert_hex_    : '#822',
+
+            // Standard button colors.
+            _btn_area_hex_      : '#046273', // === _link_hex_
+            _btn_area_hover_hex_: '#02353e', // === _link_dk_hex_
+            _btn_txt_hex_       : '#ececec', // === _area_hex_
+            _btn_txt_hover_hex_ : '#ffffff', // === _area_hover_hex_
+
+            // Frame colors are used by the outside frame (header, footer,
+            // sidebar) as background colors.
+            _frame_hex_         : '#046273', // gradtop_hex header + footer
+            _frame_dk_hex_      : '#02353e', // gradbtm_hex lh menu
+            _frame_lt_hex_      : '#056882', // *calc header + footer hover
+            _frame_xdk_hex_     : '#011618', // *calc lh menu selected
+
+            // Link colors should be only used on elements which users tap,
+            // click, drag, or otherwise interact.
+            _link_hex_          : '#046273', // link_hex link on both lt and dk bkg
+            _link_lt_hex_       : '#056882', // *calc hover on dk bkg
+            _link_xlt_hex_      : '#068487', // *calc hover on dk bkg
+            _link_fade_hex_     : '#128487', // *calc faded link on color
+            _link_dk_hex_       : '#035a6a', // *calc hover on lt bkg
+
+            // The placeholder color is a subdued text color shown in input
+            // fields when there is no content.
+            _placeholder_hex_   : '#999999', // === _area_mid_hex_
+            // Text colors are generally more saturated and are darker
+            // (lighter in inverse scheme) than correlating area colors.
+            //
+            _txt_hex_           : '#373737', // document font
+            _txt_alt_hex_       : '#736204', // color invert of link_hex
+            _txt_dk_hex_        : '#262626',
+            _txt_lt_hex_        : '#484848',
+            _txt_xlt_hex_       : '#888888',
+            _txt_inv_hex_       : '#ececec',
+            _txt_inv_dk_hex_    : '#dddddd',
+            _txt_inv_lt_hex_    : '#ffffff',
+
+            // The top-left logo image path.
+            _logo_url_           : __p('url(img/{_p_}-logo-white.png)'),
+
+            // Shadows colors are listed from near to far. Near shadows that
+            // use rgba_shdw_00, for example, will be smaller but more
+            // distinct.
+            _rgba_shdw_00_     : 'rgba(71,71,71,.500)',
+            _rgba_shdw_01_     : 'rgba(71,71,71,.450)',
+            _rgba_shdw_02_     : 'rgba(71,71,71,.405)',
+            _rgba_shdw_03_     : 'rgba(71,71,71,.365)',
+            _rgba_shdw_04_     : 'rgba(71,71,71,.328)',
+            _rgba_shdw_05_     : 'rgba(71,71,71,.295)',
+            _rgba_shdw_06_     : 'rgba(71,71,71,.266)',
+            _rgba_shdw_07_     : 'rgba(71,71,71,.239)',
+            _rgba_shdw_08_     : 'rgba(71,71,71,.215)',
+            _rgba_shdw_09_     : 'rgba(71,71,71,.194)',
+            _txt_shdw_01_      : '0 1px 1px #000000',
+            _txt_shdw_01_inv_  : '0 1px 1px #7fb5ed'
+          },
           { _palette_name_      : 'BackInBlack',
             // Accent colors complement primary hue but a distinctly different.
             // Use to draw attention to features.
@@ -107,96 +183,7 @@ xhi._05_css_base_ = (function () {
             // Text colors are generally more saturated and are darker
             // (lighter in inverse scheme) than correlating area colors.
             _txt_hex_           : '#acb9c3', // document font
-            _txt_alt_hex_       : '#ffa62c', // 'ltr ~ invert of link_hex
-            _txt_dk_hex_        : '#c3ccd4',
-            _txt_inv_hex_       : '#5b666e',
-            _txt_inv_dk_hex_    : '#77848f',
-            _txt_inv_lt_hex_    : '#3d454a',
-            _txt_lt_hex_        : '#94a5b2',
-            _txt_xlt_hex_       : '#77848f',
-
-            // The top-left logo image path.
-            _logo_url_           : __p('url(app/img/{_p_}-logo-white.png)'),
-
-            // Shadows colors are listed from near to far. Near shadows that
-            // use rgba_shdw_00, for example, will be smaller but more
-            // distinct.
-            _rgba_shdw_00_     : 'rgba(192,222,255,.500)',
-            _rgba_shdw_01_     : 'rgba(192,222,255,.450)',
-            _rgba_shdw_02_     : 'rgba(192,222,255,.405)',
-            _rgba_shdw_03_     : 'rgba(192,222,255,.365)',
-            _rgba_shdw_04_     : 'rgba(192,222,255,.328)',
-            _rgba_shdw_05_     : 'rgba(192,222,255,.295)',
-            _rgba_shdw_06_     : 'rgba(192,222,255,.266)',
-            _rgba_shdw_07_     : 'rgba(192,222,255,.239)',
-            _rgba_shdw_08_     : 'rgba(192,222,255,.215)',
-            _rgba_shdw_09_     : 'rgba(192,222,255,.194)',
-            _txt_shdw_01_      : '0 1px 1px #000000',
-            _txt_shdw_01_inv_  : '0 1px 1px #7fb5ed'
-          },
-          { _palette_name_  : 'Newspaper',
-            // _bkgd_hex_      : '#ececec',
-            // _bkgd_ac_hex_   : '#d5d5ff',
-            // _bkgd_mid_hex_  : '#ddd',
-            // _bkgd_dk_hex_   : '#666'
-            // _bright_hex_    : '#fff',
-
-            // _shadow_hex_    : '#373737',
-            // _font_hex_      : '#373737',
-            // _mid_hex_       : '#666',
-            // _link_hex_      : '#046273',
-            // _gradtop_hex_   : '#046273',
-            // _link_dk_hex_   : '#02353e',
-            // _gradbtm_hex_   : '#02353e',
-            // Accent colors complement primary hue but a distinctly different.
-            // Use to draw attention to features.
-            _accent_hex_        : '#046273',  // gradtop_hex
-            _accent_dk_hex_     : '#527582',  // gradbtm_hex
-            _accent_lt_hex_     : '#06788c',  // * new lighter color
-
-            // Area colors are intended to fill large swaths of area.
-            // Generally they are less intense than comparable text colors.
-            _area_hex_          : '#ececec', //  bkgd_hex     default bkgd
-            _area_accent_hex_   : '#d5d5f8', // *bkgd_ac_hex_ textbox bkgd
-            _area_hover_hex_    : '#fff',    //  bright_hex   full hover bright
-            _area_mid_hex_      : '#889',    // *bkgd_mid_hex
-            _area_mid_dk_hex_   : '#667',    //  bkgd_dk_hex
-            _area_mid_lt_hex_   : '#aab',    // *bkgd_mid_lt_hex
-            _area_mid_xlt_hex_  : '#ccd',    // *bkgd_mid_xlt_hex
-
-            _area_info_hex_     : '#262',
-            _area_warn_hex_     : '#662',
-            _area_alert_hex_    : '#622',
-
-            // Standard button colors.
-            _btn_area_hex_      : '#6cafff', // === _link_hex_
-            _btn_area_hover_hex_: '#89c3ff', // === _link_dk_hex_
-            _btn_txt_hex_       : '#16181a', // === _area_hex_
-            _btn_txt_hover_hex_ : '#000000', // === _area_hover_hex_
-
-            // Frame colors are used by the outside frame (header, footer,
-            // sidebar) as background colors.
-            _frame_hex_         : '#acb9c3', // header + footer
-            _frame_dk_hex_      : '#cdccd4', // lh menu
-            _frame_lt_hex_      : '#94a5b2', // header + footer hover
-            _frame_xdk_hex_     : '#d8e8f5', // lh menu selected
-
-            // Link colors should be only used on elements which users tap,
-            // click, drag, or otherwise interact.
-            _link_hex_          : '#6cafff', // link on both lt and dk bkg
-            _link_lt_hex_       : '#89c3ff', // hover on dk bkg
-            _link_xlt_hex_      : '#a9b3ff', // hover on dk bkg
-            _link_fade_hex_     : '#4b576b', // faded link on color
-            _link_dk_hex_       : '#89c3ff', // hover on lt bkg
-
-            // The placeholder color is a subdued text color shown in input
-            // fields when there is no content.
-            _placeholder_hex_   : '#5d676f', // === _area_mid_hex_
-
-            // Text colors are generally more saturated and are darker
-            // (lighter in inverse scheme) than correlating area colors.
-            _txt_hex_           : '#acb9c3', // document font
-            _txt_alt_hex_       : '#a47330', // altr ~ invert of hex_txt_link
+            _txt_alt_hex_       : '#ffa62c', // invert of link_hex
             _txt_dk_hex_        : '#c3ccd4',
             _txt_inv_hex_       : '#5b666e',
             _txt_inv_dk_hex_    : '#77848f',
@@ -476,7 +463,7 @@ xhi._05_css_base_ = (function () {
           },
           { _selector_str_ : __p('button.{_p_}-_x_inline_'),
             _rule_map_     : {
-              _display_ : '_inline_block_',
+              _display_ : '_inline_block_'
             }
           },
           { _selector_str_ : __p('button.{_p_}-_x_alt_'),

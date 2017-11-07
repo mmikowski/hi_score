@@ -61,7 +61,7 @@ xhi._05_css_lb_ = (function () {
               _bottom_     : '_0_',
               _right_      : '_0_',
               _overflow_   : '_hidden_',
-              _background_ : '_txt_inv_hex_',
+              _background_ : '_txt_hex_',
               _cursor_     : '_pointer_',
               _transition_ : [ 'opacity .5s ease' ]
             }

@@ -820,44 +820,6 @@ function getTzCode ( test_obj ) {
   test_obj.done();
 }
 
-function getTzOffsetMs ( test_obj ) {
-  var
-    assert_table  = [
-      // [ arg_list, expect_data ]
-      [],
-      [ __0       ],
-      [ __true    ],
-      [ __false   ],
-      [ __n1      ],
-      [ 25        ],
-      [ 3.28e24   ],
-      [ -4562     ],
-      [ -0.000001 ],
-      [ 2e5 - 2e4 ],
-      [ 2e4 - 2e5 ],
-      [ 'fred'    ]
-    ],
-
-    assert_count  = assert_table.length,
-    get_offset_fn = __util._getTzOffsetMs_,
-
-    idx,        arg_list,
-    solve_int,    msg_str
-    ;
-
-  test_obj.expect( assert_count );
-  for ( idx = __0; idx < assert_count; idx++ ) {
-    arg_list  = assert_table[ idx ];
-
-    solve_int = get_offset_fn.apply( __undef, arg_list );
-    msg_str    = __Str( idx ) + '. '
-      + __Str( solve_int ) + ' === /^-?\\d\\d*$/';
-
-    test_obj.ok( __Str(solve_int).match( /^-?\d\d*$/ ), msg_str );
-  }
-  test_obj.done();
-}
-
 function getVarType ( test_obj ) {
   var
     // this is a hack to get around jslint warnings
@@ -1087,8 +1049,7 @@ function makeCommaNumStr ( test_obj ) {
 
 function makeDateStr ( test_obj ) {
   var
-    date_obj      = new Date( 1374294605000 ),
-    tz_offset_ms  = __util._getTzOffsetMs_(),
+    date_obj      = new Date( 1374323405099 ),
     assert_table  = [
       // [ arg_map, expect_data ]
       [ __null, __blank ],
@@ -1193,11 +1154,13 @@ function makeDateStr ( test_obj ) {
     assert_count = assert_table.length,
     make_str_fn   = __util._makeDateStr_,
 
-    idx, expect_list, arg_map,
+    idx, expect_list, arg_map, tmp_obj,
     expect_str, solve_str, msg_str
     ;
 
-  date_obj.setTime( 1374323405099 + tz_offset_ms );
+  date_obj.setTime(
+    date_obj.getTime() + ( date_obj.getTimezoneOffset() * 60000 )
+  );
 
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
@@ -1205,9 +1168,9 @@ function makeDateStr ( test_obj ) {
     arg_map      = expect_list[ __0 ];
     expect_str   = expect_list[ __1 ];
 
-    // date_obj.
     if ( arg_map && arg_map._date_ms_ ) {
-      arg_map._date_ms_ += tz_offset_ms;
+      tmp_obj = new Date( arg_map._date_ms_ );
+      arg_map._date_ms_ += tmp_obj.getTimezoneOffset() * 60000;
     }
 
     solve_str   = make_str_fn( arg_map );
@@ -2080,7 +2043,7 @@ function makeSeriesMap ( test_obj ) {
       {"_time_idx_":3,"_unit_count_":2,"_unit_ms_":500,"_unit_name_":"0.5s","_left_ratio_":0.5,"_unit_ratio_":0.5,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00"]},
       {"_time_idx_":3,"_unit_count_":4,"_unit_ms_":250,"_unit_name_":"0.25s","_left_ratio_":0.25,"_unit_ratio_":0.25,"_date_list_":[{"_date_str_":"06/09/2016","_width_ratio_":1}],"_time_list_":["06:14:00","06:14:00","06:14:00"]},
       'ditto', 'ditto', 'ditto', 'ditto',
-      // these can not be solve with our current config
+      // these can not be solved with our current config
       __undef, __undef, __undef, __undef, __undef, __undef,
       // . end 1s expect list
 
@@ -2273,9 +2236,10 @@ function makeSeriesMap ( test_obj ) {
     expect_count   = __0,
     interval_count = interval_list.length,
     make_map_fn    = __util._makeSeriesMap_,
-    tz_offset_ms   = __util._getTzOffsetMs_(),
 
     delta_idx, delta_ms, interval_idx, interval_int,
+    date_obj, tz_offset_ms,
+
     alt_list, alt_count, alt_bool, alt_str, i,
     arg_map, tmp_data, assert_data, expect_map,
     solve_str, solve_map, msg_str
@@ -2287,6 +2251,8 @@ function makeSeriesMap ( test_obj ) {
     delta_ms = delta_list[ delta_idx ];
     INTV: for ( interval_idx = __0; interval_idx < interval_count; interval_idx ++ ) {
       interval_int = interval_list[ interval_idx ];
+      date_obj     = new Date( start_ms );
+      tz_offset_ms = date_obj.getTimezoneOffset() * 60000;
       arg_map = {
         _max_ms_       : start_ms + tz_offset_ms + delta_ms,
         _min_ms_       : start_ms + tz_offset_ms,
@@ -3686,7 +3652,6 @@ module.exports = {
   _getNowMs_        : getNowMs,
   _getNumSign_      : getNumSign,
   _getTzCode_       : getTzCode,
-  _getTzOffsetMs_   : getTzOffsetMs,
   _getVarType_      : getVarType,
   _makeArgList_     : makeArgList,
   _makeClockStr_    : makeClockStr,

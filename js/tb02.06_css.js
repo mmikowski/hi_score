@@ -202,7 +202,7 @@ tb02._06_css_ = (function () {
         { _selector_str_ : __p( '.{_p_}-_shell_level_count_' ),
           _rule_map_     : {
             _float_ : '_right_',
-            _color_ : '_txt_dk_hex_'
+            _color_ : '_txt_lt_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_lives_' ),
@@ -222,7 +222,7 @@ tb02._06_css_ = (function () {
         { _selector_str_ : __p( '.{_p_}-_shell_lives_count_' ),
           _rule_map_     : {
             _float_ : '_right_',
-            _color_ : '_txt_dk_hex_'
+            _color_ : '_txt_lt_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_lives_gfx_' ),
@@ -244,7 +244,7 @@ tb02._06_css_ = (function () {
             _height_        : '_6d5rem_',
             _font_weight_   : '_800_',
             _border_bottom_ : '_underscore_border_',
-            _color_         : '_txt_dk_hex_'
+            _color_         : '_txt_lt_hex_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_shell_score_label_' ),
@@ -273,7 +273,7 @@ tb02._06_css_ = (function () {
             _padding_          : [['_d25rem_', '_d75rem_' ]],
             _font_family_      : '_font_family_mono_',
             _box_shadow_       : '_shdw_09_',
-            _color_            : '_txt_dk_hex_',
+            _color_            : '_txt_inv_hex_',
             _background_color_ : '_area_warn_hex_'
           }
         },

@@ -161,7 +161,7 @@ xhi._01_util_ = (function () {
         }
       }
 
-      if ( option_map.hasOwnProperty( '_min_num_' )
+      if ( option_map[ vMap._hasOwnProperty_ ]( '_min_num_' )
         && num < option_map._min_num_
       ) {
         if ( option_map._do_autobound_ ) {
@@ -1264,20 +1264,6 @@ xhi._01_util_ = (function () {
     }
     // . END Public method /getStructData/
 
-    // BEGIN Public method /getTzOffsetMs/
-    function getTzOffsetMs ( arg_do_recalc ) {
-      var
-        do_recalc = castBool( arg_do_recalc, __false ),
-        date_obj  = getTzDateObj();
-
-      if ( do_recalc || stateMap._tz_offset_ms_ === __undef ) {
-        stateMap._tz_offset_ms_
-          = date_obj.getTimezoneOffset() * configMap._min_ms_;
-      }
-      return stateMap._tz_offset_ms_;
-    }
-    // . END Public method /getTzOffsetMs/
-
     // BEGIN Public method /getTzCode/
     function getTzCode () {
       var
@@ -1307,7 +1293,7 @@ xhi._01_util_ = (function () {
     // Cautions  :
     //   Remember to use your local timezone offset if you want to
     //   show local time. Example:
-    //       tz_offset_ms = xhi._00_util_._getTzOffsetMs_(),
+    //       tz_offset_ms = date_obj.getTimezoneOffset() * 60000;
     //       local_ms     = raw_utc_ms + tz_offset_ms;
     //
     function makeClockStr ( arg_time_ms, arg_time_idx ) {
@@ -1443,7 +1429,7 @@ xhi._01_util_ = (function () {
     // Cautions  :
     //   Remember to use your local timezone offset if you want to
     //   show local time. Example:
-    //       tz_offset_ms = xhi._01_util_._getTzOffsetMs_();
+    //       tz_offset_ms = date_obj.geteTimezoneOffset() * 60000;
     //       local_ms     = raw_utc_ms - tz_offset_ms;
     //
     function makeDateStr ( arg_map ) {
@@ -2556,7 +2542,6 @@ xhi._01_util_ = (function () {
       _getLogObj_       : getLogObj,
       _getStructData_   : getStructData,
       _getTzCode_       : getTzCode,
-      _getTzOffsetMs_   : getTzOffsetMs,
       _makeClockStr_    : makeClockStr,
       _makeCommaNumStr_ : makeCommaNumStr,
       _makeDateStr_     : makeDateStr,
