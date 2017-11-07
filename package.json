@@ -115,7 +115,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.12",
+  "version": "1.4.13",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -236,7 +236,7 @@
         "These additional files must also updated to reflect",
         "the new versions:",
         "  1. config/*.buildify",
-        "  2. js/<app_file>.js",
+        "  2. js/<app_dir>/<app_file>.js",
         "  3. test.d/*.js",
         "",
         "An upgrade may break regression tests builds.",
@@ -692,7 +692,7 @@
                 "xhi_js_list"
               ]
             },
-            "js/ex01.08_app-build.js"
+            "js/app-ex01/ex01.08_app-build.js"
           ],
           "do_vendor": true
         },
@@ -728,7 +728,7 @@
                 "xhi_js_list"
               ]
             },
-            "js/ex02.08_app-build.js"
+            "js/app-ex02/ex02.08_app-build.js"
           ],
           "do_vendor": true
         },
@@ -764,17 +764,17 @@
                 "xhi_js_list"
               ]
             },
-            "js/tb02.00_root.js",
-            "js/tb02.01_util.js",
-            "js/tb02.02_data.js",
-            "js/tb02.03_model.js",
-            "js/tb02.04_utilb.js",
-            "js/tb02.05_css_base.js",
-            "js/tb02.05_css_lb.js",
-            "js/tb02.06_css.js",
-            "js/tb02.06_lb.js",
-            "js/tb02.07_shell.js",
-            "js/tb02.08_app-build.js"
+            "js/app-tb02/tb02.00_root.js",
+            "js/app-tb02/tb02.01_util.js",
+            "js/app-tb02/tb02.02_data.js",
+            "js/app-tb02/tb02.03_model.js",
+            "js/app-tb02/tb02.04_utilb.js",
+            "js/app-tb02/tb02.05_css_base.js",
+            "js/app-tb02/tb02.05_css_lb.js",
+            "js/app-tb02/tb02.06_css.js",
+            "js/app-tb02/tb02.06_lb.js",
+            "js/app-tb02/tb02.07_shell.js",
+            "js/app-tb02/tb02.08_app-build.js"
           ],
           "do_vendor": true
         },

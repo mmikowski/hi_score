@@ -36,16 +36,16 @@
       // 'js/xhi/07_shell.js',     // custom
 
       // App libs
-      'js/tb02.00_root.js',
-      'js/tb02.01_util.js',
-      'js/tb02.02_data.js',
-      'js/tb02.03_model.js',
-      'js/tb02.04_utilb.js',
-      'js/tb02.05_css_base.js',
-      'js/tb02.05_css_lb.js',
-      'js/tb02.06_css.js',
-      'js/tb02.06_lb.js',
-      'js/tb02.07_shell.js'
+      'js/app-tb02/tb02.00_root.js',
+      'js/app-tb02/tb02.01_util.js',
+      'js/app-tb02/tb02.02_data.js',
+      'js/app-tb02/tb02.03_model.js',
+      'js/app-tb02/tb02.04_utilb.js',
+      'js/app-tb02/tb02.05_css_base.js',
+      'js/app-tb02/tb02.05_css_lb.js',
+      'js/app-tb02/tb02.06_css.js',
+      'js/app-tb02/tb02.06_lb.js',
+      'js/app-tb02/tb02.07_shell.js'
     ],
     libCount    = libList.length,
     loadCount   = 0,
