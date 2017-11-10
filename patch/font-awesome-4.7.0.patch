@@ -1,8 +1,10 @@
---- node_modules/font-awesome/css/font-awesome.css 2016-10-24 14:33:21.000000000 -0700
-+++ node_modules/font-awesome/css/font-awesome.css 2017-10-01 13:23:44.033586888 -0700
-@@ -4,13 +4,7 @@
+--- css/vendor/font-awesome-4.7.0.css 2016-10-24 14:33:21.000000000 -0700
++++ css/vendor/font-awesome-4.7.0.css 2016-10-24 14:33:21.000000000 -0700
+@@ -3,14 +3,8 @@
+  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
   */
  /* FONT PATH
++ * Patch removed redundant and incorrect font paths
   * -------------------------- */
 -@font-face {
 -  font-family: 'FontAwesome';
@@ -11,7 +13,6 @@
 -  font-weight: normal;
 -  font-style: normal;
 -}
-+/* Patch removed redundant and incorrect font paths */
  .fa {
    display: inline-block;
    font: normal normal normal 14px/1 FontAwesome;

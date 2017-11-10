@@ -38,7 +38,7 @@
     "rmdir": "1.2.0",
     "shelljs": "0.7.8",
     "taffydb": "2.7.3",
-    "uglify-js": "3.1.6",
+    "uglify-js": "3.1.8",
     "uglifycss": "0.0.27",
     "websocket": "1.0.25"
   },
@@ -115,7 +115,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.13",
+  "version": "1.4.14",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
