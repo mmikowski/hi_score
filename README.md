@@ -21,7 +21,7 @@
 
 ---
 ## Quick start
-Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
+Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels. The login and password are `hi_score`. Please do change the password after signing in. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
 
 ![virual_appliance][_0E]
 

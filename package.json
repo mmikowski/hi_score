@@ -115,7 +115,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.15",
+  "version": "1.4.17",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
