@@ -52,6 +52,7 @@
     _do_dflt_class_  : bool,
     _do_draggable_   : bool,
     _do_title_close_ : bool,
+    _dont_autoadd_   : bool,
     _layout_key_     : str,
     _autoclose_ms_   : int,
     _position_map_   : map

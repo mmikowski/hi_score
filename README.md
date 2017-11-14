@@ -566,10 +566,11 @@ MIT
 - (x) Update docs
 - (x) Fix `superpack` to be more reliable
 - (x) Fix `bin/xhi dev_cover` dependencies
-- (x) Update AMI image for deployment, add screen shot
+- (x) Update AMI image for deployment; add screen shot
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
 - (o) Fix commit hook conflict in `bin/xhi` run range
-- (o) Update [quick reference][_03] code standard
+- (o) Update quick reference code standard
+
 ### Version 1.5.x (next)
 - (o) Update code standard quick-reference
 - (o) Test load times using remote server

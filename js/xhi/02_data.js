@@ -87,7 +87,7 @@ xhi._02_data_ = ( function () {
       while ( jqxhr_list[ vMap._length_ ] > __0 ) {
         jqxhr = jqxhr_list[ vMap._pop_ ]();
         try { jqxhr[ vMap._cancel_ ](); }
-        catch ( error_obj ) { __logMsg( '_no_cancel_' ); }
+        catch ( ignore ) { __logMsg( '_no_cancel_' ); }
       }
     }
     // . END private method /cancelJqxhrList/
@@ -115,12 +115,14 @@ xhi._02_data_ = ( function () {
 
     // BEGIN private method /onDoneJqxhr/
     function onDoneJqxhr ( arg_data, status_type, jqxhr ) {
+      // noinspection MagicNumberJS
       var
         smap       = this,
         data       = arg_data || {},
         status_int = __Num( jqxhr[ vMap._status_ ] ) || 200;
 
       delJqxhrFromList( jqxhr );
+      // noinspection MagicNumberJS
       if ( status_int < 300 ) {
         return smap._done_fn_ && smap._done_fn_( data );
       }
