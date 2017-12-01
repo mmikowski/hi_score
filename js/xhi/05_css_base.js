@@ -502,7 +502,6 @@ xhi._05_css_base_ = (function () {
           },
           { _selector_str_ : 'button:hover',
             _rule_map_     : {
-              // TODO review color; was using frame_hex
               _background_ : '_link_dk_hex_',
               _color_      : '_btn_txt_hover_hex_'
             }
@@ -521,15 +520,6 @@ xhi._05_css_base_ = (function () {
           },
 
           /* BEGIN {_p_}-_x_*_ selectors */
-          { _selector_str_ : __p('.{_p_}-_x_noselect_'),
-            _rule_map_     : {
-              __webkit_user_select_ : '_none_',
-              __moz_user_select_    : '_none_',
-              __o_user_select_      : '_none_',
-              _user_select_         : '_none_'
-            }
-          },
-
           // BEGIN shared link classes
           { _selector_str_ : __p('.{_p_}-_x_link_,.{_p_}-_x_link_inv_'),
             _rule_map_     : {
@@ -756,6 +746,15 @@ xhi._05_css_base_ = (function () {
           // . END Shared action titles
 
           // BEGIN Shared generic modifiers
+          { _selector_str_ : __p('.{_p_}-_x_noselect_'),
+            _rule_map_     : {
+              __webkit_user_select_ : '_none_',
+              __moz_user_select_    : '_none_',
+              __o_user_select_      : '_none_',
+              _user_select_         : '_none_'
+            }
+          },
+
           { _selector_str_ : __p('.{_p_}-_x_bold_'),
             _rule_map_     : {_font_weight_ : '_800_'}
           },

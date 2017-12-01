@@ -116,7 +116,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.18",
+  "version": "1.4.19",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -297,10 +297,7 @@
         "NPM SCRIPTS      : pretest, test, posttest.",
         "SUCCESS CRITERIA : All tests complete without error"
       ],
-      null,
-      [
-        "dev_pull"
-      ]
+      null, null
     ],
     [
       [
