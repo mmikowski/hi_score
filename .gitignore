@@ -10,7 +10,6 @@ css/vendor
 doc/*.html
 font/vendor
 img/vendor
-index.html
 js/vendor
 node_modules
 npm-debug.log
