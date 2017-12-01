@@ -20,8 +20,8 @@ set -u;
   echo "  > layout vars";
 
     # app path and name
-    _app_link=$( readlink -f -- "${0}" );
-    _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
+    _appLink=$( readlink -f -- "${0}" );
+    _bin_dir=$( cd "${_appLink%/*}" && echo "${PWD}" );
 
     # npm module paths
     _npm_dir=$( dirname "${_bin_dir}" );

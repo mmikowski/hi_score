@@ -103,7 +103,7 @@ tb02._06_css_ = (function () {
         { _selector_str_ : __p( '.{_p_}-_shell_subtext_ select' ),
           _rule_map_     : {
             _color_     : '_txt_alt_hex_',
-            _font_size_ : '_1d875rem_'
+            _font_size_ : '_spc_rem_04_'
           }
         },
         { _selector_str_ : __p( '.{_p_}-_x_down_' ),
@@ -138,7 +138,7 @@ tb02._06_css_ = (function () {
             _position_     : '_absolute_',
             _width_        : '_100p_',
             _height_       : '_100p_',
-            _fill_         : '_area_mid_hex_',
+            _fill_         : '_area_lt_hex_',
             _stroke_width_ : ['.375'],
             _stroke_       : '_txt_lt_hex_'
           }
@@ -160,7 +160,7 @@ tb02._06_css_ = (function () {
             _border_color_     : '_txt_lt_hex_',
             _border_bottom_    : '_0_',
             _background_color_ : '_area_accent_hex_',
-            _border_radius_    : [[ '_5rem_', '_5rem_', '_0_', '_0_' ]],
+            _border_radius_    : [[ '_radius_07_', '_radius_07_', '_0_', '_0_' ]],
             _text_align_       : '_center_',
             _box_shadow_       : '_shdw_02_',
             _overflow_         : '_hidden_'
@@ -174,7 +174,7 @@ tb02._06_css_ = (function () {
             _width_       : '_36p_',
             _margin_left_ : '_n18p_',
             _padding_     : '_d5rem_',
-            _font_size_   : '_2rem_',
+            _font_size_   : '_spc_rem_04_',
             _top_         : '_16rem_',
             _text_align_  : '_center_'
           }
@@ -183,9 +183,9 @@ tb02._06_css_ = (function () {
           _rule_map_     : {
             _display_       : '_block_',
             _position_      : '_absolute_',
-            _font_size_     : '_2rem_',
+            _font_size_     : '_spc_rem_04_',
             _bottom_        : '_8rem_',
-            _left_          : '_2rem_',
+            _left_          : '_spc_rem_04_',
             _width_         : '_12rem_',
             _height_        : '_4rem_',
             _line_height_   : '_4rem_',
@@ -209,9 +209,9 @@ tb02._06_css_ = (function () {
           _rule_map_     : {
             _display_     : '_block_',
             _position_    : '_absolute_',
-            _font_size_   : '_2rem_',
-            _bottom_      : '_2rem_',
-            _left_        : '_2rem_',
+            _font_size_   : '_spc_rem_04_',
+            _bottom_      : '_spc_rem_04_',
+            _left_        : '_spc_rem_04_',
             _width_       : '_12rem_',
             _height_      : '_4rem_',
             _line_height_ : '_4rem_',
@@ -229,7 +229,7 @@ tb02._06_css_ = (function () {
           _rule_map_     : {
             _float_       : '_left_',
             _font_family_ : '_font_family_awesome_',
-            _font_size_   : '_1d5rem_',
+            _font_size_   : '_spc_rem_03_',
             _color_       : '_area_alert_hex_'
           }
         },
@@ -237,9 +237,9 @@ tb02._06_css_ = (function () {
           _rule_map_     : {
             _display_       : '_block_',
             _position_      : '_absolute_',
-            _font_size_     : '_2rem_',
-            _bottom_        : '_2rem_',
-            _right_         : '_2rem_',
+            _font_size_     : '_spc_rem_04_',
+            _bottom_        : '_spc_rem_04_',
+            _right_         : '_spc_rem_04_',
             _width_         : '_10rem_',
             _height_        : '_6d5rem_',
             _font_weight_   : '_800_',
@@ -270,7 +270,7 @@ tb02._06_css_ = (function () {
             _border_width_     : '_d125rem_',
             _height_           : [ '1.25emm' ],
             _line_height_      : [ '1em' ],
-            _padding_          : [['_d25rem_', '_d75rem_' ]],
+            _padding_          : [['_d25rem_', '_spc_rem_01_' ]],
             _font_family_      : '_font_family_mono_',
             _box_shadow_       : '_shdw_09_',
             _color_            : '_txt_inv_hex_',
@@ -286,7 +286,7 @@ tb02._06_css_ = (function () {
         },
         { _selector_str_ : __p( '.{_p_}-_x_slow_' ),
           _rule_map_     : {
-            _font_size_        : '_2rem_',
+            _font_size_        : '_spc_rem_04_',
             _background_color_ : '_area_info_hex_',
             _border_color_     : '_frame_lt_hex_'
           }

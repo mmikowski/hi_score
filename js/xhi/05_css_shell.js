@@ -43,9 +43,9 @@ xhi._05_css_shell_ = (function () {
           { _selector_str_  : __p('.{_p_}-_shell_head_logo_'),
             _rule_map_      : {
               _position_    : '_absolute_',
-              _left_        : '_d75rem_',
-              _top_         : '_1d125rem_',
-              _height_      : '_1d5rem_',
+              _left_        : '_spc_rem_01_',
+              _top_         : '_spc_rem_02_',
+              _height_      : '_spc_rem_03_',
               _width_       : [ '11.25rem' ],
               _background_ : [[
                 '_logo_url_', '_no_repeat_', '_center_','_center_'
@@ -60,24 +60,24 @@ xhi._05_css_shell_ = (function () {
               _top_         : '_d875rem_',
               _margin_left_ : [ '-7.5rem' ],
               _width_       : [ '15rem' ],
-              _height_      : '_2rem_'
+              _height_      : '_spc_rem_04_'
             }
           },
           { _selector_str_  : __p('.{_p_}-_shell_head_search_ > input'),
             _rule_map_ : {
               _outline_     : '_none_',
               _width_       : '_100p_',
-              _height_      : '_2rem_',
-              _padding_     : [[ '_0_', '_1rem_', '_0_', '_2rem_' ]],
-              _line_height_ : '_2rem_',
+              _height_      : '_spc_rem_04_',
+              _padding_     : [[ '_0_', '_1rem_', '_0_', '_spc_rem_04_' ]],
+              _line_height_ : '_spc_rem_04_',
               _color_       : '_txt_lt_hex_',
               _background_  : '_area_accent_hex_',
-              _border_      : [[ '_d0625rem_', '_solid_', '_area_mid_xlt_hex_' ]],
-              _border_radius_ : '_d5rem_'
+              _border_      : [[ '_d0625rem_', '_solid_', '_area_mid_hex_' ]],
+              _border_radius_ : '_radius_07_'
             }
           },
           { _selector_str_  : __p('.{_p_}-_shell_head_search_ > input:focus'),
-            _rule_map_ : { _border_color_ : '_area_mid_dk_hex_' }
+            _rule_map_ : { _border_color_ : '_area_xdk_hex_' }
           },
           { _selector_str_  : __p('.{_p_}-_shell_head_search_ .{_p_}-_x_mag_'),
             _rule_map_ : {
@@ -85,9 +85,9 @@ xhi._05_css_shell_ = (function () {
               _top_         : '_0_',
               _left_        : '_d625rem_',
               _outline_     : '_none_',
-              _height_      : '_2rem_',
-              _line_height_ : '_2rem_',
-              _font_size_   : '_1d125rem_',
+              _height_      : '_spc_rem_04_',
+              _line_height_ : '_spc_rem_04_',
+              _font_size_   : '_spc_rem_02_',
               _color_       : '_link_hex_',
               _cursor_      : '_pointer_',
               _font_family_ : '_font_family_awesome_'
@@ -111,7 +111,7 @@ xhi._05_css_shell_ = (function () {
               _right_    : '_0_',
               _padding_  : [[ '_d25rem_', '_0_' ]],
               _color_    : '_link_hex_',
-              _border_radius_ : [[ '_0_', '_0_', '_0_', '_1rem_' ]]
+              _border_radius_ : [[ '_0_', '_0_', '_0_', '_radius_15_' ]]
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_umenu_.{_p_}-_x_open_'),
@@ -127,7 +127,7 @@ xhi._05_css_shell_ = (function () {
               _line_height_ : '_3rem_',
               _width_       : '_100p_',
               _padding_     : [[ '_0_', '_1rem_' ]],
-              _font_size_   : '_1d125rem_',
+              _font_size_   : '_spc_rem_02_',
               _color_       : '_link_hex_',
               _white_space_ : '_nowrap_',
               _text_align_  : '_right_',
@@ -139,14 +139,14 @@ xhi._05_css_shell_ = (function () {
           },
           { _selector_str_ : __p('.{_p_}-_shell_umenu_>li:first-child'),
             _rule_map_ : {
-              '_display_'     : '_block_',
-              '_line_height_' : '_1d5rem_'
+              _display_     : '_block_',
+              _line_height_ : '_spc_rem_03_'
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_umenu_>li div'),
             _rule_map_ : {
-              _line_height_ : '_1d5rem_',
-              _margin_right_ : '_2rem_'
+              _line_height_ : '_spc_rem_03_',
+              _margin_right_ : '_spc_rem_04_'
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_umenu_>li:hover'),
@@ -158,10 +158,10 @@ xhi._05_css_shell_ = (function () {
               _float_        : '_right_',
               _height_       : '_3rem_',
               _line_height_  : '_3rem_',
-              _width_        : '_1d5rem_',
-              _margin_left_  : '_d75rem_',
+              _width_        : '_spc_rem_03_',
+              _margin_left_  : '_spc_rem_01_',
               _font_family_  : '_font_family_awesome_',
-              _font_size_    : '_1d5rem_',
+              _font_size_    : '_spc_rem_03_',
               _text_align_   : '_center_',
               _text_decoration_ : '_none_'
             }
@@ -176,7 +176,7 @@ xhi._05_css_shell_ = (function () {
               _height_     : '_3d75rem_',
               _line_height_: '_3d75rem_',
               _font_family_: '_font_family_awesome_',
-              _font_size_  : '_1d5rem_',
+              _font_size_  : '_spc_rem_03_',
               _color_      : '_link_lt_hex_',
               _background_ : '_frame_dk_hex_',
               _text_align_ : '_center_',
@@ -205,11 +205,11 @@ xhi._05_css_shell_ = (function () {
           { _selector_str_ : __p('.{_p_}-_shell_nav_>li'),
             _rule_map_ : {
               _white_space_   : '_nowrap_',
-              _padding_left_  : '_1d125rem_',
-              _height_        : '_2rem_',
+              _padding_left_  : '_spc_rem_02_',
+              _height_        : '_spc_rem_04_',
               _width_         : '_100p_',
-              _line_height_   : '_2rem_',
-              _font_size_     : '_1d125rem_',
+              _line_height_   : '_spc_rem_04_',
+              _font_size_     : '_spc_rem_02_',
               _margin_bottom_ : '_d875rem_',
               _cursor_        : '_pointer_'
             }
@@ -220,22 +220,22 @@ xhi._05_css_shell_ = (function () {
           { _selector_str_ : __p('.{_p_}-_shell_nav_>li a:hover'),
             _rule_map_ : { _color_ : '_link_xlt_hex_' }
           },
-          { _selector_str_ : '.xhi-_shell_nav_>li.active a',
+          { _selector_str_ : '.{_p_}-_shell_nav_>li.active a',
             _rule_map_     : { _color_ : '_link_xlt_hex_' }
           },
           { _selector_str_ : __p('.{_p_}-_shell_nav_>li.{_p_}-_x_select_'),
             _rule_map_ : { _color_ : '_link_xlt_hex_' }
           },
-          { _selector_str_ : '.xhi-_shell_nav_>li.xhi-_x_select_',
+          { _selector_str_ : '.{_p_}-_shell_nav_>li.xhi-_x_select_',
             _rule_map_ : { _background_ : '_frame_xdk_hex_' }
           },
           { _selector_str_ : __p('.{_p_}-_shell_nav_ li span'),
             _rule_map_ : {
               _display_      : '_inline_block_',
-              _width_        : '_1d5rem_',
-              _margin_right_ : '_spc_em_02_',
+              _width_        : '_spc_rem_03_',
+              _margin_right_ : '_spc_rem_02_',
               _font_family_  : '_font_family_awesome_',
-              _font_size_    : '_1d5rem_',
+              _font_size_    : '_spc_rem_03_',
               _text_align_   : '_center_',
               _text_decoration_ : '_none_'
             }
@@ -246,8 +246,8 @@ xhi._05_css_shell_ = (function () {
               _position_      : '_fixed_',
               _bottom_        : '_0_',
               _right_         : '_0_',
-              _border_radius_ : [[ '_d375rem_', '_0_', '_0_','_0_' ]],
-              _padding_       : [[ '_d375rem_', '_d75rem_','_d75rem_','_d75rem_' ]],
+              _border_radius_ : [[ '_radius_05_', '_0_', '_0_','_0_' ]],
+              _padding_       : [[ '_spc_rem_00_', '_spc_rem_01_','_spc_rem_01_','_spc_rem_01_' ]],
               _background_    : '_frame_dk_hex_',
               _color_         : '_link_lt_hex_'
             }
@@ -263,7 +263,7 @@ xhi._05_css_shell_ = (function () {
           { _selector_str_ : __p('.{_p_}-_shell_cont_'),
             _rule_map_ : {
               _margin_     : '_auto_',
-              _padding_    : [[ '_5rem_', '_2rem_', '_3rem_', '_5d5rem_' ]],
+              _padding_    : [[ '_5rem_', '_scp_rem_04_', '_3rem_', '_5d5rem_' ]],
               _max_width_  : [ '100rem' ],
               _transition_ : '_trans_short_'
             }
@@ -281,7 +281,7 @@ xhi._05_css_shell_ = (function () {
             _rule_map_     : {
               _display_        : '_inline_block_',
               _float_          : '_left_',
-              _line_height_    : '_2rem_',
+              _line_height_    : '_scp_rem_04_',
               _font_size_      : '_1d25rem_',
               _color_          : '_link_fade_hex_'
             }
@@ -289,7 +289,7 @@ xhi._05_css_shell_ = (function () {
           { _selector_str_ : __p('.{_p_}-_shell_cont_head_bread_ li:nth-child(even)'),
             _rule_map_     : {
               _margin_top_  : '_d125rem_',
-              _width_       : '_2rem_',
+              _width_       : '_scp_rem_04_',
               _font_family_ : '_font_family_awesome_',
               _text_align_  : '_center_'
             }
@@ -303,7 +303,7 @@ xhi._05_css_shell_ = (function () {
           },
           { _selector_str_ : __p('.{_p_}-_shell_cont_head_icon_'),
             _rule_map_     : {
-              _margin_right_   : '_d75rem_',
+              _margin_right_   : '_spc_rem_01_',
               _font_family_    : '_font_family_awesome_',
               _vertical_align_ : '_baseline_'
             }
@@ -316,7 +316,7 @@ xhi._05_css_shell_ = (function () {
           },
           { _selector_str_ : __p('.{_p_}-_shell_head_.{_p_}-_x_open_'),
             _rule_map_     : {
-              _border_radius_ : [[ '_0_','_0_','_0_','_1rem_' ]]
+              _border_radius_ : [[ '_0_','_0_','_0_','_radius_15_' ]]
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_cont_.{_p_}-_x_open_'),
@@ -328,12 +328,12 @@ xhi._05_css_shell_ = (function () {
           { _begin_cond_str_ : '@media all and (max-width: 812px)' },
           { _selector_str_ : __p('.{_p_}-_shell_cont_'),
             _rule_map_ : {
-              _padding_    : [[ '_5rem_', '_3rem_', '_5rem_', '_2rem_' ]]
+              _padding_    : [[ '_5rem_', '_3rem_', '_5rem_', '_scp_rem_04_' ]]
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_base_'),
             _rule_map_ : {
-              _padding_    : [[ '_0_', '_3rem_', '_0_', '_2rem_' ]]
+              _padding_    : [[ '_0_', '_3rem_', '_0_', '_scp_rem_04_' ]]
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_nav_'),
@@ -381,11 +381,11 @@ xhi._05_css_shell_ = (function () {
           },
           { _selector_str_  : __p('.{_p_}-_shell_head_search_'),
             _rule_map_      : {
-              _left_        : '_d75rem_',
+              _left_        : '_spc_rem_01_',
               _top_         : '_3d5rem_',
               _margin_left_ : '_0_',
               _width_       : '_auto_',
-              _right_       : '_1d5rem_'
+              _right_       : '_spc_rem_03_'
             }
           },
           { _end_cond_str_ : __blank }

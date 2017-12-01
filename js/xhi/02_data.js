@@ -24,15 +24,15 @@ xhi._02_data_ = ( function () {
       vMap    = aMap._vMap_,
       nMap    = aMap._nMap_,
 
-      __data2strFn = vMap._data2strFn_,
+      // __data2strFn = vMap._data2strFn_,
+      // __blank  = vMap._blank_,
+      // __false  = vMap._false_,
 
       __n1     = nMap._n1_,
       __0      = nMap._0_,
       __1      = nMap._1_,
 
       __Num    = vMap._Number_,
-      __blank  = vMap._blank_,
-      __false  = vMap._false_,
       __null   = vMap._null_,
       __true   = vMap._true_,
       __undef  = vMap._undef_,
@@ -44,7 +44,8 @@ xhi._02_data_ = ( function () {
       configMap    = {},
       stateMap     = {
         _active_jqxhr_list_ : [],
-        _auth_key_          : __undef
+        _auth_key_          : __undef,
+        _base_url_          : __undef
       },
 
       instanceMap, optionMap
@@ -52,7 +53,7 @@ xhi._02_data_ = ( function () {
     // == . END MODULE SCOPE VARIABLES ================================
 
     // == BEGIN UTILITY METHODS =======================================
-    function encodeUriComp ( str ) { return encodeURIComponent( str ); }
+    function encUriCompFn ( str ) { return encodeURIComponent( str ); }
     // == . END UTILITY METHODS =======================================
 
     // == BEGIN PRIVATE METHODS =======================================
@@ -109,109 +110,123 @@ xhi._02_data_ = ( function () {
       if ( error_data === 'Unauthorized' ) {
         return handleNoauth();
       }
-      return smap._fail_fn_ && smap._fail_fn_( error_data, status_type );
+      if ( smap && smap._fail_fn_ ) {
+        smap._fail_fn_( error_data, status_type );
+      }
+      __logMsg( '_error_', '_xhr_failed_', error_data );
     }
     // . END private method /onFailJqxhr/
 
     // BEGIN private method /onDoneJqxhr/
     function onDoneJqxhr ( arg_data, status_type, jqxhr ) {
-      // noinspection MagicNumberJS
       var
         smap       = this,
         data       = arg_data || {},
         status_int = __Num( jqxhr[ vMap._status_ ] ) || 200;
 
       delJqxhrFromList( jqxhr );
-      // noinspection MagicNumberJS
+
       if ( status_int < 300 ) {
-        return smap._done_fn_ && smap._done_fn_( data );
+        if ( smap && smap._done_fn_ ) {
+          smap._done_fn_( null, data );
+        }
+        return;
       }
       // Despite successful transmission, status_int says we have a problem
       onFailJqxhr( jqxhr, status_type, arg_data );
     }
     // . END private method /onDoneJqxhr/
 
-    // BEGIN private method /sendHttpRequest/
-    function sendHttpRequest ( arg_map ) {
+    function sendHttpRequest ( arg_req_map, arg_option_map ) {
       var
-        data         = arg_map._data_ === __undef ? __blank : arg_map._data_,
-        full_url     = arg_map._full_url_,
-        auth_key     = stateMap._auth_key_,
-        content_type = __blank,
+        req_map    = __util._castMap_( arg_req_map    ),
+        option_map = __util._castMap_( arg_option_map, {} ),
+        $defer_obj, context_map
+        ;
 
-        do_data_encode, jqxhr_obj,
-        context_map, done_jqxhr_fn,
-        fail_jqxhr_fn;
-
-      // content_type and do_data_encode (data encoding) are only required
-      // for posting json data
-      if ( arg_map._content_type_ ) {
-        content_type   = arg_map._content_type_;
-        do_data_encode = __false;
+      if ( ! req_map ) {
+        return __logMsg( '_warn_', '_req_map_required_' );
       }
-      else {
-        // content_type = 'application/x-www-form-urlencoded;charset=UTF-8';
-        do_data_encode = __true;
+      try {
+        $defer_obj = $.ajax( req_map );
+      }
+      catch ( error_data ) {
+        $defer_obj = $.Deferred();
+        $defer_obj.fail( error_data, __null );
+        return $defer_obj;
       }
 
-      // Callback can be a list executed in-order. Could be useful.
-      // TODO 2016-06-13 mmikowski warn: Add auth signature as shown here
-      // beforeSend  : function (jqxhr_obj) {
-      //  prepareXhrSignature(jqxhr_obj, arg_map._full_url_);
-      // }
-      //
-      jqxhr_obj = $.ajax( full_url, {
-        headers     : {
-          Authentication  : auth_key,
-          Pragma          : 'no-cache',
-          'Cache-Control' : 'no-cache',
-          Version         : '1.0'
-        },
-        dataType    : 'json',
-        cache       : __true,
-        contentType : content_type,
-        processData : do_data_encode,
-        type        : arg_map._request_type_ || 'GET',
-        data        : data
-      } );
-
-      addJqxhrToList( jqxhr_obj );
+      addJqxhrToList( $defer_obj );
 
       context_map = {
-        _done_fn_ : arg_map._done_fn_ || __null,
-        _fail_fn_ : arg_map._fail_fn_ || __null
+        _done_fn_ : option_map._done_fn_ || __null,
+        _fail_fn_ : option_map._fail_fn_ || __null
       };
 
-      done_jqxhr_fn = onDoneJqxhr[ vMap._bind_ ]( context_map );
-      fail_jqxhr_fn = onFailJqxhr[ vMap._bind_ ]( context_map );
-
-      jqxhr_obj[ vMap._then_ ]( done_jqxhr_fn, fail_jqxhr_fn );
+      $defer_obj[ vMap._then_ ](
+        onDoneJqxhr[ vMap._bind_ ]( context_map ),
+        onFailJqxhr[ vMap._bind_ ]( context_map )
+      );
+      return $defer_obj;
     }
 
+    // BEGIN private method /sendHttpRequest/
+    // function sendHttpRequest ( arg_map ) {
+    //   var
+    //     data         = arg_map._data_ === __undef ? __blank : arg_map._data_,
+    //     full_url     = arg_map._full_url_,
+    //     auth_key     = stateMap._auth_key_,
+    //     content_type = __blank,
+
+    //     do_data_encode, jqxhr_obj,
+    //     context_map, done_jqxhr_fn,
+    //     fail_jqxhr_fn;
+
+    //   // content_type and do_data_encode (data encoding) are only required
+    //   // for posting json data
+    //   if ( arg_map._content_type_ ) {
+    //     content_type   = arg_map._content_type_;
+    //     do_data_encode = __false;
+    //   }
+    //   else {
+    //     // content_type = 'application/x-www-form-urlencoded;charset=UTF-8';
+    //     do_data_encode = __true;
+    //   }
+
+    //   // Callback can be a list executed in-order. Could be useful.
+    //   // TODO 2016-06-13 mmikowski warn: Add auth signature as shown here
+    //   // beforeSend  : function (jqxhr_obj) {
+    //   //  prepareXhrSignature(jqxhr_obj, arg_map._full_url_);
+    //   // }
+    //   //
+    //   jqxhr_obj = $.ajax( full_url, {
+    //     headers     : {
+    //       Authentication  : auth_key,
+    //       Pragma          : 'no-cache',
+    //       'Cache-Control' : 'no-cache',
+    //       Version         : '1.0'
+    //     },
+    //     dataType    : 'json',
+    //     cache       : __true,
+    //     contentType : content_type,
+    //     processData : do_data_encode,
+    //     type        : arg_map._request_type_ || 'GET',
+    //     data        : data
+    //   } );
+
+    //   addJqxhrToList( jqxhr_obj );
+
+    //   context_map = {
+    //     _done_fn_ : arg_map._done_fn_ || __null,
+    //     _fail_fn_ : arg_map._fail_fn_ || __null
+    //   };
+
+    //   done_jqxhr_fn = onDoneJqxhr[ vMap._bind_ ]( context_map );
+    //   fail_jqxhr_fn = onFailJqxhr[ vMap._bind_ ]( context_map );
+
+    //   jqxhr_obj[ vMap._then_ ]( done_jqxhr_fn, fail_jqxhr_fn );
+    // }
     // . END private method /sendHttpRequest/
-
-    // BEGIN private methods for Delete, Get, Post, and Put
-    function sendHttpGet ( arg_map ) {
-      arg_map._request_type_ = 'GET';
-      sendHttpRequest( arg_map );
-    }
-
-    function sendHttpDelete ( arg_map ) {
-      arg_map._request_type_ = 'DELETE';
-      sendHttpRequest( arg_map );
-    }
-
-    function sendHttpPost ( arg_map ) {
-      arg_map._request_type_ = 'POST';
-      sendHttpRequest( arg_map );
-    }
-
-    function sendHttpPut ( arg_map ) {
-      arg_map._request_type_ = 'PUT';
-      sendHttpRequest( arg_map );
-    }
-
-    // . END private methods for Delete, Get, Post, and Put
     // == . END PRIVATE METHDS ========================================
 
     // == BEGIN EVENT HANDLERS ========================================
@@ -227,7 +242,6 @@ xhi._02_data_ = ( function () {
         return stateMap;
       }
       __logMsg( '_warn_', '_requested_map_not_available_', type_str );
-
     }
     // . END Public method /getMapFn/
 
@@ -242,26 +256,15 @@ xhi._02_data_ = ( function () {
     // . END Public method /setConfigMapFn/
 
     // BEGIN Public method /initModuleFn/
-    function initModuleFn () {
-      __logMsg( '_info_', $,
-        '\n  __0       === ' + __0,
-        '\n  __1       === ' + __1,
-        '\n  __blank   === ' + __blank,
-        '\n  aKey      === ' + aKey,
-        '\n  aMap      === ' + __data2strFn( aMap ),
-        '\n  configMap === ' + __data2strFn( configMap ),
-        '\n  stateMap  === ' + __data2strFn( stateMap ),
-        encodeUriComp,
-        sendHttpGet, sendHttpDelete,
-        sendHttpPost, sendHttpPut
-      );
-    }
+    function initModuleFn ( ) { }
     // . END Public method /initModuleFn/
 
     instanceMap = {
+      _encUriCompFn_   : encUriCompFn,
       _getMapFn_       : getMapFn,
-      _setConfigMapFn_ : setConfigMapFn,
-      _initModuleFn_   : initModuleFn
+      _initModuleFn_   : initModuleFn,
+      _sendHttpRequest_: sendHttpRequest,
+      _setConfigMapFn_ : setConfigMapFn
     };
     // == . END PUBLIC METHODS ========================================
     optionMap = __util._castMap_( argOptionMap, {} );

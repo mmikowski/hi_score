@@ -9,25 +9,30 @@
 ##   We omit -e as we do our own checking.
 
 set -u;
-_app_name=$( basename $0 );
-_app_link=$( readlink -f -- "${0}" );
-_bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
-_makedoc_exe="${_bin_dir}/make_doc";
+
+# This hack is to get around Mac's (c) 2007 version of Bash!
+# _appLink=$( readlink -f -- "${0}" );
+_readLinkFn(){ perl -MCwd -e 'print Cwd::abs_path shift' "$1";}
+
+_appName=$( basename $0 );
+_appLink=$( _readLinkFn "${0}" );
+_binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
+_makedocExe="${_binDir}/make_doc";
 
 ## == BEGIN Process changed documents =====================================
-if [ ! -x "${_makedoc_exe}" ]; then
+if [ ! -x "${_makedocExe}" ]; then
   echo "bin/make_doc not found.  This file should exist.";
   echo "Please check your installation.";
   exit 1;
 fi
 echo "Updating HTML documents from MarkDown";
-"${_makedoc_exe}";
-_exit_code=$?;
-if [ "${_exit_code}" -ne "0" ]; then
+"${_makedocExe}";
+_exitCode=$?;
+if [ "${_exitCode}" -ne "0" ]; then
   echo "Document file failure".
   echo "Please check your installation.";
-  exit "${_exit_code}";
+  exit "${_exitCode}";
 fi
 ## == . END Process changed documents =====================================
 
-exec ${_bin_dir}/xhi dev_commit && exit 1;
+exec ${_binDir}/xhi dev_commit && exit 1;

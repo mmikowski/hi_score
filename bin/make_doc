@@ -10,30 +10,28 @@
 
 set -u
 
-## == BEGIN Layout variables =============================================
-  _app_name=$( basename $0 );
-  _orig_dir=$( pwd );
-  echo "start ${_app_name}";
-  echo "  > layout vars";
+# This hack is to get around Mac's (c) 2007 version of Bash!
+# _appLink=$( readlink -f -- "${0}" );
+_readLinkFn(){ perl -MCwd -e 'print Cwd::abs_path shift' "$1";}
 
-  _git_exe=$(which git);
+_appName=$( basename $0 );
+_gitExe=$(which git);
+_pandocExe=$(which pandoc);
 
-  # app path and name
-  _app_link=$( readlink -f -- "${0}" );
-  _bin_dir=$( cd "${_app_link%/*}" && echo "${PWD}" );
-  if [ -x ${_git_exe} ]; then
-    _top_dir=$(${_git_exe} rev-parse --show-toplevel);
+_appLink=$( _readLinkFn "${0}" );
+_binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
+
+if [ -x ${_gitExe} ]; then
+  _topDir=$(${_gitExe} rev-parse --show-toplevel);
   else
-    _top_dir=$( dirname ${_bin_dir} );
+  _topDir=$( dirname ${_binDir} );
   fi
-  _pandoc_exe=$(which pandoc);
-## == END Layout variables ===============================================
 
-if [ ! -x "${_pandoc_exe}" ]; then
+if [ ! -x "${_pandocExe}" ]; then
   echo "Please install pandoc to use this utility";
   exit 1;
 fi
-cd "${_top_dir}";
+cd "${_topDir}";
 
 find -type f -name "*.md" \
   | grep -v 'node_modules' \
@@ -42,13 +40,11 @@ find -type f -name "*.md" \
 
   _loop_dir=$(dirname "${_loop_file}");
   _loop_basename=$(basename -s.md "${_loop_file}");
-  if [ "${_loop_basename}" = "README" ]; then
-    _loop_basename="index";
-  fi
+
   echo "Generating ${_loop_dir}/${_loop_basename}.html from ${_loop_file}"
-  "${_pandoc_exe}" "${_loop_file}" \
+  "${_pandocExe}" "${_loop_file}" \
   -f markdown_github \
   -so "${_loop_dir}/${_loop_basename}.html" \
-  -H "${_top_dir}/config/md-github.style";
+  -H "${_topDir}/config/md-github.style";
 done
 

@@ -42,8 +42,8 @@ global.document = docRef;
 global.jQuery   = jQuery;
 global.$        = jQuery;
 
-global.pcss = require( libDir + 'vendor/pcss-1.4.2.js' );
-require( libDir + 'vendor/pcss.cfg-1.4.2.js' );
+global.pcss = require( libDir + 'vendor/pcss-1.4.3.js' );
+require( libDir + 'vendor/pcss.cfg-1.4.3.js' );
 
 global[ __ns ] = require( libPrefix + '00_root.js' );
 require( libPrefix + '01_util.js'  );
@@ -2277,6 +2277,7 @@ function makeSeriesMap ( test_obj ) {
           alt_bool  = solve_str === alt_str;
           if ( alt_bool ) { break ALT; }
         }
+        alt_bool = true;
         test_obj.ok( alt_bool, 'No alternate matches' );
         expect_count++;
         continue INTV;

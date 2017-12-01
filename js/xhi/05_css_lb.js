@@ -35,8 +35,8 @@ xhi._05_css_lb_ = (function () {
               _opacity_       : '_0_',
               _border_        : [ [ '_d25rem_', '_solid_',
                 '_area_hover_hex_' ] ],
-              _border_radius_ : '_d5rem_',
-              _box_shadow_    : '_shdw_02_',
+              _border_radius_ : '_radius_07_',
+              _box_shadow_    : '_shdw_09_',
               _background_    : '_area_hex_',
               _color_         : '_txt_hex_',
               _overflow_x_    : '_hidden_',
@@ -104,8 +104,8 @@ xhi._05_css_lb_ = (function () {
             _rule_map_     : {
               _position_   : '_relative_',
               _padding_    : [ [ '_d25rem_', '_1rem_' ] ],
-              _font_size_  : '_1d5rem_',
-              _background_ : '_area_mid_hex_',
+              _font_size_  : '_spc_rem_03_',
+              _background_ : '_area_lt_hex_',
               _cursor_     : '_move_',
               _white_space_ : '_nowrap_'
             }
@@ -149,7 +149,25 @@ xhi._05_css_lb_ = (function () {
               _position_   : '_absolute_',
               _min_height_ : '_4rem_'
             }
-          }
+          },
+          { _selector_str_ : __p('.{_p_}-_x_lb_'),
+            _rule_map_ : { _max_width_ : '_50p_' }
+          },
+          // BEGIN conditional selectors where w -lt 960px
+          { _begin_cond_str_ : '@media all and (max-width: 960px)' },
+            { _selector_str_ : __p('.{_p_}-_x_lb_'),
+              _rule_map_ : { _max_width_ : [ '720px' ] }
+            },
+          { _end_cond_str_ : '' },
+          // . END conditional selectors where w -lt 960px
+
+          // BEGIN conditional selectors where w -lt 750px
+          { _begin_cond_str_ : '@media all and (max-width: 750px)' },
+            { _selector_str_ : __p('.{_p_}-_x_lb_'),
+              _rule_map_ : { _width_ : [ '90%' ] }
+            },
+          { _end_cond_str_ : '' }
+          // . END conditional selectors where w -lt 750px
         ]
       },
 

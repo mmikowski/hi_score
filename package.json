@@ -18,6 +18,7 @@
     "express": "4.16.2",
     "flow": "0.2.3",
     "font-awesome": "4.7.0",
+    "font-roboto": "0.0.2",
     "http-server": "0.10.0",
     "istanbul": "0.4.5",
     "jquery": "3.2.1",
@@ -33,7 +34,7 @@
     "nodeunit": "0.11.2",
     "npm": "5.5.1",
     "open-sans-fontface": "1.4.0",
-    "powercss": "1.4.2",
+    "powercss": "1.4.3",
     "ps-node": "0.1.6",
     "rmdir": "1.2.0",
     "shelljs": "0.7.8",
@@ -115,7 +116,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.17",
+  "version": "1.4.18",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -618,6 +619,10 @@
             "src_dirname": "fonts"
           },
           {
+            "src_pkg_name": "font-roboto",
+            "src_dirname": "dist/fonts"
+          },
+          {
             "src_asset_name": "Regular",
             "src_pkg_name": "open-sans-fontface",
             "src_dirname": "fonts"
@@ -676,6 +681,11 @@
           "font/vendor/open-sans-fontface-1.4.0/Regular",
           null,
           true
+        ],
+        [
+          "font/vendor/font-roboto-0.0.2",
+          null,
+          true
         ]
       ]
     },
@@ -683,7 +693,10 @@
       {
         "app_id": "app-ex01",
         "css_make_matrix": {
-          "do_vendor": true
+          "do_vendor": true,
+          "asset_list": [
+            "css/xhi-fonts.css"
+          ]
         },
         "js_make_matrix": {
           "asset_list": [
@@ -704,13 +717,13 @@
               ]
             },
             [
-              "template/app-ex01.html",
-              "/",
+              "img/hi_score.png",
+              null,
               false
             ],
             [
-              "img/hi_score.png",
-              null,
+              "template/app-ex01.html",
+              "/",
               false
             ]
           ]
@@ -719,7 +732,10 @@
       {
         "app_id": "app-ex02",
         "css_make_matrix": {
-          "do_vendor": true
+          "do_vendor": true,
+          "asset_list": [
+            "css/xhi-fonts.css"
+          ]
         },
         "js_make_matrix": {
           "asset_list": [
@@ -740,13 +756,13 @@
               ]
             },
             [
-              "template/app-ex02.html",
-              "/",
+              "img/hi_score.png",
+              null,
               false
             ],
             [
-              "img/hi_score.png",
-              null,
+              "template/app-ex02.html",
+              "/",
               false
             ]
           ]
@@ -755,7 +771,10 @@
       {
         "app_id": "app-tb02",
         "css_make_matrix": {
-          "do_vendor": true
+          "do_vendor": true,
+          "asset_list": [
+            "css/xhi-fonts.css"
+          ]
         },
         "js_make_matrix": {
           "asset_list": [
@@ -785,6 +804,11 @@
                 "font_deploy_list"
               ]
             },
+            [
+              "sound",
+              null,
+              true
+            ],
             [
               "template/app-tb02.html",
               "/",

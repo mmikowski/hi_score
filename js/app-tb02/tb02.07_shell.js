@@ -22,7 +22,7 @@ tb02._07_shell_ = (function () {
     __p       = __util._makeReplaceFn_( '_p_', aKey ),
 
     configMap = {
-      _main_html_  : __p(
+      _main_tmplt_  : __p(
         '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" '
         + 'class="{_p_}-_shell_bg_svg_" '
         + 'viewbox="0 0 100 100" preserveAspectRatio="none">'
@@ -422,7 +422,7 @@ tb02._07_shell_ = (function () {
     tb02._06_css_._initModuleFn_();
 
     // Set up screen
-    $body[ vMap._html_ ]( configMap._main_html_ );
+    $body[ vMap._html_ ]( configMap._main_tmplt_ );
     set$MapFn( $body );
 
     // Begin browser event bindings

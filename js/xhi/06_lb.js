@@ -18,6 +18,7 @@
  *   - closeLbFn        : Remove litebox and content (config callback)
  *   - handleResizeFn   : Adjust litebox for screen size change
  *   - hideLbFn         : Remove litebox and content
+ *   - hideBusyFn       : Hide a busy litebox
  *   - showBusyFn       : Show a busy litebox
  *   - showErrorTableFn : Show an error table
  *   - showLbFn         : Show litebox with content.
@@ -73,7 +74,7 @@ xhi._06_lb_ = (function () {
       configMap  = {
         _trans_ms_      : 350, // transition time
         _active_class_  : aKey + '-_x_active_',
-        _main_html_     : __p( __blank
+        _main_tmplt_     : __p( __blank
           + '<div id="{_p_}-_lb_mask_" class="{_p_}-_lb_mask_"></div>'
           + '<div id="{_p_}-_lb_spin_" class="{_p_}-_lb_spin_">&#xf021;'
           + '</div><div id="{_p_}-_lb_"></div>'
@@ -165,7 +166,7 @@ xhi._06_lb_ = (function () {
       if ( stateMap._is_ready_ ) { return; }
 
       // Add to DOM
-      $( vMap._body_ )[ vMap._append_ ]( configMap._main_html_ );
+      $( vMap._body_ )[ vMap._append_ ]( configMap._main_tmplt_ );
 
       // Cache jQuery collections and set state
       set$Map();
@@ -328,6 +329,27 @@ xhi._06_lb_ = (function () {
       // )
     }
     // . END method /showBusyFn/
+
+    // BEGIN method /hideBusyFn/
+    // Summary   : hideBusyFn()
+    // Purpose   : Hides busy indicator
+    // Example   : hideBusyFn();
+    // Arguments : none
+    // Settings  : Changes stateMap, $Map
+    // Returns   : undefined
+    // Throws    : None
+    //
+    function hideBusyFn () {
+      var active_class = configMap._active_class_;
+      initModuleFn();
+      hideLbFn();
+
+      $Map._$mask_[ vMap._css_ ]( cssKmap._display_, cssVmap._none_ )[
+        vMap._removeClass_ ]( active_class );
+      stateMap._is_masked_ = __false;
+      $Map._$spin_[ vMap._removeClass_ ]( active_class );
+    }
+    // . END method /hideBusyFn/
 
     // BEGIN DOM method /afterShowFn/
     // Purpose   : Finish presentation of litebox after it is shown
@@ -790,6 +812,7 @@ xhi._06_lb_ = (function () {
       _closeLbFn_       : closeLbFn,
       _getMapFn_        : getMapFn,
       _handleResizeFn_  : handleResizeFn,
+      _hideBusyFn_       : hideBusyFn,
       _hideLbFn_        : hideLbFn,
       _setConfigMapFn_  : setConfigMapFn,
       _showBusyFn_      : showBusyFn,
