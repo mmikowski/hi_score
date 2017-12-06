@@ -30,7 +30,7 @@ xhi._05_css_lb_ = (function () {
           { _selector_str_ : __p( '.{_p_}-_lb_' ),
             _rule_map_     : {
               _z_index_       : [ '36' ],
-              _position_      : '_absolute_',
+              _position_      : '_fixed_',
               _display_       : '_block_',
               _opacity_       : '_0_',
               _border_        : [ [ '_d25rem_', '_solid_',
@@ -53,7 +53,7 @@ xhi._05_css_lb_ = (function () {
           { _selector_str_ : __p( '.{_p_}-_lb_mask_' ),
             _rule_map_     : {
               _z_index_    : [ '35' ],
-              _position_   : '_absolute_',
+              _position_   : '_fixed_',
               _display_    : '_block_',
               _opacity_    : '_0_',
               _top_        : '_0_',
@@ -68,6 +68,7 @@ xhi._05_css_lb_ = (function () {
           },
           { _selector_str_ : __p( '.{_p_}-_lb_mask_.{_p_}-_x_local_' ),
             _rule_map_     : {
+              _position_   : '_absolute_',
               _z_index_    : '_1_',
               _transition_ : '_none_',
               _cursor_     : '_default_'
@@ -82,7 +83,7 @@ xhi._05_css_lb_ = (function () {
           { _selector_str_ : __p( '.{_p_}-_lb_content_' ),
             _rule_map_     : {
               _position_ : '_relative_',
-              _padding_  : '_1rem_'
+              _padding_  : [[ '_1rem_', '_1d5rem_' ]]
             }
           },
           { _selector_str_ : __p( '.{_p_}-_lb_content_ p' ),
@@ -133,6 +134,14 @@ xhi._05_css_lb_ = (function () {
               _font_family_ : '_font_family_awesome_',
               _color_       : '_accent_hex_',
               _animation_   : [ 'spinIt 1s linear infinite' ]
+            }
+          },
+
+          { _selector_str_ : __p( '.{_p_}-_x_local_ .{_p_}-_lb_spin_' ),
+            _rule_map_     : {
+              _z_index_    : '_1_',
+              _position_   : '_absolute_',
+              _min_height_ : '_4rem_'
             }
           },
           { _selector_str_ : __p( '.{_p_}-_lb_spin_.{_p_}-_x_reverse_' ),

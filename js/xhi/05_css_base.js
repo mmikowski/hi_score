@@ -91,19 +91,19 @@ xhi._05_css_base_ = (function () {
             // Use to draw attention to features.
             _accent_hex_        : '#29363d',  // gradtop_hex === frame_hex
             _accent_dk_hex_     : '#212b31',  // gradbtm_hex === frame_dk_hex
-            _accent_lt_hex_     : '#33444c',  // *           === frame_lt_hex
+            _accent_lt_hex_     : '#33444c',  //                 frame_lt_hex
 
             // Area colors are intended to fill large swaths of area.
             // Generally they are less intense than comparable text colors.
-            _area_hex_          : '#e4e5e6', //  bkgd_hex     default bkgd
-            _area_xlt_hex_      : '#f0f3f5', //  lighter background
-            _area_accent_hex_   : '#e6e5e4', // *bkgd_ac_hex  textbox bkgd
-            _area_focus_hex_    : '#ffffdd', // *bkgd_ac_hex  textbox bkgd
+            _area_hex_          : '#e4e5e6', // bkgd_hex
+            _area_xlt_hex_      : '#f0f3f5', //   lighter
+            _area_accent_hex_   : '#e6e5e4', //   alternate
+            _area_focus_hex_    : '#ffffdd', //   focus
             _area_hover_hex_    : '#ffffff', //  bright_hex   full hover bright
-            _area_lt_hex_       : '#ccd5dc', // *bkgd_mid_hex
-            _area_mid_hex_      : '#cccccc', // *bkgd_mid_xlt_hex
-            _area_dk_hex_       : '#aab3bb', // *bkgd_mid_lt_hex
-            _area_xdk_hex_      : '#666e76', //  bkgd_dk_hex
+            _area_lt_hex_       : '#ccd5dc',
+            _area_mid_hex_      : '#cccccc',
+            _area_dk_hex_       : '#aab3bb',
+            _area_xdk_hex_      : '#666e76',
 
             _area_info_hex_     : '#282',
             _area_warn_hex_     : '#882',
@@ -533,6 +533,10 @@ xhi._05_css_base_ = (function () {
               _color_           : '_link_dk_hex_'
             }
           },
+          // Do not underline icon links
+          { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_link_:hover'),
+            _rule_map_     : { _text_decoration_ : '_none_' }
+          },
           { _selector_str_ : __p('.{_p_}-_x_link_inv_:hover'),
             _rule_map_     : {
               _text_decoration_ : '_underline_',
@@ -754,11 +758,9 @@ xhi._05_css_base_ = (function () {
               _user_select_         : '_none_'
             }
           },
-
           { _selector_str_ : __p('.{_p_}-_x_bold_'),
             _rule_map_     : {_font_weight_ : '_800_'}
           },
-
           { _selector_str_ : __p('.{_p_}-_x_clearfloat_'),
             _rule_map_     : {
               _visibility_ : [['_hidden_', '_important_']],
@@ -766,6 +768,41 @@ xhi._05_css_base_ = (function () {
               _height_     : [['_0_', '_important_']],
               _clear_      : [['_both_', '_important_']]
             }
+          },
+          { _selector_str_ : __p('.{_p_}-_x_form_' ),
+            _rule_map_ : { _min_width_ : [ '15rem' ] }
+          },
+          { _selector_str_ : __p('.{_p_}-_x_form_ input[type=text],'
+              + '.{_p_}-_x_form_ input[type=password],'
+              + '.{_p_}-_x_form_ textarea'
+            ),
+            _rule_map_     : {
+              _padding_       : [ [ '_d5rem_', '_d75rem_' ] ],
+              _margin_bottom_ : '_d75rem_',
+              _width_         : '_100p_',
+              _border_        : [[ '_txt_xlt_hex_', '_solid_', '_d0625rem_' ]],
+              _background_    : '_area_accent_hex_',
+              _color_         : '_txt_hex_'
+            }
+          },
+          { _selector_str_ : __p('.{_p_}-_x_form_ textarea:focus,'
+              + '.{_p_}-_x_form_ input:focus'),
+            _rule_map_     : {
+              _background_   : '_area_focus_hex_',
+              _border_color_ : '_link_hex_'
+            }
+          },
+          { _selector_str_ : __p( '.{_p_}-_x_form_ input[type=radio]' ),
+            _rule_map_ : { _margin_right_ : '_d5rem_' }
+          },
+          { _selector_str_ : __p( '.{_p_}-_x_form_ label' ),
+            _rule_map_ : {
+              _cursor_       : '_pointer_',
+              _margin_right_ : '_2rem_'
+            }
+          },
+          { _selector_str_ : __p( '.{_p_}-_x_form_ label:hover' ),
+            _rule_map_ : { _text_decoration_ : '_underline_' }
           }
           // . END Shared generic modifiers
           /* END {_p_}-_x_*_ selectors */

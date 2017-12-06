@@ -42,8 +42,8 @@ global.document = docRef;
 global.jQuery   = jQuery;
 global.$        = jQuery;
 
-global.pcss = require( libDir + 'vendor/pcss-1.4.3.js' );
-require( libDir + 'vendor/pcss.cfg-1.4.3.js' );
+global.pcss = require( libDir + 'vendor/pcss-1.4.5.js' );
+require( libDir + 'vendor/pcss.cfg-1.4.5.js' );
 
 global[ __ns ] = require( libPrefix + '00_root.js' );
 require( libPrefix + '01_util.js'  );
@@ -3120,21 +3120,23 @@ function resizeTextarea ( test_obj ) {
 // ===== LiteBox (LB)
 liteBoxMap = {
   _outer01_tmplt_ : __blank
-    + '<div id="' + aKey + '-_lb_" style="display: block; top: 50%; '
-      + 'left: 50%; margin-top: -192px; margin-left: -256px; width: 512px;" '
-      + 'class="' + aKey + '-_lb_ ' + aKey + '-_x_active_"><div class="'
-      + aKey + '-_lb_title_" '
-      + 'style="display: block;">{_title_}</div>'
-      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
+    + '<div id="' + aKey + '-_lb_" style="display: block; top: 384px; '
+      + 'left: 512px; margin-top: 0px; margin-left: 0px;" '
+      + 'class="' + aKey + '-_lb_ ' + aKey + '-_x_active_">'
+      + '<div class="' + aKey + '-_lb_title_" style="display: block;">'
+      + '{_title_}</div>'
+      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>'
+      + '{_close_html_}</div>'
       + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _outer02_tmplt_ : __blank
-    + '<div id="' + aKey + '-_lb_" class="' + aKey + '-_lb_ '
-      + aKey + '-_x_active_" '
-      + 'style="display: block; top: 50%; left: 50%; '
-      + 'margin-top: -192px; margin-left: -256px; width: 512px;"><div '
-      + 'class="' + aKey + '-_lb_title_" style="display: block;">{_title_}</div>'
-      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>{_close_html_}</div>'
+    + '<div id="' + aKey + '-_lb_" class="' + aKey + '-_lb_ ' + aKey
+      + '-_x_active_" style="display: block; top: 384px; '
+      + 'left: 512px; margin-top: 0px; margin-left: 0px;">'
+      + '<div class="' + aKey + '-_lb_title_" style="display: block;">'
+      + '{_title_}</div>'
+      + '<div class="' + aKey + '-_lb_close_"{_close_block_}>'
+      + '{_close_html_}</div>'
       + '<div class="' + aKey + '-_lb_content_">{_content_html_}</div>'
     + '</div>',
   _spin_html_     : __blank
@@ -3470,12 +3472,12 @@ function handleResize ( test_obj ) {
     '1. Second call should return false as the resize is already scheduled'
   );
 
-  ret_bool = __lb._handleResizeFn_({ _body_w_px_ : 1024, _body_h_px_ : 768 });
+  ret_bool = __lb._handleResizeFn_({ _window_w_px_ : 1024, _window_h_px_ : 768 });
   test_obj.ok( ret_bool === __true, '2. Resize should work' );
 
   __lb._showBusyFn_() ;
 
-  ret_bool = __lb._handleResizeFn_({ _body_w_px_ : 1248, _body_h_px_ : 768 });
+  ret_bool = __lb._handleResizeFn_({ _window_w_px_ : 1248, _window_h_px_ : 768 });
   test_obj.ok( ret_bool === __true, '3. Resize should work' );
 
   test_obj.done();

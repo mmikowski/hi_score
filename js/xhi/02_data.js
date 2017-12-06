@@ -137,6 +137,7 @@ xhi._02_data_ = ( function () {
     }
     // . END private method /onDoneJqxhr/
 
+    // BEGIN private method /sendHttpRequest/
     function sendHttpRequest ( arg_req_map, arg_option_map ) {
       var
         req_map    = __util._castMap_( arg_req_map    ),

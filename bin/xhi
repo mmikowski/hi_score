@@ -334,6 +334,7 @@ function makeParamMap ( param_list, arg_skip_idx ) {
     arg_count  = 0,
     skip_idx   = arg_skip_idx || 0,
 
+    do_headless = false,
     do_verbose = false,
     range_str  = '',
     stage_list = null,
@@ -345,6 +346,10 @@ function makeParamMap ( param_list, arg_skip_idx ) {
     var i, first_map, middle_map, last_map, first_idx, last_idx;
     if ( str === '-v' ) {
       do_verbose = true;
+      return;
+    }
+    if ( str === '-y' ) {
+      do_headless = true;
       return;
     }
 
@@ -425,6 +430,7 @@ function makeParamMap ( param_list, arg_skip_idx ) {
   });
 
   return {
+    do_headless : do_headless,
     do_verbose : do_verbose,
     range_str  : range_str,
     stage_list : stage_list || []
@@ -466,7 +472,7 @@ function grepFileFn ( filename, pattern_str ) {
 //         false
 //       ],
 //       [ 'node_modules/powercss/dist/pcss.js',
-//         'js/vendor/pcss-1.4.3.js',
+//         'js/vendor/pcss-1.4.5.js',
 //           false
 //       ]
 //     ],

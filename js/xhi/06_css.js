@@ -200,6 +200,7 @@ xhi._06_css_ = (function () {
       pcss._setVsheet_( {
         _vsheet_id_     : '_base_',
         _mode_str_      : '_add_',
+        _mixin_map_     : aMap._05_css_base_._mixinMap_,
         _selector_list_ : aMap._05_css_base_._selectorList_
       } );
 
