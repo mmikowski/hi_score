@@ -247,6 +247,7 @@ xhi._06_lb_ = (function () {
       stateMap._is_busy_       = __false;
       stateMap._mod_class_str_ = __blank;
       stateMap._is_masked_     = __false;
+      $Map._$litebox_[ vMap._off_ ]();
     }
     // . END DOM method /cleanUpFn/
 
