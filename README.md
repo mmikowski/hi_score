@@ -589,8 +589,6 @@ MIT
   - (o) `bin/xhi deploy` implement: Add configuration and capability
   - (o) `bin/xhi publish` : Push to NPM
 ---
-## Similar Projects
-[absurd.js][_26], [responsive.js][_27]
 
 ## End
 
@@ -624,8 +622,6 @@ MIT
 [_23]:https://www.npmjs.com/package/node-inspector
 [_24]:https://www.npmjs.com/package/uglifycss
 [_25]:https://www.npmjs.com/package/uglifyjs
-[_26]:http://absurdjs.com/
-[_27]:http://www.responsivejs.com/
 [_28]:https://github.com/mmikowski/hi_score
 [_29]:https://github.com/mmikowski/hi_score/issues
 [_30]:https://www.npmjs.com/package/font-awesome

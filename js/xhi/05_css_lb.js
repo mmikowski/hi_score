@@ -104,7 +104,7 @@ xhi._05_css_lb_ = (function () {
           { _selector_str_ : __p( '.{_p_}-_lb_title_' ),
             _rule_map_     : {
               _position_   : '_relative_',
-              _padding_    : [ [ '_d25rem_', '_1rem_' ] ],
+              _padding_    : [ [ '_d25rem_', '_d75rem_' ] ],
               _font_size_  : '_spc_rem_03_',
               _background_ : '_area_lt_hex_',
               _cursor_     : '_move_',

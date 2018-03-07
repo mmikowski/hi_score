@@ -10,9 +10,10 @@ css/vendor
 doc/*.html
 font/vendor
 img/vendor
+index.html
 js/vendor
+lib/xhi_state.json
 node_modules
 npm-debug.log
-lib/xhi_state.json
 package-lock.json
 

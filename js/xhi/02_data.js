@@ -257,7 +257,7 @@ xhi._02_data_ = ( function () {
     // . END Public method /setConfigMapFn/
 
     // BEGIN Public method /initModuleFn/
-    function initModuleFn ( ) { }
+    function initModuleFn () { }
     // . END Public method /initModuleFn/
 
     instanceMap = {

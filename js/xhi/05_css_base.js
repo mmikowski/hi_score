@@ -549,9 +549,10 @@ xhi._05_css_base_ = (function () {
           { _selector_str_ : __p('.{_p_}-_x_icon_'),
             _rule_map_     : {
               _display_      : '_inline_block_',
-              _margin_right_ : '_spc_rem_00_',
+              _margin_       : [[ '_0_', '_spc_rem_00_' ]],
               _font_family_  : '_font_family_awesome_',
               _font_size_    : '_spc_rem_03_',
+              _line_height_  : '_spc_rem_04_',
               _width_        : '_spc_rem_04_',
               _text_align_   : '_center_'
             }
@@ -570,13 +571,16 @@ xhi._05_css_base_ = (function () {
           { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_rh_'),
             _rule_map_     : {
               _margin_right_: '_0_',
-              _margin_left_ : '_spc_rem_00_',
+              _margin_left_ : '_spc_rem_01_',
               _float_       : '_right_',
               _text_align_  : '_right_'
             }
           },
           { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_lh_'),
             _rule_map_     : {
+              _margin_left_ : '_0_',
+              _margin_right_: '_spc_rem_01_',
+              _float_       : '_left_',
               _text_align_  : '_left_'
             }
           },
