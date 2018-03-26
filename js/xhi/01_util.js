@@ -844,6 +844,25 @@ xhi._01_util_ = (function () {
 
     // == BEGIN UTILITY OBJECTS =========================================
     // BEGIN define logObj singleton
+    // Summary   :
+    //   logObj.setLogLevel('_warn_');
+    //   logObj.logMsg('_warn_', 'This will show');
+    //   logObj.logMsg('_info_', 'This will not');
+    //   logObj.getLogLevel(); // '_warn_'
+    // Purpose   : Provide a log4j-style logging singleton
+    // Example   : See summary
+    // Arguments :
+    //   Log level is based on syslog values and is one of
+    //   '[_emerg_|_alert_|_crit_|_error_|_warn_|_notice_|_info_|_debug_]'
+    //
+    //   * setLoglLevel(<log_level>) - Set threshold urgency.
+    //   * logMsg( <log_level>, <message_str> ) - Log message string with
+    //     <log_level> urgency. Messages with urgency below the threshold are
+    //     not presented to the log.
+    //   * getLogLevel() - Return log level, e.g. '_warn_'.
+    // Returns   : void
+    // Throws    : none
+    //
     logObj = (function () {
       var
         levelXCmdMap = {
