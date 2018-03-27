@@ -26,6 +26,7 @@ xhi._01_util_ = (function () {
 
       __Array   = vMap._Array_,
       __Date    = vMap._Date_,
+      __Math    = vMap._Math_,
       __Num     = vMap._Number_,
       __Str     = vMap._String_,
       __blank   = vMap._blank_,
@@ -45,12 +46,23 @@ xhi._01_util_ = (function () {
       __100     = nMap._100_,
       __n1      = nMap._n1_,
 
+      __apply   = vMap._apply_,
+      __bind    = vMap._bind_,
+      __clearTimeoutFn = vMap._clearTimeoutFn_,
+      __hasOwnProperty = vMap._hasOwnProperty_,
+      __indexOf        = vMap._indexOf_,
+      __join           = vMap._join_,
+      __makeAbsNumFn   = vMap._makeAbsNumFn_,
       __makeFloorNumFn  = vMap._makeFloorNumFn_,
-      __makeRoundNumFn  = vMap._makeRoundNumFn_,
-      __makeRandomNumFn = vMap._makeRandomNumFn_,
-      __setTimeoutFn    = vMap._setTimeoutFn_,
-      __typeofFn        = vMap._typeofFn_,
       __makeKeyListFn   = vMap._makeKeyListFn_,
+      __makeRandomNumFn = vMap._makeRandomNumFn_,
+      __makeRoundNumFn  = vMap._makeRoundNumFn_,
+      __match           = vMap._match_,
+      __replace         = vMap._replace_,
+      __setTimeoutFn    = vMap._setTimeoutFn_,
+      __split           = vMap._split_,
+      __toString        = vMap._toString_,
+      __typeofFn        = vMap._typeofFn_,
 
       typeofMap = {
         'boolean'   : '_Boolean_',
@@ -98,8 +110,7 @@ xhi._01_util_ = (function () {
 
       if ( type_str && type_str !== '_Object_' ) { return type_str; }
 
-      type_key = {}[ vMap._toString_ ][ vMap._call_ ](
-        data )[ vMap._slice_ ]( nMap._8_, __n1 );
+      type_key = {}[ __toString ].call( data ).slice( 8, __n1 );
 
       return typeofMap[ type_key ] || type_key;
     }
@@ -146,14 +157,14 @@ xhi._01_util_ = (function () {
     function checkNumFn( num, alt_data, option_map ) {
       var log_list = [], solve_data;
 
-      if ( option_map[ vMap._hasOwnProperty_ ]( '_max_num_' )
+      if ( option_map[ __hasOwnProperty ]( '_max_num_' )
         && num > option_map._max_num_
       ) {
         if ( option_map._do_autobound_ ) {
           num = option_map._max_num_;
         }
         else {
-          log_list[ vMap._push_ ](
+          log_list[ __push ](
             'Value exceeds allowed maximum. '
             + __Str( num ) + ' > '
             + __Str( option_map._max_num_ )
@@ -161,25 +172,25 @@ xhi._01_util_ = (function () {
         }
       }
 
-      if ( option_map[ vMap._hasOwnProperty_ ]( '_min_num_' )
+      if ( option_map[ __hasOwnProperty ]( '_min_num_' )
         && num < option_map._min_num_
       ) {
         if ( option_map._do_autobound_ ) {
           num = option_map._min_num_;
         }
         else {
-          log_list[ vMap._push_ ](
+          log_list[ __push ](
             'Number below allowed minimum of ' + option_map._min_num_
           );
         }
       }
 
-      if ( log_list[ vMap._length_ ] === __0 ) {
+      if ( log_list[ __length ] === __0 ) {
         solve_data = num;
       }
       else {
         if ( option_map._do_warn_ ) {
-          logObj._logMsg_( 'warn', 'Int fails constraints', log_list );
+          logObj._logMsg_( '_warn_', 'Int fails constraints', log_list );
         }
         solve_data = alt_data;
       }
@@ -274,17 +285,17 @@ xhi._01_util_ = (function () {
       // Begin process optional constraints
       if ( __typeofFn( option_map ) === 'object' ) {
         log_list = [];
-        item_count = data[ vMap._length_ ];
+        item_count = data[ __length ];
         if ( item_count === 0 && option_map._is_empty_ok_ === __false ) {
-          log_list[ vMap._push_ ]( 'List is empty' );
+          log_list[ __push ]( 'List is empty' );
         }
 
         if ( option_map._max_length_
           && item_count > option_map._max_length_
         ) {
-          log_list[ vMap._push_ ](
+          log_list[ __push ](
             'List exceeds maxiumum length: ' + __Str( item_count )
-            + ' > ' + String( option_map._max_length_ )
+            + ' > ' + __Str( option_map._max_length_ )
           );
         }
 
@@ -292,14 +303,14 @@ xhi._01_util_ = (function () {
           && item_count < option_map._min_length_
         ) {
           log_list.push(
-            'List is below minimum length: ' + String( item_count )
-            + ' < ' + String( log_list._min_length_ )
+            'List is below minimum length: ' + __Str( item_count )
+            + ' < ' + __Str( log_list._min_length_ )
           );
         }
 
-        if ( log_list[ vMap._length ] > __0 ) {
+        if ( log_list[ __length ] > __0 ) {
           if ( option_map._do_warn_ ) {
-            logObj._logMsg_( 'warn', 'List fails constraints', log_list );
+            logObj.logMsg( '_warn_', 'List fails constraints', log_list );
           }
           return alt_data;
         }
@@ -414,28 +425,28 @@ xhi._01_util_ = (function () {
       // Begin process optional constraints
       if ( __typeofFn( option_map ) === 'object' ) {
         log_list = [];
-        char_count = solve_str[ vMap._length_ ];
+        char_count = solve_str[ __length ];
         if ( option_map._is_empty_ok_ === __false
-          && solve_str === vMap._blank_
+          && solve_str === __blank
         ) {
-          log_list[ vMap._push_ ]( 'String is empty' );
+          log_list[ __push ]( 'String is empty' );
         }
 
         if ( option_map._max_length_
           && char_count > option_map._max_length_
         ) {
-          log_list[ vMap._push_ ](
+          log_list[ __push ](
             'String exceeds maxiumum length: ' + __Str( char_count )
-            + ' > ' + String( option_map._max_length_ )
+            + ' > ' + __Str( option_map._max_length_ )
           );
         }
 
         if ( option_map._min_length_
           && char_count < option_map._min_length_
         ) {
-          log_list[ vMap._push_ ](
-            'String is below minimum length: ' + String( char_count )
-            + ' < ' + String( log_list._min_length_ )
+          log_list[ __push ](
+            'String is below minimum length: ' + __Str( char_count )
+            + ' < ' + __Str( log_list._min_length_ )
           );
         }
 
@@ -444,13 +455,15 @@ xhi._01_util_ = (function () {
         ) {
           log_list.push(
             'String does not pass regex filter: '
-            + option_map._filter_regex_.toString()
+          + option_map._filter_regex_[ __toString ]()
           );
         }
 
-        if ( log_list[ vMap._length ] > __0 ) {
+        if ( log_list[ __length ] > __0 ) {
           if ( option_map._do_warn_ ) {
-            logObj._logMsg_( 'warn', 'List fails constraints', log_list );
+            logObj._logMsg_(
+              '_warn_', 'List fails constraints', log_list
+            );
           }
           return alt_data;
         }
@@ -459,7 +472,29 @@ xhi._01_util_ = (function () {
       return solve_str;
     }
     // . END Public prereq method /castStr/
+
+    // BEGIN Public prereq method /parseSafeJson/
+    // Summary   : parseSafeJson( json_str, alt_data )
+    // Purpose   : Parses JSON safely, using alt_data if it cannot
+    // Example   : my map = parseSafeJson( '{}', {} )
+    // Arguments : (positional)
+    //   <json_str> - JSON string to parse
+    //   <alt_data> - Alternate return if parsing failse
+    // Returns   : Parsed JSON or alt_data
+    // Throws    : none
     //
+    function parseSafeJson (jsonStr, defaultData) {
+      let solveData
+      try {
+        solveData = JSON.parse(jsonStr);
+      }
+      catch (e) {
+        solveData = defaultData;
+      }
+      return solveData
+    }
+  // . END Public prereq method /parseSafeJson/
+
     // BEGIN Public prereq method /cloneData/
     // Summary   : cloneData( <data> )
     // Purpose   : Deep clones non-recursive data structures fastest
@@ -495,7 +530,7 @@ xhi._01_util_ = (function () {
         extend_list = castList( arg_extend_list, [] )
       ;
 
-      __Array.prototype.push[ vMap._apply_ ]( base_list, extend_list );
+      __Array.prototype.push[ __apply ]( base_list, extend_list );
       return base_list;
     }
     // . END Public prereq method /extendList/
@@ -732,13 +767,13 @@ xhi._01_util_ = (function () {
       }
 
       sign_int = getNumSign( num );
-      num_str  = __Str( vMap._makeAbsNumFn_( num ) );
+      num_str  = __Str( __makeAbsNumFn( num ) );
       zero_count = count - num_str[ __length ]
         - ( sign_int === __n1 ? __1 : __0 );
 
       // See repeat funciton in ES6
-      list[ vMap._length_ ] = zero_count > __0 ? zero_count + __1 : __0;
-      num_str = list[ vMap._join_ ]( '0' ) + num_str;
+      list[ __length ] = zero_count > __0 ? zero_count + __1 : __0;
+      num_str = list[ __join ]( '0' ) + num_str;
 
       if ( sign_int === __n1 ) {
         num_str = '-' + num_str;
@@ -761,14 +796,14 @@ xhi._01_util_ = (function () {
     function makeEscRxStr( arg_str ) {
       var str = castStr( arg_str, __blank );
       // eslint-disable-next-line no-useless-escape
-      return str[ vMap._replace_ ]( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
+     return str[ __replace ]( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
     }
     // . END Public prereq method /makeEscRxStr/
 
     // BEGIN Public prereq method /makeExtractMap/
     // Summary   : makeExtractMap( base_map, key_list )
     // Purpose   : Makes and returns a new map using key_list
-    // Example   : extendList( { a:1, b:2 }, ['a'] ); // returns { a:1 }
+    // Example   : makeExtractMap( { a:1, b:2 }, ['a'] ); // returns { a:1 }
     // Arguments : (positional)
     //   <base_map> - Map to extract values from
     //   <key_list> - List of keys to copy (shallow)
@@ -780,7 +815,7 @@ xhi._01_util_ = (function () {
       var
         base_map  = castMap(  arg_base_map, {} ),
         key_list  = castList( arg_key_list, __makeKeyListFn( base_map ) ),
-        key_count = key_list[ vMap._length_ ],
+        key_count = key_list[ __length ],
         solve_map = {},
         idx, key
       ;
@@ -823,11 +858,11 @@ xhi._01_util_ = (function () {
         raw_str    = castStr(  arg_str, __blank ),
         do_space   = castBool( arg_do_space ),
         interm_str = do_space
-          ? raw_str[ vMap._replace_ ]( configMap._tag_end_rx_, ' ' )
+          ? raw_str[ __replace ]( configMap._tag_end_rx_, ' ' )
           : raw_str;
 
       interm_str = interm_str[ vMap._trim_ ]();
-      return interm_str[ vMap._replace_ ]( configMap._tag_rx_, __blank );
+      return interm_str[ __replace ]( configMap._tag_rx_, __blank );
     }
     // . END Public prereq method /makeScrubStr/
 
@@ -935,7 +970,7 @@ xhi._01_util_ = (function () {
           arg_list[ vMap._shift_ ]();
           level_key = '_error_';
           level_idx = levelXIdxMap[ level_key ];
-          arg_list[ vMap._unshift_]( level_key );
+          arg_list[ vMap._unshift_ ]( level_key );
         }
 
         if ( level_idx > levelIdx ) { return __false; }
@@ -945,7 +980,7 @@ xhi._01_util_ = (function () {
         //noinspection UnusedCatchParameterJS
         /* istanbul ignore next */
         try {
-          consoleRef[ level_cmd ][ vMap._apply_ ]( consoleRef, arg_list );
+          consoleRef[ level_cmd ][ __apply ]( consoleRef, arg_list );
         }
           // The only problem that may cause a failure is if the log
           // command can not handle more than a single argument or will not
@@ -992,17 +1027,17 @@ xhi._01_util_ = (function () {
         date_us_rx  = configMap._date_us_rx_,
         date_utc_rx = configMap._date_utc_rx_,
         match_list, yy_int, mm_int, dd_int, date_obj, check_int
-      ;
+        ;
 
       if ( order_str === '_us_') {
-        match_list = date_str[ vMap._match_ ]( date_us_rx );
+        match_list = date_str[ __match ]( date_us_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 3 ] - 1900;
         mm_int = +match_list[ 1 ] - 1;
         dd_int = +match_list[ 2 ];
       }
       else {
-        match_list = date_str[ vMap._match_ ]( date_utc_rx );
+        match_list = date_str[ __match ]( date_utc_rx );
         if ( ! match_list ) { return __false; }
         yy_int = +match_list[ 1 ] - 1900;
         mm_int = +match_list[ 2 ] - 1;
@@ -1022,7 +1057,7 @@ xhi._01_util_ = (function () {
     function makeMetricStr( arg_num ) {
       var
         num     = castNum( arg_num, __0 ),
-        abs_num = vMap._makeAbsNumFn_( num ),
+        abs_num = __makeAbsNumFn( num ),
         root_num, suffix
       ;
 
@@ -1061,7 +1096,7 @@ xhi._01_util_ = (function () {
 
       for ( idx = __0; idx < key_count; idx++ ) {
         key = key_list[ idx ];
-        if ( map[ vMap._hasOwnProperty_ ]( key ) ) {
+        if ( map[ __hasOwnProperty ]( key ) ) {
           delete map[ key ];
         }
       }
@@ -1106,7 +1141,7 @@ xhi._01_util_ = (function () {
       match_rx   = do_exclude_amp
         ? configMap._encode_noamp_rx_ : configMap._encode_html_rx_;
 
-      return source_str[ vMap._replace_ ]( match_rx, match_fn );
+      return source_str[ __replace ]( match_rx, match_fn );
     }
     // . END Public method /encodeHtml/
 
@@ -1135,7 +1170,7 @@ xhi._01_util_ = (function () {
 
       if ( path_str === __blank ) { return path_str; }
 
-      match_list = path_str[ vMap._match_ ]( rx_obj );
+      match_list = path_str[ __match ]( rx_obj );
       return ( match_list && match_list[ __1 ] ) || __blank;
     }
     // . END utilities /getBasename/ and /getDirname/
@@ -1159,7 +1194,7 @@ xhi._01_util_ = (function () {
         // This prevents false positives when sparse maps do not have
         // the requested key.
         row_key_list = __makeKeyListFn( row_map );
-        if ( row_key_list[ vMap._indexOf_ ]( key ) === __n1 ) { continue; }
+        if ( row_key_list[ __indexOf ]( key ) === __n1 ) { continue; }
 
         if ( row_map[ key ] === data ) {
           found_idx = idx;
@@ -1198,12 +1233,12 @@ xhi._01_util_ = (function () {
 
       list_1 = first_list[ vMap._filter_ ](
         function ( data ) {
-          return second_list[ vMap._indexOf_ ]( data ) === __n1;
+          return second_list[ __indexOf ]( data ) === __n1;
         }
       );
       list_2 = second_list[ vMap._filter_ ](
         function ( data ) {
-          return first_list[ vMap._indexOf_ ]( data ) === __n1;
+          return first_list[ __indexOf ]( data ) === __n1;
         }
       );
       return list_1[ vMap._concat_ ]( list_2 );
@@ -1287,9 +1322,9 @@ xhi._01_util_ = (function () {
     function getTzCode () {
       var
         date_obj = getTzDateObj(),
-        date_str = date_obj[ vMap._toString_ ](),
-        match_list = date_str[ vMap._match_ ]( configMap._tzcode_rx_ )
-      ;
+        date_str = date_obj[ __toString ](),
+        match_list = date_str[ __match ]( configMap._tzcode_rx_ )
+        ;
       return ( match_list && match_list[ __1 ] )
         ? match_list[ __1 ] : __blank;
     }
@@ -1319,7 +1354,7 @@ xhi._01_util_ = (function () {
       var
         time_ms   = castInt( arg_time_ms,  __0 ),
         time_idx  = castInt( arg_time_idx, __3 ),
-        abs_idx   = vMap._makeAbsNumFn_( time_idx  ),
+        abs_idx   = __makeAbsNumFn( time_idx  ),
 
         sec_ms    = configMap._sec_ms_,
         min_sec   = configMap._min_sec_,
@@ -1365,7 +1400,7 @@ xhi._01_util_ = (function () {
         time_list[ __push ]( scratch_str );
       }
 
-      return time_list[ vMap._join_ ](':');
+      return time_list[ __join ]( ':' );
     }
     // . END Public method /makeClockStr/
 
@@ -1397,15 +1432,15 @@ xhi._01_util_ = (function () {
         round_unit_str  = castStr( map._round_unit_str_,  'k' ),
         round_dec_count = castInt( map._round_dec_count_, __1 ),
 
-        round_limit_num = vMap._Math_.pow( __10, round_limit_exp  ),
-        round_unit_num  = vMap._Math_.pow( __10, round_unit_exp   ),
+        round_limit_num = __Math.pow( __10, round_limit_exp  ),
+        round_unit_num  = __Math.pow( __10, round_unit_exp   ),
 
         solve_suffix = __blank,
 
         solve_num, solve_str, solve_list, list_count, idx
       ;
 
-      if ( vMap._makeAbsNumFn_( input_num ) >= round_limit_num ) {
+      if ( __makeAbsNumFn( input_num ) >= round_limit_num ) {
         solve_num    = input_num / round_unit_num;
         solve_suffix = round_unit_str;
         solve_str    = solve_num[ vMap._toFixed_]( round_dec_count );
@@ -1414,13 +1449,13 @@ xhi._01_util_ = (function () {
         solve_str = __Str( input_num );
       }
 
-      solve_list = solve_str[ vMap._split_ ]( '.' );
+      solve_list = solve_str[ __split ]( '.' );
       list_count = solve_list[ __length ];
       for ( idx = __0; idx < list_count; idx++ ) {
         solve_list[ idx ] = solve_list[ idx ][
-          vMap._replace_ ]( configMap._comma_rx_, "$1," );
+          __replace ]( configMap._comma_rx_, "$1," );
       }
-      return solve_list[ vMap._join_]('.') + solve_suffix;
+      return solve_list[ __join]( '.' ) + solve_suffix;
     }
     // . END Public method /makeCommaNumStr/
 
@@ -1483,7 +1518,7 @@ xhi._01_util_ = (function () {
           mns( day_int, __2 ),
           mns( yrs_int, __4 )
         ];
-        date_str = date_list[ vMap._join_ ]('/');
+        date_str = date_list[ __join ]( '/' );
       }
       else {
         date_list = [
@@ -1491,7 +1526,7 @@ xhi._01_util_ = (function () {
           mns( mon_int, __2 ),
           mns( day_int, __2 )
         ];
-        date_str = date_list[ vMap._join_ ]('-');
+        date_str = date_list[ __join ]( '-' );
       }
 
       // no time requested
@@ -1528,12 +1563,12 @@ xhi._01_util_ = (function () {
       return function () {
         var arg_list = makeArgList( arguments );
         if ( do_asap && ! delay_toid ) {
-          fn[ vMap._apply_ ]( ctx_data, arg_list );
+          fn[ __apply ]( ctx_data, arg_list );
         }
-        vMap._clearTimeoutFn_( delay_toid );
+        __clearTimeoutFn( delay_toid );
         delay_toid = __setTimeoutFn( function() {
           if ( ! do_asap ) {
-            fn[ vMap._apply_]( ctx_data, arg_list );
+            fn[ __apply]( ctx_data, arg_list );
           }
           delay_toid = __undef;
         }, delay_ms );
@@ -1567,8 +1602,8 @@ xhi._01_util_ = (function () {
         if ( delta_ms <= __0 ) {
           // A timeout id should never be defined except in race conditions
           /* istanbul ignore next */
-          if ( delay_toid ) { vMap._clearTimeoutFn_( delay_toid ); }
-          fn[ vMap._apply_ ]( ctx_data, arg_list );
+          if ( delay_toid ) { __clearTimeoutFn( delay_toid ); }
+          fn[ __apply ]( ctx_data, arg_list );
           delay_toid = __undef;
           last_ms    = now_ms;
           return;
@@ -1577,7 +1612,7 @@ xhi._01_util_ = (function () {
         if ( delay_toid ) { return; }
         delay_toid = __setTimeoutFn(
           function () {
-            fn[ vMap._apply_ ]( ctx_data, arg_list );
+            fn[ __apply ]( ctx_data, arg_list );
             delay_toid = __undef;
             last_ms    = now_ms;
           },
@@ -1623,7 +1658,7 @@ xhi._01_util_ = (function () {
       if ( scrub_count <= limit_int ) { return scrub_str; }
 
       if ( do_word_break ) {
-        word_list   = scrub_str[ vMap._split_ ]( ' ' );
+        word_list   = scrub_str[ __split ]( ' ' );
         word_count  = word_list[ __length ];
         solve_count = __0;
         solve_list  = [];
@@ -1637,7 +1672,7 @@ xhi._01_util_ = (function () {
           }
           solve_list[ __push ]( solve_word );
         }
-        return __blank + solve_list[ vMap._join_ ]( ' ' );
+        return __blank + solve_list[ __join ]( ' ' );
       }
 
       return scrub_str.substr(__0, limit_int - __3 ) + '...';
@@ -1673,7 +1708,7 @@ xhi._01_util_ = (function () {
       function makePart () {
         //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
         return ((( __1+__makeRandomNumFn() ) * 0x10000 )|__0
-        )[ vMap._toString_ ](16)[ vMap._substr_ ]( __1 );
+        )[ __toString ](16)[ vMap._substr_ ]( __1 );
       }
       /*jslint bitwise: false*/
 
@@ -1784,7 +1819,7 @@ xhi._01_util_ = (function () {
         label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
 
         html_str += '<option value="' + val_str + '"';
-        if ( select_list[ vMap._indexOf_ ]( val_data ) !== __n1 ) {
+        if ( select_list[ __indexOf ]( val_data ) !== __n1 ) {
           html_str += ' selected="selected"';
         }
         html_str += '>' + label_str + '</option>';
@@ -1870,7 +1905,7 @@ xhi._01_util_ = (function () {
 
       return function ( arg_tmplt ) {
         var tmplt = castStr( arg_tmplt, __blank );
-        return tmplt[ vMap._replace_ ]( search_rx, value_str );
+        return tmplt[ __replace ]( search_rx, value_str );
       };
     }
     // . END Public method /makeReplaceFn/
@@ -1932,7 +1967,7 @@ xhi._01_util_ = (function () {
           solve_list[ __push ]( prop_str );
         }
       }
-      return solve_list[ vMap._join_ ]( delim_str ) + __blank;
+      return solve_list[ __join ]( delim_str ) + __blank;
     }
     // . END Public method /makeStrFromMap/
 
@@ -2147,10 +2182,10 @@ xhi._01_util_ = (function () {
       function lookupFn ( ignore_match_str, lookup_name ) {
         var
           return_data  = this,
-          lookup_list  = lookup_name[ vMap._split_ ]( '.' ),
-          lookup_count = lookup_list[ vMap._length_ ],
+          lookup_list  = lookup_name[ __split ]( '.' ),
+          lookup_count = lookup_list[ __length ],
           idx, key_name
-        ;
+          ;
 
         for ( idx = 0; idx < lookup_count; idx++ ) {
           key_name = lookup_list[ idx ];
@@ -2159,8 +2194,8 @@ xhi._01_util_ = (function () {
         return castStr( return_data, __blank );
       }
 
-      bound_fn   = lookupFn[ vMap._bind_ ]( lookup_map );
-      return input_str[ vMap._replace_ ]( tmplt_rx, bound_fn );
+      bound_fn   = lookupFn[ __bind ]( lookup_map );
+      return input_str[ __replace ]( tmplt_rx, bound_fn );
     }
     // . END Public method /makeTmpltStr/
 
@@ -2186,7 +2221,7 @@ xhi._01_util_ = (function () {
 
       _KEY_: for ( idx = __0; idx < key_count; idx++ ) {
         key = key_list[ idx ];
-        if ( attr_list && attr_list[ vMap._indexOf_ ]( key ) === __n1 ) {
+        if ( attr_list && attr_list[ __indexOf ]( key ) === __n1 ) {
           logObj._logMsg_(
             '_warn_', '_key_not_supported_:|' + __Str( key ) + '|'
           );
@@ -2243,7 +2278,7 @@ xhi._01_util_ = (function () {
     // BEGIN Public method /pushUniqListVal/
     function pushUniqListVal ( arg_list, data ) {
       var input_list = castList( arg_list, [] );
-      if ( input_list[ vMap._indexOf_ ]( data ) === __n1 ) {
+      if ( input_list[ __indexOf ]( data ) === __n1 ) {
         input_list[ __push ]( data );
       }
     }
@@ -2270,7 +2305,7 @@ xhi._01_util_ = (function () {
 
     // BEGIN Public method /setConfigMap/
     // Summary    : setConfigMap( <input_map>, <settable_map>, <config_map> );
-    // Purpose    : Set configMap in consistent way across all xhi modules
+    // Purpose    : Set configMap in consistent way across modules
     // Example    : Used in modules as below:
     //   function setConfigMap ( arg_input_map ) {
     //     setConfigMap( input_map, settableMap, configMap );
@@ -2299,7 +2334,7 @@ xhi._01_util_ = (function () {
 
       for ( idx = __0; idx < key_count; idx++ ) {
         key_name = key_list[ idx ];
-        if ( settable_map[ vMap._hasOwnProperty_ ]( key_name ) ) {
+        if ( settable_map[ __hasOwnProperty ]( key_name ) ) {
           config_map[ key_name ] = input_map[ key_name ];
         }
         else {
@@ -2380,7 +2415,7 @@ xhi._01_util_ = (function () {
           break _SET_KEY_;
         }
 
-        if ( ! walk_struct[ vMap._hasOwnProperty_ ]( solve_key ) ) {
+        if ( ! walk_struct[ __hasOwnProperty ]( solve_key ) ) {
           int_next_key = castInt( raw_next_key );
           if ( raw_next_key === __null || int_next_key !== __undef ) {
             walk_struct[ solve_key ] = [];
@@ -2415,7 +2450,7 @@ xhi._01_util_ = (function () {
 
       if ( ! list ) { return __false; }
 
-      count = list[ vMap._length_ ];
+      count = list[ __length ];
       for ( idj = count; idj > __0; idj-- ) {
         last_idx         = idj - __1;
         pick_idx         = __makeFloorNumFn( __makeRandomNumFn() * idj );
@@ -2548,6 +2583,7 @@ xhi._01_util_ = (function () {
       _makeRxObj_       : makeRxObj,
       _makeScrubStr_    : makeScrubStr,
       _makeUcFirstStr_  : makeUcFirstStr,
+      _parseSafeJson_   : parseSafeJson,
 
       _checkDateStr_    : checkDateStr,
       _clearMap_        : clearMap,

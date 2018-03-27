@@ -2516,6 +2516,51 @@ function makeUcFirstStr ( test_obj ) {
   test_obj.done();
 }
 
+function parseSafeJson ( test_obj ) {
+  var
+    assert_table = [
+      // [ arg_list, expect_data ]
+      [ [],              __undef ],
+      [ [ __undef ],      __null ],
+      [ [ __undef, {} ],  __null ],
+      [ [ __null, {} ],   __null ],
+      [ [ __1 ],             __1 ],
+      [ [ __1, [] ],         __1 ],
+      [ [ '', [] ],           [] ],
+      [ [ '<bad>', __2 ],    __2 ],
+      [ [ '<bad>', '22' ],  '22' ],
+      [ [ '<bad>', 'help' ], 'help' ],
+      [ [ '<bad>', [] ],      [] ],
+      [ [ '<bad>', {} ],      {} ]
+    ],
+    assert_count = assert_table.length,
+    parse_fn     = __util._parseSafeJson_,
+
+    idx, expect_list, arg_list,
+    expect_data, solve_data, msg_str
+    ;
+
+  test_obj.expect( assert_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_table[ idx ];
+    arg_list     = __util._cloneData_( expect_list[ __0 ] );
+    expect_data  = expect_list[ __1 ];
+    solve_data   = parse_fn.apply( __undef, arg_list );
+    msg_str      = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + ' solve_data: '
+      + JSON.stringify( solve_data )
+      + ' expect_data: ' + JSON.stringify( expect_data );
+
+    test_obj.equal(
+      JSON.stringify( solve_data  ),
+      JSON.stringify( expect_data ),
+      msg_str
+    );
+  }
+  test_obj.done();
+}
+
 function mergeMaps ( test_obj ) {
   //noinspection JSUnusedGlobalSymbols
   var
@@ -3684,6 +3729,7 @@ module.exports = {
   _makeTmpltStr_    : makeTmpltStr,
   _makeUcFirstStr_  : makeUcFirstStr,
   _mergeMaps_       : mergeMaps,
+  _parseSafeJson_   : parseSafeJson,
   _pollFunction_    : pollFunction,
   _pushUniqListVal_ : pushUniqListVal,
   _rmListVal_       : rmListVal,
