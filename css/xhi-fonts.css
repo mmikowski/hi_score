@@ -21,7 +21,7 @@
 
 @font-face {
   font-family: 'Roboto';
-       url('../font/vendor/font-roboto-0.0.2/Roboto_normal_400_default.woff') format('woff'),
+  src: url('../font/vendor/font-roboto-0.0.2/Roboto_normal_400_default.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }

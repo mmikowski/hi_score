@@ -484,7 +484,7 @@ xhi._01_util_ = (function () {
     // Throws    : none
     //
     function parseSafeJson (jsonStr, defaultData) {
-      let solveData
+      var solveData
       try {
         solveData = JSON.parse(jsonStr);
       }

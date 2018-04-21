@@ -13,9 +13,9 @@
   'use strict';
   var
     libList = [
-      'js/vendor/pcss-1.4.3.js',
-      'js/vendor/pcss.cfg-1.4.3.js',
-      'js/vendor/jquery-3.2.1.js',
+      'js/vendor/pcss-1.4.5.js',
+      'js/vendor/pcss.cfg-1.4.5.js',
+      'js/vendor/jquery-3.3.1.js',
       'js/plugin/jquery.deferred.whenAll-1.0.0.js',
       'js/vendor/jquery.event.gevent-1.1.6.js',
       'js/vendor/jquery.event.ue-1.3.2.js',
