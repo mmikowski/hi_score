@@ -7,7 +7,7 @@
     "url": "https://github.com/mmikowski/hi_score/issues"
   },
   "deprecated": false,
-  "description": "A modern, full-life-cycle starter project for SPA  that favors a feature-module architecture as supported by Vue or React.",
+  "description": "A modern, full-life-cycle starter project for SPA that favors a feature-module architecture as supported by Vue or React.",
   "devDependencies": {
     "apply-patch": "0.1.2",
     "clusterjs": "0.7.1",
@@ -116,7 +116,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.22",
+  "version": "1.4.23",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
