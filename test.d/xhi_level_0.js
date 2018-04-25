@@ -1052,8 +1052,6 @@ function makeDateStr ( test_obj ) {
     date_obj      = new Date( 1374323405099 ),
     assert_table  = [
       // [ arg_map, expect_data ]
-      [ __null, __blank ],
-      [ { foo : '_bar_' }, __blank ],
       [ { _date_ms_ : 1474323404498 }, '2016-09-19' ],
       [ { _date_ms_ : 1474323404498, _time_idx_ : 0 },
          '2016-09-19' ],
