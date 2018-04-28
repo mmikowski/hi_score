@@ -8,24 +8,37 @@
 `hi_score` is a full-lifecycle starter project for web application development. It embodies good practice from over 20 years of experience for every lifecycle stage. It also embraces the feature-module (or "web component") design pattern, so it should work well with React or Vue.js. Please do swap assets and libraries as required - [that's the point][_01].
 
 ## Recent changes
-### Version 1.4.x (2017-10-01)
+### Version 1.4.x 
+Work on version 1.4.x began on 2017-10-01. This README was last update on
+2018-04-28 version 1.4.25.
+
 - Add Typebomb2 example application
-- Fix font path errors with patch for font-awesome CSS
 - Convert build system to JavaScript using `package.json` as manifest
-- Enhance `js/xhi` libs and documentation
-- Expand doc in `bin/xhi help build`
-- Revise code standards
-- Update README with images
+- Enhance `js/xhi` libs and docs
+- Expand and enhance utility functions (`xhi/01_util.js`)
+- Expand doc for `bin/xhi help build`
+- Fix `bin/xhi dev_cover` dependency resolution
 - Fix `superpack` to be more reliable
-- Fix `bin/xhi dev_cover` dependencies
+- Fix font path errors with patch for font-awesome CSS
+- Revise code standards and images
+- Update README with images
+- Update AMI image for deployment and add screen shot
 
 ---
 ## Quick start
 Download the latest [latest virual appliance][_42] to try `hi_score` with the minimum of time and hassle. Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels. The login and password are `hi_score`. Please do change the password after signing in. If you need more help with installing a VM or wish to consider other options, please consult the [Development platform](#development-platform) section.
 
-![virual_appliance][_0E]
+![Virual_appliance][_0E]
 
-Open a terminal and enter the following lines. Wait for each to complete before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
+The first thing we need to do to our appliance is upgrade the software to the latest security patches. Open a terminal and enter the following lines, waiting for each command to complete before proceeing to the next.
+
+```bash
+  sudo apt-get update
+  sudo apt-get upgrade
+  reboot
+```
+
+After reboot, open a terminal and enter the following lines. Wait for each command to complete before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
 
 ```bash
   git clone git@github.com:mmikowski/hi_score.git
@@ -64,7 +77,7 @@ The `bin/xhi` tool guides developers through lifecycle stages and employs sophis
 
 ---
 ## How to use
-The best way to use `hi_score` is as a `git` upstream source. One may then create new application using the `hi_score` infrastructure without losing upstream improvements or bug fixes.
+A good way to use `hi_score` is as a `git` upstream source. One may then create new application using the `hi_score` infrastructure without missing upstream improvements or bug fixes.
 
 First create a new empty repository on Github and copy the `ssh` repository URL, which should look similar to `git@github.com:<user>/<repo_name>` and then proceed as below:
 
@@ -566,22 +579,22 @@ MIT
 
 ### Version 1.4.x
 - (x) Add Typebomb2 example application
-- (x) Add patch for font-awesome CSS
 - (x) Convert build system to JavaScript using `package.json` as manifest
-- (x) Enhance `js/xhi` libs and documentation
-- (x) Expand doc in `bin/xhi help build`
-- (x) Revise code standards and images
-- (x) Update docs
+- (x) Enhance `js/xhi` libs and docs
+- (x) Expand and enhance utility functions (`xhi/01_util.js`)
+- (x) Expand doc for `bin/xhi help build`
+- (x) Fix `bin/xhi dev_cover` dependency resolution
 - (x) Fix `superpack` to be more reliable
-- (x) Fix `bin/xhi dev_cover` dependencies
-- (x) Update AMI image for deployment; add screen shot
+- (x) Fix font path errors with patch for font-awesome CSS
+- (x) Revise code standards and images
+- (x) Update AMI image for deployment and add screen shot
+- (x) Update README with images
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
 - (o) Fix commit hook conflict in `bin/xhi` run range
 - (o) Update quick reference code standard
+- (o) Test load times using remote server
 
 ### Version 1.5.x (next)
-- (o) Update code standard quick-reference
-- (o) Test load times using remote server
 - (o) `bin/xhi` enhancements
   - (o) `bin/xhi build` convert: superpack Perl to JS, use `package.json` config
   - (o) `bin/xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default

@@ -1499,14 +1499,15 @@ xhi._01_util_ = (function () {
         yrs_int,   mon_int,   day_int,
         date_list, date_str,  time_ms,
         time_str
-      ;
+        ;
+
+      if ( ! date_obj ) {
+        date_obj = new __Date();
+      }
 
       if ( date_ms ) {
-        // new __Date( ms ) does not work in node 4.4.3
-        date_obj = new __Date();
         date_obj.setTime( date_ms );
       }
-      if ( ! date_obj ) { return __blank; }
 
       yrs_int = __Num( date_obj.getYear()  ) + configMap._offset_yr_;
       mon_int = __Num( date_obj.getMonth() ) + __1;
