@@ -9,8 +9,7 @@
 
 ## Recent changes
 ### Version 1.4.x 
-Work on version 1.4.x began on 2017-10-01. This README was last update on
-2018-04-28 version 1.4.25.
+Work on version 1.4.x began on 2017-10-01. This README was last update on 2018-04-28 version 1.4.25.
 
 - Add Typebomb2 example application
 - Convert build system to JavaScript using `package.json` as manifest
