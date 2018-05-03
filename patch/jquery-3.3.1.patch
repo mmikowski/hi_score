@@ -1,0 +1,11 @@
+--- node_modules/jquery/dist/jquery.js.N	2018-05-02 13:59:52.643743029 -0700
++++ node_modules/jquery/dist/jquery.js	2018-01-20 09:26:52.000000000 -0800
+@@ -10354,7 +10354,7 @@
+ // (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
+ // and CommonJS for browser emulators (#13566)
+ if ( !noGlobal ) {
+-	window.jQuery = jQuery;
++	window.jQuery = window.$ = jQuery;
+ }
+ 
+ 

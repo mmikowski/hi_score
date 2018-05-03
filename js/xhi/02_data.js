@@ -11,9 +11,9 @@
  *            add capabilities such as web sockets, ajax, local storage,
  *            mock ajax, mock web sockets, ...
 */
-/*global $, xhi */
+/*global xhi, xhiJQ */
 // == BEGIN MODULE xhi._02_data_ ======================================
-xhi._02_data_ = ( function () {
+xhi._02_data_ = ( function ( $ ) {
   'use strict';
   // == BEGIN public method /makeInstanceFn/ ==========================
   function makeInstanceFn ( aMap, argOptionMap ) {
@@ -276,5 +276,5 @@ xhi._02_data_ = ( function () {
   }
   // == . END public method /makeInstanceFn/ ==========================
   return { _makeInstanceFn_ : makeInstanceFn }
-}());
+}( xhiJQ ));
 // == . END MODULE xhi._xhi_02_data_ ==================================

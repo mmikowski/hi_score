@@ -8,7 +8,7 @@
  * Requires :
  *   - aMap (app map) with symbols from 00_root._makeInstanceFn_()
  *   - aMap with symbols from 05_css_lb._makeInstanceFn_()
- *   - jQuery
+ *   - jQuery (as xhiJQ)
  *   - PowerCSS
  *
  * Instance overview.
@@ -27,10 +27,10 @@
  *   - getMapFn         : Get internal map to inspect or change
  *   - initModuleFn     : Initialize DOM and state data if needed
 */
-/*global $, pcss, xhi */
+/*global pcss, xhi, xhiJQ */
 
 // == BEGIN MODULE xhi._06_lb_ =========================================
-xhi._06_lb_ = (function () {
+xhi._06_lb_ = (function ( $ ) {
   'use strict';
   // == BEGIN public method /makeInstanceFn/ ===========================
   function makeInstanceFn ( aMap, argOptionMap ) {
@@ -889,6 +889,6 @@ xhi._06_lb_ = (function () {
   }
   // == . END public method /makeInstanceFn/ ===========================
   return { _makeInstanceFn_ : makeInstanceFn };
-}());
+}( xhiJQ ));
 // == . END MODULE xhi._06_lb_ =========================================
 

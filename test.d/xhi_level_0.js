@@ -17,7 +17,7 @@ var
   jsdomObj  = require( 'jsdom' ),
   winRef    = new jsdomObj.JSDOM().window,
   docRef    = winRef.document,
-  jQuery    = require( 'jquery' )( winRef ),
+  xhiJQ     = require( 'jquery' )( winRef ),
 
   aMap, nMap, vMap, __Str, __blank, __false,
   __null, __true, __undef, __util, __utilb, __lb,
@@ -39,8 +39,8 @@ var
 
 global.window   = winRef;
 global.document = docRef;
-global.jQuery   = jQuery;
-global.$        = jQuery;
+global.xhiJQ    = xhiJQ;
+global.$        = xhiJQ;
 
 global.pcss = require( libDir + 'vendor/pcss-1.4.5.js' );
 require( libDir + 'vendor/pcss.cfg-1.4.5.js' );

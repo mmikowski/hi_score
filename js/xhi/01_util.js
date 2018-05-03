@@ -4,11 +4,11 @@
  *
  * Use      : xhi._01_util_._makeInstanceFn_( app_map, option_map );
  * Synopsis : Add _01_util_ capabilities to app_map
- * Provides : Utilities which do not require jQuery or a browser
+ * Provides : Utilities which do not require jQuery (xhiJQ) or a browser
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
  *
 */
-/*global xhi */
+/*global xhi, xhiJQ */
 // == BEGIN MODULE xhi._01_util_ ======================================
 xhi._01_util_ = (function () {
   'use strict';
@@ -239,18 +239,18 @@ xhi._01_util_ = (function () {
 
     // BEGIN Public prereq method /castJQ/
     // Summary   : castJQ( <data>, <alt_data> )
-    // Purpose   : Cast a jQuery object
+    // Purpose   : Cast a jQuery (xhiJQ) object
     // Example   : castJQ( $top_box ); // returns $top_box
     // Arguments : (positional)
-    //   <data>     - data to cast as jQuery object
+    //   <data>     - data to cast as xhiJQ object
     //   <alt_data> - alternate value to return
     // Returns   :
-    //   <data> if it is a jQuery object, <alt_data> otherwise
+    //   <data> if it is a xhiJQ object, <alt_data> otherwise
     // Throws    : none
     //
     function castJQ ( data, alt_data ) {
       if ( stateMap._has_jq_ ) {
-        return ( data && data instanceof jQuery ) ? data : alt_data;
+        return ( data && data instanceof xhiJQ ) ? data : alt_data;
       }
       /* istanbul ignore next */
       return alt_data;
@@ -2577,7 +2577,7 @@ xhi._01_util_ = (function () {
       };
       /* istanbul ignore next */
       try {
-        stateMap._has_jq_ = !! jQuery;
+        stateMap._has_jq_ = !! xhiJQ;
       }
       catch ( error ) {
         stateMap._has_jq_ = __false;

@@ -10,13 +10,13 @@
  *     00_root, 01_util, 03_model, 04_utilb,
  *     05_css_base, 05_css_lb, 05_css_shell, and 06_lb.
  *     02_data is NOT required
- *   - jQuery
+ *   - jQuery (as xhiJQ)
  *   - PowerCSS
  *
 */
-/*global $, xhi */
+/*global xhi, xhiJQ */
 // == BEGIN MODULE xhi._07_shell_ ======================================
-xhi._07_shell_ = (function () {
+xhi._07_shell_ = (function ( $ ) {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ===================================
     'use strict';
@@ -95,5 +95,5 @@ xhi._07_shell_ = (function () {
     // == . END PUBLIC METHODS ===========================================
   }
   return { _makeInstanceFn_ : makeInstanceFn };
-}());
+}( xhiJQ ));
 // == BEGIN MODULE xhi._07_shell_ ======================================

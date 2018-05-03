@@ -1,0 +1,25 @@
+#!/bin/bash
+
+## See style-guide
+## https://google.github.io/styleguide/shell.xml#Function_Names
+## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
+
+## The -u option forces bash to exit when encountering an uninit variable.
+## The -e option forces bash to exit when encountering a non-zero exit status.
+##   We omit -e as we do our own checking.
+set -u;
+
+# This hack is to get around Mac's (c) 2007 version of Bash!
+# _appLink=$( readlink -f -- "${0}" );
+_readLinkFn(){ perl -MCwd -e 'print Cwd::abs_path shift' "$1";}
+
+_appName=$( basename $0 );
+_appLink=$( _readLinkFn "${0}" );
+_fqBinDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
+_fqProjDir=$( dirname "${_fqBinDir}" );
+_fqJsVendorDir="${_fqProjDir}/js/vendor";
+
+cd "${_fqJsVendorDir}";
+for filename in *.js; do
+  perl -ne '$_ =~ s?jQuery?xhiJQ?g; print $_;' -i "${filename}"
+done

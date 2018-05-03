@@ -5,12 +5,12 @@
  * Use      : xhi._04_utilb_._makeInstanceFn_( app_map );
  * Synopsis : Add browser utility capabilities to app_map
  * Provides : Browser utilities
- * Requires : jQuery and aMap (app map) with symbols from
+ * Requires : xhiJQ and aMap (app map) with symbols from
  *            00_root._makeInstanceFn_()
 */
-/*global xhi, pcss */
+/*global xhi, xhiJQ, pcss */
 // == BEGIN MODULE xhi._04_utilb_ =====================================
-xhi._04_utilb_ = (function () {
+xhi._04_utilb_ = (function ( $ ) {
   'use strict';
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ==================================
@@ -232,7 +232,7 @@ xhi._04_utilb_ = (function () {
     // Purpose   : Adjust the size of a textarea to a maximum height
     //   to fit the text content
     // Arguments : (positional)
-    //   0: (req) jQuery collection that is the text area
+    //   0: (req) jQuery (xhiJQ) collection that is the text area
     //   1: (opt) The maximum allowed height in pixels
     // Settings  :
     //   * configMap._textarea_max_ht_px_ (default max allowed height)
@@ -287,5 +287,5 @@ xhi._04_utilb_ = (function () {
   }
 
   return { _makeInstanceFn_ : makeInstanceFn };
-}());
+}( xhiJQ ));
 // == . END MODULE xhi._04_utilb_ =====================================

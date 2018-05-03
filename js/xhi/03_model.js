@@ -20,7 +20,7 @@ xhi._03_model_ = (function () {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
       subName   = '_03_model_',
-      aKey      = aMap._aKey_,
+      // aKey   = aMap._aKey_,
       vMap      = aMap._vMap_,
 
       __true    = vMap._true_,
@@ -61,7 +61,7 @@ xhi._03_model_ = (function () {
 
     // BEGIN Public method /initModuleFn/
     function initModuleFn () {
-      __logMsg( '_info_', '_xhi_03_model_placeholder_', aKey );
+      __logMsg( '_info_', '_xhi_03_model_init_' );
     }
     // . END Public method /initModuleFn/
 
