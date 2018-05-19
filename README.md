@@ -411,11 +411,23 @@ Vendor CSS libraries are copied to the `css/vendor` directory. The following CSS
 - [Font Awesome][_30]: Icon font CSS
 
 ### Patches
-The `xhi_02_SetupMatrix.patch_matrix` directs patch application.
+The `xhi_02_SetupMatrix.patch_matrix` directs patch application.  This capability allows us to use great tools tweaked for our needs while maintaining the upstream source. For example, we patch `uglify-js` to support object property name compression and shuffling by `superpack`. We also patch `font-awesome` CSS files to have the correct path for our environment.  
 
-The `bin/xhi setup` stage applies patches to vendor assets. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory.
+The `bin/xhi setup` stage applies patches *after vendor assets are copied to their directories*. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory.
 
-The patch capability allows us to use great tools tweaked for our needs while maintaining the upstream source. For example, we patch `uglify-js` to support object property name compression and shuffling by `superpack`. We also patch `font-awesome` CSS files to have the correct path for our environment.
+Patches can be created as follows:
+
+```bash
+cd js/vendor
+cp jquery-3.3.1.js jquery-3.3.1.js.O
+
+# Now change jquery-3.3.1.js as required
+
+# And create the diff
+cd ../..
+diff -u js/vendor/jquery-3.3.1.js.O js/vendor/jquery-3.3.1.js \
+  > patch/jquery-3.3.1.patch
+```
 
 ---
 ## Build

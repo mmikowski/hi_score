@@ -243,5 +243,5 @@ xhi._00_root_ = (function () {
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */
 try { module.exports = xhi; }
-catch ( ignore ) { console.log(''); }
+catch ( ignore ) { void(0); }
 // == . END BROWSER AND NODE SUPPORT ===================================
