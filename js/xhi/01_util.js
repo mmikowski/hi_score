@@ -1935,6 +1935,88 @@ xhi._01_util_ = (function () {
     }
     // . END Public method /makeReplaceFn/
 
+    // BEGIN Public method /makeRekeyMap/
+    // Purpose : Change all key names in a map to the new keys provided
+    //   in the key_map
+    // Example :
+    //   makeRekeyMap( { a:1, b:2, c:[] }, { a:'_x_', b: '_y_', c:'_z_' } )
+    //   returns { _x_:1, _y_:2, _z_:[] }
+    // A hard limit of 100 000 iterations are supported.
+    //   Executes deep renaming through arrays and objects.
+    //
+    function makeContextObj ( arg_struct ) {
+      var
+        key_list  = __makeKeyListFn( arg_struct ),
+        key_count = key_list.length,
+        solve_struct = __Array.isArray( arg_struct ) ? [] : {}
+        ;
+
+      return key_count > 0 ? {
+          source_struct : arg_struct,
+          solve_struct  : solve_struct,
+          key_list      : key_list,
+          key_count     : key_list.length,
+          key_idx       : 0
+        } : null;
+    }
+    function makeRekeyMap( arg_struct, arg_key_map ) {
+      var
+        context_obj = makeContextObj( arg_struct ),
+        stack_list  = [],
+
+        key_count, key_list, key_idx,
+        source_struct, solve_struct,
+        key, data, replace_key,
+        check_obj, pop_solve_struct, i
+        ;
+
+      CONTEXT: for ( i = __0; i < 100000; i++ ) {
+        key_count  = context_obj.key_count;
+        key_idx    = context_obj.key_idx;
+        key_list   = context_obj.key_list;
+        source_struct = context_obj.source_struct;
+        solve_struct  = context_obj.solve_struct;
+
+        key         = key_list[ key_idx ]
+        data        = source_struct[ key ];
+        replace_key = arg_key_map[ key ];
+
+        if ( ! replace_key ) {
+          console.warn( 'No replace_key found for ', key );
+          replace_key = key;
+        }
+
+        if ( pop_solve_struct ) {
+          data = pop_solve_struct;
+          pop_solve_struct = null;
+        }
+        else if ( typeof data === 'object' ) {
+          check_obj = makeContextObj( data );
+          if ( check_obj ) {
+            stack_list.push( context_obj );
+            context_obj = check_obj;
+            continue CONTEXT;
+          }
+        }
+
+        solve_struct[ replace_key ] = data;
+        key_idx++;
+        context_obj.key_idx = key_idx;
+        if ( key_idx >= key_count ) {
+          if ( stack_list.length > 0 ) {
+            pop_solve_struct = context_obj.solve_struct;
+            context_obj = stack_list.pop();
+          }
+          else {
+            break CONTEXT;
+          }
+        }
+        solve_struct[ replace_key ] = data;
+      }
+      return context_obj.solve_struct;
+    }
+    // . END Public method /makeRekeyMap/
+
     // BEGIN Public method /makeSeenMap/
     // Purpose : Convert arg_key_list into a map with each key assigned
     // the value of arg_seen_data. If not provided, arg_seen_data === true
@@ -2635,6 +2717,7 @@ xhi._01_util_ = (function () {
       _makeOptionHtml_  : makeOptionHtml,
       _makePctStr_      : makePctStr,
       _makeRadioHtml_   : makeRadioHtml,
+      _makeRekeyMap_    : makeRekeyMap,
       _makeReplaceFn_   : makeReplaceFn,
       _makeSeenMap_     : makeSeenMap,
       _makeSeriesMap_   : makeSeriesMap,
