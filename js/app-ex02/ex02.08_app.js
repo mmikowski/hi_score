@@ -1,11 +1,11 @@
 /*
- * ex02.js
+ * ex02_app.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Example 02 application using xhi instances instead of modules.
  *
 */
-/*global $, xhi:true, ex02 */
+/*global xhiJQ, xhi:true, ex02 */
 (function () {
   'use strict';
   var
@@ -34,15 +34,15 @@
       'js/xhi/07_shell.js',
       'js/xhi/08_app.js'
     ],
-    libCount  = libList.length,
-    loadCount = 0,
+    libCount    = libList.length,
+    loadCount   = 0,
     loadDelayMs = 100,
 
     $, scriptObj, libIdx, libSrcStr;
 
   function main () {
     var app_map = xhi._makeAppFn_( 'ex02' );
-    ex02._07_shell_._initModuleFn_( $('body') );
+    ex02._07_shell_._initModuleFn_( xhiJQ('body') );
     ex02._06_lb_._showLbFn_({
       _title_html_ : 'Example 02',
       _content_html_ :
@@ -54,8 +54,8 @@
   }
 
   function testLoad() {
-    if ( window.$ ) {
-      $ = window.$;
+    if ( window.xhiJQ ) {
+      $ = window.xhiJQ;
       $( main );
     }
     else {

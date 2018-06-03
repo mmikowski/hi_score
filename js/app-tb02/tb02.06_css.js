@@ -1,4 +1,4 @@
-/*global $, xhiCSS, tb02*/
+/*global xhiCSS, tb02*/
 // == BEGIN MODULE tb02._06_css_ =======================================
 tb02._06_css_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================

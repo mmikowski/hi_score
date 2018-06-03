@@ -6,7 +6,7 @@
  * Version 02 replaces the _css_ module with PowerCSS
  *
 */
-/*global tb02, $*/
+/*global tb02*/
 // == BEGIN MODULE tb02 ================================================
 (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
@@ -58,8 +58,8 @@
   }
 
   function testLoadFn() {
-    if ( window.$ ) {
-      $ = window.$;
+    if ( window.xhiJQ ) {
+      $ = window.xhiJQ;
       $( startAppFn );
     }
     else {

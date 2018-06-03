@@ -1,11 +1,11 @@
 /**
- * ex01.js
+ * ex01_app.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Example 01 application using xhi instances instead of modules.
  *
 */
-/*global $, xhi:true, ex01 */
+/*global xhiJQ, xhi:true, ex01 */
 (function () {
   'use strict';
   var
@@ -42,7 +42,7 @@
 
   function main () {
     var app_map = xhi._makeAppFn_( 'ex01' );
-    ex01._07_shell_._initModuleFn_( $('body') );
+    ex01._07_shell_._initModuleFn_( xhiJQ('body') );
     ex01._06_lb_._showLbFn_({
       _title_html_ : 'Example 01',
       _content_html_ :
@@ -54,8 +54,8 @@
   }
 
   function testLoad() {
-    if ( window.$ ) {
-      $ = window.$;
+    if ( window.xhiJQ ) {
+      $ = window.xhiJQ;
       $( main );
     }
     else {

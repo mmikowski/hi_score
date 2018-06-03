@@ -11,11 +11,11 @@
   regexp : true, sloppy  : true, vars     : false,
   white  : true, todo    : true, unparam  : true
 */
-/*global $, xhi:true, ex01 */
-$(function () {
+/*global xhiJQ, xhi:true, ex01 */
+xhiJQ(function () {
   'use strict';
   var app_map = xhi._makeAppFn_( 'ex01' );
-  ex01._07_shell_._initModuleFn_( $('body') );
+  ex01._07_shell_._initModuleFn_( xhiJQ('body') );
   ex01._06_lb_._showLbFn_({
     _title_html_ : 'Example 01',
     _content_html_ :

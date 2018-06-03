@@ -1,4 +1,4 @@
-/*global $, xhi, tb02 */
+/*global xhi, tb02 */
 // == BEGIN MODULE tb02 ===============================================
 // Create root namespace map 'tb02'
 xhi._00_root_._makeInstanceFn_( 'tb02' );

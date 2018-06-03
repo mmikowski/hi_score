@@ -5,8 +5,8 @@
  *
  * Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*global $, tb02 */
-$(function () {
+/*global xhiJQ, tb02 */
+xhiJQ(function () {
   'use strict';
   tb02._07_shell_._initModuleFn_();
 });

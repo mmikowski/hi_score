@@ -4,9 +4,9 @@
  *
  * Typebomb 2 model component.
 */
-/*global $, tb02*/
+/*global xhiJQ, tb02*/
 // == BEGIN MODULE tb02._03_model_ =====================================
-tb02._03_model_ = (function () {
+tb02._03_model_ = (function ( $ ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -853,5 +853,5 @@ tb02._03_model_ = (function () {
     _reportKeyPress_ : reportKeyPressFn
   };
   // == . END PUBLIC METHODS ===========================================
-}());
+}( xhiJQ ));
 // == . END MODULE tb02._03_model_ =====================================

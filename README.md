@@ -9,7 +9,7 @@
 
 ## Recent changes
 ### Version 1.4.x 
-Work on version 1.4.x began on 2017-10-01. This README was last update on 2018-04-28 version 1.4.25.
+Work on version 1.4.x began on 2017-10-01. This README was last update on 2018-06-02 version 1.4.26. The 1.4 series includes these changes:
 
 - Add Typebomb2 example application
 - Convert build system to JavaScript using `package.json` as manifest
@@ -22,6 +22,7 @@ Work on version 1.4.x began on 2017-10-01. This README was last update on 2018-0
 - Revise code standards and images
 - Update README with images
 - Update AMI image for deployment and add screen shot
+- Rename JQuery and PowerCSS to avoid conflicts
 
 ---
 ## Quick start
@@ -384,6 +385,8 @@ Client libraries are copied to the `js/vendor` directory. This makes them availa
 - [SprintF][_32]: Sprintf library
 - [TaffyDB][_17]: Client data management
 
+The `jQuery` namespace is changed to `xhiJQ` and the PowerCSS namespace is changed from `pcss` to `xhiCSS`. This avoids conflicts with other libraries. The naming may be updated by adjusting `bin/rename-vendor-symbols`.  When coding, please use these symbol (`xhiJQ` and `xhiCSS`) instead of their usual names (`jQuery` and `pcss`). Also, do _not_ expect the `$` symbol to represent jQuery. Rely on local mapping if you want that behavior, e.g. `(function ($) { ... }( xhiJQ ))`. All supporting libraries are already adjust, of course.
+
 #### Node JS libraries
 NodeJS libraries are **not** copied to a `vendor` directory. We may change this if we decide to create a server distribution. The following libraries are installed:
 
@@ -600,6 +603,8 @@ MIT
 - (x) Revise code standards and images
 - (x) Update AMI image for deployment and add screen shot
 - (x) Update README with images
+- (x) Support symbol renaming to avoid conflicts 
+      (jQuery => xhiJQ, pcss => xhiCSS)
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
 - (o) Fix commit hook conflict in `bin/xhi` run range
 - (o) Update quick reference code standard
@@ -607,11 +612,11 @@ MIT
 
 ### Version 1.5.x (next)
 - (o) `bin/xhi` enhancements
-  - (o) `bin/xhi build` convert: superpack Perl to JS, use `package.json` config
-  - (o) `bin/xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
-  - (o) `bin/xhi dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
-  - (o) `bin/xhi deploy` implement: Add configuration and capability
-  - (o) `bin/xhi publish` : Push to NPM
+- (o) `bin/xhi build` convert: superpack Perl to JS, use `package.json` config
+- (o) `bin/xhi dev_start, prod_start` HTTPS : Use LetsEncrypt to use HTTPS by default
+- (o) `bin/xhi dev_start, prod_start` HTTP/2: Configure for HTTP/2 if feasible
+- (o) `bin/xhi deploy` implement: Add configuration and capability
+- (o) `bin/xhi publish` : Push to NPM
 ---
 
 ## End

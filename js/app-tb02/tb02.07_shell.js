@@ -1,6 +1,6 @@
-/*global $, tb02, Audio*/
+/*global xhiJQ, tb02, Audio*/
 // == BEGIN MODULE tb02._07_shell_ ====================================
-tb02._07_shell_ = (function () {
+tb02._07_shell_ = (function ( $ ) {
   // == BEGIN MODULE SCOPE VARIABLES ==================================
   'use strict';
   var
@@ -464,5 +464,5 @@ tb02._07_shell_ = (function () {
   // . END public method /initModuleFn/
   return { _initModuleFn_ : initModuleFn };
   // == . END PUBLIC METHODS ==========================================
-}());
+}( xhiJQ ));
 // == . END MODULE tb02._07_shell_ ====================================

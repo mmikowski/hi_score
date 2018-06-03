@@ -263,7 +263,7 @@ xhi._05_css_shell_ = (function () {
           { _selector_str_ : __p('.{_p_}-_shell_cont_'),
             _rule_map_ : {
               _margin_     : '_auto_',
-              _padding_    : [[ '_5rem_', '_scp_rem_04_', '_3rem_', '_5d5rem_' ]],
+              _padding_    : [[ '_5rem_', '_spc_rem_04_', '_3rem_', '_5d5rem_' ]],
               _max_width_  : [ '100rem' ],
               _transition_ : '_trans_short_'
             }
@@ -281,7 +281,7 @@ xhi._05_css_shell_ = (function () {
             _rule_map_     : {
               _display_        : '_inline_block_',
               _float_          : '_left_',
-              _line_height_    : '_scp_rem_04_',
+              _line_height_    : '_spc_rem_04_',
               _font_size_      : '_1d25rem_',
               _color_          : '_link_fade_hex_'
             }
@@ -289,7 +289,7 @@ xhi._05_css_shell_ = (function () {
           { _selector_str_ : __p('.{_p_}-_shell_cont_head_bread_ li:nth-child(even)'),
             _rule_map_     : {
               _margin_top_  : '_d125rem_',
-              _width_       : '_scp_rem_04_',
+              _width_       : '_spc_rem_04_',
               _font_family_ : '_font_family_awesome_',
               _text_align_  : '_center_'
             }
@@ -328,12 +328,12 @@ xhi._05_css_shell_ = (function () {
           { _begin_cond_str_ : '@media all and (max-width: 812px)' },
           { _selector_str_ : __p('.{_p_}-_shell_cont_'),
             _rule_map_ : {
-              _padding_    : [[ '_5rem_', '_3rem_', '_5rem_', '_scp_rem_04_' ]]
+              _padding_    : [[ '_5rem_', '_3rem_', '_5rem_', '_spc_rem_04_' ]]
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_base_'),
             _rule_map_ : {
-              _padding_    : [[ '_0_', '_3rem_', '_0_', '_scp_rem_04_' ]]
+              _padding_    : [[ '_0_', '_3rem_', '_0_', '_spc_rem_04_' ]]
             }
           },
           { _selector_str_ : __p('.{_p_}-_shell_nav_'),

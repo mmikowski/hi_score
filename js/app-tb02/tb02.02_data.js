@@ -4,7 +4,7 @@
  *
  * Typebomb 2 data component.
 */
-/*global $, tb02*/
+/*global tb02*/
 
 // == BEGIN MODULE tb02._02_data_ =====================================
 tb02._02_data_ = (function () {
