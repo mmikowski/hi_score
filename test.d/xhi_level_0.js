@@ -1889,6 +1889,35 @@ function makeReplaceFn ( test_obj ) {
   }
   test_obj.done();
 }
+function makeRekeyMap ( test_obj ) {
+  var
+    assert_table  = [
+      // [ arg_list, expect_data ]
+      [ [ {a:1, b:2, c:3}, { a: 'x', b: 'y', c: 'z'} ], {x:1, y:2, z:3}, ]
+    ],
+
+    assert_count = assert_table.length,
+    make_map_fn  = __util._makeRekeyMap_,
+
+    idx,        expect_list, arg_list,
+    expect_map, solve_map,   msg_str
+    ;
+
+  test_obj.expect( assert_count );
+
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list  = assert_table[ idx ];
+    arg_list     = expect_list[ __0 ];
+    expect_map   = expect_list[ __1 ];
+    solve_map    = make_map_fn.apply( __undef, arg_list );
+    msg_str    = __Str( idx ) + '. '
+      + JSON.stringify( solve_map  || '' ) +  ' === '
+      + JSON.stringify( expect_map || '' )
+      ;
+    test_obj.deepEqual( solve_map, expect_map, msg_str );
+  }
+  test_obj.done();
+}
 
 function makeScrubStr ( test_obj ) {
   var
@@ -3453,10 +3482,10 @@ function showLb ( test_obj ) {
         t00_a_html, t00_b_html ],
       [ [{ _close_html_   : 'x',
            _content_html_ : 'mello world',
-           _onclose_fn_   : __showLbCb,
-//          _position_map_ : { top : '50%', left : '50%',
-//            'margin-top' : 0, 'margin-left' : 0, width : 0
-//          }
+           _onclose_fn_   : __showLbCb
+           // _position_map_ : { top : '50%', left : '50%',
+           //   'margin-top' : 0, 'margin-left' : 0, width : 0
+           // }
         } ], t01_a_html, t01_b_html ]
     ],
 
@@ -3718,6 +3747,7 @@ module.exports = {
   _makePadNumStr_   : makePadNumStr,
   _makePctStr_      : makePctStr,
   _makeRadioHtml_   : makeRadioHtml,
+  _makeRekeyMap_    : makeRekeyMap,
   _makeReplaceFn_   : makeReplaceFn,
   _makeScrubStr_    : makeScrubStr,
   _makeSeenMap_     : makeSeenMap,
