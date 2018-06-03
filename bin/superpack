@@ -131,7 +131,7 @@ EOH
     my @raw_patterns = $script_str =~ m{\b_[A-Za-z0-9\$_]*_\b}g;
 
     # TODO : Create a general solution to add and exclude tokens
-    my @boundry_patterns = ( 'TAFFY', 'jQuery', 'EXIT' );
+    my @boundry_patterns = ( 'TAFFY', 'xhiJQ', 'EXIT' );
     for my $pattern( @boundry_patterns ) {
       my @bonus_matches = $script_str =~ m{\b$pattern\b}g;
       push @raw_patterns, @bonus_matches;

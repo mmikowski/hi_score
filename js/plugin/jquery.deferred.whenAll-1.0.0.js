@@ -5,8 +5,10 @@
 //   ALL promises have been resolved or rejected.  This avoids
 //   race conditions.
 
+/*global xhiJQ*/
 // eslint-disable-next-line no-extra-semi
 ;(function($) {
+  'use strict';
   var slice = [].slice;
 
   $.whenAll = function(array) {
@@ -57,4 +59,4 @@
 
     return deferred.promise();
   };
-})(jQuery);
+})(xhiJQ);

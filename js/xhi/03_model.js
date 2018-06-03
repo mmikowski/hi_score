@@ -61,7 +61,7 @@ xhi._03_model_ = (function () {
 
     // BEGIN Public method /initModuleFn/
     function initModuleFn () {
-      __logMsg( '_info_', '_xhi_03_model_init_' );
+      return __true;
     }
     // . END Public method /initModuleFn/
 

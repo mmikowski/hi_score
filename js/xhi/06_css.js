@@ -6,9 +6,9 @@
  * Synopsis : Add _css_ capabilities to app_map
  * Provides : Run-time CSS styling using PowerCSS
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_(),
- *            PowerCSS
+ *            PowerCSS (patched as xhiCSS)
 */
-/*global pcss, xhi */
+/*global xhiCSS, xhi */
 
 // == BEGIN MODULE xhi._06_css_ =======================================
 xhi._06_css_ = (function () {
@@ -99,7 +99,7 @@ xhi._06_css_ = (function () {
       }
 
       // Set the cascade and safe state. Return current them index.
-      pcss._setCascade_( {
+      xhiCSS._setCascade_( {
         _cascade_id_ : '_c01_',
         _mode_str_   : '_change_',
         _mixin_map_  : palette_mixin_map,
@@ -192,31 +192,31 @@ xhi._06_css_ = (function () {
       if ( stateMap._is_ready_ === __true ) { return; }
 
       palette_map = initPaletteMap( arg_palette_idx );
-      pcss._initModule_( { _style_el_prefix_ : aKey } );
-      pcss._setGlobalMixinMap_( {
+      xhiCSS._initModule_( { _style_el_prefix_ : aKey } );
+      xhiCSS._setGlobalMixinMap_( {
         _mixin_map_ : aMap._05_css_base_._globalMixinMap_
       } );
 
-      pcss._setVsheet_( {
+      xhiCSS._setVsheet_( {
         _vsheet_id_     : '_base_',
         _mode_str_      : '_add_',
         _mixin_map_     : aMap._05_css_base_._mixinMap_,
         _selector_list_ : aMap._05_css_base_._selectorList_
       } );
 
-      pcss._setVsheet_( {
+      xhiCSS._setVsheet_( {
         _vsheet_id_     : '_lb_',
         _mode_str_      : '_add_',
         _selector_list_ : aMap._05_css_lb_._selectorList_
       } );
 
-      pcss._setVsheet_( {
+      xhiCSS._setVsheet_( {
         _vsheet_id_     : '_shell_',
         _mode_str_      : '_add_',
         _selector_list_ : aMap._05_css_shell_._selectorList_
       } );
 
-      pcss._setCascade_( {
+      xhiCSS._setCascade_( {
         _cascade_id_     : '_c01_',
         _mode_str_       : '_add_',
         _vsheet_id_list_ : [ '_base_', '_lb_', '_shell_' ],
@@ -229,8 +229,8 @@ xhi._06_css_ = (function () {
     // . END public method /initModuleFn/
 
     instanceMap = {
-      _getCssKeyMap_       : pcss._getCssKeyMap_,
-      _getCssValMap_       : pcss._getCssValMap_,
+      _getCssKeyMap_       : xhiCSS._getCssKeyMap_,
+      _getCssValMap_       : xhiCSS._getCssValMap_,
       _getPaletteCount_    : getPaletteCount,
       _getPaletteMixinMap_ : getPaletteMixinMap,
       _setPaletteIdx_      : setPaletteIdx,

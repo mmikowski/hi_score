@@ -1,4 +1,4 @@
-/*global $, pcss, tb02*/
+/*global $, xhiCSS, tb02*/
 // == BEGIN MODULE tb02._06_css_ =======================================
 tb02._06_css_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
@@ -53,7 +53,7 @@ tb02._06_css_ = (function () {
             _user_select_          : '_none_',
 
             // TODO 2017-09-25 msm : Consider adding-back these keys.
-            //   We can set the key list using pcss._initModule_()
+            //   We can set the key list using xhiCSS._initModule_()
             // __ms_user_select_      : '_none_'
             // __webkit_user_drag_    : '_none_',
             // __moz_user_drag_       : '_none_',
@@ -443,7 +443,7 @@ tb02._06_css_ = (function () {
     }
 
     // Set the cascade and safe state. Return current them index.
-    pcss._setCascade_({
+    xhiCSS._setCascade_({
       _cascade_id_     : '_c01_',
       _mode_str_       : '_change_',
       _mixin_map_      : palette_mixin_map,
@@ -459,28 +459,28 @@ tb02._06_css_ = (function () {
 
     if ( stateMap._is_ready_ ) { return; }
 
-    // Initialize pcss and merge mixin maps
-    pcss._initModule_({ _style_el_prefix_ : aKey });
-    pcss._setGlobalMixinMap_({
+    // Initialize pcss (xhiCSS) and merge mixin maps
+    xhiCSS._initModule_({ _style_el_prefix_ : aKey });
+    xhiCSS._setGlobalMixinMap_({
       _mixin_map_ : aMap._05_css_base_._globalMixinMap_
     });
-    pcss._setGlobalMixinMap_({
+    xhiCSS._setGlobalMixinMap_({
       _mixin_map_ : configMap._mixin_map_,
       _change_type_ : '_merge_'
     });
 
     // Set up virtual sheets
-    pcss._setVsheet_({
+    xhiCSS._setVsheet_({
       _vsheet_id_     : '_base_',
       _mode_str_      : '_add_',
       _selector_list_ : aMap._05_css_base_._selectorList_
     });
-    pcss._setVsheet_({
+    xhiCSS._setVsheet_({
       _vsheet_id_     : '_lb_',
       _mode_str_      : '_add_',
       _selector_list_ : aMap._05_css_lb_._selectorList_
     });
-    pcss._setVsheet_({
+    xhiCSS._setVsheet_({
       _vsheet_id_     : '_shell_',
       _mode_str_      : '_add_',
       _selector_list_ : configMap._base_list_
@@ -492,7 +492,7 @@ tb02._06_css_ = (function () {
     );
 
     // Create and activate cascade
-    pcss._setCascade_({
+    xhiCSS._setCascade_({
       _cascade_id_     : '_c01_',
       _mode_str_       : '_add_',
       _vsheet_id_list_ : [ '_base_', '_lb_', '_shell_' ],
@@ -502,8 +502,8 @@ tb02._06_css_ = (function () {
     stateMap._is_ready_ = __true;
   }
   return {
-    _getCssKeyMap_       : pcss._getCssKeyMap_,
-    _getCssValMap_       : pcss._getCssValMap_,
+    _getCssKeyMap_       : xhiCSS._getCssKeyMap_,
+    _getCssValMap_       : xhiCSS._getCssValMap_,
     _getPaletteCount_    : getPaletteCount,
     _getPaletteMixinMap_ : getPaletteMixinMap,
     _setPaletteIdx_      : setPaletteIdx,

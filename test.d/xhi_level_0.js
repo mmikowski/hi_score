@@ -42,7 +42,7 @@ global.document = docRef;
 global.xhiJQ    = xhiJQ;
 global.$        = xhiJQ;
 
-global.pcss = require( libDir + 'vendor/pcss-1.4.5.js' );
+global.xhiCSS = require( libDir + 'vendor/pcss-1.4.5.js' );
 require( libDir + 'vendor/pcss.cfg-1.4.5.js' );
 
 global[ __ns ] = require( libPrefix + '00_root.js' );

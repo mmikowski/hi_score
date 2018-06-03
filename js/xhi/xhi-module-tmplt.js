@@ -40,10 +40,10 @@ xhi._makeTmpltFn_ = function ( aMap ) {
   // == BEGIN DOM METHODS ==============================================
   // BEGIN DOM method /set$Map/
   // Summary   : set$Map( <jquery_obj> );
-  // Purpose   : Set the module jQuery cache, $Map
+  // Purpose   : Set the module jQuery (xhiJQ) cache, $Map
   // Example   : set$Map( $top_box );
   // Arguments : (positional)
-  //   0. $top_box - A jQuery object used to locate DOM elements.
+  //   0. $top_box - A jQuery (xhiJQ) object used to locate DOM elements.
   // Settings  : Module-scoped $Map is populated by this function.
   // Returns   : undef
   // Throws    : none
@@ -61,7 +61,7 @@ xhi._makeTmpltFn_ = function ( aMap ) {
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN Public method /initModuleFn/
   function initModuleFn ( $top_box ) {
-    // Initialize DOM content and set jQuery collection cache
+    // Initialize DOM content and set jQuery (xhiJQ) collection cache
     set$Map( $top_box );
 
     __logMsg( '_info_', $,

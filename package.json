@@ -116,7 +116,7 @@
     "setup": "bin/xhi setup",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.4.25",
+  "version": "1.4.26",
   "xhi_prereqMap": {},
   "xhi_commandTable": [
     [
@@ -644,6 +644,12 @@
           "patch_filename": "font-awesome-4.7.0.patch",
           "pattern_str": "Patch removed redundant and incorrect font paths",
           "relative_name": "patch/font-awesome-4.7.0.patch"
+        },
+        {
+          "check_filename": "node_modules/jquery/dist/jquery.js",
+          "patch_filename": "jquery-3.3.1.patch",
+          "pattern_str": "^   window.jQuery = jQuery;$",
+          "relative_name": "patch/jquery-3.3.1.patch"
         }
       ]
     }

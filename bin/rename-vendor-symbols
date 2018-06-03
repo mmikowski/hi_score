@@ -22,4 +22,5 @@ _fqJsVendorDir="${_fqProjDir}/js/vendor";
 cd "${_fqJsVendorDir}";
 for filename in *.js; do
   perl -ne '$_ =~ s?jQuery?xhiJQ?g; print $_;' -i "${filename}"
+  perl -ne '$_ =~ s?pcss?xhiCSS?g; print $_;' -i "${filename}"
 done

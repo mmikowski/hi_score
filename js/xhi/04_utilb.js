@@ -8,7 +8,7 @@
  * Requires : xhiJQ and aMap (app map) with symbols from
  *            00_root._makeInstanceFn_()
 */
-/*global xhi, xhiJQ, pcss */
+/*global xhi, xhiJQ, xhiCSS */
 // == BEGIN MODULE xhi._04_utilb_ =====================================
 xhi._04_utilb_ = (function ( $ ) {
   'use strict';
@@ -19,8 +19,8 @@ xhi._04_utilb_ = (function ( $ ) {
       nMap      = aMap._nMap_,
       vMap      = aMap._vMap_,
 
-      cssKmap   = pcss._cfg_._cssKeyMap_,
-      cssVmap   = pcss._cfg_._cssValMap_,
+      cssKmap   = xhiCSS._cfg_._cssKeyMap_,
+      cssVmap   = xhiCSS._cfg_._cssValMap_,
 
       __docRef  = window.document,
       __blank   = vMap._blank_,

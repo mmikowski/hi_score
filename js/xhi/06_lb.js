@@ -8,8 +8,8 @@
  * Requires :
  *   - aMap (app map) with symbols from 00_root._makeInstanceFn_()
  *   - aMap with symbols from 05_css_lb._makeInstanceFn_()
- *   - jQuery (as xhiJQ)
- *   - PowerCSS
+ *   - jQuery   (as xhiJQ )
+ *   - PowerCSS (as xhiCSS)
  *
  * Instance overview.
  * See the inline API documents detailed use.
@@ -27,7 +27,7 @@
  *   - getMapFn         : Get internal map to inspect or change
  *   - initModuleFn     : Initialize DOM and state data if needed
 */
-/*global pcss, xhi, xhiJQ */
+/*global xhiCSS, xhi, xhiJQ */
 
 // == BEGIN MODULE xhi._06_lb_ =========================================
 xhi._06_lb_ = (function ( $ ) {
@@ -41,8 +41,8 @@ xhi._06_lb_ = (function ( $ ) {
       vMap    = aMap._vMap_,
       nMap    = aMap._nMap_,
 
-      cssKmap = pcss._cfg_._cssKeyMap_,
-      cssVmap = pcss._cfg_._cssValMap_,
+      cssKmap = xhiCSS._cfg_._cssKeyMap_,
+      cssVmap = xhiCSS._cfg_._cssValMap_,
 
       __0 = nMap._0_,
       __2 = nMap._2_,
@@ -183,7 +183,7 @@ xhi._06_lb_ = (function ( $ ) {
       // Add to DOM
       $( vMap._body_ )[ vMap._append_ ]( configMap._main_tmplt_ );
 
-      // Cache jQuery collections and set state
+      // Cache jQuery (xhiJQ) collections and set state
       set$Map();
       $Map._$litebox_[ vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
       $Map._$mask_[ vMap._css_ ]( cssKmap._display_, cssVmap._none_ );
@@ -558,7 +558,7 @@ xhi._06_lb_ = (function ( $ ) {
       } );
       $litebox[ vMap._html_ ]( inner_html );
 
-      // Cache jQuery collections
+      // Cache jQuery (xhiJQ) collections
       $close   = $litebox[ vMap._find_ ]( '.' + aKey + '-_lb_close_' );
       $content = $litebox[ vMap._find_ ]( '.' + aKey + '-_lb_content_' );
       $title   = $litebox[ vMap._find_ ]( '.' + aKey + '-_lb_title_' );
