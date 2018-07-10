@@ -83,6 +83,15 @@ __4  = nMap._4_;
 // == . END UTILITY METHODS  ==========================================
 
 // == BEGIN NODEUNIT TEST FUNCTIONS  ==================================
+
+// == BEGIN 00_root tests =============================================
+function extendSymbolMap ( test_obj ) {
+  aMap._extendSymbolMapFn_( '_vMap_', { 'fred': 'barney' } );
+  test_obj.done();
+}
+// == . END 00_root tests =============================================
+
+// == BEGIN 01_util tests =============================================
 function setLogLevel ( test_obj ) {
   var
     assert_table = [
@@ -814,7 +823,7 @@ function getTzCode ( test_obj ) {
   test_obj.expect( __1 );
 
   // eslint-disable-next-line no-useless-escape
-  test_obj.ok( tz_code.match( /^[A-Z0-9+\-]+$/ ),
+  test_obj.ok( tz_code.match( /^[A-Za-z0-9+\- ]+$/ ),
     'Code fails to match regex: ' + tz_code
   );
   test_obj.done();
@@ -2965,8 +2974,9 @@ function trimStrList ( test_obj ) {
   }
   test_obj.done();
 }
+// == . END 01_util tests =============================================
 
-// ===== UTILB
+// == BEGIN 04_utilb tests ============================================
 function decodeHtml ( test_obj ) {
   var
     assert_table = [
@@ -3188,8 +3198,9 @@ function resizeTextarea ( test_obj ) {
   }
   test_obj.done();
 }
+// == . END 04_utilb tests ============================================
 
-// ===== LiteBox (LB)
+// == BEGIN 06_lb tests ===============================================
 liteBoxMap = {
   _outer01_tmplt_ : __blank
     + '<div id="' + aKey + '-_lb_" style="display: block; top: 384px; '
@@ -3696,6 +3707,7 @@ function showSuccess ( test_obj ) {
     close_fn();
   }
 }
+// == . END 06_lb tests ===============================================
 // == . END NODEUNIT TEST FUNCTIONS  ==================================
 
 // Use mockTestObj for debugging tests using nodejs instead
@@ -3709,6 +3721,9 @@ function showSuccess ( test_obj ) {
 // makeClockStr( mockTestObj );
 
 module.exports = {
+  // Root
+  _extendSymbolMap_ : extendSymbolMap,
+
   // Util
   _setLogLevel_     : setLogLevel,
   _castInt_         : castInt,

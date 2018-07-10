@@ -143,6 +143,26 @@ xhi._00_root_ = (function () {
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
+  // == BEGIN PRIVATE METHODS ==========================================
+  // BEGIN private method /makeCloneMap/
+  // We use this instead of Object.assign to remain
+  // compatible with IE11
+  function makeCloneMap ( map ) {
+    var
+      key_list  = vMap._makeKeyListFn_( map ),
+      key_count = key_list.length,
+      clone_map = {},
+      idx, key;
+
+    for ( idx = nMap._0_; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      clone_map[ key ] = map[ key ];
+    }
+    return clone_map;
+  }
+  // . END private method /makeCloneMap/
+  // == . END PRIVATE METHODS ==========================================
+
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN public method /getGlobalObjFn/
   function getGlobalObjFn () {
@@ -157,8 +177,8 @@ xhi._00_root_ = (function () {
   // BEGIN public method /makeInstanceFn/
   function makeInstanceFn ( aKey, arg_option_map ) {
     var
-      instanceNmap = Object.assign( {}, nMap ),
-      instanceVmap = Object.assign( {}, vMap ),
+      instanceNmap = makeCloneMap( nMap ),
+      instanceVmap = makeCloneMap( vMap ),
       option_map = vMap._typeofFn_( arg_option_map ) === 'object'
         ? arg_option_map : {},
 

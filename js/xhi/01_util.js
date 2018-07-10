@@ -1981,10 +1981,7 @@ xhi._01_util_ = (function () {
         data        = source_struct[ key ];
         replace_key = arg_key_map[ key ];
 
-        if ( ! replace_key ) {
-          console.warn( 'No replace_key found for ', key );
-          replace_key = key;
-        }
+        if ( ! replace_key ) { replace_key = key; }
 
         if ( pop_solve_struct ) {
           data = pop_solve_struct;
