@@ -1,6 +1,6 @@
 /*global xhiCSS, tb02*/
-// == BEGIN MODULE tb02._06_css_ =======================================
-tb02._06_css_ = (function () {
+// == BEGIN MODULE tb02._05_css_ =======================================
+tb02._05_css_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -346,7 +346,7 @@ tb02._06_css_ = (function () {
       input_palette_idx = __castInt( arg_palette_idx, __n1 ),
       local_map_key     = aKey + '-_palette_map_',
       local_idx_key     = aKey + '-_palette_idx_',
-      palette_map_list  = aMap._05_css_base_._paletteMapList_,
+      palette_map_list  = aMap._05_02_css_base_._paletteMapList_,
       palette_map_count = palette_map_list[ vMap._length_ ],
 
       solve_idx, solve_map,
@@ -404,7 +404,7 @@ tb02._06_css_ = (function () {
   // BEGIN public method /getPaletteCount/
   function getPaletteCount () {
     var
-      palette_map_list = aMap._05_css_base_._paletteMapList_;
+      palette_map_list = aMap._05_02_css_base_._paletteMapList_;
     return palette_map_list[ vMap._length_ ];
   }
   // . END public method /getPaletteCount/
@@ -412,8 +412,8 @@ tb02._06_css_ = (function () {
   // BEGIN public method /getPaletteMixinMap/
   function getPaletteMixinMap () {
     var
-      palette_list = aMap._05_css_base_._paletteMapList_,
-      palette_idx      = stateMap._palette_idx_;
+      palette_list = aMap._05_css_02_base_._paletteMapList_,
+      palette_idx  = stateMap._palette_idx_;
     return palette_list[ palette_idx ];
   }
   // . END public method /getPaletteMixinMap/
@@ -422,7 +422,7 @@ tb02._06_css_ = (function () {
   function setPaletteIdx( arg_idx ) {
     var
       idx            = __util._castInt_( arg_idx, 0 ),
-      palette_map_list = aMap._05_css_base_._paletteMapList_,
+      palette_map_list = aMap._05_02_css_base_._paletteMapList_,
       palette_idx      = stateMap._palette_idx_,
       palette_count    = palette_map_list[ vMap._length_ ],
       palette_mixin_map;
@@ -462,7 +462,7 @@ tb02._06_css_ = (function () {
     // Initialize pcss (xhiCSS) and merge mixin maps
     xhiCSS._initModule_({ _style_el_prefix_ : aKey });
     xhiCSS._setGlobalMixinMap_({
-      _mixin_map_ : aMap._05_css_base_._globalMixinMap_
+      _mixin_map_ : aMap._05_02_css_base_._globalMixinMap_
     });
     xhiCSS._setGlobalMixinMap_({
       _mixin_map_ : configMap._mixin_map_,
@@ -473,12 +473,12 @@ tb02._06_css_ = (function () {
     xhiCSS._setVsheet_({
       _vsheet_id_     : '_base_',
       _mode_str_      : '_add_',
-      _selector_list_ : aMap._05_css_base_._selectorList_
+      _selector_list_ : aMap._05_02_css_base_._selectorList_
     });
     xhiCSS._setVsheet_({
       _vsheet_id_     : '_lb_',
       _mode_str_      : '_add_',
-      _selector_list_ : aMap._05_css_lb_._selectorList_
+      _selector_list_ : aMap._05_03_css_lb_._selectorList_
     });
     xhiCSS._setVsheet_({
       _vsheet_id_     : '_shell_',
@@ -512,4 +512,4 @@ tb02._06_css_ = (function () {
   };
   // == . END PUBLIC METHODS ===========================================
 }());
-// == . END MODULE tb02._06_css_ =======================================
+// == . END MODULE tb02._05_css_ =======================================

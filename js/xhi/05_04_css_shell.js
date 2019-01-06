@@ -1,22 +1,22 @@
 /*
- * 05_css_shell.js
+ * 05_04_css_shell.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._05_css_shell_._makeInstanceFn_( app_map, option_map );
- * Synopsis : Add _05_css_shell_ capabilities to app_map
+ * Use      : xhi._05_04_css_shell_._makeInstanceFn_( app_map, option_map );
+ * Synopsis : Add _05_04_css_shell_ capabilities to app_map
  * Provides : PowerCSS structure CSS data
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
  *
 */
 /*global xhi */
-// == BEGIN MODULE xhi._05_css_shell_ =================================
-xhi._05_css_shell_ = (function () {
+// == BEGIN MODULE xhi._05_04_css_shell_ ==============================
+xhi._05_04_css_shell_ = (function () {
   'use strict';
   // == BEGIN public method /makeInstanceFn/ ==========================
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
-      subName = '_05_css_shell_',
+      subName = '_05_04_css_shell_',
       aKey    = aMap._aKey_,
       vMap    = aMap._vMap_,
       __util  = aMap._01_util_,
@@ -410,5 +410,5 @@ xhi._05_css_shell_ = (function () {
   // == . END public method /makeInstanceFn/ ==========================
   return { _makeInstanceFn_ : makeInstanceFn }
 }());
-// == . END MODULE xhi._05_css_shell_ =================================
+// == . END MODULE xhi._05_04_css_shell_ ==============================
 

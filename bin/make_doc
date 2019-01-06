@@ -43,7 +43,7 @@ find -type f -name "*.md" \
 
   echo "Generating ${_loop_dir}/${_loop_basename}.html from ${_loop_file}"
   "${_pandocExe}" "${_loop_file}" \
-  -f markdown_github \
+  -f gfm \
   -so "${_loop_dir}/${_loop_basename}.html" \
   -H "${_topDir}/config/md-github.style";
 done

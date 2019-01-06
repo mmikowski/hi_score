@@ -2,10 +2,25 @@
  * 01_util.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._01_util_._makeInstanceFn_( app_map, option_map );
- * Synopsis : Add _01_util_ capabilities to app_map
- * Provides : Utilities which do not require jQuery (xhiJQ) or a browser
- * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
+ * Summary  : xhi._01_util_._makeInstanceFn_( aMap, option_map );
+ * Purpose  : Provide utilities with no browser dependencies to aMap
+ * Example  :
+ *   global.xhi = require( './00_root' );
+ *   require( './01_util' );
+ *   const
+ *     aKey     = 'myApp'
+ *     aMap     = xhi._00_root_._makeInstanceFn_( aKey ),
+ *     utilObj  = xhi._01_util_._makeInstanceFn_( aMap )
+ *     typeKey  = utilObj._getVarType_( 'test' )
+ *     ;
+ * Requires : aMap with symbols from 00_root._makeInstanceFn_()
+ * Arguments : (positional)
+ *   <app_map>    - Application map to add _01_util_
+ *   <option_map> - Option map. The only supported key is
+ *     `_dont_autoadd_` which if true will not add the _01_util_
+ *     key to the application map (aMap)
+ * Returns   : aMap._01_util_ instance
+ * Throws    : none
  *
 */
 /*global xhi, xhiJQ */
@@ -29,40 +44,40 @@ xhi._01_util_ = (function () {
       __Math    = vMap._Math_,
       __Num     = vMap._Number_,
       __Str     = vMap._String_,
-      __blank   = vMap._blank_,
-      __false   = vMap._false_,
-      __length  = vMap._length_,
-      __null    = vMap._null_,
-      __push    = vMap._push_,
-      __true    = vMap._true_,
-      __undef   = vMap._undef_,
 
-      __0       = nMap._0_,
-      __1       = nMap._1_,
-      __2       = nMap._2_,
-      __3       = nMap._3_,
-      __4       = nMap._4_,
-      __10      = nMap._10_,
-      __100     = nMap._100_,
-      __n1      = nMap._n1_,
-
-      __apply   = vMap._apply_,
-      __bind    = vMap._bind_,
-      __clearTimeoutFn = vMap._clearTimeoutFn_,
-      __hasOwnProperty = vMap._hasOwnProperty_,
-      __indexOf        = vMap._indexOf_,
-      __join           = vMap._join_,
-      __makeAbsNumFn   = vMap._makeAbsNumFn_,
+      __apply           = vMap._apply_,
+      __blank           = vMap._blank_,
+      __bind            = vMap._bind_,
+      __clearTimeoutFn  = vMap._clearTimeoutFn_,
+      __false           = vMap._false_,
+      __hasOwnProperty  = vMap._hasOwnProperty_,
+      __indexOf         = vMap._indexOf_,
+      __join            = vMap._join_,
+      __length          = vMap._length_,
+      __makeAbsNumFn    = vMap._makeAbsNumFn_,
       __makeFloorNumFn  = vMap._makeFloorNumFn_,
       __makeKeyListFn   = vMap._makeKeyListFn_,
       __makeRandomNumFn = vMap._makeRandomNumFn_,
       __makeRoundNumFn  = vMap._makeRoundNumFn_,
       __match           = vMap._match_,
+      __null            = vMap._null_,
+      __push            = vMap._push_,
       __replace         = vMap._replace_,
       __setTimeoutFn    = vMap._setTimeoutFn_,
       __split           = vMap._split_,
       __toString        = vMap._toString_,
+      __true            = vMap._true_,
       __typeofFn        = vMap._typeofFn_,
+      __undef           = vMap._undef_,
+
+      __0   = nMap._0_,
+      __1   = nMap._1_,
+      __2   = nMap._2_,
+      __3   = nMap._3_,
+      __4   = nMap._4_,
+      __10  = nMap._10_,
+      __100 = nMap._100_,
+      __n1  = nMap._n1_,
 
       typeofMap = {
         'boolean'   : '_Boolean_',
@@ -82,8 +97,9 @@ xhi._01_util_ = (function () {
         'Undefined' : '_Undefined_'
       },
 
-      configMap, stateMap,
-      logObj, instanceMap, optionMap
+      configMap,   getBasename,   getDirname,
+      instanceMap, logObj,        optionMap,
+      stateMap
       ;
     // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -128,11 +144,8 @@ xhi._01_util_ = (function () {
     // Throws    : none
     //
     function castBool ( data, alt_data ) {
-      if ( arguments[ __length ] >= __2 ) {
-        if ( data === __true || data === __false ) { return data; }
-        return alt_data;
-      }
-      return !! data;
+      if ( data === __true || data === __false ) { return data; }
+      return alt_data;
     }
     // . END Public prereq method /castBool/
 
@@ -302,7 +315,7 @@ xhi._01_util_ = (function () {
         if ( option_map._min_length_
           && item_count < option_map._min_length_
         ) {
-          log_list.push(
+          log_list[ __push ](
             'List is below minimum length: ' + __Str( item_count )
             + ' < ' + __Str( log_list._min_length_ )
           );
@@ -310,7 +323,7 @@ xhi._01_util_ = (function () {
 
         if ( log_list[ __length ] > __0 ) {
           if ( option_map._do_warn_ ) {
-            logObj.logMsg( '_warn_', 'List fails constraints', log_list );
+            logObj._logMsg_( '_warn_', 'List fails constraints', log_list );
           }
           return alt_data;
         }
@@ -453,7 +466,7 @@ xhi._01_util_ = (function () {
         if ( option_map._filter_regex_
           && ! option_map._filter_regex_.test( solve_str )
         ) {
-          log_list.push(
+          log_list[ __push ](
             'String does not pass regex filter: '
           + option_map._filter_regex_[ __toString ]()
           );
@@ -461,9 +474,7 @@ xhi._01_util_ = (function () {
 
         if ( log_list[ __length ] > __0 ) {
           if ( option_map._do_warn_ ) {
-            logObj._logMsg_(
-              '_warn_', 'List fails constraints', log_list
-            );
+            logObj._logMsg_( '_warn_', 'List fails constraints', log_list );
           }
           return alt_data;
         }
@@ -473,27 +484,49 @@ xhi._01_util_ = (function () {
     }
     // . END Public prereq method /castStr/
 
-    // BEGIN Public prereq method /parseSafeJson/
-    // Summary   : parseSafeJson( json_str, alt_data )
+    // BEGIN Public prereq method /safeJsonParse/
+    // Summary   : safeJsonParse( json_str, alt_data )
     // Purpose   : Parses JSON safely, using alt_data if it cannot
-    // Example   : my map = parseSafeJson( '{}', {} )
+    // Example   : my map = safeJsonParse( '{}', {} );
     // Arguments : (positional)
     //   <json_str> - JSON string to parse
     //   <alt_data> - Alternate return if parsing failse
     // Returns   : Parsed JSON or alt_data
     // Throws    : none
     //
-    function parseSafeJson (jsonStr, defaultData) {
-      var solveData
+    function safeJsonParse ( json_str, alt_data ) {
+      var solve_data;
       try {
-        solveData = JSON.parse(jsonStr);
+        solve_data = __str2DataFn( json_str );
+      }
+      catch ( e ) {
+        solve_data = alt_data;
+      }
+      return solve_data;
+    }
+    // . END Public prereq method /safeJsonParse/
+
+    // BEGIN Public prereq method /safeJsonStringify/
+    // Summary   : safeJsonStringify( data, alt_data )
+    // Purpose   : Stringifies JSON safely
+    // Example   : my str = safeJsonStringify( {}, '{}' );
+    // Arguments : (positional)
+    //   <data>     - Data structure to stringify
+    //   <alt_data> - Alternate return if parsing failse
+    // Returns   : JSON string on success, alt_data on failure
+    // Throws    : none
+    //
+    function safeJsonStringify ( arg_data, alt_data ) {
+      var solve_str;
+      try {
+        solve_str = __data2strFn( arg_data );
       }
       catch (e) {
-        solveData = defaultData;
+        solve_str = alt_data;
       }
-      return solveData
+      return solve_str;
     }
-  // . END Public prereq method /parseSafeJson/
+    // . END Public prereq method /safeJsonStringify/
 
     // BEGIN Public prereq method /cloneData/
     // Summary   : cloneData( <data> )
@@ -506,11 +539,8 @@ xhi._01_util_ = (function () {
     // Throws    : none
     //
     function cloneData ( data ) {
-      var clone_data;
       if ( data === __undef ) { return data; }
-      try { clone_data = __str2DataFn( __data2strFn( data ) ); }
-      catch ( ignore_obj ) { clone_data = __undef; }
-      return clone_data;
+      return safeJsonParse( safeJsonStringify( data ) );
     }
     // . END Public prereq method /cloneData/
 
@@ -802,8 +832,7 @@ xhi._01_util_ = (function () {
     //
     function makeEscRxStr( arg_str ) {
       var str = castStr( arg_str, __blank );
-      // eslint-disable-next-line no-useless-escape
-     return str[ __replace ]( /[\-\[\]\{\}\(\)\*\+\?\.\,\\\^\$|#\s]/g, '\\$&' );
+      return str[ __replace ]( /[-[\]{}()*+?.,\\^$|#]/gm, "\\$&");
     }
     // . END Public prereq method /makeEscRxStr/
 
@@ -887,12 +916,14 @@ xhi._01_util_ = (function () {
     // == BEGIN UTILITY OBJECTS =========================================
     // BEGIN define logObj singleton
     // Summary   :
-    //   logObj.setLogLevel('_warn_');
+    //   logObj.setLogLevel_('_warn_');
+    // Purpose   : Provide a log4j-style logging singleton
+    // Example   :
+    //   logObj.setLogLevel_('_warn_');
     //   logObj.logMsg('_warn_', 'This will show');
     //   logObj.logMsg('_info_', 'This will not');
-    //   logObj.getLogLevel(); // '_warn_'
-    // Purpose   : Provide a log4j-style logging singleton
-    // Example   : See summary
+    //   logObj.getLevelName();  // '_warn_'
+    //   logObj.getLevelIdx();   // 4
     // Arguments :
     //   Log level is based on syslog values and is one of
     //   '[_emerg_|_alert_|_crit_|_error_|_warn_|_notice_|_info_|_debug_]'
@@ -901,14 +932,18 @@ xhi._01_util_ = (function () {
     //   * logMsg( <log_level>, <message_str> ) - Log message string with
     //     <log_level> urgency. Messages with urgency below the threshold are
     //     not presented to the log.
-    //   * getLogLevel() - Return log level, e.g. '_warn_'.
-    // Returns   : void
+    //   * getLevelName() - Return log level, e.g. '_warn_'.
+    //   * getLevelIdx returns log level index. 0=emerg, 4=warn, 7=debug
+    //     This is provided so developers can see if the set log level
+    //     is more permissive than _error_ for example:
+    //     if ( logObj._getLevelIdx_() > 3 ) { ... }
+    // Returns   : Varies
     // Throws    : none
     //
     logObj = (function () {
       var
         levelXCmdMap = {
-          _emerg_  : 'error',
+          _emerg_  : 'trace',
           _alert_  : 'error',
           _crit_   : 'error',
           _error_  : 'error',
@@ -935,10 +970,9 @@ xhi._01_util_ = (function () {
       ;
 
       // favor node console if available
-      //noinspection UnusedCatchParameterJS
       /* istanbul ignore next */
       try { consoleRef = global.console; }
-      catch ( error ) {
+      catch ( ignore ) {
         if ( window ) {
           consoleRef = window.console;
         }
@@ -955,59 +989,75 @@ xhi._01_util_ = (function () {
         return levelKey;
       }
 
-      function getLogLevel () { return levelKey; }
+      function getLevelName () { return levelKey; }
+      function getLevelIdx  () { return levelIdx; }
+      function getIdxByName ( arg_name ) {
+        var key = castStr( arg_name, '' );
+        return levelXIdxMap[ key ];
+      }
 
       // This follows syslog level conventions
       function logMsg () {
         var
           arg_list  = makeArgList( arguments ),
-          level_key = castStr( arg_list[ __0 ], __blank ),
+          level_key   = castStr( arg_list.shift(), __blank ),
           level_idx = levelXIdxMap[ level_key ],
-          arg_count = arg_list[ __length ],
+          command_str = levelXCmdMap[ level_key ],
 
-          level_cmd
+          caller_list, caller_str
         ;
 
-        if ( arg_count < __2 ) { return __false; }
-        if ( level_idx === __undef ) {
-          arg_list[ vMap._unshift_ ](
-            '_log_level_not_supported_:|' + level_key + '|'
+        // Handle bad log level
+        if ( ! command_str ) {
+          arg_list.unshift(
+            '_log_level_key_not_found_ (' + level_key + ').'
           );
-
-          arg_list[ vMap._shift_ ]();
-          level_key = '_error_';
-          level_idx = levelXIdxMap[ level_key ];
-          arg_list[ vMap._unshift_ ]( level_key );
+          level_key   = '_error_';
+          level_idx   = levelXIdxMap[ level_key ];
+          command_str = levelXCmdMap[ level_key ]
         }
 
+        // Ignore if level of this log is below cutoff
         if ( level_idx > levelIdx ) { return __false; }
-        level_cmd = levelXCmdMap[ level_key ];
 
-        // Try to log the best we know how
-        //noinspection UnusedCatchParameterJS
+        // Get caller information
         /* istanbul ignore next */
         try {
-          consoleRef[ level_cmd ][ __apply ]( consoleRef, arg_list );
+          caller_list = (new Error()).stack.split(/[ ]*\n/);
+          caller_str  = (caller_list[2] || __blank ).replace(/^[ ]*/g, '');
+          arg_list.unshift( caller_str );
         }
-          // The only problem that may cause a failure is if the log
-          // command can not handle more than a single argument or will not
-          // allow the apply method (think: IE). We try our best...
-          //
+        catch(e) {
+          caller_list = [];
+        }
+
+        // Unshift level into args
+        arg_list.unshift( level_key );
+
+        // Try to log to console
+        try {
+          consoleRef[ command_str ][ __apply ]( consoleRef, arg_list );
+        }
+        // The only problem that may cause a failure is if the log
+        // command can not handle more than a single argument or will not
+        // allow the apply method (think: IE). We try our best...
+        //
         catch ( e0 ) {
-          //noinspection UnusedCatchParameterJS
           try  {
-            consoleRef[ level_cmd ]( arg_list[ __1 ] );
+            consoleRef[ command_str ]( arg_list[ __1 ] );
           }
-            // Everything failed. We give up.
+          // Everything failed. We give up.
           catch ( e1 ) { return __false; }
         }
         return __true;
       }
 
       return {
-        _setLogLevel_ : setLogLevel,
-        _getLogLevel_ : getLogLevel,
-        _logMsg_      : logMsg
+        _getIdxByName_ : getIdxByName,
+        _getLevelIdx_  : getLevelIdx,
+        _getLevelName_ : getLevelName,
+        _logMsg_       : logMsg,
+        _setLogLevel_  : setLogLevel
       };
     }());
     // . END define logObj singleton
@@ -1180,6 +1230,8 @@ xhi._01_util_ = (function () {
       match_list = path_str[ __match ]( rx_obj );
       return ( match_list && match_list[ __1 ] ) || __blank;
     }
+    getBasename = getBaseDirname[ __bind ]( '_base_' );
+    getDirname  = getBaseDirname[ __bind ]( '_dir_'  );
     // . END utilities /getBasename/ and /getDirname/
 
     // BEGIN Public method /getListAttrIdx/
@@ -1187,9 +1239,9 @@ xhi._01_util_ = (function () {
       var
         map_list = castList( arg_map_list, [] ),
         key      = castStr(  arg_key, __blank ),
-
         map_count = map_list[ __length ],
-        found_idx  = __n1,
+        found_idx = __n1,
+
         idx, row_map, row_key_list
       ;
 
@@ -1256,13 +1308,13 @@ xhi._01_util_ = (function () {
     function getListValCount ( arg_list, arg_data ) {
       var
         input_list  = castList( arg_list, [] ),
-        input_count = input_list[ __length ],
+        end_idx     = input_list[ __length ] - __1,
         match_count = __0,
         idx;
 
-      for ( idx = input_count; idx; __0 ) {
+      for ( idx = end_idx; idx > __n1; idx-- ) {
         //noinspection IncrementDecrementResultUsedJS
-        if ( input_list[ --idx ] === arg_data ) { match_count++; }
+        if ( input_list[ idx ] === arg_data ) { match_count++; }
       }
       return match_count;
     }
@@ -1709,20 +1761,17 @@ xhi._01_util_ = (function () {
     // Arguments :
     //   * name_text - the error name
     //   * msg_text  - long error message
-    //   * data      - optional data attached to error object
     // Returns   : newly constructed error object
     // Throws    : none
     //
-    function makeErrorObj ( arg_name, arg_msg, arg_data ) {
+    function makeErrorObj ( arg_name, arg_msg ) {
       var
         name = ( arg_name && __Str( arg_name ) ) || 'error',
         msg  = ( arg_msg  && __Str( arg_msg  ) ) || __blank,
-        data = arg_data || __undef,
         error_obj = new Error();
 
-      error_obj.name        = aKey + ':' + name;
-      error_obj.description = msg;
-      error_obj.data        = data;
+      error_obj.name    = aKey + ':' + name;
+      error_obj.message = msg;
       return error_obj;
     }
     // . END Public method /makeErrorObj/
@@ -1733,7 +1782,7 @@ xhi._01_util_ = (function () {
       function makePart () {
         //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
         return ((( __1+__makeRandomNumFn() ) * 0x10000 )|__0
-        )[ __toString ](16)[ vMap._substr_ ]( __1 );
+          )[ __toString ](16)[ vMap._substr_ ]( __1 );
       }
       /*jslint bitwise: false*/
 
@@ -1809,10 +1858,10 @@ xhi._01_util_ = (function () {
         _getArgList_   : getArgList,
         _getMapFn_     : getMapFn,
         _getResultMap_ : getResultMap,
-        _setResultMap_ : setResultMap,
+        _invokeFn_     : invokeFn,
         _setArgList_   : setArgList,
         _setMapFn_     : setMapFn,
-        _invokeFn_     : invokeFn
+        _setResultMap_ : setResultMap
       };
     }
     // . END Public method /makeMapUtilObj/
@@ -1938,9 +1987,23 @@ xhi._01_util_ = (function () {
     // BEGIN Public method /makeRekeyMap/
     // Purpose : Change all key names in a map to the new keys provided
     //   in the key_map
-    // Example :
-    //   makeRekeyMap( { a:1, b:2, c:[] }, { a:'_x_', b: '_y_', c:'_z_' } )
-    //   returns { _x_:1, _y_:2, _z_:[] }
+    // Arguments :
+    //   arg_struct - A complex structure to rekey or revalue
+    //   key_map    - A key map pointing to values
+    //   mode_str   - 'rekey' or 'reval'
+    // Examples  :
+    //   makeRekeyMap(
+    //     { a:1, b:2, c:[] },
+    //     { a:'_x_', b: '_y_', c:'_z_' },
+    //     '_rekey_'
+    //   );
+    //   makeRekeyMap(
+    //     { a:1, b:2, list:[ { c:[] } ] },
+    //     { a:'_x_', b: '_y_', c:22 },
+    //     '_reval_'
+    //   );
+    //   returns { a:'_x_', b:'_y_', [ { c:22 } ] }
+    //
     // A hard limit of 100 000 iterations are supported.
     //   Executes deep renaming through arrays and objects.
     //
@@ -1959,14 +2022,17 @@ xhi._01_util_ = (function () {
           key_idx       : 0
         } : null;
     }
-    function makeRekeyMap( arg_struct, arg_key_map ) {
+    function makeRekeyMap( arg_struct, arg_key_map, arg_mode_str ) {
       var
         context_obj = makeContextObj( arg_struct ),
+        mode_str    = castStr( arg_mode_str, '_rekey_', {
+          _filter_regex_ : /^(_rekey_|_reval_)$/
+        }),
         stack_list  = [],
 
         key_count, key_list, key_idx,
         source_struct, solve_struct,
-        key, data, replace_key,
+        key, data, replace_data,
         check_obj, pop_solve_struct, i
         ;
 
@@ -1974,17 +2040,13 @@ xhi._01_util_ = (function () {
         key_count  = context_obj.key_count;
         key_idx    = context_obj.key_idx;
         key_list   = context_obj.key_list;
+
         source_struct = context_obj.source_struct;
         solve_struct  = context_obj.solve_struct;
 
-        key         = key_list[ key_idx ]
-        data        = source_struct[ key ];
-        replace_key = arg_key_map[ key ];
-
-        if ( ! replace_key ) {
-          console.warn( 'No replace_key found for ', key );
-          replace_key = key;
-        }
+        key          = key_list[ key_idx ];
+        data         = source_struct[ key ];
+        replace_data = arg_key_map[ key ];
 
         if ( pop_solve_struct ) {
           data = pop_solve_struct;
@@ -1993,13 +2055,21 @@ xhi._01_util_ = (function () {
         else if ( typeof data === 'object' ) {
           check_obj = makeContextObj( data );
           if ( check_obj ) {
-            stack_list.push( context_obj );
+            stack_list[ __push ]( context_obj );
             context_obj = check_obj;
             continue CONTEXT;
           }
         }
 
-        solve_struct[ replace_key ] = data;
+        if ( mode_str === '_reval_' ) {
+          if ( ! replace_data ) { replace_data = data; }
+          solve_struct[ key ] = replace_data;
+        }
+        else {
+          if ( ! replace_data ) { replace_data = key; }
+          solve_struct[ replace_data ] = data;
+        }
+
         key_idx++;
         context_obj.key_idx = key_idx;
         if ( key_idx >= key_count ) {
@@ -2011,7 +2081,13 @@ xhi._01_util_ = (function () {
             break CONTEXT;
           }
         }
-        solve_struct[ replace_key ] = data;
+
+        if ( mode_str === '_reval_' ) {
+          solve_struct[ key ] = replace_data;
+        }
+        else {
+          solve_struct[ replace_data ] = data;
+        }
       }
       return context_obj.solve_struct;
     }
@@ -2309,10 +2385,10 @@ xhi._01_util_ = (function () {
     // BEGIN Public method /mergeMaps/
     // Purpose : Merge properties of extend_map into base_map
     //
-    // Warning : The extend map is not deep copied. If you wish
-    // to copy deep references:
-    //   extend_map = cloneData( src_map );
-    //   merge_map  = mergeMaps( base_map, extend_map );
+    // Warning : This does not deep copy the extend map.
+    // This often provides the desired results.
+    //   deep_map  = cloneData( extend_map );
+    //   merge_map = mergeMaps( base_map, deep_map );
     //
     function mergeMaps( arg_base_map, arg_extend_map, arg_attr_list ) {
       var
@@ -2392,18 +2468,36 @@ xhi._01_util_ = (function () {
     // . END Public method /pushUniqListVal/
 
     // BEGIN Public method /rmListVal/
-    function rmListVal ( arg_list, arg_data ) {
+    // Summary    : rmListVal( <base_list>, <val1>, ... <valN> );
+    // Purpose    : Remove one or more values from a base_list in-place
+    // Example    : rmListVal( base_list, 'a', 1, null );
+    //
+    // Arguments  : (positional)
+    //   0   - base_list
+    //   1-n - values to remove
+    // Returns    : Count of removed values
+    // Throws     : None
+    //
+    function rmListVal () {
       var
-        input_list   = castList( arg_list, [] ),
-        input_count  = input_list[ __length ],
-        rm_count     = __0,
-        idx;
+        arg_list   = makeArgList( arguments ),
+        item_list  = castList( arg_list.shift(), [] ),
+        item_count = item_list[ __length ],
+        test_list  = arg_list,
+        test_count = test_list[ __length ],
+        rm_count   = __0,
+        idx, item_data, jdx, test_data;
 
-      for ( idx = input_count; idx; __0 ) {
-        if ( input_list[ --idx ] === arg_data ) {
-          input_list[ vMap._splice_ ]( idx, __1 );
-          rm_count++;
-          idx++;
+      _LIST_ITEM_: for ( idx = item_count; idx; __0 ) {
+        item_data = item_list[ --idx ];
+      for ( jdx = 0; jdx < test_count; jdx++ ) {
+          test_data = arg_list[ jdx ];
+          if ( item_data === test_data ) {
+            item_list[ vMap._splice_ ]( idx, __1 );
+            rm_count++;
+            idx++;
+            continue _LIST_ITEM_;
+          }
         }
       }
       return rm_count;
@@ -2669,34 +2763,37 @@ xhi._01_util_ = (function () {
     // . END initialize module
 
     instanceMap = {
-      _getVarType_      : getVarType,
+      _getVarType_ : getVarType,
 
-      _castBool_        : castBool,
-      _castFn_          : castFn,
-      _castInt_         : castInt,
-      _castJQ_          : castJQ,
-      _castList_        : castList,
-      _castMap_         : castMap,
-      _castNum_         : castNum,
-      _castObj_         : castObj,
-      _castStr_         : castStr,
-      _cloneData_       : cloneData,
-      _extendList_      : extendList,
-      _getNowMs_        : getNowMs,
-      _getNumSign_      : getNumSign,
-      _makeArgList_     : makeArgList,
-      _makePadNumStr_   : makePadNumStr,
-      _makeEscRxStr_    : makeEscRxStr,
-      _makeRxObj_       : makeRxObj,
-      _makeScrubStr_    : makeScrubStr,
-      _makeUcFirstStr_  : makeUcFirstStr,
-      _parseSafeJson_   : parseSafeJson,
+      _castBool_ : castBool,
+      _castFn_   : castFn,
+      _castInt_  : castInt,
+      _castJQ_   : castJQ,
+      _castList_ : castList,
+      _castMap_  : castMap,
+      _castNum_  : castNum,
+      _castObj_  : castObj,
+      _castStr_  : castStr,
+
+      _safeJsonParse_     : safeJsonParse,
+      _safeJsonStringify_ : safeJsonStringify,
+
+      _cloneData_      : cloneData,
+      _extendList_     : extendList,
+      _getNowMs_       : getNowMs,
+      _getNumSign_     : getNumSign,
+      _makeArgList_    : makeArgList,
+      _makePadNumStr_  : makePadNumStr,
+      _makeEscRxStr_   : makeEscRxStr,
+      _makeRxObj_      : makeRxObj,
+      _makeScrubStr_   : makeScrubStr,
+      _makeUcFirstStr_ : makeUcFirstStr,
 
       _checkDateStr_    : checkDateStr,
       _clearMap_        : clearMap,
       _encodeHtml_      : encodeHtml,
-      _getBasename_     : getBaseDirname[ vMap._bind_ ]( '_base_' ),
-      _getDirname_      : getBaseDirname[ vMap._bind_ ]( '_dir_'  ),
+      _getBasename_     : getBasename,
+      _getDirname_      : getDirname,
       _getListAttrIdx_  : getListAttrIdx,
       _getListAttrMap_  : getListAttrMap,
       _getListDiff_     : getListDiff,
@@ -2712,6 +2809,7 @@ xhi._01_util_ = (function () {
       _makeErrorObj_    : makeErrorObj,
       _makeExtractMap_  : makeExtractMap,
       _makeGuidStr_     : makeGuidStr,
+      _makeKeyList_     : __makeKeyListFn,
       _makeMapUtilObj_  : makeMapUtilObj,
       _makeMetricStr_   : makeMetricStr,
       _makeOptionHtml_  : makeOptionHtml,

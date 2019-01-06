@@ -4,11 +4,11 @@
  *
  * Use      : xhi._07_shell_._makeInstance_( app_map );
  * Synopsis : Add _07_shell_ capabilities to app_map
- * Provides : Page shell controller
+ * Provides : Browser shell controller
  * Requires :
  *   - aMap (app map) with instances of the following:
  *     00_root, 01_util, 03_model, 04_utilb,
- *     05_css_base, 05_css_lb, 05_css_shell, and 06_lb.
+ *     05_02_css_base, 05_03_css_lb, 05_04_css_shell, and 06_lb.
  *     02_data is NOT required
  *   - jQuery   (as xhiJQ )
  *   - PowerCSS (as xhiCSS)
@@ -61,7 +61,7 @@ xhi._07_shell_ = (function ( $ ) {
     // BEGIN Public method /initModuleFn/
     function initModuleFn ( $top_box ) {
       // Set styles
-      aMap._06_css_._initModuleFn_();
+      aMap._05_css_._initModuleFn_();
 
       // Initial DOM content using methods above
       // and then set jQuery (xhiJQ) collection cache

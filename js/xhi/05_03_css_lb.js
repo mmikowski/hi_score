@@ -1,22 +1,22 @@
 /*
- * 05_css_lb.js
+ * 05_03_css_lb.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._05_css_lb_._makeInstanceFn_( app_map, option_map );
- * Synopsis : Add _05_css_lb_ capabilities to app_map
+ * Use      : xhi._05_03_css_lb_._makeInstanceFn_( app_map, option_map );
+ * Synopsis : Add _05_03_css_lb_ capabilities to app_map
  * Provides : PowerCSS structure CSS data
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
  *
 */
 /*global xhi */
 // == BEGIN MODULE xhi._makeCssLbFn_ ===================================
-xhi._05_css_lb_ = (function () {
+xhi._05_03_css_lb_ = (function () {
   'use strict';
   // == BEGIN public method /makeInstanceFn/ ==========================
   function makeInstanceFn ( aMap, argOptionMap ) {
-    // == BEGIN MODULE SCOPE VARIABLES ===================================
+    // == BEGIN MODULE SCOPE VARIABLES ================================
     var
-      subName   = '_05_css_lb_',
+      subName   = '_05_03_css_lb_',
       aKey      = aMap._aKey_,
       vMap      = aMap._vMap_,
 
@@ -198,5 +198,5 @@ xhi._05_css_lb_ = (function () {
   // == . END public method /makeInstanceFn/ ==========================
   return { _makeInstanceFn_ : makeInstanceFn };
 }());
-// == . END MODULE xhi._05_css_lb_ ====================================
+// == . END MODULE xhi._05_03_css_lb_ =================================
 

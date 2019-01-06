@@ -7,7 +7,7 @@
  * Provides : Flexible litebox UI interface
  * Requires :
  *   - aMap (app map) with symbols from 00_root._makeInstanceFn_()
- *   - aMap with symbols from 05_css_lb._makeInstanceFn_()
+ *   - aMap with symbols from 05_03_css_lb._makeInstanceFn_()
  *   - jQuery   (as xhiJQ )
  *   - PowerCSS (as xhiCSS)
  *
@@ -167,7 +167,7 @@ xhi._06_lb_ = (function ( $ ) {
         || $Map._$body_[ vMap._prop_ ]( vMap._scrollTop_ )
         || __0;
     }
-    // END DOM meethod /getBodyScrollPx/
+    // . END DOM meethod /getBodyScrollPx/
 
     // BEGIN DOM method /initModuleFn/
     // Summary   : initModuleFn()
@@ -406,7 +406,7 @@ xhi._06_lb_ = (function ( $ ) {
           lb_h_px   = $litebox[ vMap._outerHeight_ ]();
           lb_w_px   = $litebox[ vMap._outerWidth_  ]();
         }
-        // End fix width if too large for window
+        // . End fix width if too large for window
 
         margin_left_px = - ( lb_w_px / 2 );
         margin_top_px  = - ( lb_h_px / 2 );

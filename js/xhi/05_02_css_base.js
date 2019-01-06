@@ -1,23 +1,23 @@
 /*
- * 05_css_base.js
+ * 05_02_css_base.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._05_css_base_._makeInstanceFn_( app_map, option_map );
- * Synopsis : Add _05_css_base_ capabilities to app_map
+ * Use      : xhi._05_02_css_base_._makeInstanceFn_( app_map, option_map );
+ * Synopsis : Add _05_02_css_base_ capabilities to app_map
  * Provides : PowerCSS structure CSS data
  * Requires : xhi._01_util_ instance in app_map
  *
 */
 /*global xhi */
-// == BEGIN MODULE xhi._05_css_base_ ==================================
-xhi._05_css_base_ = (function () {
+// == BEGIN MODULE xhi._05_02_css_base_ ===============================
+xhi._05_02_css_base_ = (function () {
   'use strict';
   // == BEGIN public method /makeInstanceFn/ ==========================
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     //noinspection MagicNumberJS
     var
-      subName = '_05_css_base_',
+      subName = '_05_02_css_base_',
       aKey    = aMap._aKey_,
       vMap    = aMap._vMap_,
 
@@ -31,7 +31,7 @@ xhi._05_css_base_ = (function () {
           _spc_rem_00_ : '.375rem',  // 06px intra-group
           _spc_rem_01_ : '.75rem',   // 12px icon-to-label
           _spc_rem_02_ : '1.125rem', // 18px item indent, word space
-          _spc_rem_03_ : '1.5rem',   // 24px peer item, sentence space
+          _spc_rem_03_ : '1.5rem',   // 24px per item, sentence space
           _spc_rem_04_ : '1.875rem', // 30px Between groups
           _spc_rem_04a_: '2rem',     // 32px Test
           _spc_rem_05_ : '2.25rem',  // 36px Box padding
@@ -835,4 +835,4 @@ xhi._05_css_base_ = (function () {
   // == . END public method /makeInstanceFn/ ==========================
   return { _makeInstanceFn_ : makeInstanceFn };
 }());
-// == . END MODULE xhi._05_css_base_ ==================================
+// == . END MODULE xhi._05_02_css_base_ ===============================

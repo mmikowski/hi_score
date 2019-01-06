@@ -13,8 +13,8 @@
   'use strict';
   var
     libList = [
-      'js/vendor/pcss-1.4.5.js',
-      'js/vendor/pcss.cfg-1.4.5.js',
+      'js/vendor/pcss-1.4.6.js',
+      'js/vendor/pcss.cfg-1.4.6.js',
       'js/vendor/jquery-3.3.1.js',
       'js/plugin/jquery.deferred.whenAll-1.0.0.js',
       'js/vendor/jquery.event.gevent-1.1.6.js',
@@ -28,11 +28,11 @@
       // 'js/xhi/02_fake.js',      // not used currently
       // 'js/xhi/03_model.js',     // custom
       'js/xhi/04_utilb.js',
-      'js/xhi/05_css_base.js',
-      'js/xhi/05_css_lb.js',
+      'js/xhi/05_02_css_base.js',
+      'js/xhi/05_03_css_lb.js',
+      'js/xhi/05_css.js',
       // 'js/xhi/05_css_shell.js', // custom
-      // 'js/xhi/06_css.js',       // custom
-      'js/xhi/06_lb.js',
+      'js/xhi/06_lb.js',       // custom
       // 'js/xhi/07_shell.js',     // custom
 
       // App libs
@@ -41,9 +41,9 @@
       'js/app-tb02/tb02.02_data.js',
       'js/app-tb02/tb02.03_model.js',
       'js/app-tb02/tb02.04_utilb.js',
-      'js/app-tb02/tb02.05_css_base.js',
-      'js/app-tb02/tb02.05_css_lb.js',
-      'js/app-tb02/tb02.06_css.js',
+      'js/app-tb02/tb02.05_02_css_base.js',
+      'js/app-tb02/tb02.05_03_css_lb.js',
+      'js/app-tb02/tb02.05_css.js',
       'js/app-tb02/tb02.06_lb.js',
       'js/app-tb02/tb02.07_shell.js'
     ],

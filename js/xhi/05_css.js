@@ -1,8 +1,8 @@
 /*
- * 06_css.js
+ * 05_css.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._06_css_._makeInstanceFn_( app_map, option_map );
+ * Use      : xhi._05_css_._makeInstanceFn_( app_map, option_map );
  * Synopsis : Add _css_ capabilities to app_map
  * Provides : Run-time CSS styling using PowerCSS
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_(),
@@ -10,14 +10,14 @@
 */
 /*global xhiCSS, xhi */
 
-// == BEGIN MODULE xhi._06_css_ =======================================
-xhi._06_css_ = (function () {
+// == BEGIN MODULE xhi._05_css_ ==========================================
+xhi._05_css_ = (function () {
   'use strict';
-  // == BEGIN public method /makeInstanceFn/ ==========================
+  // == BEGIN public method /makeInstanceFn/ =============================
   function makeInstanceFn ( aMap, argOptionMap ) {
-    // == BEGIN MODULE SCOPE VARIABLES ==================================
+    // == BEGIN MODULE SCOPE VARIABLES ===================================
     var
-      subName   = '_06_css_',
+      subName   = '_05_css_',
       aKey      = aMap._aKey_,
       nMap      = aMap._nMap_,
       vMap      = aMap._vMap_,
@@ -58,7 +58,7 @@ xhi._06_css_ = (function () {
     // BEGIN public method /getPaletteCount/
     function getPaletteCount () {
       var
-        palette_map_list = aMap._05_css_base_._paletteMapList_;
+        palette_map_list = aMap._05_02_css_base_._paletteMapList_;
       return palette_map_list[ vMap._length_ ];
     }
 
@@ -67,7 +67,7 @@ xhi._06_css_ = (function () {
     // BEGIN public method /getPaletteMixinMap/
     function getPaletteMixinMap () {
       var
-        palette_map_list = aMap._05_css_base_._paletteMapList_,
+        palette_map_list = aMap._05_02_css_base_._paletteMapList_,
         palette_idx      = stateMap._palette_idx_;
       return palette_map_list[ palette_idx ];
     }
@@ -78,7 +78,7 @@ xhi._06_css_ = (function () {
     function setPaletteIdx ( arg_idx ) {
       var
         idx              = __util._castInt_( arg_idx, 0 ),
-        palette_map_list = aMap._05_css_base_._paletteMapList_,
+        palette_map_list = aMap._05_02_css_base_._paletteMapList_,
         palette_idx      = stateMap._palette_idx_,
         palette_count    = palette_map_list[ vMap._length_ ],
         palette_mixin_map;
@@ -131,7 +131,7 @@ xhi._06_css_ = (function () {
         input_palette_idx = __castInt( arg_palette_idx, __n1 ),
         local_map_key     = aKey + '-_palette_map_',
         local_idx_key     = aKey + '-_palette_idx_',
-        palette_map_list  = aMap._05_css_base_._paletteMapList_,
+        palette_map_list  = aMap._05_02_css_base_._paletteMapList_,
         palette_map_count = palette_map_list[ vMap._length_ ],
 
         solve_idx, solve_map,
@@ -194,26 +194,26 @@ xhi._06_css_ = (function () {
       palette_map = initPaletteMap( arg_palette_idx );
       xhiCSS._initModule_( { _style_el_prefix_ : aKey } );
       xhiCSS._setGlobalMixinMap_( {
-        _mixin_map_ : aMap._05_css_base_._globalMixinMap_
+        _mixin_map_ : aMap._05_02_css_base_._globalMixinMap_
       } );
 
       xhiCSS._setVsheet_( {
         _vsheet_id_     : '_base_',
         _mode_str_      : '_add_',
-        _mixin_map_     : aMap._05_css_base_._mixinMap_,
-        _selector_list_ : aMap._05_css_base_._selectorList_
+        _mixin_map_     : aMap._05_02_css_base_._mixinMap_,
+        _selector_list_ : aMap._05_02_css_base_._selectorList_
       } );
 
       xhiCSS._setVsheet_( {
         _vsheet_id_     : '_lb_',
         _mode_str_      : '_add_',
-        _selector_list_ : aMap._05_css_lb_._selectorList_
+        _selector_list_ : aMap._05_03_css_lb_._selectorList_
       } );
 
       xhiCSS._setVsheet_( {
         _vsheet_id_     : '_shell_',
         _mode_str_      : '_add_',
-        _selector_list_ : aMap._05_css_shell_._selectorList_
+        _selector_list_ : aMap._05_04_css_shell_._selectorList_
       } );
 
       xhiCSS._setCascade_( {
@@ -244,10 +244,10 @@ xhi._06_css_ = (function () {
     }
 
     return instanceMap;
-    // == . END PUBLIC METHODS ========================================
+    // == . END PUBLIC METHODS ===========================================
   }
-  // == . END public method /makeInstanceFn/ ==========================
+  // == . END public method /makeInstanceFn/ =============================
   return { _makeInstanceFn_ : makeInstanceFn };
 }());
-// == . END MODULE xhi._06_css_ =======================================
+// == . END MODULE xhi._05_css_ ==========================================
 

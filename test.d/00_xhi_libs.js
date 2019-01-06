@@ -1,33 +1,29 @@
 /*
- * xhi_level_0.js
+ * 00_xhi_libs.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Node unit test suite xhi, util, utilb, lb
 */
-/*global xhi, module, process, window, console, $ */
-
 // == BEGIN MODULE SCOPE VARIABLES  ===================================
 'use strict';
-//noinspection JSUnusedLocalSymbols
 var
-  __ns      = 'xhi',
   aKey      = 'test',
   libDir    = '../js/',
-  libPrefix = libDir + __ns + '/',
+  libPrefix = libDir + 'xhi/',
   jsdomObj  = require( 'jsdom' ),
   winRef    = new jsdomObj.JSDOM().window,
   docRef    = winRef.document,
   xhiJQ     = require( 'jquery' )( winRef ),
 
-  aMap, nMap, vMap, __Str, __blank, __false,
+  xhi, aMap, nMap, vMap, __Str, __blank, __false,
   __null, __true, __undef, __util, __utilb, __lb,
   __n1, __0, __1, __2, __3, __4,
   liteBoxMap
   ;
 
-// When debuging one can create a mock test object
+// When debugging one can create a mock test object
 // function mockFn() {
-//    console.log( aKey + '.' + this , arguments );
+//    console.log( aKey + '.' + this, arguments );
 // };
 // mockTestObj = {
 //   deepEqual : mockFn.bind( 'deepEqual' ),
@@ -42,10 +38,12 @@ global.document = docRef;
 global.xhiJQ    = xhiJQ;
 global.$        = xhiJQ;
 
-global.xhiCSS = require( libDir + 'vendor/pcss-1.4.5.js' );
-require( libDir + 'vendor/pcss.cfg-1.4.5.js' );
+global.xhiCSS = require( libDir + 'vendor/pcss-1.4.6.js' );
+require( libDir + 'vendor/pcss.cfg-1.4.6.js' );
 
-global[ __ns ] = require( libPrefix + '00_root.js' );
+xhi = require( libPrefix + '00_root.js' );
+global.xhi = xhi;
+
 require( libPrefix + '01_util.js'  );
 require( libPrefix + '04_utilb.js' );
 require( libPrefix + '06_lb.js'    );
@@ -83,6 +81,15 @@ __4  = nMap._4_;
 // == . END UTILITY METHODS  ==========================================
 
 // == BEGIN NODEUNIT TEST FUNCTIONS  ==================================
+
+// == BEGIN 00_root tests =============================================
+function extendSymbolMap ( test_obj ) {
+  aMap._extendSymbolMapFn_( '_vMap_', { 'fred': 'barney' } );
+  test_obj.done();
+}
+// == . END 00_root tests =============================================
+
+// == BEGIN 01_util tests =============================================
 function setLogLevel ( test_obj ) {
   var
     assert_table = [
@@ -128,11 +135,11 @@ function setLogLevel ( test_obj ) {
       + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
       + '\n expect_str: ' + expect_str;
     test_obj.ok( solve_str === expect_str, msg_str );
-    test_obj.ok( log_obj._getLogLevel_() === expect_str, msg_str );
+    test_obj.ok( log_obj._getLevelName_() === expect_str, msg_str );
   }
   log_obj._logMsg_( 'bogus', '_this_should_default_to_error_' );
-  test_obj.ok( log_obj._logMsg_( 'bogus' ) === __false, 'no log on 1 arg' );
-  test_obj.ok( log_obj._logMsg_() === __false, 'no log on 0 arg' );
+  test_obj.ok( log_obj._logMsg_() === __true, 'log on 0 arg' );
+  test_obj.ok( log_obj._logMsg_( 'bogus' ) === __true, 'log on 1 arg' );
 
   test_obj.done();
 }
@@ -205,7 +212,7 @@ function castInt ( test_obj ) {
 function castJQ ( test_obj ) {
   var
     cast_jq = __util._castJQ_,
-    $jq     = global.$('<div/>')
+    $jq     = global.$('<div></div>')
     ;
 
   test_obj.expect( __4 );
@@ -307,7 +314,7 @@ function checkDateStr ( test_obj ) {
       [ [ { _date_str_ : '12/01/2016', _order_str_ : '_us_' } ],  __true  ],
       [ [ { _date_str_ : '2/1/2016'  , _order_str_ : '_us_' } ],  __true  ],
       [ [ { _date_str_ : '01/30/2016', _order_str_ : '_us_' } ],  __true  ],
-      [ [ { _date_str_ : '01/40/2016', _order_str_ : '_us_' } ],  __false ],
+      [ [ { _date_str_ : '01/40/2016', _order_str_ : '_us_' } ],  __false ]
     ],
     assert_count = assert_table.length,
     test_fn      = __util._checkDateStr_,
@@ -337,15 +344,15 @@ function clearMap ( test_obj ) {
     complex_obj = Object.create( proto ),
     assert_table = [
       // arg_list, expect_data
-      [ [ __1,        ], __undef ],
-      [ [ -694567,    ], __undef ],
-      [ [ __blank,    ], __undef ],
-      [ [ __null,     ], __undef ],
-      [ [ __undef,    ], __undef ],
-      [ [ 5.062e12,   ], __undef ],
-      [ [ __0,        ], __undef ],
-      [ [ /regex/,    ], __undef ],
-      [ [ 'string',   ], __undef ],
+      [ [ __1        ], __undef ],
+      [ [ -694567    ], __undef ],
+      [ [ __blank    ], __undef ],
+      [ [ __null     ], __undef ],
+      [ [ __undef    ], __undef ],
+      [ [ 5.062e12   ], __undef ],
+      [ [ __0        ], __undef ],
+      [ [ /regex/    ], __undef ],
+      [ [ 'string'   ], __undef ],
       [ [ [ 1,2,3 ]   ], __undef ],
       [ [ complex_obj ], proto   ],
       [ [ new Date()  ], __undef ],
@@ -379,6 +386,7 @@ function clearMap ( test_obj ) {
       + JSON.stringify( solve_data )
       + '\n expect_map: ' + JSON.stringify( expect_data )
     ;
+
     test_obj.ok(
       JSON.stringify( solve_data ) === JSON.stringify( expect_data ), msg_str
     );
@@ -662,6 +670,7 @@ function getListAttrIdx ( test_obj ) {
       + JSON.stringify( solve_map ) + ' === '
       + JSON.stringify( expect_map )
     ;
+
     test_obj.ok( solve_map === expect_map, msg_str );
     check_count++;
   }
@@ -814,7 +823,7 @@ function getTzCode ( test_obj ) {
   test_obj.expect( __1 );
 
   // eslint-disable-next-line no-useless-escape
-  test_obj.ok( tz_code.match( /^[A-Z0-9+\-]+$/ ),
+  test_obj.ok( tz_code.match( /^[A-Za-z0-9+\- ]+$/ ),
     'Code fails to match regex: ' + tz_code
   );
   test_obj.done();
@@ -1390,7 +1399,7 @@ function makeEllipsisStr ( test_obj ) {
 
 function makeErrorObj ( test_obj ) {
   var
-    key_list     = [ 'name', 'description', 'data' ],
+    key_list     = [ 'name', 'message', 'data' ],
     default_list = [ aKey + ':error', __blank, __undef ],
     assert_table = [
       // [ arg_list, expect_list ]
@@ -1410,8 +1419,8 @@ function makeErrorObj ( test_obj ) {
       [ [ '_bad_data_', '_the_list_is_missing_' ],
         [ aKey + ':_bad_data_', '_the_list_is_missing_', __undef ]
       ],
-      [ [ '_bad_data_', '_the_list_is_missing_', { is : __true } ],
-        [ aKey + ':_bad_data_', '_the_list_is_missing_', { is : __true } ]
+      [ [ '_bad_data_', '_the_list_is_missing_', __undef ],
+        [ aKey + ':_bad_data_', '_the_list_is_missing_', __undef ]
       ]
     ],
 
@@ -1452,10 +1461,12 @@ function makeEscRxStr ( test_obj ) {
   var
     // [ arg_list, expect_list ]
     assert_table = [
-      [ [         ],           __blank ],
-      [ [ __null  ],           __blank ],
-      [ [ __undef ],           __blank ],
-      [ [ __0     ],               '0' ]
+      [ [         ],               __blank ],
+      [ [ __null  ],               __blank ],
+      [ [ __undef ],               __blank ],
+      [ [ __0     ],                   '0' ],
+      [ [ 'Is [This]* correct?' ], 'Is \\[This\\]\\* correct\\?' ],
+      [ [ 'multi-line\n now-then' ], 'multi\\-line\n now\\-then' ]
     ],
 
     assert_count = assert_table.length,
@@ -1608,7 +1619,7 @@ function makeMetricStr ( test_obj ) {
       [ [       1e6 ],   '1.00M'  ],
       [ [      -1e9 ],  '-1.00G'  ],
       [ [       1e9 ],   '1.00G'  ],
-      [ [  2.8693e9 ],   '2.87G'  ],
+      [ [  2.8693e9 ],   '2.87G'  ]
     ],
 
     assert_count = assert_table.length,
@@ -1893,7 +1904,12 @@ function makeRekeyMap ( test_obj ) {
   var
     assert_table  = [
       // [ arg_list, expect_data ]
-      [ [ {a:1, b:2, c:3}, { a: 'x', b: 'y', c: 'z'} ], {x:1, y:2, z:3}, ]
+      [ [ {a:1, b:2, c:3}, { a: 'x', b: 'y', c: 'z'} ], {x:1, y:2, z:3} ],
+      [ [ {a:1, b:2, c:3}, { a: 'x', b: 'y', c: 'z'}, '_reval_' ], {a:'x', b:'y', c:'z'} ],
+      [ [ {a:1, b:2, l:[{c:'foo'}]}, { a: 'x', b: 'y', c: 'z'}, '_reval_' ],
+        {a:'x', b:'y', l:[{c:'z'}]} ],
+      [ [ {a:1, b:2, l:[{c:'foo'}]}, { a: 'x', b: 'y', c: 'z'}, '_rekey_' ],
+        {x:1, y:2, l:[{z:'foo'}]} ]
     ],
 
     assert_count = assert_table.length,
@@ -1950,9 +1966,9 @@ function makeScrubStr ( test_obj ) {
       [ [ '<h1>hello</h1>', 'freddy' ], 'hello' ],
       [ [ '<div>hello</div>', __true ], 'hello' ],
       [ [ '<div><h1>hello</h1><p>This is lc.</p></div>', __1 ],
-        'hello This is lc.' ],
+        'helloThis is lc.' ],
       [ [ '<div><h1>Hello!</h1><p>This is lc.</p></div>', __1 ],
-        'Hello! This is lc.' ],
+        'Hello!This is lc.' ],
       [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li></ul>',
         __true ],
         'Fred Barney Wilma Betty' ]
@@ -2543,7 +2559,7 @@ function makeUcFirstStr ( test_obj ) {
   test_obj.done();
 }
 
-function parseSafeJson ( test_obj ) {
+function safeJsonParse ( test_obj ) {
   var
     assert_table = [
       // [ arg_list, expect_data ]
@@ -2554,14 +2570,14 @@ function parseSafeJson ( test_obj ) {
       [ [ __1 ],             __1 ],
       [ [ __1, [] ],         __1 ],
       [ [ '', [] ],           [] ],
-      [ [ '<bad>', __2 ],    __2 ],
-      [ [ '<bad>', '22' ],  '22' ],
-      [ [ '<bad>', 'help' ], 'help' ],
-      [ [ '<bad>', [] ],      [] ],
-      [ [ '<bad>', {} ],      {} ]
+      [ [ '<a>', __2 ],    __2 ],
+      [ [ '<h1>', '22' ],  '22' ],
+      [ [ '<h2>', 'help' ], 'help' ],
+      [ [ '<h3>', [] ],      [] ],
+      [ [ '<h4>', {} ],      {} ]
     ],
     assert_count = assert_table.length,
-    parse_fn     = __util._parseSafeJson_,
+    parse_fn     = __util._safeJsonParse_,
 
     idx, expect_list, arg_list,
     expect_data, solve_data, msg_str
@@ -2589,7 +2605,6 @@ function parseSafeJson ( test_obj ) {
 }
 
 function mergeMaps ( test_obj ) {
-  //noinspection JSUnusedGlobalSymbols
   var
     base0_map = { attr1 : 'val1', attr2 : 'val2' },
     base1_map = { attr3 : 10,     attr4 : 20     },
@@ -2732,7 +2747,9 @@ function rmListVal ( test_obj ) {
       [ [ test0_list, 'string'   ], expect2_list, __2 ],
       [ [ test0_list, 'fetzer'   ], expect2_list, __0 ],
       [ [ test0_list, '0'        ], expect2_list, __0 ],
-      [ [ test0_list, __0        ], expect3_list, __1 ]
+      [ [ test0_list, __0        ], expect3_list, __1 ],
+      [ [ [ 1, 2, 3, 4, 99, 'boo' ], 'boo', 99 ], [ 1, 2, 3, 4 ], 2 ],
+      [ [ [ 1, 2, 3, 4, 99, 'boo' ], 1,2,3,4 ], [ 99, 'boo' ], 4 ]
     ],
 
     assert_count = assert_table.length,
@@ -2874,7 +2891,6 @@ function shuffleList ( test_obj ) {
     jdx,         clone_json
     ;
 
-
   // Create 2 extra tests for each shuffled list
   assert_table.filter( function ( list ) {
     if ( list[ __1 ] ) { expect_count++; }
@@ -2965,8 +2981,9 @@ function trimStrList ( test_obj ) {
   }
   test_obj.done();
 }
+// == . END 01_util tests =============================================
 
-// ===== UTILB
+// == BEGIN 04_utilb tests ============================================
 function decodeHtml ( test_obj ) {
   var
     assert_table = [
@@ -3188,8 +3205,9 @@ function resizeTextarea ( test_obj ) {
   }
   test_obj.done();
 }
+// == . END 04_utilb tests ============================================
 
-// ===== LiteBox (LB)
+// == BEGIN 06_lb tests ===============================================
 liteBoxMap = {
   _outer01_tmplt_ : __blank
     + '<div id="' + aKey + '-_lb_" style="display: block; top: 384px; '
@@ -3239,7 +3257,7 @@ function addLocalSpin ( test_obj ) {
   var
     spin_html = liteBoxMap._spin_html_,
     blow_html = '<p>This html should be destroy</p>',
-    $div = $('<div/>'),
+    $div = $('<div></div>'),
     solve_str
     ;
 
@@ -3696,6 +3714,7 @@ function showSuccess ( test_obj ) {
     close_fn();
   }
 }
+// == . END 06_lb tests ===============================================
 // == . END NODEUNIT TEST FUNCTIONS  ==================================
 
 // Use mockTestObj for debugging tests using nodejs instead
@@ -3709,6 +3728,9 @@ function showSuccess ( test_obj ) {
 // makeClockStr( mockTestObj );
 
 module.exports = {
+  // Root
+  _extendSymbolMap_ : extendSymbolMap,
+
   // Util
   _setLogLevel_     : setLogLevel,
   _castInt_         : castInt,
@@ -3757,7 +3779,7 @@ module.exports = {
   _makeTmpltStr_    : makeTmpltStr,
   _makeUcFirstStr_  : makeUcFirstStr,
   _mergeMaps_       : mergeMaps,
-  _parseSafeJson_   : parseSafeJson,
+  _safeJsonParse_   : safeJsonParse,
   _pollFunction_    : pollFunction,
   _pushUniqListVal_ : pushUniqListVal,
   _rmListVal_       : rmListVal,

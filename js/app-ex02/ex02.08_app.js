@@ -11,8 +11,8 @@
   var
     libList = [
       'js/vendor/taffy-2.7.3.js',
-      'js/vendor/pcss-1.4.5.js',
-      'js/vendor/pcss.cfg-1.4.5.js',
+      'js/vendor/pcss-1.4.6.js',
+      'js/vendor/pcss.cfg-1.4.6.js',
       'js/vendor/jquery-3.3.1.js',
       'js/plugin/jquery.deferred.whenAll-1.0.0.js',
       'js/vendor/jquery.event.dragscroll-1.0.0.js',

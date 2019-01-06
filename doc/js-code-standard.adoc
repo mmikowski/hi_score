@@ -64,7 +64,7 @@ standard considers ES5.1 the latest usable version.
 === ECMA, ECMAScript, and ES
 Development on the JavaScript language has accelerated over the past decade as
 vendors have stopped competing and started collaborating on making the
-lanugage better all centered around the ECMAScript specifications. All these
+language better all centered around the ECMAScript specifications. All these
 acronymns can be confusing so let's clear things up.
 
 https://en.wikipedia.org/wiki/Ecma_International[ECMA International]
@@ -765,16 +765,20 @@ as shown in Diagram X.1 and Figure X.2.
 
 [source]
 ----
-spa           # Root, also referred to as _00_root_
-spa._01_util_ # Core utility
-_02_data_     # Data management (AJAX, Websockets)
-_03_model_    # Core logic
-_04_utilb_    # Browser utilities
-_05_css_lb_   # Feature support
-_06_lb_       # Feature modules
-_07_shell_    # Browser interface
-_08_app_      # Application bundle
-----
+ _00_root_           # Root
+ _01_util_           # Core utility
+ _02_01_data_mock_   # Data prereq - mock module
+ _02_data_           # Data controller, fetch and push (AJAX, Websockets)
+ _03_model_          # Core logic
+ _05_01_css_icons_   # Styling prereq - icons
+ _05_02_css_base_    # Styling prereq - basic css
+ _05_03_css_litebox_ # Styling prerep - litebox css
+ _05_css_            # Dynamic styling controller
+ _06_litebox_        # Feature module, litebox
+ _07_shell_          # Browser interface
+ _08_01_shared_      # App prereq, shared config
+ _08_app_            # App main
+---
 
 .Figure X.2 -- SPA architecture
 

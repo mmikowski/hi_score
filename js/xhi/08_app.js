@@ -30,16 +30,16 @@ xhi._makeAppFn_ = function ( app_key ) {
   // TODO 2017-07-13 mmikowski warn: Include library loader here?
   //
   var app_map = xhi._00_root_._makeInstanceFn_( app_key );
-  xhi._01_util_      ._makeInstanceFn_( app_map );
-  xhi._02_data_      ._makeInstanceFn_( app_map );
-  xhi._03_model_     ._makeInstanceFn_( app_map );
-  xhi._04_utilb_     ._makeInstanceFn_( app_map );
-  xhi._05_css_base_  ._makeInstanceFn_( app_map );
-  xhi._05_css_lb_    ._makeInstanceFn_( app_map );
-  xhi._05_css_shell_ ._makeInstanceFn_( app_map );
-  xhi._06_css_       ._makeInstanceFn_( app_map );
-  xhi._06_lb_        ._makeInstanceFn_( app_map );
-  xhi._07_shell_     ._makeInstanceFn_( app_map );
+  xhi._01_util_         ._makeInstanceFn_( app_map );
+  xhi._02_data_         ._makeInstanceFn_( app_map );
+  xhi._03_model_        ._makeInstanceFn_( app_map );
+  xhi._04_utilb_        ._makeInstanceFn_( app_map );
+  xhi._05_02_css_base_  ._makeInstanceFn_( app_map );
+  xhi._05_03_css_lb_    ._makeInstanceFn_( app_map );
+  xhi._05_04_css_shell_ ._makeInstanceFn_( app_map );
+  xhi._05_css_          ._makeInstanceFn_( app_map );
+  xhi._06_lb_           ._makeInstanceFn_( app_map );
+  xhi._07_shell_        ._makeInstanceFn_( app_map );
 
   // Assign to global namespace for Node
   // try { global[ app_key ] = app_map; }

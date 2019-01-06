@@ -1,0 +1,10 @@
+--- node_modules/uglify-js/lib/scope.js	2018-09-30 13:00:18.557584600 -0700
++++ node_modules/uglify-js/lib/scope.js	2018-09-30 15:00:18.557584600 -0700
+@@ -347,7 +347,8 @@
+         holes.push(scope.cname);
+     }
+     scope.names_in_use[name] = true;
+-    return name;
++    // hi_score patch applied: surround symbol with underscores
++    return '_' + name + '_';
+ }

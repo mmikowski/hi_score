@@ -75,6 +75,7 @@ xhi._00_root_ = (function () {
       _body_            : 'body',
       _call_            : 'call',
       _cancel_          : 'cancel',
+      _closest_         : 'closest',
       _concat_          : 'concat',
       _css_             : 'css',
       _empty_           : 'empty',
@@ -121,6 +122,8 @@ xhi._00_root_ = (function () {
       _substr_          : 'substr',
       _target_          : 'target',
       _text_            : 'text',
+      _reject_          : 'reject',
+      _resolve_         : 'resolve',
       _then_            : 'then',
       _toFixed_         : 'toFixed',
       _toString_        : 'toString',
@@ -143,6 +146,26 @@ xhi._00_root_ = (function () {
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
+  // == BEGIN PRIVATE METHODS ==========================================
+  // BEGIN private method /makeCloneMap/
+  // We use this instead of Object.assign to remain
+  // compatible with IE11
+  function makeCloneMap ( map ) {
+    var
+      key_list  = vMap._makeKeyListFn_( map ),
+      key_count = key_list.length,
+      clone_map = {},
+      idx, key;
+
+    for ( idx = nMap._0_; idx < key_count; idx++ ) {
+      key = key_list[ idx ];
+      clone_map[ key ] = map[ key ];
+    }
+    return clone_map;
+  }
+  // . END private method /makeCloneMap/
+  // == . END PRIVATE METHODS ==========================================
+
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN public method /getGlobalObjFn/
   function getGlobalObjFn () {
@@ -157,8 +180,8 @@ xhi._00_root_ = (function () {
   // BEGIN public method /makeInstanceFn/
   function makeInstanceFn ( aKey, arg_option_map ) {
     var
-      instanceNmap = Object.assign( {}, nMap ),
-      instanceVmap = Object.assign( {}, vMap ),
+      instanceNmap = makeCloneMap( nMap ),
+      instanceVmap = makeCloneMap( vMap ),
       option_map = vMap._typeofFn_( arg_option_map ) === 'object'
         ? arg_option_map : {},
 
@@ -175,7 +198,7 @@ xhi._00_root_ = (function () {
     //
     function extendSymbolMapFn ( symbol_key, extend_map ) {
       var
-        lookup_map = { nMap : instanceNmap, vMap : instanceVmap },
+        lookup_map = { _nMap_ : instanceNmap, _vMap_ : instanceVmap },
         target_map = lookup_map[ symbol_key ],
 
         extend_key_list, extend_key_count, key_idx, extend_key
@@ -221,19 +244,8 @@ xhi._00_root_ = (function () {
   }
   // BEGIN public method /makeInstanceFn/
 
-  // BEGIN public method /getFn/
-  function getMapFn() {
-    var mode_str = this;
-    if ( mode_str === '_vMap_' ) { return vMap; }
-    if ( mode_str === '_nMap_' ) { return nMap; }
-  }
-  // . END public method /getFn/
-
   // getMapFn gets the default nMap and vMap, not the instance values
   return {
-    _getGlobalObjFn_ : getGlobalObjFn,
-    _getNmap_        : getMapFn.bind( '_nMap_' ),
-    _getVmap_        : getMapFn.bind( '_vMap_' ),
     _makeInstanceFn_ : makeInstanceFn
   };
   // == . END PUBLIC METHODS ===========================================

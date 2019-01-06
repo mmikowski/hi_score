@@ -419,7 +419,7 @@ tb02._07_shell_ = (function ( $ ) {
     var $body = $( 'body' );
 
     // Initialize styling
-    tb02._06_css_._initModuleFn_();
+    tb02._05_css_._initModuleFn_();
 
     // Set up screen
     $body[ vMap._html_ ]( configMap._main_tmplt_ );
