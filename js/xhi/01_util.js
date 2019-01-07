@@ -2,8 +2,8 @@
  * 01_util.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Summary  : xhi._01_util_._makeInstanceFn_( aMap, option_map );
- * Purpose  : Provide utilities with no browser dependencies to aMap
+ * Summary  : xhi._01_util_._makeInstanceFn_( <appMap>, <optionMap> );
+ * Purpose  : Provide utilities with no browser dependencies to <appMap>
  * Example  :
  *   global.xhi = require( './00_root' );
  *   require( './01_util' );
@@ -15,19 +15,19 @@
  *     ;
  * Requires : aMap with symbols from 00_root._makeInstanceFn_()
  * Arguments : (positional)
- *   <app_map>    - Application map to add _01_util_
- *   <option_map> - Option map. The only supported key is
- *     `_dont_autoadd_` which if true will not add the _01_util_
- *     key to the application map (aMap)
+ *   <appMap>    - Application map to add _01_util_
+ *   <optionMap> - Optional constraints
+ *     + `_dont_autoadd_` - Do not add _01_util_
+ *       key to the application map (appMap)
  * Returns   : aMap._01_util_ instance
- * Throws    : none
+ * Throws    : None
  *
 */
 /*global xhi, xhiJQ */
 // == BEGIN MODULE xhi._01_util_ ======================================
 xhi._01_util_ = (function () {
   'use strict';
-  // == BEGIN public method /makeInstanceFn/ ==========================
+  // == BEGIN Public method /makeInstanceFn/ ==========================
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
@@ -97,22 +97,22 @@ xhi._01_util_ = (function () {
         'Undefined' : '_Undefined_'
       },
 
-      configMap,   getBasename,   getDirname,
-      instanceMap, logObj,        optionMap,
+      configMap,   getBasename, getDirname,
+      instanceMap, logObj,      optionMap,
       stateMap
-      ;
+    ;
     // == . END MODULE SCOPE VARIABLES ==================================
 
     // == BEGIN PREREQ METHODS ==========================================
     // BEGIN Public prereq method /getVarType/
-    // Summary   : getVarType( <data> )
+    // Summary   : getVarType( <data> );
     // Purpose   : Determine the type of data provided.
     // Example   : getVarType( [] ); // '_Array_'
     // Arguments : (positional)
     //   <data> - value to examine
     // Returns   : '_Function_', '_Object_', '_Array_', '_String_',
     //             '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
-    // Throws    : none
+    // Throws    : None
     //
     function getVarType ( data ) {
       var type_key, type_str;
@@ -133,7 +133,7 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /getVarType/
 
     // BEGIN Public prereq method /castBool/
-    // Summary   : castBool( <data>, <alt_data> )
+    // Summary   : castBool( <data>, <alt_data> );
     // Purpose   : Cast a boolean value
     // Example   : castBool( true ); // returns true
     // Arguments : (positional)
@@ -141,7 +141,7 @@ xhi._01_util_ = (function () {
     //   <alt_data> - alternate value to return
     // Returns   :
     //   <data> if it is a boolean, <alt_data> otherwise
-    // Throws    : none
+    // Throws    : None
     //
     function castBool ( data, alt_data ) {
       if ( data === __true || data === __false ) { return data; }
@@ -150,7 +150,7 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castBool/
 
     // BEGIN Public prereq method /castFn/
-    // Summary   : castFn( <data>, <alt_data> )
+    // Summary   : castFn( <data>, <alt_data> );
     // Purpose   : Cast a function
     // Example   : castFn( function(){} ); // returns function
     // Arguments : (positional)
@@ -158,7 +158,7 @@ xhi._01_util_ = (function () {
     //   <alt_data> - alternate value to return
     // Returns   :
     //   <data> if it is a function, <alt_data> otherwise
-    // Throws    : none
+    // Throws    : None
     //
     function castFn ( data, alt_data ) {
       var var_type = getVarType( data );
@@ -167,6 +167,23 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castFn/
 
     // BEGIN Private prereq method /checkNumFn/
+    // Summary   : checkNumFn( <num>, <alt_data>, <option_map> );
+    // Purpose   : Adjust <num> per option_map
+    // Example   :
+    //   checkNumFn( 25, 0, { _max_num_: 20, _do_autobound_: true });
+    //   // Returns 20
+    // Arguments :
+    //   <num>        - Number to consider
+    //   <alt_data>   - Alternate to use if num is invalid
+    //   <option_map> - Map of directives
+    //     + _do_autobound_ - Auto bound input to min/max as appropriate
+    //     + _do_warn_      - Log warnings
+    //     + _max_num_      - Max allowed value
+    //     + _min_num_      - Min allowed value
+    //
+    // Returns   : Adjusted num
+    // Throws    : None
+    //
     function checkNumFn( num, alt_data, option_map ) {
       var log_list = [], solve_data;
 
@@ -212,22 +229,22 @@ xhi._01_util_ = (function () {
     // . END Private prereq method /checkNumFn/
 
     // BEGIN Public prereq method /castInt/
-    // Summary   : castInt( <data>, <alt_data>, <option_map> )
+    // Summary   : castInt( <data>, <alt_data>, <option_map> );
     // Purpose   : Cast an integer
     // Example   : castInt( '25.425' ); // returns 25
     // Arguments : (positional)
     //   <data>       - data to cast as int
     //   <alt_data>   - alternate value to return
     //   <option_map> - Optional constraint map
-    //     + _do_autobound_ - auto bound input to min/max as appropriate
+    //     + _do_autobound_ - Auto bound input to min/max as appropriate
     //     + _do_warn_      - Log warnings
-    //     + _max_num_      - max allowed value
-    //     + _min_num_      - min allowed value
+    //     + _max_num_      - Max allowed value
+    //     + _min_num_      - Min allowed value
     // Returns   :
     //   If a number, returns the number rounded to nearest int.
     //   If a string, returns the number rep rounded to nearest int.
     //   Otherwise <alt_data>.
-    // Throws    : none
+    // Throws    : None
     //
     function castInt ( data, alt_data, option_map ) {
       var
@@ -251,15 +268,15 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castInt/
 
     // BEGIN Public prereq method /castJQ/
-    // Summary   : castJQ( <data>, <alt_data> )
+    // Summary   : castJQ( <data>, <alt_data> );
     // Purpose   : Cast a jQuery (xhiJQ) object
     // Example   : castJQ( $top_box ); // returns $top_box
     // Arguments : (positional)
-    //   <data>     - data to cast as xhiJQ object
-    //   <alt_data> - alternate value to return
+    //   <data>     - Data to cast as xhiJQ object
+    //   <alt_data> - Alternate value to return
     // Returns   :
     //   <data> if it is a xhiJQ object, <alt_data> otherwise
-    // Throws    : none
+    // Throws    : None
     //
     function castJQ ( data, alt_data ) {
       if ( stateMap._has_jq_ ) {
@@ -271,7 +288,7 @@ xhi._01_util_ = (function () {
     // . END Public preq method /castJQ/
 
     // BEGIN Public prereq method /castList/
-    // Summary   : castList( <data>, <alt_data>, <option_map> )
+    // Summary   : castList( <data>, <alt_data>, <option_map> );
     // Purpose   : Cast a list
     // Example   : castList( [] ); // returns the array
     // Arguments : (positional)
@@ -285,7 +302,7 @@ xhi._01_util_ = (function () {
     // Returns   :
     //   <data> if it is an array and passes optional constraints,
     //   <alt_data> otherwise
-    // Throws    : none
+    // Throws    : None
     //
     function castList ( data, alt_data, option_map ) {
       var
@@ -335,7 +352,7 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castList/
 
     // BEGIN Public prereq method /castMap/
-    // Summary   : castMap( <data>, <alt_data> )
+    // Summary   : castMap( <data>, <alt_data> );
     // Purpose   : Cast a map
     // Example   : castMap( {} ); // returns the object
     // Arguments : (positional)
@@ -343,7 +360,7 @@ xhi._01_util_ = (function () {
     //   <alt_data> - alternate value to return
     // Returns   :
     //   <data> if it is a map, <alt_data> otherwise
-    // Throws    : none
+    // Throws    : None
     //
     function castMap ( data, alt_data ) {
       var var_type = getVarType( data );
@@ -352,7 +369,7 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castMap/
 
     // BEGIN Public prereq method /castNum/
-    // Summary   : castNum( <data>, <alt_data>, <option_map> )
+    // Summary   : castNum( <data>, <alt_data>, <option_map> );
     // Purpose   : Cast an integer
     // Example   : castNum( '25.425' ); // returns 25
     // Arguments : (positional)
@@ -367,7 +384,7 @@ xhi._01_util_ = (function () {
     //   If a number, returns the number rounded to nearest int.
     //   If a string, returns the number rep rounded to nearest int.
     //   Otherwise <alt_data>.
-    // Throws    : none
+    // Throws    : None
     //
     function castNum ( data, alt_data, option_map ) {
       var
@@ -389,7 +406,7 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castNum/
 
     // BEGIN Public prereq method /castObj/
-    // Summary   : castObj( <obj_type>, <data>, <alt_data> )
+    // Summary   : castObj( <obj_type>, <data>, <alt_data> );
     // Purpose   : Cast an object
     // Example   : castObj( 'styleSheetList',document.styleSheets  );
     // Arguments : (positional)
@@ -398,7 +415,7 @@ xhi._01_util_ = (function () {
     //   <alt_data> - alternate value to return
     // Returns   :
     //   <data> if an <obj_type> object, <alt_data> otherwise
-    // Throws    : none
+    // Throws    : None
     //
     function castObj ( obj_type, data, alt_data ) {
       var var_type = getVarType( data );
@@ -407,22 +424,22 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castObj/
 
     // BEGIN Public prereq method /castStr/
-    // Summary   : castStr( <data>, <alt_data> )
+    // Summary   : castStr( <data>, <alt_data> );
     // Purpose   : Cast a string
     // Example   : castStr( 25.425 ); // returns '25.425'
     // Arguments : (positional)
     //   <data>       - Data to cast as string
     //   <alt_data>   - Alternate value to return
     //   <option_map> - Optional constraints
-    //     + _do_warn_     - Log warnings
-    //     + is_empty_ok  - Allow blank string (default is true)
-    //     + filter_regex - A regex filter that must be passed
-    //     + min_length   - Min allowed length
-    //     + max_length   - Max allowed length
+    //     + _do_warn_      - Log warnings
+    //     + _filter_regex_ - A regex filter that must be passed
+    //     + _is_empty_ok_  - Allow blank string (default is true)
+    //     + _max_length_   - Max allowed length
+    //     + _min_length_   - Min allowed length
     // Returns   :
     //   <data> if a string, or a number converted to a string,
     //   <alt_data> otherwise
-    // Throws    : none
+    // Throws    : None
     //
     function castStr ( data, alt_data, option_map ) {
       var
@@ -485,14 +502,14 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /castStr/
 
     // BEGIN Public prereq method /safeJsonParse/
-    // Summary   : safeJsonParse( json_str, alt_data )
+    // Summary   : safeJsonParse( <json_str>, <alt_data> );
     // Purpose   : Parses JSON safely, using alt_data if it cannot
     // Example   : my map = safeJsonParse( '{}', {} );
     // Arguments : (positional)
     //   <json_str> - JSON string to parse
-    //   <alt_data> - Alternate return if parsing failse
+    //   <alt_data> - Alternate return if parsing fails
     // Returns   : Parsed JSON or alt_data
-    // Throws    : none
+    // Throws    : None
     //
     function safeJsonParse ( json_str, alt_data ) {
       var solve_data;
@@ -507,14 +524,14 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /safeJsonParse/
 
     // BEGIN Public prereq method /safeJsonStringify/
-    // Summary   : safeJsonStringify( data, alt_data )
+    // Summary   : safeJsonStringify( <data>, <alt_data> );
     // Purpose   : Stringifies JSON safely
     // Example   : my str = safeJsonStringify( {}, '{}' );
     // Arguments : (positional)
     //   <data>     - Data structure to stringify
-    //   <alt_data> - Alternate return if parsing failse
+    //   <alt_data> - Alternate return if parsing fails
     // Returns   : JSON string on success, alt_data on failure
-    // Throws    : none
+    // Throws    : None
     //
     function safeJsonStringify ( arg_data, alt_data ) {
       var solve_str;
@@ -529,14 +546,14 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /safeJsonStringify/
 
     // BEGIN Public prereq method /cloneData/
-    // Summary   : cloneData( <data> )
+    // Summary   : cloneData( <data> );
     // Purpose   : Deep clones non-recursive data structures fastest
     // Example   : cloneData( [] ); // return copy of list
     // Arguments : (positional)
     //   <data> - data to clone
     // Returns   : undefined if data is recursive; otherwise a deep
     //   copy is returned.
-    // Throws    : none
+    // Throws    : None
     //
     function cloneData ( data ) {
       if ( data === __undef ) { return data; }
@@ -545,14 +562,14 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /cloneData/
 
     // BEGIN Public prereq method /extendList/
-    // Summary   : extendList( base_list, extend_list )
-    // Purpose   : Extends base_list with contents of extend_list
+    // Summary   : extendList( <base_list>, <extend_list> );
+    // Purpose   : Extend <base_list> with contents of <extend_list>
     // Example   : extendList( [0], [1,2,3] ); // returns [0,1,2,3]
     // Arguments : (positional)
     //   <base_list>   - list to extend
     //   <extend_list> - list to append to base_list
     // Returns   : base_list after change
-    // Throws    : none
+    // Throws    : None
     //
     function extendList ( arg_base_list, arg_extend_list ) {
       var
@@ -566,19 +583,21 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /extendList/
 
     // BEGIN Public prereq method /getNowMs/
+    // Summary   : getNowMs( <do_local> );
     // Purpose   : Get timestamp
     // Example   : getNowMs(); // returns 1486283077968
-    // Arguments : do_local_time when true will subtract the TZ offset
+    // Arguments :
+    //   + <do_local> - Subtract local TZ offset if true
     // Returns   : The current timestamp in milliseconds
-    // Throws    : none
+    // Throws    : None
     //
-    // The Date.now() method is 3x faster than the +new Date()
-    //   in NodeJS, and I have confirmed this provides almost the
+    // Note      : The Date.now() method is 3x faster than the
+    //   +new Date() in NodeJS and provides almost the
     //   the same performance in that env as a raw Date.now() call.
     //
-    function getNowMs ( do_local_time ) {
+    function getNowMs ( do_local ) {
       var date_obj;
-      if ( do_local_time ) {
+      if ( do_local ) {
         date_obj = new Date();
         return date_obj.getTime() - ( date_obj.getTimezoneOffset() * 60000);
       }
@@ -589,14 +608,14 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /getNowMs/
 
     // BEGIN Public prereq method /getNumSign/
-    // Summary   : getNumSign( <data> )
+    // Summary   : getNumSign( <data> );
     // Purpose   : Convert number into -1 or 1
     // Example   : getNumSign( '-25' ); // returns -1
     // Arguments :
     //   <data> - number or string to convert to -1 or 1
     // Returns   : -1 if the processed number is less than 0,
     //   otherwise 1.
-    // Throws    : none
+    // Throws    : None
     //
     function getNumSign ( n ) {
       var num = __Num( n );
@@ -630,7 +649,7 @@ xhi._01_util_ = (function () {
     //   string_regex  : /_(name|key|type|text|html)_?$/,
     //   svgelem_regex : /^_svg_?$/
     // }
-    // BEGIN public method /checkArgMap/
+    // BEGIN Public method /checkArgMap/
     // Purpose   : Provide an easy and efficient means to check named arguments
     // Example   :
     //   <script src="" />
@@ -740,7 +759,7 @@ xhi._01_util_ = (function () {
     //       if its value isNaN, Null, or other falsey value other than
     //       0 or undefined.
     //
-    // Optional Argument : none
+    // Optional Argument : None
     // Settings  : checkArgMap.configModule.setMode( '[strict|normal|off]' )
     //   affects the behavior of checkArgMap.
     //   IN 'strict' MODE, the special directive keys are processed as follows:
@@ -749,17 +768,17 @@ xhi._01_util_ = (function () {
     //     * _skip_key_list   : []
     //   IN 'normal' MODE the utility works as above.
     //   IN 'off' MODE , the utility is a no-op and simply returns.
-    // Returns   : none
+    // Returns   : None
     // Throws    : an error object if validation fails
 
     // BEGIN Public prereq method /makeArgList/
-    // Summary   : makeArgList( <arg_obj> )
+    // Summary   : makeArgList( <arg_obj> );
     // Purpose   : Make a real array from data in argument object
     // Example   : makeArgList( arguments ); // returns [ ... ]
     // Arguments :
     //   <arg_obj> - an argument object ('arguments' in functions)
     // Returns   : An array of argument values
-    // Throws    : none
+    // Throws    : None
     //
     // The technique used is around 3x faster than
     //   return Array.prototype.slice.call( arg_obj );
@@ -781,14 +800,14 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /makeArgList/
 
     // BEGIN Public prereq method /makePadNumStr/
-    // Summary   : makePadNumStr( <number>, <count> )
+    // Summary   : makePadNumStr( <number>, <count> );
     // Purpose   : Pad an int with 0s for <count> digits
     // Example   : makePadNumStr( 25, 3 ) return '025';
     // Arguments :
     //   <number> - the number to pad
     //   <count>  - the number of digits to fill
     // Returns   : A trimmed and padded string
-    // Throws    : none
+    // Throws    : None
     //
     function makePadNumStr( arg_num, arg_count ) {
       var
@@ -819,13 +838,13 @@ xhi._01_util_ = (function () {
     }
     // . END Public prereq method /makePadNumStr/
 
-    // BEGIN public prereq method /makeEscRxStr/
-    // Summary   : makeEscRxStr( <string> )
+    // BEGIN Public prereq method /makeEscRxStr/
+    // Summary   : makeEscRxStr( <string> );
     // Purpose   : Escapes a regular expression string
     // Example   : makeEscRxStr( '[]' ) // returns '\[\]\'
     // Arguments : <string> to escape
     // Returns   : Escaped regular expression string
-    // Throws    : none
+    // Throws    : None
     //
     // JSLint capable str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     // See http://stackoverflow.com/questions/3115150
@@ -837,15 +856,15 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /makeEscRxStr/
 
     // BEGIN Public prereq method /makeExtractMap/
-    // Summary   : makeExtractMap( base_map, key_list )
-    // Purpose   : Makes and returns a new map using key_list
+    // Summary   : makeExtractMap( <base_map>, <key_list> );
+    // Purpose   : Makes and returns a new map using <key_list>
     // Example   : makeExtractMap( { a:1, b:2 }, ['a'] ); // returns { a:1 }
     // Arguments : (positional)
     //   <base_map> - Map to extract values from
     //   <key_list> - List of keys to copy (shallow)
     //                Default: all keys
     // Returns   : Newly created map
-    // Throws    : none
+    // Throws    : None
     //
     function makeExtractMap ( arg_base_map, arg_key_list ) {
       var
@@ -866,14 +885,14 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /makeExtractMap/
 
     // BEGIN Public prereq method /makeRxObj/
-    // Summary   : makeRxObj( <pattern>, <options> )
+    // Summary   : makeRxObj( <pattern>, <options> );
     // Purpose   : Create a regular expression object
     // Example   : makeRxObj( '\s*hello\s*', 'i' );
     // Arguments :
     //   <pattern> - a string to convert into a regexp
     //   <options> - an option string
     // Returns   : A regular expression object
-    // Throws    : none
+    // Throws    : None
     //
     function makeRxObj ( arg_pattern_str, arg_option_str ) {
       var
@@ -889,6 +908,16 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /makeRxObj/
 
     // BEGIN Public prereq method /makeScrubStr/
+    // Summary   : makeScrubStr( <string>, <do_space> );
+    // Purpose   : Remove HTML tags and trim string
+    // Example   : makeScrubStr( '<h1>Hello</h1><p>Hi</p>', true );
+    //             // returns 'Hello Hi'
+    // Arguments :
+    //   <string>   - A string to scrub
+    //   <do_space> - Add a space between groups
+    // Returns   : The scrubbed string
+    // Throws    : None
+    //
     function makeScrubStr ( arg_str, arg_do_space ) {
       var
         raw_str    = castStr(  arg_str, __blank ),
@@ -903,6 +932,15 @@ xhi._01_util_ = (function () {
     // . END Public prereq method /makeScrubStr/
 
     // BEGIN Public prereq method /makeUcFirstStr/
+    // Summary   : makeUcFirstStr( <string> );
+    // Purpose   : Capitalize the first letter of a string
+    // Example   : makeUcFirstStr( 'hello' );
+    //             // returns 'Hello'
+    // Arguments :
+    //   <string> - A string to process
+    // Returns   : The string with the first character capitalized
+    // Throws    : None
+    //
     function makeUcFirstStr ( arg_str ) {
       var
         str    = castStr( arg_str, __blank ),
@@ -915,8 +953,7 @@ xhi._01_util_ = (function () {
 
     // == BEGIN UTILITY OBJECTS =========================================
     // BEGIN define logObj singleton
-    // Summary   :
-    //   logObj.setLogLevel_('_warn_');
+    // Summary   : logObj._setLogLevel_( <log_level> );
     // Purpose   : Provide a log4j-style logging singleton
     // Example   :
     //   logObj.setLogLevel_('_warn_');
@@ -924,21 +961,19 @@ xhi._01_util_ = (function () {
     //   logObj.logMsg('_info_', 'This will not');
     //   logObj.getLevelName();  // '_warn_'
     //   logObj.getLevelIdx();   // 4
-    // Arguments :
-    //   Log level is based on syslog values and is one of
+    // Methods   :
+    //   Log level is based on syslog values and is one of the following:
     //   '[_emerg_|_alert_|_crit_|_error_|_warn_|_notice_|_info_|_debug_]'
-    //
-    //   * setLoglLevel(<log_level>) - Set threshold urgency.
-    //   * logMsg( <log_level>, <message_str> ) - Log message string with
-    //     <log_level> urgency. Messages with urgency below the threshold are
-    //     not presented to the log.
-    //   * getLevelName() - Return log level, e.g. '_warn_'.
-    //   * getLevelIdx returns log level index. 0=emerg, 4=warn, 7=debug
-    //     This is provided so developers can see if the set log level
-    //     is more permissive than _error_ for example:
-    //     if ( logObj._getLevelIdx_() > 3 ) { ... }
-    // Returns   : Varies
-    // Throws    : none
+    //     + _getLevelName_() - Return log level, e.g. '_warn_'.
+    //     + _getLevelIdx_()  - Return log level index. 0=emerg,4=warn,7=debug
+    //     + _logMsg_( <log_level>, <message_str> ) - Log message string with
+    //       <log_level> urgency. Messages with urgency below the threshold
+    //       are not presented to the log. This is provided so developers
+    //       can see if log level is more permissive than a threshold:
+    //       if ( logObj._getLevelIdx_() > 3 ) { ... }
+    //     + _setLoglLevel_(<log_level>) - Set threshold urgency.
+    // Returns   : Differs per method
+    // Throws    : None
     //
     logObj = (function () {
       var
@@ -1065,17 +1100,19 @@ xhi._01_util_ = (function () {
 
     // == BEGIN PUBLIC METHODS ==========================================
     // BEGIN Public method /checkDateStr/
+    // Summary   : checkDateStr( <arg_map> );
     // Purpose   : Check validity of a date string
-    // Example   : checkDateStr( '2017-02-29' ); // false
-    //             checkDateStr( '2016-02-29' ); // true  (leap year)
+    // Example   : checkDateStr( { _date_str_: '2017-02-29' } ); // false
+    //             checkDateStr( { _date_str_: '2016-02-29' } ); // true
+    // Argument  : <arg_map>
+    //   + _date_str_  - The date string to consider
+    //   + _order_str_ - The date form to check ('_us_' or ISO)
     // Returns   : boolean
-    // Throws    : none
+    // Throws    : None
     //
-    // This method works only of strings in the formats
-    // yyyy-mm-dd or yyyy/mm/dd and does not validate the time.
+    // Note      : This method works only of strings in the formats
+    //             yyyy-mm-dd or yyyy/mm/dd and does not validate the time.
     //
-    //
-
     function checkDateStr ( arg_map ) {
       var
         map         = castMap( arg_map, {} ),
@@ -1110,7 +1147,18 @@ xhi._01_util_ = (function () {
     }
     // . END Public method /checkDateStr/
 
-    // BEGIN public method /makeMetricStr/
+    // BEGIN Public method /makeMetricStr/
+    // Summary   : makeMetricStr( <number> );
+    // Purpose   : Convert number to a 3 digit string with suffix
+    // Example   : makeMetricStr( 968125965968 ); // '968G'
+    //             makeMetricStr(    125965968 ); // '126M'
+    //             makeMetricStr(       965968 ); // '966K'
+    //             makeMetricStr(          968 ); //  '968'
+    // Arguments :
+    //   + <number> - The number to process
+    // Returns   : String
+    // Throws    : None
+    //
     function makeMetricStr( arg_num ) {
       var
         num     = castNum( arg_num, __0 ),
@@ -1139,8 +1187,17 @@ xhi._01_util_ = (function () {
     // . END public method /makeMetricStr/
 
     // BEGIN Public method /clearMap/
-    // Purpose: Empty a map by deleting all keys
-    //   OR delete key provided by list
+    // Summary   : clearMap( <data_map>, <key_list> );
+    // Purpose   : Delete key provided by <key_list>. If <key_list>
+    //             is omitted, delete all keys
+    // Example   : clearMap( my_map ); // Delete all keys
+    //             clearMap( my_map, [ 'name', 'serial_number' ] );
+    // Arguments :
+    //   + <data_map> - Map to modify
+    //   + <key_list> - Optional list of keys to delete
+    // Returns   : Modified map
+    // Throws    : None
+    //
     function clearMap ( arg_map, arg_key_list ) {
       var
         map       = castMap( arg_map ),
@@ -1162,9 +1219,9 @@ xhi._01_util_ = (function () {
     // . END Public method /clearMap/
 
     // BEGIN Public method /encodeHtml/
-    // Purpose : This is single pass encoder for html entities and handles
-    //   an arbitrary number of characters to encode.
-    // Examples:
+    // Summary   : encodeHtml( <string>, <do_exclude_amp> );
+    // Purpose   : Single-pass encode HTML entities from string
+    // Example   :
     //   | str = encodeHtml( "<h1>'Help me!'</h1> she said" );
     //   | __logMsg( 'info', str );
     //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; she said.'
@@ -1177,10 +1234,12 @@ xhi._01_util_ = (function () {
     //   | __logMsg( 'info', str );
     //   > &lt;h1&ht;&quot;Help me!&quot;&lt;/h1&gt; & fast!'
     //
-    // Arguments ( positional )
-    //   0 : arg_str (req) - The HTML string to encode
-    //   1 : arg_do_exclude_amp (opt, default = false ) : Exclude ampersands
-    //       from encoding.
+    // Arguments
+    //   + <string> - The HTML string to encode
+    //   + <do_exclude_amp> - Exclude ampersand from encoding.
+    //     (optional, deault is false)
+    // Returns   : Modified string
+    // Throws    : None
     //
     function encodeHtml ( arg_str, arg_do_exclude_amp ) {
       var
@@ -1203,16 +1262,18 @@ xhi._01_util_ = (function () {
     // . END Public method /encodeHtml/
 
     // BEGIN utility /getBaseDirname/
+    // Summary   : getBaseDirname.call( <type>, <path_str>, <delim_str> );
     // Purpose   : Returns the last filename of a path or the dirname.
     // Examples  : getBaseDirname.call( '_base_', /var/log/demo.log')
     //           :   returns 'demo.log'
     //           : getBaseDirname.call( null, '/var/log/demo.log' )
     //           :   returns '/var/log'
-    //
-    // Arguments : ( positional )
-    //   this - if '_base_' returns basename, otherwise dirname
-    //   0 - (required) Path string
-    //   1 - (optional) Delimeter string (default is /)
+    // Arguments :
+    //   <type>      - If '_base_' returns basename, otherwise dirname
+    //   <path_str>  - Path string
+    //   <delim_str> - Delimeter string (default === '/')
+    // Returns   : Modified string
+    // Throws    : None
     //
     function getBaseDirname( arg_path_str, arg_delim_str ) {
       var
@@ -1235,6 +1296,19 @@ xhi._01_util_ = (function () {
     // . END utilities /getBasename/ and /getDirname/
 
     // BEGIN Public method /getListAttrIdx/
+    // Summary   : getListAttrIdx( <list>, <key>, <data> );
+    // Purpose   : Find the first map in <list> where the value of
+    //             <key> is <data>.
+    // Examples  : getListAttrIdx( [ { a: 1 } ], 'a', 1 ); // returns 0
+    //             getListAttrIdx( [ { a: 1 } ], 'b', 1 ); // returns -1
+    //             getListAttrIdx( [ { a: 1 } ], 'a', 9 ); // returns -1
+    // Arguments :
+    //   + <list> - List of objects
+    //   + <key>  - The key to match
+    //   + <data> - The data expected for key (default === undef)
+    // Returns   : Returns integer index or -1 if not found
+    // Throws    : None
+    //
     function getListAttrIdx ( arg_map_list, arg_key, data ) {
       var
         map_list = castList( arg_map_list, [] ),
@@ -1264,7 +1338,20 @@ xhi._01_util_ = (function () {
     }
     // . END Public method /getListAttrIdx/
 
-    // BEGIN Public methd /getListAttrMap/
+    // BEGIN Public method /getListAttrMap/
+    // Summary   : getListAttrMap( <list>, <key>, <data> );
+    // Purpose   : Find the first map in <list> where the value of
+    //             <key> is <data>.
+    // Examples  : getListAttrIdx( [ { a: 1 } ], 'a', 1 ); // returns map
+    //             getListAttrIdx( [ { a: 1 } ], 'b', 1 ); // returns undef
+    //             getListAttrIdx( [ { a: 1 } ], 'a', 9 ); // returns undef
+    // Arguments :
+    //   + <list> - List of objects
+    //   + <key>  - The key to match
+    //   + <data> - The data expected for key (default === undef)
+    // Returns   : Returns found map or undef if not found
+    // Throws    : None
+    //
     function getListAttrMap ( arg_list, key_name, key_val ) {
       var
         list     = castList( arg_list, [] ),
@@ -1274,14 +1361,19 @@ xhi._01_util_ = (function () {
     // . END Public method /getListAttrMap/
 
     // BEGIN Public method /getListDiff/
-    // Purpose : Find all elements common between two lists.
-    //   Do _not_ do a deep comparison; two similar lists or maps
+    // Summary   : getListDiff( <list1>, <list2> );
+    // Purpose   : Find all elements common between two lists.
+    //   This is _not_ a deep comparison; two similar lists or maps
     //   will be reported as different unless they point the the same
     //   data structure.
-    //
-    // Returns: A list of elements in the order of unique
-    //   elements found in the first list followed by unique
-    //   elements found in the second.
+    // Example   : getListDiff( [ 'a','b' ], [ 'b','c','d' ] );
+    //             // Returns [ 'a', 'c', 'd' ]
+    // Arguments :
+    //   + <list1> - The first list
+    //   + <list2> - The second list
+    // Returns   : A list of unique elements found in first list
+    //   followed by unique elements found in the second.
+    // Throws    : None
     //
     function getListDiff ( arg0_list, arg1_list ) {
       var
@@ -1305,6 +1397,15 @@ xhi._01_util_ = (function () {
     // . END Public method /getListDiff/
 
     // BEGIN Public method /getListValCount/
+    // Summary   : getListValCount( <list>, <data> );
+    // Purpose   : Count the number of elements in <list> that === <data>
+    // Example   : getListValCount( [ 'a','b','a' ], 'a' ); // Returns 2
+    // Arguments :
+    //   + <list> - The list to examine
+    //   + <data> - The data value to match (default is undef)
+    // Returns   : Match count
+    // Throws    : None
+    //
     function getListValCount ( arg_list, arg_data ) {
       var
         input_list  = castList( arg_list, [] ),
@@ -1321,21 +1422,24 @@ xhi._01_util_ = (function () {
     // . END Public method /getListValCount/
 
     // BEGIN Public method /getLogObj/
+    // See logObj above for details
     function getLogObj () { return logObj; }
     // . END Public method /getlogObj/
 
     // BEGIN Public method /getStructData/
-    // Purpose   : Get a deep structure attribute value
+    // Summary   : getStructData( <data>, <path_list> );
+    // Purpose   : Extract a value from <data> by <path_list>
     // Example   : _getStructData_({ foo : { bar : 'hi!' }}, ['foo','bar']);
-    //   Returns 'hi!'
+    //             // Returns 'hi!'
     // Arguments :
-    //   * base_struct - An array or map to add a value
-    //   * path_list   - A list of map or array keys in order of depth
+    //   + <data>      - An array or map
+    //   + <path_list> - A list of map or array keys in order of depth
     // Returns   :
-    //   * Success - Requested value
-    //   * Failure - undefined
-    // Cautions  : The key list limit is set to __100. If this
-    //   is met, a warning is logged and __undef returned.
+    //   + Success - Requested value
+    //   + Failure - undefined
+    // Throws    : None
+    // Note      : The key list limit is set to 100. If this
+    //   is met, a warning is logged and undef returned.
     //
     function getStructData ( base_struct, arg_path_list ) {
       var
@@ -1378,6 +1482,9 @@ xhi._01_util_ = (function () {
     // . END Public method /getStructData/
 
     // BEGIN Public method /getTzCode/
+    // Summary: getTzCode();
+    // Purpose: Return the local timezone code
+    //
     function getTzCode () {
       var
         date_obj = getTzDateObj(),
@@ -1390,22 +1497,23 @@ xhi._01_util_ = (function () {
     // . END Public method /getTzCode/
 
     // BEGIN Public method /makeClockStr/
+    // Summary   : makeClockStr( <time_ms>, <time_idx>, <do_am>, <do_local> );
     // Purpose   : Create HH:MM:SS time string from UTC time integer in ms
     // Example   : clock_str = makeClockStr( 1465621376000 ); // '05:02:56'
-    // Arguments : ( positional )
-    //   0 - int (required) time_ms UTC time in milliseconds
-    //   1 - int (default 3) time_idx Precision
+    // Arguments :
+    //   <time_ms>  - UTC time in milliseconds
+    //   <time_idx> - Date precision (default === 3)
     //     -3 === [DDd:]HHh:MMm:SSs
-    //     -3 === [DDd:]HHh:MMm
+    //     -2 === [DDd:]HHh:MMm
     //     -1 === [DDd:]HHh
     //      0 === ''
     //      1 === HH
     //      2 === HH:MM
     //      3 === HH:MM:SS
-    //   2 - do am/pm flag (default: false)
-    //   3 - use local time (default: false)
+    //   <do_am>    - Do am/pm flag (default === false)
+    //   <do_local> - Use local time (default === false)
     // Returns   : String
-    // Cautions  :
+    // Note      :
     //   Remember to use your local timezone offset if you want to
     //   show local time. Example:
     //     local_ms = getNowMs( true )
@@ -1481,23 +1589,23 @@ xhi._01_util_ = (function () {
     // . END Public method /makeClockStr/
 
     // BEGIN Public method /makeCommaNumStr/
+    // Summary   : makeCommaNumStr( <arg_map> );
     // Purpose   : Convert a number into a string optimized for readability
     // Example   : makeCommaNumStr({ _input_num_ : 1999 })
     //             Returns '2.0k'
-    // Arguments :
-    //   * _input_num_       - (req) The number to format, e.g. 123598
-    //   * _round_limit_exp_ - (opt) The size (10^exp) of number after which
-    //                         a rounded unit value will be returned.
-    //                         DEFAULT = 3 (1000's)
-    //   * _round_unit_exp_  - (opt) The size (10^exp) of number to group as
-    //                         a unit. DEFAULT = 3 (1000's)
-    //   * _round_unit_str_  - (opt) The unit name. DEFAULT = k
-    //   * _round_dec_count_ - (opt) Number of decimal places to keep
-    //                         in the mantisa when rounding to units.
-    //                         DEFAULT = 1.
+    // Arguments : <arg_map> with the following keys
+    //   + _input_num_       - The number to format, e.g. 123598
+    //   + _round_limit_exp_ - The size (10^exp) of number after which
+    //                         a rounded value is returned (default === 3)
+    //   + _round_unit_exp_  - The size (10^exp) of number to group as
+    //                         a unit (default === 3, e.g. 1,000's)
+    //   + _round_unit_str_  - The unit name (default === 'k').
+    //   + _round_dec_count_ - Number of decimal places to keep
+    //                         in the mantisa when rounding to units
     // Returns   :
-    //   * Success - Returns formated string
-    //   * Failure - Blank string
+    //   + Success - Returns formated string
+    //   + Failure - Blank string
+    // Throws    : None
     //
     function makeCommaNumStr ( arg_map ) {
       var
@@ -1536,27 +1644,34 @@ xhi._01_util_ = (function () {
     // . END Public method /makeCommaNumStr/
 
     // BEGIN Public method /makeDateStr/
+    // Summary   : makeDateStr( <arg_map> );
     // Purpose   : Create a string from a date object
     //   or a UTC time number (in milliseconds).
-    // Examples:
-    // 1. makeDateStr({ _date_obj_ : new Date() });
-    //    Returns a string like '2016-09-18'
-    // 2. makeDateStr({ _date_obj_ : new Date(), _time_idx_ : 3 });
-    //    Returns a string like '2016-09-18 12:45:52'
-    // 3. makeDateStr({ _date_ms_ : 1474311626050 })
-    //    Returns '2016-09-19'
-    // Arguments :
-    //   * _date_obj_ : A valid date object.
-    //   * _date_ms_  : A date time in ms.
+    // Example   :
+    //   makeDateStr({ _date_obj_ : new Date() });
+    //   // Returns a string like '2016-09-18'
+    //
+    //   makeDateStr({ _date_obj_ : new Date(), _time_idx_ : 3 });
+    //   // Returns a string like '2016-09-18 12:45:52'
+    //
+    //   makeDateStr({ _date_ms_ : 1474311626050 })
+    //   // Returns '2016-09-19'
+    // Arguments : <arg_map> with these keys
+    //   + _date_obj_ : A valid date object.
+    //   + _date_ms_  : A date time in ms.
     //     If neither date_obj or date_ms is provided, will use the
     //       current date.
     //     If BOTH are provided, _date_ms_ will be used in
     //       preference to date_obj.
-    //   * _time_idx_ (default 0): See _makeClockStr_ to determine
+    //   + _time_idx_ (default 0): See _makeClockStr_ to determine
     //       the clock string format
-    //   * _order_str_ (default ''):
+    //   + _order_str_ (default ''):
     //       Request '_us_' results in stupid-format: mm/dd/yyyy hh:mm:ss.
-    // Cautions  :
+    // Returns   :
+    //   + Success - Returns formated string
+    //   + Failure - Blank string
+    // Throws    : None
+    // Note      :
     //   Remember to use your local timezone offset if you want to
     //   show local time. Example:
     //       tz_offset_ms = date_obj.geteTimezoneOffset() * 60000;
@@ -1606,10 +1721,10 @@ xhi._01_util_ = (function () {
         date_str = date_list[ __join ]( '-' );
       }
 
-      // no time requested
+      // Return if no time requested
       if ( time_idx === __0 ) { return date_str; }
 
-      // time requested
+      // Process time time requested
       time_ms = __Num( date_obj.getHours()   ) * configMap._hrs_ms_
         + __Num( date_obj.getMinutes() ) * configMap._min_ms_
         + __Num( date_obj.getSeconds() ) * configMap._sec_ms_
@@ -1622,8 +1737,24 @@ xhi._01_util_ = (function () {
     // . END Public method /makeDateStr/
 
     // BEGIN Public method /makeDebounceFn/
-    // Purpose : Return a function that will fire after
-    //   delay_ms milliseconds of inactivity.
+    // Summary   : makeDebounceFn( <arg_map> );
+    // Purpose   : Create a function that will execute only after
+    //   <_delay_ms_> of inactivity.
+    // Example   : makeDebounceFn({ _fn_ : myRoutineFn, _delay_ms_: 2500 });
+    //             // Returns the debounced function
+    // Arguments : <arg_map> with the following keys
+    //   + _fn_       - The function to execute
+    //   + _delay_ms_ - Inactivity time
+    //   + _ctx_data_ - Function context (default === undef)
+    //   + _do_asap_  - Fire function at first call (default === undef)
+    // Returns   :
+    //   + Success - A function which will execute when called only after
+    //     <_delay_ms_> has elapsed since the last time it was called.
+    //   + Failure - undef
+    // Throws    : None
+    // Note      : The returned function will process arguments just like the
+    //             provided function.
+    //
     //
     function makeDebounceFn ( arg_map ) {
       var
@@ -1631,7 +1762,7 @@ xhi._01_util_ = (function () {
         fn       = castFn(   map._fn_ ),
         delay_ms = castInt(  map._delay_ms_ ),
         do_asap  = castBool( map._do_asap_, __false ),
-        ctx_data = map._ctx_data_ || this,
+        ctx_data = map._ctx_data_,
         delay_toid
       ;
 
@@ -1654,9 +1785,22 @@ xhi._01_util_ = (function () {
     // . END Public method /makeDebounceFn/
 
     // BEGIN Public method /makeThrottleFn/
-    // Purpose : Return a function that will fire once per
-    //   delay_ms milliseconds. It fires immediately on first
-    //   call.
+    // Summary   : makeThrottleFn( <arg_map> );
+    // Purpose   : Create a function which will only execute when called
+    //   if <_delay_ms_> has elapsed since its last invocation.
+    // Example   : makeThrottleFn({ _fn_ : myRoutineFn, _delay_ms_: 2500 });
+    //             // Returns the throttled function
+    // Arguments : <arg_map> with the following keys
+    //   + _fn_       - The function to execute
+    //   + _delay_ms_ - The minimum time between calls
+    //   + _ctx_data_ - Function context (default === undef)
+    // Returns   :
+    //   + Success - A function which will execute when called only if
+    //     <_delay_ms_> has elapsed since its last invocation.
+    //   + Failure - undef
+    // Throws    : None
+    // Note      : The returned function will process arguments just like the
+    //             provided function.
     //
     function makeThrottleFn ( arg_map ) {
       var
@@ -1680,10 +1824,9 @@ xhi._01_util_ = (function () {
           // A timeout id should never be defined except in race conditions
           /* istanbul ignore next */
           if ( delay_toid ) { __clearTimeoutFn( delay_toid ); }
-          fn[ __apply ]( ctx_data, arg_list );
           delay_toid = __undef;
           last_ms    = now_ms;
-          return;
+          return fn[ __apply ]( ctx_data, arg_list );
         }
 
         if ( delay_toid ) { return; }
@@ -1700,7 +1843,8 @@ xhi._01_util_ = (function () {
     // . END Public method /makeThrottleFn/
 
     // BEGIN Public method /makeEllipsisStr/
-    // Purpose : Shorten a string to a maximum length and append ellipsis
+    // Summary   : makeEllipsisStr( <arg_map> );
+    // Purpose   : Shorten a string to a maximum length and append ellipsis
     //   if it is exceeded.
     // Example   :
     //   makeEllipsisStr({
@@ -1709,13 +1853,12 @@ xhi._01_util_ = (function () {
     //     _do_word_break_  : true
     //   });
     //   // returns 'hee haw ...'
-    //
-    // Arguments:
-    // _input_str_      : (req) The string to shorten if required
-    // _char_limit_int_ : (opt, default 0) the maxiumum allowed chars
-    // _do_word_break_  : (opt, default true) break at word boundries
-    //
-    // Returns: A string
+    // Arguments :
+    //   + _char_limit_int_ : Maxiumum allowed chars (default === 0)
+    //   + _do_word_break_  : Break at word boundries (default === true)
+    //   + _input_str_      : The string to shorten
+    // Returns   : A string
+    // Throws    : None
     //
     function makeEllipsisStr( arg_map ) {
       var
@@ -1757,12 +1900,14 @@ xhi._01_util_ = (function () {
     // . END Public method /makeEllipsisStr/
 
     // BEGIN Public method /makeErrorObj/
+    // Summary   : makeErrorObj( <name>, <msg> );
     // Purpose   : A convenient method to create an error object
+    // Example   : makeErrorObj( 'notCool', 'This is not cool' );
     // Arguments :
-    //   * name_text - the error name
-    //   * msg_text  - long error message
-    // Returns   : newly constructed error object
-    // Throws    : none
+    //   + <name> - the error name (default === 'error')
+    //   + <msg>  - long error message (default === '')
+    // Returns   : A newly constructed error object
+    // Throws    : None
     //
     function makeErrorObj ( arg_name, arg_msg ) {
       var
@@ -1777,6 +1922,13 @@ xhi._01_util_ = (function () {
     // . END Public method /makeErrorObj/
 
     // BEGIN Public method /makeGuidStr/
+    // Summary   : makeGuidStr()
+    // Purpose   : Return a standard GUID
+    // Example   : makeGuidStr();
+    // Arguments : None
+    // Returns   : A GUID
+    // Throws    : None
+    //
     function makeGuidStr () {
       /*jslint bitwise: true*/
       function makePart () {
@@ -1796,9 +1948,9 @@ xhi._01_util_ = (function () {
     // . END Public method /makeGuidStr/
 
     // BEGIN Public method /makeMapUtilObj/
-    // Purpose  : Creates a thread-safe map utility object
-    //   useful to streamlining list.map() functions and
-    //   avoiding nesting.
+    // Summary  : makeMapUtilObj()
+    // Purpose  : Creates a map utility object used to streamlining
+    //   list.map() functions and avoid nesting.
     // Example  :
     // 1. Create a map_util object:
     //    | var map_util_obj = makeMapUtilObj();
@@ -1827,9 +1979,10 @@ xhi._01_util_ = (function () {
     // 7. result_map will now contain the key value pairs return by
     //    mapUtil_renameFn for the provided list.
     //
-    // This is an excellent example of how a closure creates
-    // unique private variables in each instance returned, such
-    // as the stored argList, resultMap, and mapFn.
+    // Returns  : A mapUtil object
+    // Throws   : None
+    // Note     : A closure creates unique private variables in each
+    //   instance returned. Examples include argList, resultMap, and mapFn.
     //
     //
     function makeMapUtilObj () {
@@ -1867,13 +2020,17 @@ xhi._01_util_ = (function () {
     // . END Public method /makeMapUtilObj/
 
     // BEGIN Public method /makeOptionHtml/
-    // Arguments : ( named )
-    //    * _select_list_ : (opt) List of values to be of selected
-    //      This is useful for multi-select fields.
-    //    * _title_map_   : (opt) val_x_title map
-    //    * _val_list_    : (opt) List of values to process
-    // Output    :
-    //    * List of options as used in a select statement
+    // Summary   : makeOptionHtml( <arg_map> );
+    // Purpose   : Create an HTML string with option tags
+    // Example   : makeOptionHtml({ _val_list_ : [1,2,3,4] });
+    // Arguments : <arg_map> with the following keys
+    //    + _label_map    : A label map keyed by values (default === undef)
+    //    + _select_list_ : List of values to be selected.
+    //      This is useful for multi-select fields (default = undef)
+    //    + _val_list_    : List of values to present (default === [])
+    // Returns   : An HTML option select string
+    // Throws    : None
+    //
     function makeOptionHtml ( arg_map ) {
       var
         map         = castMap(  arg_map, {} ),
@@ -1903,13 +2060,14 @@ xhi._01_util_ = (function () {
     // . END Public method /makeOptionHtml/
 
     // BEGIN Public method /makePctStr/
+    // Summary   : makePctStr( <ratio>, <precition_int> );
     // Purpose   : Convert a decimal ratio into a readable % string
-    // Example   :
-    //   my_pct = makePctStr( 0.529863, 1 );
-    // Arguments : ( positional )
-    //   0 : (required) ratio - Ratio to convert. 1 = 100%.
-    //   1 : (optional) count - Number of digits after decimal.
-    //       Default value is 0.
+    // Example   : makePctStr( 0.529863, 1 );
+    // Arguments :
+    //   <ratio>         - Ratio to convert. 1 = 100%.
+    //   <precision_int> - Number of digits after decimal (default === 0)
+    // Returns   : A percentage string
+    // Throws    : None
     //
     function makePctStr ( arg_ratio, arg_count ) {
       var
@@ -1947,8 +2105,8 @@ xhi._01_util_ = (function () {
 
         html_str
           += '<label>'
-          + '<input type="radio" name="' + group_name
-          + '" value="' + val_str + '"'
+          +  '<input type="radio" name="' + group_name
+          +  '" value="' + val_str + '"'
         ;
         if ( val_str === match_str ) { html_str += ' checked="checked"'; }
         html_str += '/>' + label_str + '</label>';
@@ -1958,16 +2116,19 @@ xhi._01_util_ = (function () {
     // . END Public method /makeRadioHtml/
 
     // BEGIN Public method /makeReplaceFn/
+    // Summary   : makeReplaceFn( <search_str>, <replace_str> );
     // Purpose   : Return a high-performance function that
-    //   replaces a single symbol with a predefined value.
+    //   replaces <search_str> with <value_str>.
     // Example   :
-    //   fn = makeReplaceFn( 'x', 'fred' );
-    //   __logMsg( 'info', fn('you do not know {x}.') );
+    //   fn = makeReplaceFn( '_x_', 'fred' );
+    //   __logMsg( 'info', fn('you do not know {_x_}.') );
     //   // Prints 'you do not know fred.'
     // Arguments : ( positional )
-    //  0 - search_str : A string to use to search. It is wrapped
-    //    in '{_<search_str>_}'
-    //  1 - value_str : Replacement value
+    //   + <search_str>  - The symbol to replace.
+    //     It is be wrapped in braces.
+    //   + <replace_str> - The replacement string.
+    // Returns   : A replacement function
+    // Throws    : None
     //
     function makeReplaceFn ( arg_search_str, arg_value_str ) {
       var
@@ -1985,26 +2146,29 @@ xhi._01_util_ = (function () {
     // . END Public method /makeReplaceFn/
 
     // BEGIN Public method /makeRekeyMap/
-    // Purpose : Change all key names in a map to the new keys provided
-    //   in the key_map
-    // Arguments :
-    //   arg_struct - A complex structure to rekey or revalue
-    //   key_map    - A key map pointing to values
-    //   mode_str   - 'rekey' or 'reval'
+    // Summary   : makeRekeyMap( <struct_data>, <key_map>, <mode_str> );
+    // Purpose   : Change all keys or values in a map to the new values provided
+    // Arguments : <arg_map> with the following keys:
+    //   + <struct_data> - A complex structure to rekey or revalue
+    //   + <key_map>     - A key map pointing to values
+    //   + <mode_str>    - '_rekey_' or '_reval_'
     // Examples  :
     //   makeRekeyMap(
-    //     { a:1, b:2, c:[] },
-    //     { a:'_x_', b: '_y_', c:'_z_' },
+    //     { a : 1, b : 2, c : [] },
+    //     { a : '_x_', b : '_y_', c : '_z_' },
     //     '_rekey_'
     //   );
+    //   // Returns { _x_:1, _y_:2, _z_:[] }
+    //
     //   makeRekeyMap(
-    //     { a:1, b:2, list:[ { c:[] } ] },
-    //     { a:'_x_', b: '_y_', c:22 },
+    //     { a : 1, b : 2, list : [ { c : [] } ] },
+    //     { a : '_x_', b: '_y_', c : 22 },
     //     '_reval_'
     //   );
-    //   returns { a:'_x_', b:'_y_', [ { c:22 } ] }
-    //
-    // A hard limit of 100 000 iterations are supported.
+    //   // Returns { a : '_x_', b : '_y_', list : [ { c : 22 } ] }
+    // Returns   : A new map or list or other data
+    // Throws    : None
+    // Note      : A hard limit of 100 000 iterations are supported.
     //   Executes deep renaming through arrays and objects.
     //
     function makeContextObj ( arg_struct ) {
@@ -2164,9 +2328,9 @@ xhi._01_util_ = (function () {
     //     _tgt_count_    : 12
     //   });
     // Arguments :
-    //   _max_ms_       : (req) int start local-time milliseconds
-    //   _min_ms_       : (req) int end local-time in milliseconds
-    //   _tgt_count_    : (req) int desired number of divisions (+/- 50%)
+    //   _max_ms_       : Start local-time milliseconds
+    //   _min_ms_       : End local-time in milliseconds
+    //   _tgt_count_    : Desired number of divisions (+/- 50%)
     //
     //  Returns
     //   A map useful for plotting a quantized time series like so:
@@ -2349,7 +2513,7 @@ xhi._01_util_ = (function () {
     //      'This person name {_p1_} said to the other person {_p2_}'
     //   _lookup_map_ : A map of values to replace, like so:
     //      { _p1_ : 'fred', _p2_ : 'barney' }
-    // Throws    : none
+    // Throws    : None
     // Returns
     //   The filled-out template string
     //
@@ -2632,13 +2796,14 @@ xhi._01_util_ = (function () {
     }
     // . END Public method /setStructData/
 
-    // BEGIN public method /shuffleList/
+    // BEGIN Public method /shuffleList/
+    // Summary   : SuffleList( <list>
     // Purpose   : Shuffle elements in a list
     // Example   : shuffleList( [1,2,3,4] ) returns [ 3,1,4,2 ]
-    // Arguments : ( positional )
-    //   0. arg_list - The list to shuffle
-    // Returns   : boolean true on success
-    // Throws    : none
+    // Arguments :
+    //   <list> - The list to shuffle
+    // Returns   : Boolean true on success
+    // Throws    : None
     // Technique :
     //   1. Count down from end of array with last_idx
     //   2. Randomly pick element from between 0 and last_idx
@@ -2663,7 +2828,7 @@ xhi._01_util_ = (function () {
     }
     // . END public method /shuffleList/
 
-    // BEGIN public method /trimStrList/
+    // BEGIN Public method /trimStrList/
     function trimStrList ( arg_list ) {
       var list = castList( arg_list );
 
@@ -2678,7 +2843,6 @@ xhi._01_util_ = (function () {
     // . END utility /trimStrList/
 
     // == . END PUBLIC METHODS ==========================================
-
     // BEGIN initialize module
     function initModuleFn ()  {
       stateMap = {
