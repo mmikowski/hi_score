@@ -15,13 +15,16 @@ xhi._00_root_ = (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
-    __JSON   = JSON,
-    __Math   = Math,
-    __Object = Object,
+    // Set object symbols
+    jsonObj   = JSON,
+    mathObj   = Math,
+    objectObj = Object,
+
+    // Set string-like symbols
     __undef  = void 0,
 
-    // The nMap and vMap symbols are the minimimum to support the
-    // full breadth of xhi client libs. Use the argOptionMap
+    // The nMap and vMap symbol maps are the minimimum to support the
+    // full breadth of xhi client libs. Use _extendSymbolMapFn_
     // to expand these lists for project specific requirements.
     //
     nMap = {
@@ -49,24 +52,26 @@ xhi._00_root_ = (function () {
     vMap = {
       _Array_           : Array,
       _Date_            : Date,
-      _Math_            : __Math,
+      _Math_            : mathObj,
       _Number_          : Number,
-      _Object_          : __Object,
+      _Object_          : objectObj,
       _String_          : String,
 
       _clearTimeoutFn_  : clearTimeout,
-      _createObjectFn_  : __Object.create,
-      _data2strFn_      : __JSON.stringify,
-      _makeAbsNumFn_    : __Math.abs,
-      _makeFloorNumFn_  : __Math.floor,
-      _makeKeyListFn_   : __Object.keys,
-      _makeRandomNumFn_ : __Math.random,
-      _makeRoundNumFn_  : __Math.round,
+      _createObjectFn_  : objectObj.create,
+      _data2strFn_      : jsonObj.stringify,
+      _makeAbsNumFn_    : mathObj.abs,
+      _makeFloorNumFn_  : mathObj.floor,
+      _makeKeyListFn_   : objectObj.keys,
+      _makeRandomNumFn_ : mathObj.random,
+      _makeRoundNumFn_  : mathObj.round,
       _setTimeoutFn_    : setTimeout,
-      _str2dataFn_      : __JSON.parse,
+      _str2dataFn_      : jsonObj.parse,
       _typeofFn_        : function ( a ) { return typeof a; },
 
+      _Deferred_        : 'Deferred',
       _addClass_        : 'addClass',
+      _always_          : 'always',
       _apply_           : 'apply',
       _append_          : 'append',
       _attr_            : 'attr',
@@ -75,15 +80,18 @@ xhi._00_root_ = (function () {
       _body_            : 'body',
       _call_            : 'call',
       _cancel_          : 'cancel',
+      _click_           : 'click',
       _closest_         : 'closest',
       _concat_          : 'concat',
       _css_             : 'css',
+      _data_            : 'data',
       _empty_           : 'empty',
       _false_           : false,
       _filter_          : 'filter',
       _find_            : 'find',
       _getElsByTagName_ : 'getElementsByTagName',
       _hasOwnProperty_  : 'hasOwnProperty',
+      _height_          : 'height',
       _html_            : 'html',
       _indexOf_         : 'indexOf',
       _join_            : 'join',
@@ -192,20 +200,20 @@ xhi._00_root_ = (function () {
     // Purpose : Expand symbol maps as needed for project
     // Example :
     //   xhi._00_root_._extendSymbolMapFn_(
-    //     'vMap',  { _user_name_: 'Fred' }
+    //     '_vMap_',  { _user_name_: 'Fred' }
     //   );
     // This sets xhi._vMap_._user_name_ === 'Fred'
     //
-    function extendSymbolMapFn ( symbol_key, extend_map ) {
+    function extendSymbolMapFn ( symbol_map_name, extend_map ) {
       var
         lookup_map = { _nMap_ : instanceNmap, _vMap_ : instanceVmap },
-        target_map = lookup_map[ symbol_key ],
+        target_map = lookup_map[ symbol_map_name ],
 
         extend_key_list, extend_key_count, key_idx, extend_key
       ;
 
       if ( !target_map ) {
-        return console.warn( '_symbol_map_key_not_supported_', symbol_key );
+        return console.warn( '_symbol_map_not_supported_', symbol_map_name );
       }
       if ( vMap._typeofFn_( extend_map ) !== 'object' ) {
         return console.warn( '_merge_data_must_be_an_object_', extend_map );
@@ -217,8 +225,8 @@ xhi._00_root_ = (function () {
         extend_key = extend_key_list[ key_idx ];
         if ( target_map[ vMap._hasOwnProperty_ ]( extend_key ) ) {
           console.warn(
-            'Symbol expansion error.\n Will not override default value'
-            + ' for |' + extend_key + '| in ' + symbol_key
+            '_refusing_to_override_built_in_value_',
+            symbol_map_name, extend_key, target_map[ extend_key ]
           );
         }
         else {

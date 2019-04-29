@@ -151,7 +151,7 @@ xhi._06_lb_ = (function ( $ ) {
     function set$Map () {
       $Map = {
         _$view_     : $( window ),
-        _$body_     : $( 'body' ),
+        _$body_     : $( vMap._body_ ),
         _$litebox_  : $( '#' + aKey + '-_lb_' ),
         _$mask_     : $( '#' + aKey + '-_lb_mask_' ),
         _$spin_     : $( '#' + aKey + '-_lb_spin_' )
@@ -414,8 +414,8 @@ xhi._06_lb_ = (function ( $ ) {
         css_map = {
           'margin-top'  : margin_top_px,
           'margin-left' : margin_left_px,
-          left          : Math.round( view_w_px / __2 ),
-          top           : Math.round( view_h_px / __2 )
+          left          : vMap._makeRoundNumFn_( view_w_px / __2 ),
+          top           : vMap._makeRoundNumFn_( view_h_px / __2 )
         };
         if ( do_abs_pos ) {
           css_map.top += getBodyScrollPx();

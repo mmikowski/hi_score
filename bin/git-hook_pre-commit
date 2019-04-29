@@ -12,26 +12,23 @@ set -u;
 
 # This hack is to get around Mac's (c) 2007 version of Bash!
 # _appLink=$( readlink -f -- "${0}" );
-_readLinkFn(){ perl -MCwd -e 'print Cwd::abs_path shift' "$1";}
+_readLinkFn(){ perl -MCwd -e 'print Cwd::abs_path shift' "$1"; }
 
 _appName=$( basename $0 );
 _appLink=$( _readLinkFn "${0}" );
 _binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
-_makedocExe="${_binDir}/make_doc";
+_makedocExe=''; # or "${_binDir}/make_doc";
 
 ## == BEGIN Process changed documents =====================================
-if [ ! -x "${_makedocExe}" ]; then
-  echo "bin/make_doc not found.  This file should exist.";
-  echo "Please check your installation.";
-  exit 1;
-fi
-echo "Updating HTML documents from MarkDown";
-"${_makedocExe}";
-_exitCode=$?;
-if [ "${_exitCode}" -ne "0" ]; then
-  echo "Document file failure".
-  echo "Please check your installation.";
-  exit "${_exitCode}";
+if [ -x "${_makedocExe}" ]; then
+  echo "Updating HTML documents from MarkDown";
+  "${_makedocExe}";
+  _exitCode=$?;
+  if [ "${_exitCode}" -ne "0" ]; then
+    echo "Document file failure".
+    echo "Please check your installation.";
+    exit "${_exitCode}";
+  fi
 fi
 ## == . END Process changed documents =====================================
 

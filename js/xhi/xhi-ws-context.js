@@ -25,6 +25,7 @@
   return {
     // svg
     correspondingUseElement : obj,
+    getYear          : fn,
 
     // aMap._01_util_
     _attr_list_      : list,
@@ -40,16 +41,15 @@
     _max_length_     : int,
     _target_map_     : map,
     _tgt_count_      : num,
-    getYear          : fn,
 
     // aMap._02_data_
     _full_url_ : str,
     _content_type_ : str,
 
     // aMap._04_utilb_
+    _name_       : str,
     _select_str_ : str,
     _title_map_  : map,
-    name : str,
 
     // aMap._06_lb_
     _do_block_click_ : bool,

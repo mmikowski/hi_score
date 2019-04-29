@@ -17,28 +17,30 @@ xhi._05_css_ = (function () {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ===================================
     var
-      subName   = '_05_css_',
+      // Set app symbols
       aKey      = aMap._aKey_,
       nMap      = aMap._nMap_,
+      subName   = '_05_css_',
       vMap      = aMap._vMap_,
 
+      // Set object symbols
+      utilObj    = aMap._01_util_,
+      logObj  = utilObj._getLogObj_(),
+
+      // Set function symbols
+      logFn     = logObj._logMsg_,
+      castIntFn = utilObj._castInt_,
+
+      // Set number symbols
       __n1      = nMap._n1_,
       __0       = nMap._0_,
+
+      // Set string-like symbols
       __false   = vMap._false_,
       __true    = vMap._true_,
       __undef   = vMap._undef_,
 
-      __util    = aMap._01_util_,
-      __logObj  = __util._getLogObj_(),
-      __logMsg  = __logObj._logMsg_,
-
-      // Add as needed
-      // __castBool, __castList, __castObj, __castJQ,
-      // __castFn,   __castNum  __castMap,  __castStr
-      // __getVarType
-      //
-      __castInt = __util._castInt_,
-
+      // Set module config and state maps
       stateMap  = {
         _is_ready_    : __false,
         _palette_idx_ : __undef
@@ -77,7 +79,7 @@ xhi._05_css_ = (function () {
     // BEGIN public method /setPaletteIdx/
     function setPaletteIdx ( arg_idx ) {
       var
-        idx              = __util._castInt_( arg_idx, 0 ),
+        idx              = utilObj._castInt_( arg_idx, 0 ),
         palette_map_list = aMap._05_02_css_base_._paletteMapList_,
         palette_idx      = stateMap._palette_idx_,
         palette_count    = palette_map_list[ vMap._length_ ],
@@ -128,7 +130,7 @@ xhi._05_css_ = (function () {
     //
     function initPaletteMap ( arg_palette_idx ) {
       var
-        input_palette_idx = __castInt( arg_palette_idx, __n1 ),
+        input_palette_idx = castIntFn( arg_palette_idx, __n1 ),
         local_map_key     = aKey + '-_palette_map_',
         local_idx_key     = aKey + '-_palette_idx_',
         palette_map_list  = aMap._05_02_css_base_._paletteMapList_,
@@ -160,7 +162,7 @@ xhi._05_css_ = (function () {
           solve_map = vMap._str2dataFn_( local_json );
         }
         catch ( error ) {
-          __logMsg( '_error_', '_cannot_parse_local_palette_json_', error );
+          logFn( '_error_', '_cannot_parse_local_palette_json_', error );
         }
         if ( solve_map ) {
           solve_idx = __n1;
@@ -170,7 +172,7 @@ xhi._05_css_ = (function () {
 
       // 3. Use local store index: Localstorage.<key>-_palette_idx_
       if ( localStorage[ vMap._hasOwnProperty_ ]( local_idx_key ) ) {
-        local_idx = __castInt( localStorage[ local_idx_key ], __0 );
+        local_idx = castIntFn( localStorage[ local_idx_key ], __0 );
         solve_idx = local_idx > palette_map_count
           ? palette_map_count - 1 : local_idx < __0
             ? __0 : local_idx
@@ -238,7 +240,7 @@ xhi._05_css_ = (function () {
       _initModuleFn_ : initModuleFn
     };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }

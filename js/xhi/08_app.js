@@ -30,6 +30,7 @@ xhi._makeAppFn_ = function ( app_key ) {
   // TODO 2017-07-13 mmikowski warn: Include library loader here?
   //
   var app_map = xhi._00_root_._makeInstanceFn_( app_key );
+
   xhi._01_util_         ._makeInstanceFn_( app_map );
   xhi._02_data_         ._makeInstanceFn_( app_map );
   xhi._03_model_        ._makeInstanceFn_( app_map );

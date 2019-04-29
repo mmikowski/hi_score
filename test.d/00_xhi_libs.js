@@ -1642,6 +1642,7 @@ function makeMetricStr ( test_obj ) {
   }
   test_obj.done();
 }
+
 function makeOptionHtml ( test_obj ) {
   var
     assert_table  = [
@@ -1652,29 +1653,40 @@ function makeOptionHtml ( test_obj ) {
       [ [],          __blank ],
       [ [ 1,2,3,4],  __blank ],
       [ {},          __blank ],
-      [ { _val_list_ : [ 1 ] }, '<option value="1">1</option>' ],
-      [ { _val_list_ : [ 1 ], _label_map_ : { 1 : 'One' } },
+      [ { _enum_table_ : [ { _value_: 1 } ] }, '<option value="1">1</option>' ],
+      [ { _enum_table_ : [ { _value_: 1, _label_: 'One' } ] },
         '<option value="1">One</option>'
       ],
-      [ { _val_list_  : [ 'rosey', 'betty' ],
-        _label_map_   : { 'rosey' : 'The Rose' },
-        _select_list_ : [ 'betty' ]
-      },
+      [ { _enum_table_  : [
+            { _value_ : 'rosey', _label_: 'The Rose' },
+            { _value_ : 'betty' }
+          ],
+          _match_list_ : [ 'betty' ]
+        },
         '<option value="rosey">The Rose</option>'
         + '<option value="betty" selected="selected">Betty</option>'
       ],
-      [ { _val_list_  : [ 'rosey', 'betty', 'debauch',
-          { cow: __null }, [ 32 ], __undef, 99, 865, -22, __null
-         ],
-          _label_map_   : { 'debauch' : 'De Bauch Airy' },
-          _select_list_ : [ 'debauch', -22 ]
+      [ { _enum_table_  :
+          [
+            { _value_ : 'rosey' },
+            { _value_ : 'betty' },
+            { _value_ : 'debauch', _label_: 'De Bauch Airy' },
+            { cow: __null },
+            { _value_ : [ 32 ] },
+            { _value_ : __undef },
+            { _value_ : 99 },
+            { _value_ : 865 },
+            { _value_ : -22 },
+            { _value_ : __null }
+          ],
+          _match_list_ : [ 'debauch', '-22' ]
         },
         '<option value="rosey">Rosey</option>'
-        + '<option value="betty">Betty</option>'
-        + '<option value="debauch" selected="selected">De Bauch Airy</option>'
-        + '<option value="99">99</option>'
-        + '<option value="865">865</option>'
-        + '<option value="-22" selected="selected">-22</option>'
+          + '<option value="betty">Betty</option>'
+          + '<option value="debauch" selected="selected">De Bauch Airy</option>'
+          + '<option value="99">99</option>'
+          + '<option value="865">865</option>'
+          + '<option value="-22" selected="selected">-22</option>'
       ]
     ],
 
@@ -1801,29 +1813,33 @@ function makeRadioHtml ( test_obj ) {
       [ [],          __blank ],
       [ [ 1,2,3,4],  __blank ],
       [ {},          __blank ],
-      [ { _group_name_ : 'fred', _match_str_:1, _val_list_: [1,2,3]},
+      [ { _group_name_ : 'fred', _match_str_:1, _enum_table_: [
+        { _value_ :1 }, { _value_:2 }, { _value_:3} ] },
         '<label>'
-        + '<input type="radio" name="fred" value="1" checked="checked"/>'
+        + '<input type="radio" name="fred" value="1" checked="checked">'
         + '1</label>'
-        + '<label><input type="radio" name="fred" value="2"/>2</label>'
-        + '<label><input type="radio" name="fred" value="3"/>3</label>'
+        + '<label><input type="radio" name="fred" value="2">2</label>'
+        + '<label><input type="radio" name="fred" value="3">3</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: __null,
-          _val_list_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
-            '6', 'gal', 'pal', __undef ]
+          _enum_table_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
+            { _value_: 6 }, { _value_ :'gal' }, { _value_ : 'pal' }, __undef ]
           },
-        '<label><input type="radio" name="bs" value="6"/>6</label>'
-        + '<label><input type="radio" name="bs" value="gal"/>Gal</label>'
-        + '<label><input type="radio" name="bs" value="pal"/>Pal</label>'
+        '<label><input type="radio" name="bs" value="6">6</label>'
+        + '<label><input type="radio" name="bs" value="gal">Gal</label>'
+        + '<label><input type="radio" name="bs" value="pal">Pal</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: 'gal',
-          _val_list_: [ '6', 'gal', 'pal' ],
-          _label_map_ : { 6 : 'Six', gal: 'Girl', pal : 'Friend' }
-      },
-        '<label><input type="radio" name="bs" value="6"/>Six</label>'
+          _enum_table_ : [
+            { _value_ : 6, _label_ : 'Six' },
+            { _value_ : 'gal', _label_ : 'Girl' },
+            { _value_ : 'pal', _label_ : 'Friend' }
+          ]
+        },
+        '<label><input type="radio" name="bs" value="6">Six</label>'
         + '<label><input type="radio" name="bs" value="gal" '
-          + 'checked="checked"/>Girl</label>'
-        + '<label><input type="radio" name="bs" value="pal"/>Friend</label>'
+          + 'checked="checked">Girl</label>'
+        + '<label><input type="radio" name="bs" value="pal">Friend</label>'
       ]
     ],
 

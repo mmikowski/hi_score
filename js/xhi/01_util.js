@@ -31,45 +31,25 @@ xhi._01_util_ = (function () {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
-      subName = '_01_util_',
+      // Set app symbols
       aKey    = aMap._aKey_,
-      vMap    = aMap._vMap_,
       nMap    = aMap._nMap_,
+      subName = '_01_util_',
+      vMap    = aMap._vMap_,
 
-      __data2strFn  = vMap._data2strFn_,
-      __str2DataFn  = vMap._str2dataFn_,
+      // Set function symbols
+      clearToFn  = vMap._clearTimeoutFn_,
+      data2strFn      = vMap._data2strFn_,
+      makeAbsNumFn    = vMap._makeAbsNumFn_,
+      makeFloorNumFn  = vMap._makeFloorNumFn_,
+      makeKeyListFn   = vMap._makeKeyListFn_,
+      makeRandomNumFn = vMap._makeRandomNumFn_,
+      makeRoundNumFn  = vMap._makeRoundNumFn_,
+      setToFn         = vMap._setTimeoutFn_,
+      str2dataFn      = vMap._str2dataFn_,
+      typeofFn        = vMap._typeofFn_,
 
-      __Array   = vMap._Array_,
-      __Date    = vMap._Date_,
-      __Math    = vMap._Math_,
-      __Num     = vMap._Number_,
-      __Str     = vMap._String_,
-
-      __apply           = vMap._apply_,
-      __blank           = vMap._blank_,
-      __bind            = vMap._bind_,
-      __clearTimeoutFn  = vMap._clearTimeoutFn_,
-      __false           = vMap._false_,
-      __hasOwnProperty  = vMap._hasOwnProperty_,
-      __indexOf         = vMap._indexOf_,
-      __join            = vMap._join_,
-      __length          = vMap._length_,
-      __makeAbsNumFn    = vMap._makeAbsNumFn_,
-      __makeFloorNumFn  = vMap._makeFloorNumFn_,
-      __makeKeyListFn   = vMap._makeKeyListFn_,
-      __makeRandomNumFn = vMap._makeRandomNumFn_,
-      __makeRoundNumFn  = vMap._makeRoundNumFn_,
-      __match           = vMap._match_,
-      __null            = vMap._null_,
-      __push            = vMap._push_,
-      __replace         = vMap._replace_,
-      __setTimeoutFn    = vMap._setTimeoutFn_,
-      __split           = vMap._split_,
-      __toString        = vMap._toString_,
-      __true            = vMap._true_,
-      __typeofFn        = vMap._typeofFn_,
-      __undef           = vMap._undef_,
-
+      // Set number symbols
       __0   = nMap._0_,
       __1   = nMap._1_,
       __2   = nMap._2_,
@@ -79,6 +59,33 @@ xhi._01_util_ = (function () {
       __100 = nMap._100_,
       __n1  = nMap._n1_,
 
+      // Set object symbols
+      __Array   = vMap._Array_,
+      __Date    = vMap._Date_,
+      __Math    = vMap._Math_,
+      __Num     = vMap._Number_,
+      __Str     = vMap._String_,
+
+      // Set string symbols
+      __apply      = vMap._apply_,
+      __blank      = vMap._blank_,
+      __bind       = vMap._bind_,
+      __false      = vMap._false_,
+      __hasProp    = vMap._hasOwnProperty_,
+      __indexOf    = vMap._indexOf_,
+      __join       = vMap._join_,
+      __length     = vMap._length_,
+      __match      = vMap._match_,
+      __null       = vMap._null_,
+      __pop        = vMap._pop_,
+      __push       = vMap._push_,
+      __replace    = vMap._replace_,
+      __split      = vMap._split_,
+      __toString   = vMap._toString_,
+      __true       = vMap._true_,
+      __undef      = vMap._undef_,
+
+      // Set shared map
       typeofMap = {
         'boolean'   : '_Boolean_',
         'number'    : '_Number_',
@@ -97,6 +104,7 @@ xhi._01_util_ = (function () {
         'Undefined' : '_Undefined_'
       },
 
+      // Declare other module-scope vars
       configMap,   getBasename, getDirname,
       instanceMap, logObj,      optionMap,
       stateMap
@@ -121,7 +129,7 @@ xhi._01_util_ = (function () {
       if ( data === __undef ) { return '_Undefined_'; }
       if ( __Array.isArray( data ) ) { return '_Array_'; }
 
-      type_key = __typeofFn( data );
+      type_key = typeofFn( data );
       type_str = typeofMap[ type_key ];
 
       if ( type_str && type_str !== '_Object_' ) { return type_str; }
@@ -187,7 +195,7 @@ xhi._01_util_ = (function () {
     function checkNumFn( num, alt_data, option_map ) {
       var log_list = [], solve_data;
 
-      if ( option_map[ __hasOwnProperty ]( '_max_num_' )
+      if ( option_map[ __hasProp ]( '_max_num_' )
         && num > option_map._max_num_
       ) {
         if ( option_map._do_autobound_ ) {
@@ -202,7 +210,7 @@ xhi._01_util_ = (function () {
         }
       }
 
-      if ( option_map[ __hasOwnProperty ]( '_min_num_' )
+      if ( option_map[ __hasProp ]( '_min_num_' )
         && num < option_map._min_num_
       ) {
         if ( option_map._do_autobound_ ) {
@@ -256,10 +264,10 @@ xhi._01_util_ = (function () {
       ;
 
       if ( isNaN( solve_num ) ) { return alt_data; }
-      solve_int = __makeRoundNumFn( solve_num );
+      solve_int = makeRoundNumFn( solve_num );
 
       // Begin process optional constraints
-      if ( __typeofFn( option_map ) === 'object' ) {
+      if ( typeofFn( option_map ) === 'object' ) {
         return checkNumFn( solve_int, alt_data, option_map );
       }
       // . End process optional constraints
@@ -313,7 +321,7 @@ xhi._01_util_ = (function () {
       if ( var_type !== '_Array_' ) { return alt_data; }
 
       // Begin process optional constraints
-      if ( __typeofFn( option_map ) === 'object' ) {
+      if ( typeofFn( option_map ) === 'object' ) {
         log_list = [];
         item_count = data[ __length ];
         if ( item_count === 0 && option_map._is_empty_ok_ === __false ) {
@@ -397,7 +405,7 @@ xhi._01_util_ = (function () {
       if ( isNaN( solve_num ) ) { return alt_data; }
 
       // Begin process optional constraints
-      if ( __typeofFn( option_map ) === 'object' ) {
+      if ( typeofFn( option_map ) === 'object' ) {
         return checkNumFn( solve_num, alt_data, option_map );
       }
       // . End process optional constraints
@@ -453,7 +461,7 @@ xhi._01_util_ = (function () {
       if ( solve_str === __undef ) { return alt_data; }
 
       // Begin process optional constraints
-      if ( __typeofFn( option_map ) === 'object' ) {
+      if ( typeofFn( option_map ) === 'object' ) {
         log_list = [];
         char_count = solve_str[ __length ];
         if ( option_map._is_empty_ok_ === __false
@@ -514,7 +522,7 @@ xhi._01_util_ = (function () {
     function safeJsonParse ( json_str, alt_data ) {
       var solve_data;
       try {
-        solve_data = __str2DataFn( json_str );
+        solve_data = str2dataFn( json_str );
       }
       catch ( e ) {
         solve_data = alt_data;
@@ -536,7 +544,7 @@ xhi._01_util_ = (function () {
     function safeJsonStringify ( arg_data, alt_data ) {
       var solve_str;
       try {
-        solve_str = __data2strFn( arg_data );
+        solve_str = data2strFn( arg_data );
       }
       catch (e) {
         solve_str = alt_data;
@@ -591,14 +599,14 @@ xhi._01_util_ = (function () {
     // Returns   : The current timestamp in milliseconds
     // Throws    : None
     //
-    // Note      : The Date.now() method is 3x faster than the
-    //   +new Date() in NodeJS and provides almost the
-    //   the same performance in that env as a raw Date.now() call.
+    // Note      : The __Date.now() method is 3x faster than the
+    //   +new __Date() in NodeJS and provides almost the
+    //   the same performance in that env as a raw __Date.now() call.
     //
     function getNowMs ( do_local ) {
       var date_obj;
       if ( do_local ) {
-        date_obj = new Date();
+        date_obj = new __Date();
         return date_obj.getTime() - ( date_obj.getTimezoneOffset() * 60000);
       }
 
@@ -652,7 +660,7 @@ xhi._01_util_ = (function () {
     // BEGIN Public method /checkArgMap/
     // Purpose   : Provide an easy and efficient means to check named arguments
     // Example   :
-    //   <script src="" />
+    //   <script src="">
     //   <script>
     //   argc.setMode( 'strict' );
     //   foo = function ( arg_map ) {
@@ -823,7 +831,7 @@ xhi._01_util_ = (function () {
       }
 
       sign_int = getNumSign( num );
-      num_str  = __Str( __makeAbsNumFn( num ) );
+      num_str  = __Str( makeAbsNumFn( num ) );
       zero_count = count - num_str[ __length ]
         - ( sign_int === __n1 ? __1 : __0 );
 
@@ -845,9 +853,7 @@ xhi._01_util_ = (function () {
     // Arguments : <string> to escape
     // Returns   : Escaped regular expression string
     // Throws    : None
-    //
-    // JSLint capable str.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-    // See http://stackoverflow.com/questions/3115150
+    // Other     : See http://stackoverflow.com/questions/3115150
     //
     function makeEscRxStr( arg_str ) {
       var str = castStr( arg_str, __blank );
@@ -869,7 +875,7 @@ xhi._01_util_ = (function () {
     function makeExtractMap ( arg_base_map, arg_key_list ) {
       var
         base_map  = castMap(  arg_base_map, {} ),
-        key_list  = castList( arg_key_list, __makeKeyListFn( base_map ) ),
+        key_list  = castList( arg_key_list, makeKeyListFn( base_map ) ),
         key_count = key_list[ __length ],
         solve_map = {},
         idx, key
@@ -1049,7 +1055,7 @@ xhi._01_util_ = (function () {
           );
           level_key   = '_error_';
           level_idx   = levelXIdxMap[ level_key ];
-          command_str = levelXCmdMap[ level_key ]
+          command_str = levelXCmdMap[ level_key ];
         }
 
         // Ignore if level of this log is below cutoff
@@ -1058,12 +1064,12 @@ xhi._01_util_ = (function () {
         // Get caller information
         /* istanbul ignore next */
         try {
-          caller_list = (new Error()).stack.split(/[ ]*\n/);
-          caller_str  = (caller_list[2] || __blank ).replace(/^[ ]*/g, '');
+          caller_list = (new Error()).stack[ __split ](/ *\n/);
+          caller_str  = (caller_list[__2] || __blank )[ __replace ](/^ */g, '');
           arg_list.unshift( caller_str );
         }
         catch(e) {
-          caller_list = [];
+          arg_list.unshift( '_no_stack_found_' );
         }
 
         // Unshift level into args
@@ -1162,7 +1168,7 @@ xhi._01_util_ = (function () {
     function makeMetricStr( arg_num ) {
       var
         num     = castNum( arg_num, __0 ),
-        abs_num = __makeAbsNumFn( num ),
+        abs_num = makeAbsNumFn( num ),
         root_num, suffix
       ;
 
@@ -1187,31 +1193,37 @@ xhi._01_util_ = (function () {
     // . END public method /makeMetricStr/
 
     // BEGIN Public method /clearMap/
-    // Summary   : clearMap( <data_map>, <key_list> );
-    // Purpose   : Delete key provided by <key_list>. If <key_list>
-    //             is omitted, delete all keys
-    // Example   : clearMap( my_map ); // Delete all keys
-    //             clearMap( my_map, [ 'name', 'serial_number' ] );
+    // Summary   : clearMap( <data_map>, <key_list>, <do_undef> );
+    // Purpose   : Process some or all map key values
+    // Example   :
+    //   clearMap( my_map ); // Delete all keys
+    //   clearMap( my_map, [ 'name', 'serial_number' ] ); // Delete 2 keys
+    //   clearMap( my_map, undef, true );  // Set all values to undefined
     // Arguments :
-    //   + <data_map> - Map to modify
-    //   + <key_list> - Optional list of keys to delete
-    // Returns   : Modified map
+    //   + <data_map> - Map to modify. Required.
+    //   + <key_list> - List of keys to process. Default is all keys.
+    //     Provide any non-list value (like 0) to use default.
+    //   + <do_undef> - If true, will set the value of all processed keys to
+    //       undefined. Otherwise, all processed keys will be deleted from
+    //       the map. Default is false.
+    // Returns   : The modified map
     // Throws    : None
     //
-    function clearMap ( arg_map, arg_key_list ) {
+    function clearMap ( arg_map, arg_key_list, do_undef ) {
       var
-        map       = castMap( arg_map ),
+        map = castMap( arg_map ),
         key_list, key_count, idx, key;
 
       if ( ! map ) { return; }
 
-      key_list  = castList( arg_key_list, __makeKeyListFn( map ) );
+      key_list  = castList( arg_key_list, makeKeyListFn( map ) );
       key_count = key_list[ __length ];
 
       for ( idx = __0; idx < key_count; idx++ ) {
         key = key_list[ idx ];
-        if ( map[ __hasOwnProperty ]( key ) ) {
-          delete map[ key ];
+        if ( map[ __hasProp ]( key ) ) {
+          if ( do_undef ) { map[ key ] = __undef; }
+          else { delete map[ key ]; }
         }
       }
       return map;
@@ -1303,7 +1315,7 @@ xhi._01_util_ = (function () {
     //             getListAttrIdx( [ { a: 1 } ], 'b', 1 ); // returns -1
     //             getListAttrIdx( [ { a: 1 } ], 'a', 9 ); // returns -1
     // Arguments :
-    //   + <list> - List of objects
+    //   + <list> - List of maps
     //   + <key>  - The key to match
     //   + <data> - The data expected for key (default === undef)
     // Returns   : Returns integer index or -1 if not found
@@ -1321,12 +1333,12 @@ xhi._01_util_ = (function () {
 
       for ( idx = __0; idx < map_count; idx++ ) {
         row_map = map_list[ idx ];
-        if ( __typeofFn( row_map ) !== 'object' ) { continue; }
+        if ( typeofFn( row_map ) !== 'object' ) { continue; }
 
         // This is similar to but not the same as hasOwnProperty.
         // This prevents false positives when sparse maps do not have
         // the requested key.
-        row_key_list = __makeKeyListFn( row_map );
+        row_key_list = makeKeyListFn( row_map );
         if ( row_key_list[ __indexOf ]( key ) === __n1 ) { continue; }
 
         if ( row_map[ key ] === data ) {
@@ -1346,7 +1358,7 @@ xhi._01_util_ = (function () {
     //             getListAttrIdx( [ { a: 1 } ], 'b', 1 ); // returns undef
     //             getListAttrIdx( [ { a: 1 } ], 'a', 9 ); // returns undef
     // Arguments :
-    //   + <list> - List of objects
+    //   + <list> - List of maps
     //   + <key>  - The key to match
     //   + <data> - The data expected for key (default === undef)
     // Returns   : Returns found map or undef if not found
@@ -1357,6 +1369,44 @@ xhi._01_util_ = (function () {
         list     = castList( arg_list, [] ),
         list_idx = getListAttrIdx( list, key_name, key_val );
       return list_idx > __n1 ? list[ list_idx ] : __undef;
+    }
+    // . END Public method /getListAttrMap/
+
+    // BEGIN Public method /makeColumnList/
+    // Summary   : makeColumnList( <list>, <col_id>, [ filter_fn ] );
+    // Purpose   : Extract a column from a list-of-lists or list-of-maps table.
+    // Examples  : list = makeColumnList( enum_table, 'value' );
+    //             list = makeColumnList( grid_table, 5 );
+    //             list = makeColumnList( enum_table, 5, function ( row ) {...} )
+    // Arguments :
+    //   + <list>      - List of maps or lists. Required.
+    //   + <col_id>    - The key or index of the column. Required.
+    //   + <filter_fn> - Optional filter. Recieves the table row as argument.
+    //       If it returns a falsey value the row is discarded.
+    //
+    // Returns   : Returns found map or undef if not found
+    // Throws    : None
+    //
+    function makeColumnList ( arg_list, arg_key, arg_filter_fn ) {
+      var
+        list       = castList( arg_list, [] ),
+        col_key    = castStr(  col_key, list[__0] && list[__0][__0] ),
+        filter_fn  = castFn(  arg_filter_fn ),
+
+        list_count = list[ __length ],
+        solve_list = [],
+
+        idx, row_data, col_data;
+
+      for ( idx = __0; idx < list_count; idx++ ) {
+        row_data = list[ idx ];
+        if ( typeofFn( row_data ) !== 'object' ) { continue; }
+        col_data = row_data[ col_key ];
+        if ( filter_fn && ! filter_fn( row_data ) ) { continue; }
+        solve_list[ __push ]( col_data );
+      }
+
+      return solve_list;
     }
     // . END Public method /getListAttrMap/
 
@@ -1524,23 +1574,23 @@ xhi._01_util_ = (function () {
         time_ms   = castInt( arg_time_ms, getNowMs( do_local ) ),
         time_idx  = castInt( arg_time_idx, __3 ),
         do_ampm   = castBool( arg_do_ampm, __false ),
-        abs_idx   = __makeAbsNumFn( time_idx  ),
+        abs_idx   = makeAbsNumFn( time_idx  ),
 
         sec_ms    = configMap._sec_ms_,
         min_sec   = configMap._min_sec_,
         hrs_min   = configMap._hrs_min_,
         day_hrs   = configMap._day_hrs_,
 
-        raw_sec_int = __makeRoundNumFn( time_ms / sec_ms ),
+        raw_sec_int = makeRoundNumFn( time_ms / sec_ms ),
         sec_int     = raw_sec_int % min_sec,
 
-        raw_min_int = __makeFloorNumFn( raw_sec_int / min_sec ),
+        raw_min_int = makeFloorNumFn( raw_sec_int / min_sec ),
         min_int     = raw_min_int % hrs_min,
 
-        raw_hrs_int = __makeFloorNumFn( raw_min_int / hrs_min ),
+        raw_hrs_int = makeFloorNumFn( raw_min_int / hrs_min ),
         hrs_int     = raw_hrs_int % day_hrs,
 
-        day_int     = __makeFloorNumFn( raw_hrs_int / day_hrs ),
+        day_int     = makeFloorNumFn( raw_hrs_int / day_hrs ),
         mns         = makePadNumStr,
 
         time_list   = [],
@@ -1624,7 +1674,7 @@ xhi._01_util_ = (function () {
         solve_num, solve_str, solve_list, list_count, idx
       ;
 
-      if ( __makeAbsNumFn( input_num ) >= round_limit_num ) {
+      if ( makeAbsNumFn( input_num ) >= round_limit_num ) {
         solve_num    = input_num / round_unit_num;
         solve_suffix = round_unit_str;
         solve_str    = solve_num[ vMap._toFixed_]( round_dec_count );
@@ -1648,10 +1698,10 @@ xhi._01_util_ = (function () {
     // Purpose   : Create a string from a date object
     //   or a UTC time number (in milliseconds).
     // Example   :
-    //   makeDateStr({ _date_obj_ : new Date() });
+    //   makeDateStr({ _date_obj_ : new __Date() });
     //   // Returns a string like '2016-09-18'
     //
-    //   makeDateStr({ _date_obj_ : new Date(), _time_idx_ : 3 });
+    //   makeDateStr({ _date_obj_ : new __Date(), _time_idx_ : 3 });
     //   // Returns a string like '2016-09-18 12:45:52'
     //
     //   makeDateStr({ _date_ms_ : 1474311626050 })
@@ -1743,10 +1793,10 @@ xhi._01_util_ = (function () {
     // Example   : makeDebounceFn({ _fn_ : myRoutineFn, _delay_ms_: 2500 });
     //             // Returns the debounced function
     // Arguments : <arg_map> with the following keys
-    //   + _fn_       - The function to execute
-    //   + _delay_ms_ - Inactivity time
-    //   + _ctx_data_ - Function context (default === undef)
-    //   + _do_asap_  - Fire function at first call (default === undef)
+    //   + _fn_       - The function to execute. Required.
+    //   + _delay_ms_ - Inactivity time. Default is 0.
+    //   + _ctx_data_ - Function context. Default is undef.
+    //   + _do_asap_  - Fire function at first call. Default is false.
     // Returns   :
     //   + Success - A function which will execute when called only after
     //     <_delay_ms_> has elapsed since the last time it was called.
@@ -1760,21 +1810,24 @@ xhi._01_util_ = (function () {
       var
         map      = castMap(  arg_map, {} ),
         fn       = castFn(   map._fn_ ),
-        delay_ms = castInt(  map._delay_ms_ ),
-        do_asap  = castBool( map._do_asap_, __false ),
+        delay_ms = castInt(  map._delay_ms_, __0     ),
+        do_asap  = castBool( map._do_asap_,  __false ),
         ctx_data = map._ctx_data_,
         delay_toid
       ;
 
-      if ( ! ( fn && delay_ms ) ) { return; }
+      if ( ! fn ) {
+        logObj._logMsg_( '_error_', '_debounce_bad_argument_', fn );
+        return __undef;
+      }
 
       return function () {
         var arg_list = makeArgList( arguments );
         if ( do_asap && ! delay_toid ) {
           fn[ __apply ]( ctx_data, arg_list );
         }
-        __clearTimeoutFn( delay_toid );
-        delay_toid = __setTimeoutFn( function() {
+        clearToFn( delay_toid );
+        delay_toid = setToFn( function() {
           if ( ! do_asap ) {
             fn[ __apply]( ctx_data, arg_list );
           }
@@ -1823,14 +1876,14 @@ xhi._01_util_ = (function () {
         if ( delta_ms <= __0 ) {
           // A timeout id should never be defined except in race conditions
           /* istanbul ignore next */
-          if ( delay_toid ) { __clearTimeoutFn( delay_toid ); }
+          if ( delay_toid ) { clearToFn( delay_toid ); }
           delay_toid = __undef;
           last_ms    = now_ms;
           return fn[ __apply ]( ctx_data, arg_list );
         }
 
         if ( delay_toid ) { return; }
-        delay_toid = __setTimeoutFn(
+        delay_toid = setToFn(
           function () {
             fn[ __apply ]( ctx_data, arg_list );
             delay_toid = __undef;
@@ -1930,13 +1983,11 @@ xhi._01_util_ = (function () {
     // Throws    : None
     //
     function makeGuidStr () {
-      /*jslint bitwise: true*/
       function makePart () {
         //noinspection NonShortCircuitBooleanExpressionJS,MagicNumberJS
-        return ((( __1+__makeRandomNumFn() ) * 0x10000 )|__0
+        return ((( __1 + makeRandomNumFn() ) * 0x10000 ) | __0
           )[ __toString ](16)[ vMap._substr_ ]( __1 );
       }
-      /*jslint bitwise: false*/
 
       return makePart() + makePart()
         + '-' + makePart()
@@ -2024,38 +2075,41 @@ xhi._01_util_ = (function () {
     // Purpose   : Create an HTML string with option tags
     // Example   : makeOptionHtml({ _val_list_ : [1,2,3,4] });
     // Arguments : <arg_map> with the following keys
-    //    + _label_map    : A label map keyed by values (default === undef)
-    //    + _select_list_ : List of values to be selected.
-    //      This is useful for multi-select fields (default = undef)
-    //    + _val_list_    : List of values to present (default === [])
+    //    + _enum_list_  : A table of _name_ and _value_. Required.
+    //    + _match_list_ : List of values to be selected.
+    //      This is useful for multi-select fields. Default is undef)
     // Returns   : An HTML option select string
     // Throws    : None
     //
     function makeOptionHtml ( arg_map ) {
       var
-        map         = castMap(  arg_map, {} ),
-        label_map   = castMap(  map._label_map_,   {} ),
-        select_list = castList( map._select_list_, [] ),
-        val_list    = castList( map._val_list_,    [] ),
-        val_count   = val_list[ __length ],
-        html_str    = __blank,
+        map        = castMap(  arg_map,           {} ),
+        enum_table = castList( map._enum_table_,  [] ),
+        match_list = castList( map._match_list_,  [] ),
 
-        idx, val_data, val_str, label_str
-      ;
+        enum_count = enum_table[ __length ],
+        solve_html = __blank,
 
-      _OPTION_: for ( idx = __0; idx < val_count; idx++ ) {
-        val_data = val_list[ idx ];
-        val_str  = castStr( val_data, __blank );
-        if ( val_str === __blank ) { continue _OPTION_; }
-        label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
+        idx, row_map, val_str, val_html, label_str, label_html
+        ;
 
-        html_str += '<option value="' + val_str + '"';
-        if ( select_list[ __indexOf ]( val_data ) !== __n1 ) {
-          html_str += ' selected="selected"';
+      _OPTION_: for ( idx = __0; idx < enum_count; idx++ ) {
+        row_map = enum_table[ idx ];
+        val_str = castStr( row_map._value_ );
+
+        if ( val_str === __undef ) { continue _OPTION_; }
+
+        val_html   = encodeHtml( val_str );
+        label_str  = row_map._label_ || makeUcFirstStr( val_str );
+        label_html = encodeHtml( label_str );
+
+        solve_html += '<option value="' + val_html + '"';
+        if ( match_list[ __indexOf ]( val_str ) > __n1 ) {
+          solve_html += ' selected="selected"';
         }
-        html_str += '>' + label_str + '</option>';
+        solve_html += '>' + label_html + '</option>';
       }
-      return html_str;
+      return solve_html;
     }
     // . END Public method /makeOptionHtml/
 
@@ -2075,7 +2129,7 @@ xhi._01_util_ = (function () {
         count = castNum( arg_count, __0 )
       ;
 
-      count = count < __0 ? __0 : __makeFloorNumFn( count );
+      count = count < __0 ? __0 : makeFloorNumFn( count );
       return ( ratio * __100 )[ vMap._toFixed_ ]( count ) + '%';
     }
     // . END Public method /makePctStr/
@@ -2085,33 +2139,35 @@ xhi._01_util_ = (function () {
     //
     function makeRadioHtml ( arg_map ) {
       var
-        map        = castMap(  arg_map, {} ),
-        group_name = castStr(  map._group_name_ ),    // name=...
-        match_str  = castStr(  map._match_str_  ),    // Selected val
-        val_list   = castList( map._val_list_,  [] ), // Vals in order
-        label_map  = castMap(  map._label_map_, {} ), // Labels
+        map        = castMap(  arg_map,          {} ),
+        enum_table = castList( map._enum_table_, [] ),
+        match_str  = castStr(  map._match_str_   ),
+        group_name = castStr(  map._group_name_  ),
+        group_html = encodeHtml( group_name      ),
 
-        val_count  = val_list[ __length ],
-        html_str   = __blank,
+        enum_count = enum_table[ __length ],
+        solve_html = __blank,
 
-        idx, val_str, label_str
-      ;
-
-      _RADIO_: for ( idx = __0; idx < val_count; idx++ ) {
-        val_str   = castStr( val_list[ idx ], __blank );
-        if ( val_str === __blank ) { continue _RADIO_; }
-
-        label_str = label_map[ val_str ] || makeUcFirstStr( val_str );
-
-        html_str
-          += '<label>'
-          +  '<input type="radio" name="' + group_name
-          +  '" value="' + val_str + '"'
+        idx, row_map, val_str, val_html, label_str, label_html
         ;
-        if ( val_str === match_str ) { html_str += ' checked="checked"'; }
-        html_str += '/>' + label_str + '</label>';
+
+      _RADIO_: for ( idx = __0; idx < enum_count; idx++ ) {
+        row_map    = castMap( enum_table[ idx ], {} );
+        val_str    = castStr( row_map._value_ );
+        if ( val_str === __undef ) { continue _RADIO_; }
+        val_html   = encodeHtml( val_str );
+        label_str  = castStr( row_map._label_, makeUcFirstStr( val_html ) );
+        label_html = encodeHtml( label_str );
+
+        solve_html
+          += '<label>'
+          +  '<input type="radio" name="' + group_html
+          +  '" value="' + val_html + '"'
+        ;
+        if ( val_str === match_str ) { solve_html += ' checked="checked"'; }
+        solve_html += '>' + label_html + '</label>';
       }
-      return html_str;
+      return solve_html;
     }
     // . END Public method /makeRadioHtml/
 
@@ -2173,7 +2229,7 @@ xhi._01_util_ = (function () {
     //
     function makeContextObj ( arg_struct ) {
       var
-        key_list  = __makeKeyListFn( arg_struct ),
+        key_list  = makeKeyListFn( arg_struct ),
         key_count = key_list.length,
         solve_struct = __Array.isArray( arg_struct ) ? [] : {}
         ;
@@ -2186,6 +2242,7 @@ xhi._01_util_ = (function () {
           key_idx       : 0
         } : null;
     }
+
     function makeRekeyMap( arg_struct, arg_key_map, arg_mode_str ) {
       var
         context_obj = makeContextObj( arg_struct ),
@@ -2199,6 +2256,8 @@ xhi._01_util_ = (function () {
         key, data, replace_data,
         check_obj, pop_solve_struct, i
         ;
+
+      if ( ! context_obj ) { return arg_struct; }
 
       CONTEXT: for ( i = __0; i < 100000; i++ ) {
         key_count  = context_obj.key_count;
@@ -2216,7 +2275,7 @@ xhi._01_util_ = (function () {
           data = pop_solve_struct;
           pop_solve_struct = null;
         }
-        else if ( typeof data === 'object' ) {
+        else if ( data && typeofFn( data ) === 'object' ) {
           check_obj = makeContextObj( data );
           if ( check_obj ) {
             stack_list[ __push ]( context_obj );
@@ -2239,7 +2298,7 @@ xhi._01_util_ = (function () {
         if ( key_idx >= key_count ) {
           if ( stack_list.length > 0 ) {
             pop_solve_struct = context_obj.solve_struct;
-            context_obj = stack_list.pop();
+            context_obj = stack_list[ __pop ]();
           }
           else {
             break CONTEXT;
@@ -2410,9 +2469,9 @@ xhi._01_util_ = (function () {
         _INTERPOLATE_: for ( idx = __0; idx < unit_count; idx++ ) {
           // Calculate ranges
           check_idx   = btm_idx
-            + __makeRoundNumFn( ( ( top_idx - btm_idx ) / __2 ) );
+            + makeRoundNumFn( ( ( top_idx - btm_idx ) / __2 ) );
           check_map   = unit_ms_list[ check_idx ];
-          check_count = __makeRoundNumFn( ( span_ms / check_map._ms_ ) );
+          check_count = makeRoundNumFn( ( span_ms / check_map._ms_ ) );
           if ( ( top_idx - btm_idx ) === __1 && last_btm_idx !== __undef ) {
             if ( btm_idx === last_btm_idx && top_idx === last_top_idx ) {
               break _INTERPOLATE_;
@@ -2481,7 +2540,7 @@ xhi._01_util_ = (function () {
 
       solve_time_list = [];
       while ( left_ratio < __1 ) {
-        solve_ms  = __makeFloorNumFn( left_ratio * span_ms ) + min_ms;
+        solve_ms  = makeFloorNumFn( left_ratio * span_ms ) + min_ms;
         date_obj.setTime( solve_ms );
         time_ms = __Num( date_obj.getHours()   ) * configMap._hrs_ms_
           +       __Num( date_obj.getMinutes() ) * configMap._min_ms_
@@ -2504,41 +2563,52 @@ xhi._01_util_ = (function () {
     // Example   :
     //  out_str = makeTmpltStr({
     //    _input_str_  : '{_name_} says "{_saying_}"',
-    //    _lookup_map_ : { _name_ : 'Fred', _saying_ : 'hello!' }
+    //    _lookup_map_ : { _name_ : 'Fred', _saying_ : 'hello!' },
+    //    _do_html_encode_ : true
     //  });
     //  // out_str is 'Fred says hello!'
     //
     // Arguments : ( named )
     //   _input_str_  : A string template like so:
-    //      'This person name {_p1_} said to the other person {_p2_}'
+    //      'This person name {_p1_} said to the other person {_p2_}'.
+    //      Default is ''.
     //   _lookup_map_ : A map of values to replace, like so:
-    //      { _p1_ : 'fred', _p2_ : 'barney' }
+    //      { _p1_ : 'fred', _p2_ : 'barney' }. Default is {}.
+    //   _tmplt_rx_   : A regular expression object to define replace patterns.
+    //     Default is /{([^{}]+[^\\])}/g
+    //   _do_encode_html_ : When true replaced values will be html encoded.
+    //     Default is false.
     // Throws    : None
     // Returns
     //   The filled-out template string
     //
     function makeTmpltStr ( arg_map ) {
       var
-        map        = castMap( arg_map, {} ),
-        input_str  = castStr( map._input_str_, __blank  ),
-        lookup_map = castMap( map._lookup_map_,      {} ),
-        tmplt_rx   = map._tmplt_rx_ || configMap._tmplt_rx_,
-        bound_fn;
+        map            = castMap(  arg_map, {} ),
 
+        do_html_encode = castBool( map._do_html_encode_, __false ),
+        input_str      = castStr(  map._input_str_,      __blank ),
+        lookup_map     = castMap(  map._lookup_map_,          {} ),
+        tmplt_rx       = map._tmplt_rx_ || configMap._tmplt_rx_,
+
+        bound_fn
+      ;
 
       function lookupFn ( ignore_match_str, lookup_name ) {
         var
-          return_data  = this,
-          lookup_list  = lookup_name[ __split ]( '.' ),
-          lookup_count = lookup_list[ __length ],
-          idx, key_name
+          return_data = this,
+          path_list   = lookup_name[ __split ]( '.' ),
+          path_count  = path_list[ __length ],
+
+          idx, key_name, return_str
           ;
 
-        for ( idx = 0; idx < lookup_count; idx++ ) {
-          key_name = lookup_list[ idx ];
+        for ( idx = __0; idx < path_count; idx++ ) {
+          key_name = path_list[ idx ];
           return_data = ( return_data && return_data[ key_name ] );
         }
-        return castStr( return_data, __blank );
+        return_str = castStr( return_data, __blank );
+        return do_html_encode ? encodeHtml( return_str ) : return_str;
       }
 
       bound_fn   = lookupFn[ __bind ]( lookup_map );
@@ -2560,7 +2630,7 @@ xhi._01_util_ = (function () {
         extend_map = castMap(  arg_extend_map, {} ),
         attr_list  = castList( arg_attr_list ),
 
-        key_list   = __makeKeyListFn( extend_map ),
+        key_list   = makeKeyListFn( extend_map ),
         key_count  = key_list[ __length ],
 
         idx, key
@@ -2606,7 +2676,7 @@ xhi._01_util_ = (function () {
       if ( ! poll_fn ) { return __false; }
 
       main_fn = function () {
-        __setTimeoutFn( function() {
+        setToFn( function() {
           var do_next;
           if ( count && idx >= count ) {
             return finish_fn && finish_fn();
@@ -2694,21 +2764,85 @@ xhi._01_util_ = (function () {
       if ( ! (  input_map && settable_map && config_map ) ) {
         return logObj._logMsg_( '_error_', '_bad_input_' );
       }
-      key_list  = __makeKeyListFn( input_map );
+      key_list  = makeKeyListFn( input_map );
       key_count = key_list.length;
 
       for ( idx = __0; idx < key_count; idx++ ) {
         key_name = key_list[ idx ];
-        if ( settable_map[ __hasOwnProperty ]( key_name ) ) {
+        if ( settable_map[ __hasProp ]( key_name ) ) {
           config_map[ key_name ] = input_map[ key_name ];
         }
         else {
-          logObj._logMsg_( '_warn_', '_key_not_supported_', key_name )
+          logObj._logMsg_( '_warn_', '_key_not_supported_', key_name );
         }
       }
       return config_map;
     }
     // . END Public method /setConfigMap/
+
+    // BEGIN Public method /makeDeepKeyList/
+    // Purpose   : Get all unique keys in a data structure
+    // Example   : _getObjKeyList_({ foo:{ bar:1 }, bar:2})
+    //             Returns [ 'foo', 'bar' ]
+    // Arguments : ( positional )
+    //   0 : base_struct - An array or map
+    // Returns   :
+    //   * Success - A list of a unique keys sorted
+    //   * Failure - An empty list
+    // Cautions  : The key list limit is set to __100. If this
+    //   is met, a warning is logged and __undef returned
+    //
+    function makeDeepKeyList ( arg_base_data ) {
+      var
+        base_obj   = typeofFn( arg_base_data ) === 'object' ? arg_base_data : {},
+        walk_obj   = base_obj,
+        solve_list = [],
+        stack_list = [],
+        key_list   = makeKeyListFn( walk_obj ),
+        key_count  = key_list[ __length ],
+        idx        = __0,
+
+        key, loop_obj,
+        ctx_key_list, stack_map
+      ;
+
+      _OUTER_: while ( walk_obj ) {
+        while ( idx < key_count ) {
+          key = key_list[ idx ];
+          loop_obj = walk_obj[ key ];
+          if ( solve_list[ __indexOf ]( key ) === __n1 ) {
+            solve_list[ __push ]( key );
+          }
+
+          if ( typeofFn( loop_obj ) === vMap._object_ ) {
+            ctx_key_list = makeKeyListFn( loop_obj );
+            if ( ctx_key_list[ __length ] > __0 ) {
+              stack_list[ __push ]( {
+                _idx_       : idx,
+                _key_count_ : key_count,
+                _key_list_  : key_list,
+                _walk_obj_  : walk_obj
+              } );
+
+              idx = __n1;
+              walk_obj = loop_obj;
+              key_list = makeKeyListFn( walk_obj );
+              key_count = key_list[ __length ];
+            }
+          }
+          idx++;
+        }
+
+        stack_map = stack_list[ __pop ]();
+        if ( ! stack_map ) { break _OUTER_; }
+        walk_obj = stack_map._walk_obj_;
+        key_count = stack_map._key_count_;
+        key_list = stack_map._key_list_;
+        idx = stack_map._idx_ + __1;
+      }
+      return solve_list;
+    }
+    // . END Public method /makeDeepKeyList/
 
     // BEGIN Public method /setStructData/
     // Purpose   : Set a deep structure attribute value
@@ -2780,7 +2914,7 @@ xhi._01_util_ = (function () {
           break _SET_KEY_;
         }
 
-        if ( ! walk_struct[ __hasOwnProperty ]( solve_key ) ) {
+        if ( ! walk_struct[ __hasProp ]( solve_key ) ) {
           int_next_key = castInt( raw_next_key );
           if ( raw_next_key === __null || int_next_key !== __undef ) {
             walk_struct[ solve_key ] = [];
@@ -2819,7 +2953,7 @@ xhi._01_util_ = (function () {
       count = list[ __length ];
       for ( idj = count; idj > __0; idj-- ) {
         last_idx         = idj - __1;
-        pick_idx         = __makeFloorNumFn( __makeRandomNumFn() * idj );
+        pick_idx         = makeFloorNumFn( makeRandomNumFn() * idj );
         swap_data        = list[ last_idx ];
         list[ last_idx ] = list[ pick_idx ];
         list[ pick_idx ] = swap_data;
@@ -2966,14 +3100,16 @@ xhi._01_util_ = (function () {
       _getStructData_   : getStructData,
       _getTzCode_       : getTzCode,
       _makeClockStr_    : makeClockStr,
+      _makeColumnList_  : makeColumnList,
       _makeCommaNumStr_ : makeCommaNumStr,
       _makeDateStr_     : makeDateStr,
       _makeDebounceFn_  : makeDebounceFn,
+      _makeDeepKeyList_ : makeDeepKeyList,
       _makeEllipsisStr_ : makeEllipsisStr,
       _makeErrorObj_    : makeErrorObj,
       _makeExtractMap_  : makeExtractMap,
       _makeGuidStr_     : makeGuidStr,
-      _makeKeyList_     : __makeKeyListFn,
+      _makeKeyList_     : makeKeyListFn,
       _makeMapUtilObj_  : makeMapUtilObj,
       _makeMetricStr_   : makeMetricStr,
       _makeOptionHtml_  : makeOptionHtml,
