@@ -24,7 +24,7 @@
  *   - showLbFn         : Show litebox with content.
  *   - showSuccessFn    : Show a success message
  *
- *   - getMapFn         : Get internal map to inspect or change
+ *   - getMapFn         : Get state or config map
  *   - initModuleFn     : Initialize DOM and state data if needed
 */
 /*global xhiCSS, xhi, xhiJQ */
@@ -36,70 +36,75 @@ xhi._06_lb_ = (function ( $ ) {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES =================================
     var
-      subName = '_06_lb_',
+      // Set app symbols
       aKey    = aMap._aKey_,
-      vMap    = aMap._vMap_,
       nMap    = aMap._nMap_,
+      subName = '_06_lb_',
+      vMap    = aMap._vMap_,
 
+      // Set object symbols
       cssKmap = xhiCSS._cfg_._cssKeyMap_,
       cssVmap = xhiCSS._cfg_._cssValMap_,
+      utilObj = aMap._01_util_,
+      logObj  = utilObj._getLogObj_(),
 
+      // Set function symbols
+      castBoolFn  = utilObj._castBool_,
+      castFnFn    = utilObj._castFn_,
+      castJQFn    = utilObj._castJQ_,
+      castIntFn   = utilObj._castInt_,
+      castListFn  = utilObj._castList_,
+      castMapFn   = utilObj._castMap_,
+      castNumFn   = utilObj._castNum_,
+      castStrFn   = utilObj._castStr_,
+      clearToFn   = vMap._clearTimeoutFn_,
+      logFn       = logObj._logMsg_,
+      pFn         = utilObj._makeReplaceFn_( '_p_', aKey ),
+      setToFn     = vMap._setTimeoutFn_,
+      fillTmpltFn = utilObj._makeTmpltStr_,
+
+      // Set number symbols
       __0 = nMap._0_,
       __2 = nMap._2_,
 
+      // Set string-like symbols
       __blank = vMap._blank_,
       __false = vMap._false_,
       __null  = vMap._null_,
       __true  = vMap._true_,
       __undef = vMap._undef_,
 
-      __setTo    = vMap._setTimeoutFn_,
-      __clearTo  = vMap._clearTimeoutFn_,
-
-      __util     = aMap._01_util_,
-      __logObj   = __util._getLogObj_(),
-      __logMsg   = __logObj._logMsg_,
-      __castBool = __util._castBool_,
-      __castFn   = __util._castFn_,
-      __castJQ   = __util._castJQ_,
-      __castInt  = __util._castInt_,
-      __castList = __util._castList_,
-      __castMap  = __util._castMap_,
-      __castNum  = __util._castNum_,
-      __castStr  = __util._castStr_,
-      __p        = __util._makeReplaceFn_( '_p_', aKey ),
-      __tmplt    = __util._makeTmpltStr_,
-
+      // Set config and state maps
       configMap  = {
         _trans_ms_      : 350, // transition time
         _active_class_  : aKey + '-_x_active_',
-        _main_tmplt_     : __p( __blank
-          + '<div id="{_p_}-_lb_mask_" class="{_p_}-_lb_mask_"></div>'
+        _main_tmplt_     : pFn(
+            '<div id="{_p_}-_lb_mask_" class="{_p_}-_lb_mask_"></div>'
           + '<div id="{_p_}-_lb_spin_" class="{_p_}-_lb_spin_">&#xf021;'
           + '</div><div id="{_p_}-_lb_"></div>'
         ),
-        _local_tmplt_    : __p( __blank
-          + '<div class="{_p_}-_lb_mask_ {_p_}-_x_local_ {_p_}-_x_active_">'
+        _local_tmplt_    : pFn(
+            '<div class="{_p_}-_lb_mask_ {_p_}-_x_local_ {_p_}-_x_active_">'
           + '</div>'
           + '<div class="{_p_}-_lb_spin_ {_p_}-_x_local_ {_p_}-_x_active_">'
           + '&#xf021;</div>'
         ),
-        _success_tmplt_ : __p( __blank
-          + '<div class="{_p_}-_lb_success_">'
+        _success_tmplt_ : pFn(
+            '<div class="{_p_}-_lb_success_">'
           + '<div class="{_p_}-_lb_success_title_">'
           + '{_msg_str_}'
           + '</div>'
           + '</div>'
         ),
-        _erow_tmplt_    : __p( __blank
-          + '<div class="{_p_}-_lb_error_row_">'
+        _erow_tmplt_    : pFn(
+            '<div class="{_p_}-_lb_error_row_">'
           + '<div class="{_p_}-_lb_error_row_code_">{_code_}</div>'
           + '<div class="{_p_}-_lb_error_row_name_">{_name_}</div>'
           + '<div class="{_p_}-_lb_error_row_descr_">{_descr_}</div>'
           + '</div>'
         ),
-        _error_tmplt_   : __p( __blank
-          + '<div class="{_p_}-_lb_error_">'
+        _error_tmplt_   : pFn(
+            '<div class="{_p_}-_lb_error_">'
           + '<h1>Error</h1>'
           + '<div class="{_p_}-_lb_error_list_">'
           + '{_inner_html_}'
@@ -108,13 +113,13 @@ xhi._06_lb_ = (function ( $ ) {
         ),
         _tmplt_map_     : {
           _all_ : '{_content_html_}',
-          _btm_ : __p( __blank
-            + '<div class="{_p_}-_lb_content_">{_content_html_}</div>'
+          _btm_ : pFn(
+              '<div class="{_p_}-_lb_content_">{_content_html_}</div>'
             + '<div class="{_p_}-_lb_title_">{_title_html_}</div>'
             + '<div class="{_p_}-_lb_close_">{_close_html_}</div>'
           ),
-          _top_ : __p( __blank
-            + '<div class="{_p_}-_lb_title_">{_title_html_}</div>'
+          _top_ : pFn(
+              '<div class="{_p_}-_lb_title_">{_title_html_}</div>'
             + '<div class="{_p_}-_lb_close_">{_close_html_}</div>'
             + '<div class="{_p_}-_lb_content_">{_content_html_}</div>'
           )
@@ -127,6 +132,7 @@ xhi._06_lb_ = (function ( $ ) {
         _med_w_ratio_   : 0.75,
         _lg_w_ratio_    : 0.50
       },
+
       stateMap   = {
         _cleanup_fn_    : __undef,  // Clean up function (bound)
         _cleanup_toid_  : __undef,  // Clean up timeout id
@@ -137,10 +143,13 @@ xhi._06_lb_ = (function ( $ ) {
         _mod_class_str_ : __blank,  // Caller specified class(es) for lb
         _onclose_fn_    : __undef   // Callback function on close
       },
+
+      // Initialize jQuery object cache
       $Map,
 
+      // Declare other module-scope variables
       coordDraggable, instanceMap, optionMap
-    ;
+      ;
     // == . END MODULE SCOPE VARIABLES =================================
 
     // == BEGIN UTILITY METHODS ========================================
@@ -202,7 +211,7 @@ xhi._06_lb_ = (function ( $ ) {
     // Throws    : None
     //
     function addLocalSpinFn ( arg_$box ) {
-      var $box = __castJQ( arg_$box );
+      var $box = castJQFn( arg_$box );
 
       if ( $box ) { $box[ vMap._html_ ]( configMap._local_tmplt_ ); }
     }    // . END DOM method /addLocalSpinFn/
@@ -264,14 +273,14 @@ xhi._06_lb_ = (function ( $ ) {
     //
     function hideLbFn ( arg_callback_fn ) {
       var
-        callback_fn  = __castFn( arg_callback_fn ),
+        callback_fn  = castFnFn( arg_callback_fn ),
         active_class = configMap._active_class_,
         clean_smap, clean_fn;
 
       initModuleFn();
 
       if ( stateMap._close_toid_ ) {
-        __clearTo( stateMap._close_toid_ );
+        clearToFn( stateMap._close_toid_ );
         stateMap._close_toid_ = __undef;
       }
 
@@ -286,7 +295,7 @@ xhi._06_lb_ = (function ( $ ) {
 
         clean_fn                = cleanUpFn[ vMap._bind_ ]( clean_smap );
         stateMap._cleanup_fn_   = clean_fn;
-        stateMap._cleanup_toid_ = __setTo( clean_fn, configMap._trans_ms_ );
+        stateMap._cleanup_toid_ = setToFn( clean_fn, configMap._trans_ms_ );
       }
       return $Map._$litebox_;
     }
@@ -510,24 +519,24 @@ xhi._06_lb_ = (function ( $ ) {
     function showLbFn ( arg_map ) {
       initModuleFn();
       var
-        map           = __castMap( arg_map, {} ),
-        close_html    = __castStr( map._close_html_, __blank ),
-        content_html  = __castStr( map._content_html_, __blank ),
-        layout_key    = __castStr( map._layout_key_ ) || '_top_',
-        mod_class_str = __castStr( map._mod_class_str_, __blank ),
-        title_html    = __castStr( map._title_html_, __blank ),
+        map           = castMapFn( arg_map, {} ),
+        close_html    = castStrFn( map._close_html_,    __blank ),
+        content_html  = castStrFn( map._content_html_,  __blank ),
+        layout_key    = castStrFn( map._layout_key_ ) || '_top_',
+        mod_class_str = castStrFn( map._mod_class_str_, __blank ),
+        title_html    = castStrFn( map._title_html_,    __blank ),
 
-        autoclose_ms  = __castInt( map._autoclose_ms_ ),
-        position_map  = __castMap( map._position_map_ ),
+        autoclose_ms  = castIntFn( map._autoclose_ms_ ),
+        position_map  = castMapFn( map._position_map_ ),
 
-        do_abs_pos    = __castBool( map._do_abs_pos_, __false ),
-        do_bclick     = __castBool( map._do_block_click_, __false ),
-        do_draggable  = __castBool( map._do_draggable_, __true ),
-        do_dflt_class = __castBool( map._do_dflt_class_, __true ),
-        do_mask       = __castBool( map._do_mask_, __true ),
-        do_tclose     = __castBool( map._do_title_close_, __true ),
-        onclose_fn    = __castFn( map._onclose_fn_, __null ),
-        onshow_fn     = __castFn( map._onshow_fn_, __null ),
+        do_abs_pos    = castBoolFn( map._do_abs_pos_,     __false ),
+        do_bclick     = castBoolFn( map._do_block_click_, __false ),
+        do_draggable  = castBoolFn( map._do_draggable_,    __true ),
+        do_dflt_class = castBoolFn( map._do_dflt_class_,   __true ),
+        do_mask       = castBoolFn( map._do_mask_,         __true ),
+        do_tclose     = castBoolFn( map._do_title_close_,  __true ),
+        onclose_fn    = castFnFn( map._onclose_fn_,        __null ),
+        onshow_fn     = castFnFn( map._onshow_fn_,         __null ),
 
         active_class  = configMap._active_class_,
         $litebox      = $Map._$litebox_,
@@ -543,12 +552,12 @@ xhi._06_lb_ = (function ( $ ) {
 
       // Clean-up any lingering fades, etc
       if ( stateMap._cleanup_toid_ && stateMap._cleanup_fn_ ) {
-        __clearTo( stateMap._cleanup_toid_ );
+        clearToFn( stateMap._cleanup_toid_ );
         stateMap._cleanup_fn_();
       }
 
       // Fill litebox content with desired layout
-      inner_html = __tmplt( {
+      inner_html = fillTmpltFn( {
         _input_str_  : configMap._tmplt_map_[ layout_key ],
         _lookup_map_ : {
           _close_html_   : close_html,
@@ -600,7 +609,7 @@ xhi._06_lb_ = (function ( $ ) {
 
       // Handle autoclose
       if ( autoclose_ms ) {
-        stateMap._close_toid_ = __setTo( closeLbFn, autoclose_ms );
+        stateMap._close_toid_ = setToFn( closeLbFn, autoclose_ms );
       }
 
       // Handle position map
@@ -704,13 +713,13 @@ xhi._06_lb_ = (function ( $ ) {
     // Throws    : None
     //   Adjusts the litebox and mask to provided window width and
     //   height.  This should be called when the window is resized, typically
-    //   throttled using __util._makeThrottleFn_.
+    //   throttled using utilObj._makeThrottleFn_.
     //
     function handleResizeFn ( arg_map ) {
       var
-        map       = __castMap( arg_map, {} ),
-        window_h_px = __castNum( map._window_h_px_ ),
-        window_w_px = __castNum( map._window_w_px_ ),
+        map       = castMapFn( arg_map, {} ),
+        window_h_px = castNumFn( map._window_h_px_ ),
+        window_w_px = castNumFn( map._window_w_px_ ),
         $litebox  = $Map._$litebox_,
 
         h_px, w_px
@@ -773,8 +782,8 @@ xhi._06_lb_ = (function ( $ ) {
     //
     function showSuccessFn ( arg_str ) {
       var
-        msg_str      = __castStr( arg_str, __blank ),
-        content_html = __tmplt( {
+        msg_str      = castStrFn( arg_str, __blank ),
+        content_html = fillTmpltFn( {
           _input_str_  : configMap._success_tmplt_,
           _lookup_map_ : {
             _msg_str_ : msg_str
@@ -800,7 +809,7 @@ xhi._06_lb_ = (function ( $ ) {
     //
     function showErrorTableFn ( arg_error_table ) {
       var
-        error_table = __castList( arg_error_table, [] ),
+        error_table = castListFn( arg_error_table, [] ),
         row_count   = error_table[ vMap._length_ ],
         inner_html  = __blank,
 
@@ -808,18 +817,18 @@ xhi._06_lb_ = (function ( $ ) {
 
       initModuleFn();
       ROW: for ( idx = __0; idx < row_count; idx++ ) {
-        row_map = __castMap( error_table[ idx ] );
+        row_map = castMapFn( error_table[ idx ] );
 
         if ( !row_map ) { continue ROW; }
-        lookup_map = __util._cloneData_( row_map );
+        lookup_map = utilObj._cloneData_( row_map );
 
-        inner_html += __tmplt( {
+        inner_html += fillTmpltFn( {
           _input_str_  : configMap._erow_tmplt_,
           _lookup_map_ : lookup_map
         } );
       }
 
-      content_html = __tmplt( {
+      content_html = fillTmpltFn( {
         _input_str_  : configMap._error_tmplt_,
         _lookup_map_ : {
           _inner_html_ : inner_html || 'unknown error'
@@ -831,7 +840,7 @@ xhi._06_lb_ = (function ( $ ) {
 
     // BEGIN Public method /getMapFn/
     // Summary   : getMapFn( <type_str_> );
-    // Purpose   : Get stateMap or configMap to inspect or change
+    // Purpose   : Get config or state map
     // Example   : getMapFn( '_configMap_' );
     // Arguments : (positional)
     //   <type_str> - Either '_configMap_' or '_stateMap_'
@@ -849,13 +858,13 @@ xhi._06_lb_ = (function ( $ ) {
       if ( type_str === '_$map_' ) {
         return $Map;
       }
-      __logMsg( '_warn_', '_requested_map_not_available_', type_str );
+      logFn( '_warn_', '_requested_map_not_available_', type_str );
     }
     // . END Public method /getMapFn/
 
     // BEGIN Public method /setConfigMapFn/
     function setConfigMapFn ( arg_set_map ) {
-      return __util._setConfigMap_({
+      return utilObj._setConfigMap_({
         _input_map_    : arg_set_map,
         _settable_map_ : { _onclose_fn_ : __true },
         _config_map_   : configMap
@@ -879,7 +888,7 @@ xhi._06_lb_ = (function ( $ ) {
       _initModuleFn_ : initModuleFn
     };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }

@@ -8,7 +8,7 @@
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
  * Important: We suggest creating your own 02_01_data_mock for each app.
  *   There is little benefit of using an instance of this module.
- *   Notice appMap.02_01_data_mock is listed before and should be 
+ *   Notice appMap.02_01_data_mock is listed before and should be
  *   loaded before the appMap.02_data. Thus it is a resource for 02_data
  *   and should not rely on or expect 02_data to exist.
  *

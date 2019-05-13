@@ -202,7 +202,6 @@ xhi._05_css_ = (function () {
       xhiCSS._setVsheet_( {
         _vsheet_id_     : '_base_',
         _mode_str_      : '_add_',
-        _mixin_map_     : aMap._05_02_css_base_._mixinMap_,
         _selector_list_ : aMap._05_02_css_base_._selectorList_
       } );
 

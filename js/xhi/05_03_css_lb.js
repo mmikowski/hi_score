@@ -16,18 +16,22 @@ xhi._05_03_css_lb_ = (function () {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
-      subName   = '_05_03_css_lb_',
+      // Set app symbols
       aKey      = aMap._aKey_,
+      subName   = '_05_03_css_lb_',
       vMap      = aMap._vMap_,
 
+      // Set object symbols
+      utilObj   = aMap._01_util_,
+      pFn       = utilObj._makeReplaceFn_( '_p_', aKey ),
+
+      // Set string-like symbols
       __true    = vMap._true_,
 
-      __util    = aMap._01_util_,
-      __p       = __util._makeReplaceFn_( '_p_', aKey ),
-
+      // Set config map
       configMap = {
         _selector_list_ : [
-          { _selector_str_ : __p( '.{_p_}-_lb_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_' ),
             _rule_map_     : {
               _z_index_       : [ '36' ],
               _position_      : '_fixed_',
@@ -44,13 +48,13 @@ xhi._05_03_css_lb_ = (function () {
               _transition_    : [ 'opacity .5s ease' ]
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_.{_p_}-_x_local_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_.{_p_}-_x_local_' ),
             _rule_map_     : { _position_ : '_absolute_' }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_.{_p_}-_x_active_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_.{_p_}-_x_active_' ),
             _rule_map_     : { _opacity_ : '_1_' }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_mask_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_mask_' ),
             _rule_map_     : {
               _z_index_    : [ '35' ],
               _position_   : '_fixed_',
@@ -66,7 +70,7 @@ xhi._05_03_css_lb_ = (function () {
               _transition_ : [ 'opacity .5s ease' ]
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_mask_.{_p_}-_x_local_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_mask_.{_p_}-_x_local_' ),
             _rule_map_     : {
               _position_   : '_absolute_',
               _z_index_    : '_1_',
@@ -74,25 +78,25 @@ xhi._05_03_css_lb_ = (function () {
               _cursor_     : '_default_'
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_mask_.{_p_}-_x_noclick_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_mask_.{_p_}-_x_noclick_' ),
             _rule_map_     : { _cursor_ : [ 'wait' ] }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_mask_.{_p_}-_x_active_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_mask_.{_p_}-_x_active_' ),
             _rule_map_     : { _opacity_ : [ '.65' ] }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_content_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_content_' ),
             _rule_map_     : {
               _position_ : '_relative_',
               _padding_  : [[ '_1rem_', '_1d5rem_' ]]
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_content_ p' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_content_ p' ),
             _rule_map_     : { _margin_bottom_ : '_1rem_' }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_content_ p:last-child' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_content_ p:last-child' ),
             _rule_map_     : { _margin_bottom_ : '_0_' }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_close_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_close_' ),
             _rule_map_     : {
               _z_index_  : '_1_',
               _position_ : '_absolute_',
@@ -101,7 +105,7 @@ xhi._05_03_css_lb_ = (function () {
               _cursor_   : '_pointer_'
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_title_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_title_' ),
             _rule_map_     : {
               _position_   : '_relative_',
               _padding_    : [ [ '_d25rem_', '_d75rem_' ] ],
@@ -117,7 +121,7 @@ xhi._05_03_css_lb_ = (function () {
           { _selector_str_ : '@keyframes spinReverse {'
             + '100%{transform:rotate(-360deg);}}'
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_spin_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_spin_' ),
             _rule_map_     : {
               _z_index_     : [ '50' ],
               _position_    : '_fixed_',
@@ -137,42 +141,42 @@ xhi._05_03_css_lb_ = (function () {
             }
           },
 
-          { _selector_str_ : __p( '.{_p_}-_x_local_ .{_p_}-_lb_spin_' ),
+          { _selector_str_ : pFn( '.{_p_}-_x_local_ .{_p_}-_lb_spin_' ),
             _rule_map_     : {
               _z_index_    : '_1_',
               _position_   : '_absolute_',
               _min_height_ : '_4rem_'
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_spin_.{_p_}-_x_reverse_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_spin_.{_p_}-_x_reverse_' ),
             _rule_map_     : {
               _animation_ : [ 'spinReverse 1s linear infinite' ]
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_spin_.{_p_}-_x_active_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_spin_.{_p_}-_x_active_' ),
             _rule_map_     : { _display_ : '_block_' }
           },
-          { _selector_str_ : __p( '.{_p_}-_lb_spin_.{_p_}-_x_local_' ),
+          { _selector_str_ : pFn( '.{_p_}-_lb_spin_.{_p_}-_x_local_' ),
             _rule_map_     : {
               _z_index_    : '_1_',
               _position_   : '_absolute_',
               _min_height_ : '_4rem_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_lb_'),
+          { _selector_str_ : pFn('.{_p_}-_x_lb_'),
             _rule_map_ : { _max_width_ : '_50p_' }
           },
-          // BEGIN conditional selectors where w -lt 960px
+          // Begin conditional selectors where w -lt 960px
           { _begin_cond_str_ : '@media all and (max-width: 960px)' },
-            { _selector_str_ : __p('.{_p_}-_x_lb_'),
+            { _selector_str_ : pFn('.{_p_}-_x_lb_'),
               _rule_map_ : { _max_width_ : [ '720px' ] }
             },
           { _end_cond_str_ : '' },
           // . END conditional selectors where w -lt 960px
 
-          // BEGIN conditional selectors where w -lt 750px
+          // Begin conditional selectors where w -lt 750px
           { _begin_cond_str_ : '@media all and (max-width: 750px)' },
-            { _selector_str_ : __p('.{_p_}-_x_lb_'),
+            { _selector_str_ : pFn('.{_p_}-_x_lb_'),
               _rule_map_ : { _width_ : [ '90%' ] }
             },
           { _end_cond_str_ : '' }
@@ -180,6 +184,7 @@ xhi._05_03_css_lb_ = (function () {
         ]
       },
 
+      // Declare other module-scope variables
       instanceMap, optionMap
       ;
     // == . END MODULE SCOPE VARIABLES ================================
@@ -187,7 +192,7 @@ xhi._05_03_css_lb_ = (function () {
     // == BEGIN PUBLIC METHODS ========================================
     instanceMap = { _selectorList_ : configMap._selector_list_ };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }
