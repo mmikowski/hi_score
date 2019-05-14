@@ -538,14 +538,14 @@ Patches can be created as follows:
 
 ```bash
 cd js/vendor
-cp jquery-3.3.1.js jquery-3.3.1.js.O
+cp jquery-3.4.1.js jquery-3.4.1.js.O
 
-# Now change jquery-3.3.1.js as required
+# Now change jquery-3.4.1.js as required
 
 # And create the diff
 cd ../..
-diff -u js/vendor/jquery-3.3.1.js.O js/vendor/jquery-3.3.1.js \
-  > patch/jquery-3.3.1.patch
+diff -u js/vendor/jquery-3.4.1.js.O js/vendor/jquery-3.4.1.js
+  > patch/jquery-3.4.1.patch
 ```
 
 ---

@@ -10,7 +10,7 @@
 /* global xhi */
 
 // == BEGIN MODULE xhi._makeAppFn_ ====================================
-xhi._makeAppFn_ = function ( app_key ) {
+xhi._makeAppFn_ = function makeAppFn ( app_key ) {
   'use strict';
   // TODO 2017-02-27 mmikowski warn: Provide configuration options.
   // Calling routine should be able to list modules or select

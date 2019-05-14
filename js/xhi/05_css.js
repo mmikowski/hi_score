@@ -81,14 +81,16 @@ xhi._05_css_ = (function () {
       var
         idx              = utilObj._castInt_( arg_idx, 0 ),
         palette_map_list = aMap._05_02_css_base_._paletteMapList_,
-        palette_idx      = stateMap._palette_idx_,
         palette_count    = palette_map_list[ vMap._length_ ],
-        palette_mixin_map;
+
+        palette_idx, palette_mixin_map;
 
       // Return current palette index if request is out of range
       // or matches existing.
-      if ( idx === palette_idx || idx > palette_count || idx < __0 ) {
-        return palette_idx;
+      if ( idx === stateMap._palette_idx_
+        || idx > palette_count || idx < __0
+      ) {
+        return stateMap._palette_idx_;
       }
 
       // Get the mixin map for the requested idx.  If no map exists,

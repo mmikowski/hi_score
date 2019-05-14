@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /* vim: set ft=javascript: */
+// == BEGIN SCRIPT xhi - the hi_score cli life-stage tool ==============
 /*
  * Purpose   : Run hi_score lifecycle tools
  * Example   : See xhi help
  * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
-// == BEGIN SCRIPT xhi - the hi_score cli life-stage tool ==============
 // == BEGIN MODULE SCOPE VARIABLES =====================================
 'use strict';
 var
@@ -38,16 +38,16 @@ var
   // Set paths
   fqOrigDirname   = process.cwd(),
   fqProjDirname   = pathObj.dirname( fqBinDirname ),
+  fqRunDirname    = fqProjDirname + '/run',
 
-  fqBuildDirname  = fqProjDirname + '/build',
-  fqHookFilename  = fqProjDirname + '/.git/hooks/pre-commit',
-  fqLibDirname    = fqProjDirname + '/lib',
-  fqModuleDirname = fqProjDirname + '/node_modules',
-  fqPkgFilename   = fqProjDirname + '/package.json',
-  fqStateFilename = fqLibDirname  + '/xhi_state.json',
+  fqBuildDirname  = fqProjDirname  + '/build',
+  fqHookFilename  = fqProjDirname  + '/.git/hooks/pre-commit',
+  fqLibDirname    = fqProjDirname  + '/lib',
+  fqModuleDirname = fqProjDirname  + '/node_modules',
+  fqPkgFilename   = fqProjDirname  + '/package.json',
+  fqStateFilename = fqRunDirname   + '/xhi_state.json',
 
   // Set data
-  binPathMap       = {}, // List of required external executables
   jsonDataMap      = {}, // Map of JSON read from files
   minVersionInt    = 8,  // minimum Node version
 
@@ -602,15 +602,13 @@ function checkNodeVersionFn () {
 function makePostObj () {
   return {
     applyPatchFn      : applyPatchFn,
-    binPathMap        : binPathMap,        // --  ?
     flowObj           : flowObj,           // 02 setup
     grepFileFn        : grepFileFn,        // 02 setup, 06 lint
     psObj             : psObj,             // 06 dev_start
     shellJsObj        : shellJsObj,        // 11 build
     uglifyCssObj      : uglifyCssObj,      // 11 build
     uglifyJsObj       : uglifyJsObj,       // 11 build
-    writePkgFileFn    : writePkgFileFn,    // 05 upgrade
-    writeStateFileFn  : writeStateFileFn   // 05 upgrade
+    writePkgFileFn    : writePkgFileFn     // 05 upgrade
   };
 }
 // . END utility /makePostObj/
@@ -725,7 +723,6 @@ function mainFn () {
 
     bound_fn, prefix_str
     ;
-
 
   // Create command table from config
   commandTable = makeCommandTable( package_matrix.xhi_commandTable );
@@ -857,7 +854,13 @@ function mainFn () {
 fsObj.stat( fqStateFilename, function ( error_obj ) {
   var scratch_str;
   if ( error_obj ) {
-    scratch_str = JSON.stringify( emptyStateMatrix, null, '  ' );
+    try {
+      fsObj.mkdirSync( fqRunDirname );
+    }
+    catch ( ignore ) {
+      console.log( fqRunDirname + ' exists.' );
+    }
+    scratch_str = JSON.stringify( emptyStateMatrix, null, 2 );
     fsObj.writeFile(
       fqStateFilename, scratch_str, { encoding : 'utf8' },
       initReadFn.bind({ then_fn : mainFn })

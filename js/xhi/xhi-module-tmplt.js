@@ -9,7 +9,7 @@
 */
 /*global xhi */
 // == BEGIN MODULE xhi._makeTmpltFn_ ===================================
-xhi._makeTmpltFn_ = function ( aMap ) {
+xhi._makeTmpltFn_ = function makeTmpltFn ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
   var
@@ -134,5 +134,4 @@ xhi._makeTmpltFn_ = function ( aMap ) {
   // . END Public method /initModuleFn/
   // == . END PUBLIC METHODS ===========================================
 // == . END MODULE xhi._makeTmpltFn_ ===================================
-
 

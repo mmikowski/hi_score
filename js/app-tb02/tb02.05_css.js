@@ -50,7 +50,7 @@ tb02._05_css_ = (function () {
             __webkit_user_select_  : '_none_',
             __moz_user_select_     : '__moz_none_',
             __o_user_select_       : '_none_',
-            _user_select_          : '_none_',
+            _user_select_          : '_none_'
 
             // TODO 2017-09-25 msm : Consider adding-back these keys.
             //   We can set the key list using xhiCSS._initModule_()
@@ -423,19 +423,19 @@ tb02._05_css_ = (function () {
     var
       idx            = __util._castInt_( arg_idx, 0 ),
       palette_map_list = aMap._05_02_css_base_._paletteMapList_,
-      palette_idx      = stateMap._palette_idx_,
       palette_count    = palette_map_list[ vMap._length_ ],
-      palette_mixin_map;
+      palette_idx, palette_mixin_map;
 
     // Return current palette index if request is out of range
     // or matches existing.
-    if ( idx === palette_idx || idx > palette_count || idx < __0 ) {
-      return palette_idx;
+    if ( idx === stateMap._palette_idx_ || idx > palette_count || idx < __0 ) {
+      return stateMap._palette_idx_;
     }
 
     // Get the mixin map for the requested idx.  If no map exists,
     // use the first palette map (0).
     palette_idx = idx;
+
     palette_mixin_map = palette_map_list[ palette_idx ];
     if ( ! palette_mixin_map ) {
       palette_idx       = __0;

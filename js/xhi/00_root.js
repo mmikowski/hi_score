@@ -8,7 +8,7 @@
  * Requires : ---
  *
 */
-/*global xhi */
+/*global xhi, module */
 var xhi = {};
 // == BEGIN MODULE xhi._00_root_ =======================================
 xhi._00_root_ = (function () {
@@ -67,7 +67,7 @@ xhi._00_root_ = (function () {
       _makeRoundNumFn_  : mathObj.round,
       _setTimeoutFn_    : setTimeout,
       _str2dataFn_      : jsonObj.parse,
-      _typeofFn_        : function ( a ) { return typeof a; },
+      _typeofFn_        : function typeofFn ( a ) { return typeof a; },
 
       _Deferred_        : 'Deferred',
       _addClass_        : 'addClass',
@@ -86,6 +86,7 @@ xhi._00_root_ = (function () {
       _css_             : 'css',
       _data_            : 'data',
       _empty_           : 'empty',
+      _exec_            : 'exec',
       _false_           : false,
       _filter_          : 'filter',
       _find_            : 'find',
@@ -263,5 +264,5 @@ xhi._00_root_ = (function () {
 // == BEGIN BROWSER AND NODE SUPPORT ===================================
 /* istanbul ignore next */
 try { module.exports = xhi; }
-catch ( ignore ) { void(0); }
+catch ( ignore ) { void 0; }
 // == . END BROWSER AND NODE SUPPORT ===================================

@@ -412,9 +412,9 @@ tb02._03_model_ = (function ( $ ) {
   // We lookup symbols outside of the loop as this is time critical.
   //
   runTimeTick = (function () {
-    var tick_ms, run_fn;
+    var tick_ms;
 
-    run_fn = function () {
+    function runFn () {
       var
         mode_str = stateMap._mode_str_,
         new_ms, elapsed_ms, adj_ticktime_ms;
@@ -432,10 +432,10 @@ tb02._03_model_ = (function ( $ ) {
       // Compensate for elapsed time since the last invocation
       adj_ticktime_ms = configMap._timetick_ms_ - elapsed_ms;
 
-      stateMap._tick_toid_ = __setTo( run_fn, adj_ticktime_ms );
+      stateMap._tick_toid_ = __setTo( runFn, adj_ticktime_ms );
       tick_ms = new_ms;
-    };
-    return run_fn;
+    }
+    return runFn;
   }());
   // . END utility method /runTimeTick/
   // == . END UTILITY METHODS ==========================================

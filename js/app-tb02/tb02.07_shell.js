@@ -22,6 +22,7 @@ tb02._07_shell_ = (function ( $ ) {
     __p       = __util._makeReplaceFn_( '_p_', aKey ),
 
     configMap = {
+      // language=TEXT (intellij)
       _main_tmplt_  : __p(
         '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" '
         + 'class="{_p_}-_shell_bg_svg_" '
@@ -125,30 +126,33 @@ tb02._07_shell_ = (function ( $ ) {
         'thunder', 'wind', 'wavechange', 'whoosh'
       ],
       sound_obj_map   = {},
+      is_init_done    = false
+      ;
 
-      sound_count, init_sound_fn, play_sound_fn;
 
-    // BEGIN init_sound_fn
-    init_sound_fn = function () {
+    // BEGIN initSoundFn
+    function initSoundFn () {
       var i, name_count, sound_name;
-      if ( sound_count > __0 ) { return; }// already initialized
+      if ( is_init_done ) { return; }
 
       name_count = sound_name_list[ vMap._length_ ];
 
       for ( i = __0; i < name_count; i++ ) {
         sound_name = sound_name_list[ i ];
-        sound_obj_map[ sound_name ] = new Audio( 'sound/' + sound_name + '.mp3' );
+        sound_obj_map[ sound_name ] = new Audio(
+          'sound/' + sound_name + '.mp3'
+        );
       }
-      sound_count = name_count;
-    };
-    // . END init_sound_fn
+      is_init_done = true;
+    }
+    // . END initSoundFn
 
     // BEGIN play_sound_fn
-    play_sound_fn = function ( sound_name ) {
+    function mainFn ( sound_name ) {
       var sound_obj;
 
       // initialize if required
-      if ( !sound_count ) { init_sound_fn(); }
+      if ( ! is_init_done ) { initSoundFn(); }
 
       sound_obj = sound_obj_map[ sound_name ];
       if ( !sound_obj ) {
@@ -157,10 +161,10 @@ tb02._07_shell_ = (function ( $ ) {
 
       sound_obj.currentTime = __0;
       sound_obj.play();
-    };
+    }
     // . END play_sound_fn
 
-    return play_sound_fn;
+    return mainFn;
   }());
   // . END DOM method /playSoundFn/
 
@@ -204,6 +208,7 @@ tb02._07_shell_ = (function ( $ ) {
 
   // . END DOM method /get$BombById/
   function updateLivesCountFn ( lives_count ) {
+    // noinspection JSMismatchedCollectionQueryUpdate
     var i, lives_list = [], lives_str;
     $Map._$lives_count_[ vMap._text_ ]( lives_count );
     for ( i = __0; i < lives_count; i++ ) {
@@ -275,20 +280,23 @@ tb02._07_shell_ = (function ( $ ) {
   function onSetModeFn ( ignore_event_obj, arg_map ) {
     var
       mode_str = arg_map._mode_str_,
-      all_level_count, i, val_list, opt_html;
+      all_level_count, i, enum_tablet, opt_html;
 
 
     switch ( mode_str ) {
       case '_sell_' :
         all_level_count = arg_map._all_level_count_;
-        val_list        = [ '--' ];
+        enum_tablet = [ { _label_: '--', _value_ : '' } ];
         for ( i = __0; i < all_level_count; i++ ) {
-          val_list[ vMap._push_ ]( i );
+          enum_tablet[ vMap._push_ ]({
+            _label_ : __Str( i ),
+            _value_ : __Str( i )
+          });
         }
 
         opt_html = __util._makeOptionHtml_( {
-          _select_list_ : [ '--' ],
-          _val_list_    : val_list
+          _enum_table_ : enum_tablet,
+          _match_list_ : [ '--' ]
         } );
 
         $Map._$subtext_[ vMap._html_ ](
@@ -336,7 +344,7 @@ tb02._07_shell_ = (function ( $ ) {
   }
 
   function onBombInitFn ( ignore_event_obj, bomb_obj ) {
-    var lookup_map, filled_str, speed_ratio, class_str, $bomb, isBigBomb;
+    var lookup_map, filled_str, speed_ratio, class_str, $bomb;
 
     lookup_map = {
       _id_        : configMap._bomb_id_prefix_ + bomb_obj._id_,
@@ -348,12 +356,11 @@ tb02._07_shell_ = (function ( $ ) {
       _lookup_map_ : lookup_map
     } );
 
-    isBigBomb   = bomb_obj._is_big_bomb_;
     speed_ratio = bomb_obj._speed_ratio_;
     class_str   = aKey + '-';
-    class_str += isBigBomb === true ? '_x_big_bomb_'
+    class_str += bomb_obj._is_big_bomb_ ? '_x_big_bomb_'
       : speed_ratio < .33 ? '_x_fast_'
-        : speed_ratio < .66 ? '_x_normal_' : '_x_slow_';
+      : speed_ratio < .66 ? '_x_normal_' : '_x_slow_';
 
     $bomb = $( filled_str );
     $bomb[ vMap._addClass_ ]( class_str );

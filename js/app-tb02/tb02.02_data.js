@@ -122,14 +122,8 @@ tb02._02_data_ = (function () {
         '{ name : "Henery" };'
       ]
     ],
-
     // A list of indicies of recently used words (set in initModule)
-    wordSetIdxList,
-
-    // Utility methods
-
-    // Public methods
-    getWord, initModule, getBigBombWord
+    wordSetIdxList
     ;
   // == . END MODULE SCOPE VARIABLES ==================================
 
@@ -146,7 +140,7 @@ tb02._02_data_ = (function () {
   //     come from the highest level (max_set_idx), wherease if
   //     weight_ratio = __0 random distribution should occur.
   //
-  getWord = function ( max_set_idx, weight_ratio ) {
+  function getWord ( max_set_idx, weight_ratio ) {
     var
       dice_ratio = vMap._makeRandomNumFn_(),
       set_idx, word_idx_map, word_idx, word_count, word_str
@@ -173,13 +167,13 @@ tb02._02_data_ = (function () {
 
     // Return selected word
     return word_str;
-  };
+  }
   // . END public method /getWord/
 
   // BEGIN public method /initModule/
   // Purpose: Shuffles the words in the data and initializes indicies
   //
-  initModule = function () {
+  function initModule () {
     var
       set_count = wordSetList[ vMap._length_ ],
       i, word_list, word_count
@@ -195,14 +189,14 @@ tb02._02_data_ = (function () {
       word_count = word_list[ vMap._length_ ];
       wordSetIdxList[ i ] = { _idx_ : __0, _count_ : word_count };
     }
-  };
+  }
   // . END public method /initModule/
 
   // START public method /getBigBomb/
-  getBigBombWord = function () {
+  function getBigBombWord () {
     var idx = Math.floor( Math.random()*bigBombWordList.length + 1 );
     return bigBombWordList[ idx ];
-  };
+  }
   // . END public method /getBigBomb/
   return {
     _getWord_        : getWord,

@@ -264,7 +264,7 @@ xhi._04_utilb_ = (function ( $ ) {
       outer_ht_px  = $textarea[ vMap._outerHeight_ ]();
 
       if ( ( scroll_ht_px > outer_ht_px )
-        || ( scroll_ht_px < outer_ht_px - 30 )
+        || ( scroll_ht_px < outer_ht_px - configMap._textarea_min_ht_px_ )
       ) { solve_ht_px = scroll_ht_px + 8; }
       else { return __true; }
 

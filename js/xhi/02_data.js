@@ -40,8 +40,12 @@ xhi._02_data_ = ( function ( $ ) {
       __undef    = vMap._undef_,
 
       // Set config and state maps
-      configMap    = {},
-      stateMap     = {
+      configMap = {
+        _200_int_ : 200,
+        _300_int_ : 300
+      },
+
+      stateMap  = {
         _active_jqxhr_list_ : [],
         _auth_key_          : __undef,
         _base_url_          : __undef
@@ -121,11 +125,13 @@ xhi._02_data_ = ( function ( $ ) {
       var
         smap       = this,
         data       = arg_data || {},
-        status_int = utilObj._castInt_( jqxhr[ vMap._status_ ], 200 );
+        status_int = utilObj._castInt_(
+          jqxhr[ vMap._status_ ], configMap._200_int_
+        );
 
       delJqxhrFromList( jqxhr );
 
-      if ( status_int < 300 ) {
+      if ( status_int < configMap._300_int_ ) {
         if ( smap && smap._done_fn_ ) {
           smap._done_fn_( null, data );
         }

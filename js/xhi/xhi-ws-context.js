@@ -30,10 +30,11 @@
     // aMap._01_util_
     _attr_list_      : list,
     _char_limit_int_ : num,
+    _do_encode_html_ : bool,
     _do_warn_        : bool,
     _example_obj_    : obj,
     _example_str_    : str,
-    _filter_regex_   : rx,
+    _filter_rx_      : rx,
     _input_map_      : map,
     _is_empty_ok_    : bool,
     _max_ms_         : num,

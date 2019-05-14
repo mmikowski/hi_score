@@ -723,14 +723,13 @@ xhi._06_lb_ = (function ( $ ) {
         $litebox  = $Map._$litebox_,
 
         h_px, w_px
-      ;
+        ;
 
       if ( !( window_h_px && window_w_px && $litebox ) ) { return __false; }
 
       if ( stateMap._is_masked_ ) {
-        $litebox = $Map._$litebox_;
-        w_px     = $litebox[ cssKmap._width_ ]();
-        h_px     = $litebox[ cssKmap._height_ ]();
+        w_px = $litebox[ cssKmap._width_  ]();
+        h_px = $litebox[ cssKmap._height_ ]();
 
         $litebox[ vMap._css_ ]( {
           top  : vMap._makeFloorNumFn_(

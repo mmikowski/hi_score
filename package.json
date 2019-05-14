@@ -20,7 +20,7 @@
     "font-roboto": "0.0.2",
     "http-server": "0.11.1",
     "istanbul": "0.4.5",
-    "jquery": "3.4.0",
+    "jquery": "3.4.1",
     "jquery.event.dragscroll": "1.0.0",
     "jquery.event.gevent": "1.1.6",
     "jquery.event.ue": "1.3.2",
@@ -38,7 +38,7 @@
     "rmdir": "1.2.0",
     "shelljs": "0.8.3",
     "taffydb": "2.7.3",
-    "uglify-js": "3.5.6",
+    "uglify-js": "3.5.11",
     "uglifycss": "0.0.29",
     "websocket": "1.0.28"
   },
@@ -638,9 +638,9 @@
       "patch_map_list": [
         {
           "check_filename": "node_modules/uglify-js/lib/scope.js",
-          "patch_filename": "uglify-js-3.5.6.patch",
+          "patch_filename": "uglify-js-3.5.11.patch",
           "pattern_str": "^\\s*// hi_score patch applied",
-          "relative_name": "patch/uglify-js-3.5.6.patch"
+          "relative_name": "patch/uglify-js-3.5.11.patch"
         },
         {
           "check_filename": "node_modules/font-awesome/css/font-awesome.css",
@@ -650,9 +650,9 @@
         },
         {
           "check_filename": "node_modules/jquery/dist/jquery.js",
-          "patch_filename": "jquery-3.4.0.patch",
+          "patch_filename": "jquery-3.4.1.patch",
           "pattern_str": "^\\s*window.jQuery = jQuery;$",
-          "relative_name": "patch/jquery-3.4.0.patch"
+          "relative_name": "patch/jquery-3.4.1.patch"
         }
       ]
     }
@@ -666,14 +666,14 @@
         "js/plugin/jquery.deferred.whenAll-1.0.0.js",
         "js/xhi/00_root.js",
         "js/xhi/01_util.js",
+        "js/xhi/02_01_data_mock.js",
         "js/xhi/02_data.js",
-        "js/xhi/02_fake.js",
         "js/xhi/03_model.js",
         "js/xhi/04_utilb.js",
-        "js/xhi/05_css_base.js",
-        "js/xhi/05_css_lb.js",
-        "js/xhi/05_css_shell.js",
-        "js/xhi/06_css.js",
+        "js/xhi/05_02_css_base.js",
+        "js/xhi/05_03_css_lb.js",
+        "js/xhi/05_04_css_shell.js",
+        "js/xhi/05_css.js",
         "js/xhi/06_lb.js",
         "js/xhi/07_shell.js",
         "js/xhi/08_app.js"
@@ -795,9 +795,9 @@
             "js/app-tb02/tb02.02_data.js",
             "js/app-tb02/tb02.03_model.js",
             "js/app-tb02/tb02.04_utilb.js",
-            "js/app-tb02/tb02.05_css_base.js",
-            "js/app-tb02/tb02.05_css_lb.js",
-            "js/app-tb02/tb02.06_css.js",
+            "js/app-tb02/tb02.05_02_css_base.js",
+            "js/app-tb02/tb02.05_03_css_lb.js",
+            "js/app-tb02/tb02.05_css.js",
             "js/app-tb02/tb02.06_lb.js",
             "js/app-tb02/tb02.07_shell.js",
             "js/app-tb02/tb02.08_app-build.js"
