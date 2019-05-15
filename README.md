@@ -17,32 +17,14 @@ libraries as required - [that's the point][_01].
 ### Version 1.5.x
 Version 1.5.0 was release 2019-05-14 and includes enhanced 01\_util and
 improved correctness for all JS.  See more version notes at the bottom of this
-page.
+page. We plan to update the virtual appliance images soon!
 
 ---
 ## Quick start
-Download the latest [latest virual appliance][_42] to try `hi_score` with the
-minimum of time and hassle. Pick the latest `ova2` image for virutal box, and
-the latest `vmx.zip` image for VMware or Parallels. The login and password are
-`hi_score`. Please do change the password after signing in. If you need more
-help with installing a VM or wish to consider other options, please consult
-the [Development platform](#development-platform) section.
 
-![Virual_appliance][_0E]
-
-The first thing we need to do to our appliance is upgrade the software to the
-latest security patches. Open a terminal and enter the following lines,
-waiting for each command to complete before proceeing to the next.
-
-```bash
-  sudo apt update
-  sudo apt upgrade
-  sudo apt dist-upgrade
-  reboot
-```
-
-After reboot, open a terminal and enter the following lines. Wait for each
-command to complete before proceeding to the next. The build process prompts
+On Mac, Ubuntu Linux, or WSL, getting an app running with `hi_score` couldn't
+get much easier.  Just enter 4 commands into a Bash shell.  Wait for each
+to finish before proceeding to the next. The build process prompts
 the user to review TODO notes. Just press `return` to accept them.
 
 ```bash
@@ -52,6 +34,14 @@ the user to review TODO notes. Just press `return` to accept them.
   google-chrome http://localhost:8080/build/latest/dist
 ```
 
+On completion, you should see a fully working typing tutor application, 
+TypeBomb 2. Compare it with the [online version][_0BA].
+
+If you have trouble installing the prerequisites, you might grab the 
+and run the [Virtual Appliance](#development-platform).
+
+---
+## Key benefits
 The `bin/xhi` tool guides developers through lifecycle stages and employs
 sophisticated dependency checking to help avoid mistakes. The `bin/xhi
 build,dev_start` command installs vendor assets; copies, configures, and
@@ -67,14 +57,11 @@ found in `build/latest/dist`.
 the latest addition and it is far less trivial. Use the Chrome developer tools
 to inspect the CSS, the DOM, and the JavaScript. Notice how CSS classes are
 obsfucated and namespaced. A snapshot of the game in action is shown below.
-
-![Typebomb2][_0B]
-
----
-## Key benefits
 `hi_score` solves lots of hard stuff out-of-the-box so we can focus on
 improving things that really matter, like JavaScript, HTML, CSS and
-application logic. Key benefits are listed below.
+application logic. 
+
+Key benefits are listed below.
 
 - Full-lifecycle good practice and automation with `bin/xhi`
 - Integration with Git and NPM lifecycles
@@ -384,41 +371,57 @@ hardware, cloud instances like Amazon EC2, and containers. Our server platform
 is Ubuntu 16.04 LTS. Later version of Ubuntu and other distributions should
 work well.
 
+
 ---
 ## Development platform
 ### Appliance
-Download the latest [latest virual appliance][_42] to try `hi_score` with the
-minimum of time and hassle. Pick the latest `ova2` image for virutal box, and
-the latest `vmx.zip` image for VMware or Parallels.
+Download the latest [latest virual appliance][_42] to try `hi_score` by
+running a host in a virtual machine.  Pick the latest `ova2` image for virutal
+box, and the latest `vmx.zip` image for VMware or Parallels.  The login and
+password are `hi_score`. 
 
-### Ubuntu Linux
+![Virual_appliance][_0E]
+
+After signing in, change the password for your safety, and also please upgrade
+the software to the latest security patches. Open a terminal and enter the
+following lines, waiting for each command to complete before proceeing to the
+next.
+
+```bash
+  sudo apt update
+  sudo apt upgrade
+  sudo apt dist-upgrade
+  reboot
+```
+
+After reboot, return to the `Quick Start` section. If you would like to learn
+more about the appliance setup, you may read on below.
+
+### Setup on Ubuntu and derivatives
 If you are using Ubuntu Linux 16.04+ for your workstation or deployment
 everything should just work with as long as the required libraries are
 installed as shown below:
 
 ```
   # Install required libraries
-  sudo apt-get install build-essential git \
+  sudo apt install build-essential git \
     libfile-slurp-perl liblist-moreutils-perl \
     mysql-client mysql-server net-tools \
     openssh-server pandoc pandoc-citeproc \
     unzip zip
 
   # Install recommended libraries
-  sudo apt-get install apt-file htop kdiff3 \
+  sudo apt install apt-file htop kdiff3 \
     meld ppa-purge sysstat vim-gtk vim-nox vim-syntax-gtk
 
   # Install nodejs
-  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  sudo apt-get install -y nodejs
-
-  # Install MongoDB 3.x (optional)
-  # See their website for details.
+  curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+  sudo apt install -y nodejs
 ```
 
 Most Ubuntu derivatives such as Mint or Kubuntu should work just as well.
 
-### Other Linux
+### Setup on other Linux distros
 Other Linux distributions should generally work as long as the same libraries
 can be installed as with Ubuntu. It works fine on current versions of CentOS.
 Development libraries should be installed as shown below.
@@ -428,12 +431,13 @@ Development libraries should be installed as shown below.
   # We're probably missing git and a few other tools here
 ```
 
-See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
+See [this guide][_06] for NodeJS package installation on other Linux distros.
+Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
-### Mac
+### Setup on Mac
 We found Mac High Sierra worked after the following steps:
 
-1. Install NodeJS 8+
+1. Install NodeJS 10+
 2. Install pandoc
 
 ```bash
@@ -444,8 +448,10 @@ Another path is to use Parallels or VMFusion to import the [vmx.zip][_42]
 (unzip this file before use). VirtualBox also will work but doesn't integrate
 as well to OSX as it should.
 
-### Windows
-We recommend using a virtual machine as detailed above.
+### Setup on Windows 10
+In theory, the Windows Subsystem for Linux running an Ubuntu distro should
+work with as above. However, we haven't tested it. On may also use the virutal
+appliance detailed above.
 
 ---
 ## Vendor assets
@@ -785,6 +791,7 @@ Begun 2019-01-01 ...
 
 [_0A]:img/hi_score.png
 [_0B]:doc/images/tb2-001.png
+[_0BA]:https://michaelmikowski.com/typebomb/index.html
 [_0C]:doc/images/architecture.png
 [_0D]:doc/images/syntax.png
 [_0E]:img/hi_score-appliance.png
