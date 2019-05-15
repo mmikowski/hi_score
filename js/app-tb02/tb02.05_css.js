@@ -412,7 +412,7 @@ tb02._05_css_ = (function () {
   // BEGIN public method /getPaletteMixinMap/
   function getPaletteMixinMap () {
     var
-      palette_list = aMap._05_css_02_base_._paletteMapList_,
+      palette_list = aMap._05_02_css_base_._paletteMapList_,
       palette_idx  = stateMap._palette_idx_;
     return palette_list[ palette_idx ];
   }

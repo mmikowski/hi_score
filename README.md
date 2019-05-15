@@ -13,8 +13,11 @@ Applicaitons][_00] but updated based on experience.  Please do swap assets and
 libraries as required - [that's the point][_01].
 
 ## Recent changes
+
 ### Version 1.5.x
-Work on version 1.5.x began on 2019-01-03.
+Version 1.5.0 was release 2019-05-14 and includes enhanced 01\_util and
+improved correctness for all JS.  See more version notes at the bottom of this
+page.
 
 ---
 ## Quick start
@@ -760,12 +763,16 @@ MIT
 - (x) Support symbol renaming to avoid conflicts 
       (jQuery => xhiJQ, pcss => xhiCSS)
 
-### Version 1.5.x (wip)
-Started 2019-01-01
-- (x) Update uglifyjs and patch
+### Version 1.5.x
+Begun 2019-01-01 ...
+- (x) 01\_utils add capabilities and documentation
+- (x) Update all libs to latest
+- (x) Revised templates per latest best practice
+- (i) Update tb02 libs to latest best practice
+
+### Backlog
 - (o) Convert superpack Perl to JS, use `package.json` config
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
-- (o) Fix commit hook conflict in `bin/xhi` run range
 - (o) Update quick reference code standard
 - (o) Test load times using remote server
 - (o) Use LetsEncrypt HTTPS by default for `bin/xhi prod_start` 

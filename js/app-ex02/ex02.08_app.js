@@ -8,6 +8,7 @@
 /*global xhiJQ, xhi:true, ex02 */
 (function () {
   'use strict';
+  // noinspection MagicNumberJS,MagicNumberJS
   var
     libList = [
       'js/vendor/taffy-2.7.3.js',
@@ -34,6 +35,8 @@
       'js/xhi/07_shell.js',
       'js/xhi/08_app.js'
     ],
+
+    backOffNum  = 1.5,
     libCount    = libList.length,
     loadCount   = 0,
     loadDelayMs = 100,
@@ -61,7 +64,7 @@
     else {
       console.warn( 'reload...' );
       setTimeout( testLoad, loadDelayMs );
-      loadDelayMs *= 1.5;
+      loadDelayMs *= backOffNum;
     }
   }
 

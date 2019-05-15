@@ -9,6 +9,7 @@
 tb02._03_model_ = (function ( $ ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
+  // noinspection MagicNumberJS
   var
     // Declare local symbols
     aMap = tb02,
@@ -48,9 +49,16 @@ tb02._03_model_ = (function ( $ ) {
 
     // Declare configuration
     configMap   = {
+      _bomb_score_int_ : 50,
+      _char_map_ : {
+        _spc_code_    : 32,
+        _bkspc_code_  : 8,
+        _return_code_ : 13
+      },
       _end_map_ : {
         _typebox_str_ : 'Game Over'
       },
+
       _init_map_        : {
         _level_count_  : __0,
         _lives_count_  : nMap._5_,
@@ -151,7 +159,7 @@ tb02._03_model_ = (function ( $ ) {
     },
 
     // Declare closure functions
-    runTimeTick, bombMgrObj, reportKeyPressFn
+    runTimeTick, bombMgrObj
     ;
   // == . END MODULE SCOPE VARIABLES ===================================
 
@@ -545,7 +553,7 @@ tb02._03_model_ = (function ( $ ) {
       // Publish events for score update and bomb destruction.
       //
       if ( bomb_obj ) {
-        stateMap._score_int_   += 50;
+        stateMap._score_int_   += configMap._bomb_score_int_;
         stateMap._match_count_ += __1;
         __$publishFn( '_bomb_destroy_', bomb_obj );
         __$publishFn( '_update_field_', {
@@ -690,90 +698,82 @@ tb02._03_model_ = (function ( $ ) {
   // == BEGIN PUBLIC METHODS ===========================================
   // BEGIN public method /reportKeyPressFn/
   // If key press is actionable, return true
-  reportKeyPressFn = (function _reportKeyPressFn () {
+  function reportKeyPressFn ( key_code ) {
     var
-      spc_code    = 32,
-      bkspc_code  = 8,
-      return_code = 13
-      ;
+      char_map = configMap._char_map_,
+      typebox_str, type_length, end_idx, resp_name;
 
-    function report_keypress ( key_code ) {
-      var typebox_str, type_length, end_idx, resp_name;
+    // Do not handle if not in game.
+    // TODO: when not in game, pass the key press to another routine
+    // that will allow user to press 'i' for instructions, etc.
+    //
+    if ( stateMap._mode_str_ !== '_play_' ) { return vMap._false_; }
 
-      // Do not handle if not in game.
-      // TODO: when not in game, pass the key press to another routine
-      // that will allow user to press 'i' for instructions, etc.
-      //
-      if ( stateMap._mode_str_ !== '_play_' ) { return vMap._false_; }
+    // get typebox content and length
+    typebox_str = stateMap._typebox_str_;
+    type_length = typebox_str[ vMap._length_ ];
 
-      // get typebox content and length
-      typebox_str = stateMap._typebox_str_;
-      type_length = typebox_str[ vMap._length_ ];
-
-      // clear default text if present
-      if ( typebox_str === configMap._init_map_._typebox_str_ ) {
-        typebox_str = '';
-        type_length = __0;
-      }
-
-      // prevent duplicate spaces
-      if ( key_code === spc_code ) {
-        end_idx = type_length - nMap._n1_;
-        if ( typebox_str[ vMap._charAt_ ]( end_idx ) === ' ' ) {
-          return vMap._true_;
-        }
-      }
-
-      // handle character codes
-      switch( key_code ) {
-        case bkspc_code :
-          if ( type_length > __0 ) {
-            type_length--;
-            resp_name = '_bkspc_';
-          }
-          break;
-
-        case return_code :
-          if ( type_length > __0 ) {
-            bombMgrObj._checkBombDestroy_( typebox_str );
-            typebox_str = '';
-            type_length = __0;
-            resp_name = '_returnd_';
-          }
-          break;
-
-        default : // everything else
-          typebox_str += __Str[ vMap._fromCharCode_ ]( key_code );
-          type_length = typebox_str[ vMap._length_ ];
-          resp_name = '_char_add_';
-          break;
-      }
-
-      if ( type_length > configMap._max_typebox_int_ ) {
-        type_length = configMap._max_typebox_int_;
-        __$publishFn( '_acknowledge_key_', [ '_at_limit_' ]);
-        return false;
-      }
-
-      // display revised string if needed
-      typebox_str = typebox_str[ vMap._slice_]( __0, type_length );
-
-      if ( typebox_str === stateMap._typebox_str_ ) {
-        return false;
-      }
-
-      __$publishFn( '_update_field_', {
-        _field_name_ : '_typebox_str_',
-        _field_val_  : typebox_str + '|'
-      });
-
-      __$publishFn( '_acknowledge_key_', resp_name );
-      stateMap._typebox_str_  = typebox_str;
-      return vMap._true_;
+    // clear default text if present
+    if ( typebox_str === configMap._init_map_._typebox_str_ ) {
+      typebox_str = '';
+      type_length = __0;
     }
 
-    return report_keypress;
-  }());
+    // prevent duplicate spaces
+    if ( key_code === char_map._spc_code_ ) {
+      end_idx = type_length - nMap._n1_;
+      if ( typebox_str[ vMap._charAt_ ]( end_idx ) === ' ' ) {
+        return vMap._true_;
+      }
+    }
+
+    // handle character codes
+    switch( key_code ) {
+      case char_map._bkspc_code_ :
+        if ( type_length > __0 ) {
+          type_length--;
+          resp_name = '_bkspc_';
+        }
+        break;
+
+      case char_map._return_code_ :
+        if ( type_length > __0 ) {
+          bombMgrObj._checkBombDestroy_( typebox_str );
+          typebox_str = '';
+          type_length = __0;
+          resp_name = '_returnd_';
+        }
+        break;
+
+      default : // everything else
+        typebox_str += __Str[ vMap._fromCharCode_ ]( key_code );
+        type_length = typebox_str[ vMap._length_ ];
+        resp_name = '_char_add_';
+        break;
+    }
+
+    if ( type_length > configMap._max_typebox_int_ ) {
+      type_length = configMap._max_typebox_int_;
+      __$publishFn( '_acknowledge_key_', [ '_at_limit_' ]);
+      return false;
+    }
+
+    // display revised string if needed
+    typebox_str = typebox_str[ vMap._slice_]( __0, type_length );
+
+    if ( typebox_str === stateMap._typebox_str_ ) {
+      return false;
+    }
+
+    __$publishFn( '_update_field_', {
+      _field_name_ : '_typebox_str_',
+      _field_val_  : typebox_str + '|'
+    });
+
+    __$publishFn( '_acknowledge_key_', resp_name );
+    stateMap._typebox_str_  = typebox_str;
+    return vMap._true_;
+  }
   // . END public method /reportKeyPressFn/
 
   // BEGIN public method /stopGameFn/

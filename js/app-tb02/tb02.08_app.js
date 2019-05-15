@@ -11,6 +11,7 @@
 (function () {
   // == BEGIN MODULE SCOPE VARIABLES ===================================
   'use strict';
+  // noinspection MagicNumberJS
   var
     libList = [
       'js/vendor/pcss-1.4.6.js',
@@ -47,6 +48,8 @@
       'js/app-tb02/tb02.06_lb.js',
       'js/app-tb02/tb02.07_shell.js'
     ],
+
+    backOffNum  = 1.5,
     libCount    = libList.length,
     loadCount   = 0,
     loadDelayMs = 100,
@@ -65,7 +68,7 @@
     else {
       console.warn( 'reload...' );
       setTimeout( testLoadFn, loadDelayMs );
-      loadDelayMs *= 1.5;
+      loadDelayMs *= backOffNum;
     }
   }
 
