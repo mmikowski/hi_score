@@ -1,33 +1,29 @@
 /*
- * xhi_level_0.js
+ * 00_xhi_libs.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
  * Node unit test suite xhi, util, utilb, lb
 */
-/*global xhi, module, process, window, console, $ */
-
 // == BEGIN MODULE SCOPE VARIABLES  ===================================
 'use strict';
-//noinspection JSUnusedLocalSymbols
 var
-  __ns      = 'xhi',
   aKey      = 'test',
   libDir    = '../js/',
-  libPrefix = libDir + __ns + '/',
+  libPrefix = libDir + 'xhi/',
   jsdomObj  = require( 'jsdom' ),
   winRef    = new jsdomObj.JSDOM().window,
   docRef    = winRef.document,
   xhiJQ     = require( 'jquery' )( winRef ),
 
-  aMap, nMap, vMap, __Str, __blank, __false,
-  __null, __true, __undef, __util, __utilb, __lb,
+  xhi, aMap, nMap, vMap, __Str, __blank, __false,
+  __null, __true, __undef, utilObj, utilBobj, __lb,
   __n1, __0, __1, __2, __3, __4,
   liteBoxMap
   ;
 
-// When debuging one can create a mock test object
+// When debugging one can create a mock test object
 // function mockFn() {
-//    console.log( aKey + '.' + this , arguments );
+//    console.log( aKey + '.' + this, arguments );
 // };
 // mockTestObj = {
 //   deepEqual : mockFn.bind( 'deepEqual' ),
@@ -42,10 +38,12 @@ global.document = docRef;
 global.xhiJQ    = xhiJQ;
 global.$        = xhiJQ;
 
-global.xhiCSS = require( libDir + 'vendor/pcss-1.4.5.js' );
-require( libDir + 'vendor/pcss.cfg-1.4.5.js' );
+global.xhiCSS = require( libDir + 'vendor/pcss-1.4.6.js' );
+require( libDir + 'vendor/pcss.cfg-1.4.6.js' );
 
-global[ __ns ] = require( libPrefix + '00_root.js' );
+xhi = require( libPrefix + '00_root.js' );
+global.xhi = xhi;
+
 require( libPrefix + '01_util.js'  );
 require( libPrefix + '04_utilb.js' );
 require( libPrefix + '06_lb.js'    );
@@ -60,8 +58,8 @@ xhi._06_lb_    ._makeInstanceFn_( aMap );
 vMap    = aMap._vMap_;
 nMap    = aMap._nMap_;
 
-__util  = aMap._01_util_;
-__utilb = aMap._04_utilb_;
+utilObj  = aMap._01_util_;
+utilBobj = aMap._04_utilb_;
 __lb    = aMap._06_lb_;
 
 __blank = vMap._blank_;
@@ -121,7 +119,7 @@ function setLogLevel ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    log_obj      = __util._getLogObj_(),
+    log_obj      = utilObj._getLogObj_(),
 
     idx,        expect_list, arg_list,
     expect_str, solve_str,   msg_str
@@ -137,11 +135,11 @@ function setLogLevel ( test_obj ) {
       + JSON.stringify( arg_list ) + '\n solve_str: ' + solve_str
       + '\n expect_str: ' + expect_str;
     test_obj.ok( solve_str === expect_str, msg_str );
-    test_obj.ok( log_obj._getLogLevel_() === expect_str, msg_str );
+    test_obj.ok( log_obj._getLevelName_() === expect_str, msg_str );
   }
   log_obj._logMsg_( 'bogus', '_this_should_default_to_error_' );
-  test_obj.ok( log_obj._logMsg_( 'bogus' ) === __false, 'no log on 1 arg' );
-  test_obj.ok( log_obj._logMsg_() === __false, 'no log on 0 arg' );
+  test_obj.ok( log_obj._logMsg_() === __true, 'log on 0 arg' );
+  test_obj.ok( log_obj._logMsg_( 'bogus' ) === __true, 'log on 1 arg' );
 
   test_obj.done();
 }
@@ -191,7 +189,7 @@ function castInt ( test_obj ) {
       [ [ new Date(), 'jeani' ],    'jeani' ]
     ],
     assert_count = assert_table.length,
-    test_fn      = __util._castInt_,
+    test_fn      = utilObj._castInt_,
 
     msg_str,  idx,         expect_list,
     arg_list, expect_str,  solve_str
@@ -213,8 +211,8 @@ function castInt ( test_obj ) {
 
 function castJQ ( test_obj ) {
   var
-    cast_jq = __util._castJQ_,
-    $jq     = global.$('<div/>')
+    cast_jq = utilObj._castJQ_,
+    $jq     = global.$('<div></div>')
     ;
 
   test_obj.expect( __4 );
@@ -245,7 +243,7 @@ function castStr ( test_obj ) {
       [ [ new Date() ],             __undef ]
     ],
     assert_count = assert_table.length,
-    test_fn      = __util._castStr_,
+    test_fn      = utilObj._castStr_,
 
     msg_str,  idx,         expect_list,
     arg_list, expect_str,  solve_str
@@ -316,10 +314,10 @@ function checkDateStr ( test_obj ) {
       [ [ { _date_str_ : '12/01/2016', _order_str_ : '_us_' } ],  __true  ],
       [ [ { _date_str_ : '2/1/2016'  , _order_str_ : '_us_' } ],  __true  ],
       [ [ { _date_str_ : '01/30/2016', _order_str_ : '_us_' } ],  __true  ],
-      [ [ { _date_str_ : '01/40/2016', _order_str_ : '_us_' } ],  __false ],
+      [ [ { _date_str_ : '01/40/2016', _order_str_ : '_us_' } ],  __false ]
     ],
     assert_count = assert_table.length,
-    test_fn      = __util._checkDateStr_,
+    test_fn      = utilObj._checkDateStr_,
 
     msg_str,  idx,      expect_list,
     arg_list, is_valid, expect_bool
@@ -346,15 +344,15 @@ function clearMap ( test_obj ) {
     complex_obj = Object.create( proto ),
     assert_table = [
       // arg_list, expect_data
-      [ [ __1,        ], __undef ],
-      [ [ -694567,    ], __undef ],
-      [ [ __blank,    ], __undef ],
-      [ [ __null,     ], __undef ],
-      [ [ __undef,    ], __undef ],
-      [ [ 5.062e12,   ], __undef ],
-      [ [ __0,        ], __undef ],
-      [ [ /regex/,    ], __undef ],
-      [ [ 'string',   ], __undef ],
+      [ [ __1        ], __undef ],
+      [ [ -694567    ], __undef ],
+      [ [ __blank    ], __undef ],
+      [ [ __null     ], __undef ],
+      [ [ __undef    ], __undef ],
+      [ [ 5.062e12   ], __undef ],
+      [ [ __0        ], __undef ],
+      [ [ /regex/    ], __undef ],
+      [ [ 'string'   ], __undef ],
       [ [ [ 1,2,3 ]   ], __undef ],
       [ [ complex_obj ], proto   ],
       [ [ new Date()  ], __undef ],
@@ -368,7 +366,7 @@ function clearMap ( test_obj ) {
         { map : { this : 'that' } } ]
     ],
     assert_count = assert_table.length,
-    test_fn      = __util._clearMap_,
+    test_fn      = utilObj._clearMap_,
 
     msg_str,  idx,         expect_list,
     arg_list, expect_data, solve_data
@@ -388,6 +386,7 @@ function clearMap ( test_obj ) {
       + JSON.stringify( solve_data )
       + '\n expect_map: ' + JSON.stringify( expect_data )
     ;
+
     test_obj.ok(
       JSON.stringify( solve_data ) === JSON.stringify( expect_data ), msg_str
     );
@@ -407,7 +406,7 @@ function cloneData ( test_obj ) {
       { a : 'complex', name_list : [ 'tim', 'bob' ], map: { this : 'that' } }
     ],
     assert_count = assert_table.length,
-    clone_fn     = __util._cloneData_,
+    clone_fn     = utilObj._cloneData_,
 
     msg_str, idx, assert_data, cloned_data
     ;
@@ -462,7 +461,7 @@ function encodeHtml ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    encode_fn    = __util._encodeHtml_,
+    encode_fn    = utilObj._encodeHtml_,
 
     idx, expect_list, arg_list, expect_str, solve_str, msg_str
     ;
@@ -496,8 +495,8 @@ function getBasename ( test_obj ) {
       [ [ ':colon:word',   ':' ], 'word', ':colon:' ]
     ],
     assert_count = assert_table.length,
-    basename_fn  = __util._getBasename_,
-    dirname_fn   = __util._getDirname_,
+    basename_fn  = utilObj._getBasename_,
+    dirname_fn   = utilObj._getDirname_,
 
     idx, expect_list, arg_list, expect_basename, expect_dirname,
     msg_str, solve_basename, solve_dirname
@@ -541,7 +540,7 @@ function extendList ( test_obj ) {
       [ [ [ {}, [] ], [ {}, 'alpha' ] ], [{},[],{},'alpha'] ]
     ],
     assert_count = assert_table.length,
-    extend_fn    = __util._extendList_,
+    extend_fn    = utilObj._extendList_,
 
     idx, expect_list, arg_list, msg_str,
     solve_data, expect_data
@@ -590,7 +589,7 @@ function getStructData ( test_obj ) {
       [ [ deepest_map, deepest_list ], __undef ]
     ],
     assert_count = assert_table.length,
-    deep_fn      = __util._getStructData_,
+    deep_fn      = utilObj._getStructData_,
 
     idx,         expect_list, arg_list,
     expect_data, solve_data,  msg_str,
@@ -643,8 +642,8 @@ function getListAttrIdx ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    get_idx_fn   = __util._getListAttrIdx_,
-    get_map_fn   = __util._getListAttrMap_,
+    get_idx_fn   = utilObj._getListAttrIdx_,
+    get_map_fn   = utilObj._getListAttrMap_,
     check_count  = __0,
 
     idx,          expect_list,  arg_list,
@@ -671,6 +670,7 @@ function getListAttrIdx ( test_obj ) {
       + JSON.stringify( solve_map ) + ' === '
       + JSON.stringify( expect_map )
     ;
+
     test_obj.ok( solve_map === expect_map, msg_str );
     check_count++;
   }
@@ -706,7 +706,7 @@ function getListDiff ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    get_diff_fn   = __util._getListDiff_,
+    get_diff_fn   = utilObj._getListDiff_,
 
     idx, expect_list, arg_list, expect_data, solve_data, msg_str
     ;
@@ -749,7 +749,7 @@ function getListValCount ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    get_count_fn = __util._getListValCount_,
+    get_count_fn = utilObj._getListValCount_,
 
     idx,          expect_list,   arg_list,
     expect_data,  solve_data,    msg_str
@@ -772,7 +772,7 @@ function getListValCount ( test_obj ) {
 
 function getNowMs ( test_obj ) {
   var
-    now_ms = __util._getNowMs_(),
+    now_ms = utilObj._getNowMs_(),
     rx     = /^[\d]{13}$/;
 
   test_obj.expect( __1 );
@@ -797,7 +797,7 @@ function getNumSign ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    get_sign_fn   = __util._getNumSign_,
+    get_sign_fn   = utilObj._getNumSign_,
 
     idx,        expect_list,  arg_list,
     expect_int, solve_int,    msg_str
@@ -819,7 +819,7 @@ function getNumSign ( test_obj ) {
 }
 
 function getTzCode ( test_obj ) {
-  var tz_code = __util._getTzCode_();
+  var tz_code = utilObj._getTzCode_();
   test_obj.expect( __1 );
 
   // eslint-disable-next-line no-useless-escape
@@ -831,44 +831,42 @@ function getTzCode ( test_obj ) {
 
 function getVarType ( test_obj ) {
   var
-    // this is a hack to get around jslint warnings
     ob = Boolean, oa = Array, os = String,
-    on = Number,  // oo = Object,
-
-    und1 = __undef,
-    msg_str,
+    on = Number,
 
     bool1 = __true,
     list1 = [ 'a','b','c' ],
     null1 = __null,
     num1  = 25,
-    str1  = 'cde',
     obj1  = { length : 12 },
+    str1  = 'cde',
+    undef1= __undef,
 
     bool2 = new ob(),
+    d_obj = new Date(),
     list2 = new oa(),
     num2  = new on(),
     str2  = new os(),
-    d_obj = new Date(),
 
-    get_type_fn = __util._getVarType_;
+    get_fn  = utilObj._getVarType_,
+    msg_str = 'Should match expected type'
+    ;
 
   test_obj.expect( 12 );
 
-  msg_str = 'Should match expected type';
 
-  test_obj.ok( get_type_fn( und1  ) === '_Undefined_', msg_str );
-  test_obj.ok( get_type_fn( null1 ) === '_Null_',      msg_str );
-  test_obj.ok( get_type_fn( bool1 ) === '_Boolean_',   msg_str );
-  test_obj.ok( get_type_fn( str1  ) === '_String_',    msg_str );
-  test_obj.ok( get_type_fn( num1  ) === '_Number_',    msg_str );
-  test_obj.ok( get_type_fn( list1 ) === '_Array_',     msg_str );
-  test_obj.ok( get_type_fn( obj1  ) === '_Object_',    msg_str );
-  test_obj.ok( get_type_fn( bool2 ) === '_Boolean_',   msg_str );
-  test_obj.ok( get_type_fn( str2  ) === '_String_',    msg_str );
-  test_obj.ok( get_type_fn( num2  ) === '_Number_',    msg_str );
-  test_obj.ok( get_type_fn( list2 ) === '_Array_',     msg_str );
-  test_obj.ok( get_type_fn( d_obj ) ===  'Date',       msg_str );
+  test_obj.ok( get_fn( bool1  ) === '_Boolean_',   msg_str );
+  test_obj.ok( get_fn( bool2  ) === '_Boolean_',   msg_str );
+  test_obj.ok( get_fn( d_obj  ) ===  'Date',       msg_str );
+  test_obj.ok( get_fn( list1  ) === '_Array_',     msg_str );
+  test_obj.ok( get_fn( list2  ) === '_Array_',     msg_str );
+  test_obj.ok( get_fn( null1  ) === '_Null_',      msg_str );
+  test_obj.ok( get_fn( num1   ) === '_Number_',    msg_str );
+  test_obj.ok( get_fn( num2   ) === '_Number_',    msg_str );
+  test_obj.ok( get_fn( obj1   ) === '_Object_',    msg_str );
+  test_obj.ok( get_fn( str1   ) === '_String_',    msg_str );
+  test_obj.ok( get_fn( str2   ) === '_String_',    msg_str );
+  test_obj.ok( get_fn( undef1 ) === '_Undefined_', msg_str );
 
   test_obj.done();
 }
@@ -943,7 +941,7 @@ function makeArgList ( test_obj ) {
 
     assert_count = assert_table.length,
     make_list_fn  = function () {
-      return __util._makeArgList_( arguments );
+      return utilObj._makeArgList_( arguments );
     },
 
     idx, expect_list, solve_list, msg_str
@@ -992,7 +990,7 @@ function makeClockStr ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    make_str_fn   = __util._makeClockStr_,
+    make_str_fn   = utilObj._makeClockStr_,
 
     idx, expect_list, arg_list, expect_str, solve_str, msg_str
     ;
@@ -1036,7 +1034,7 @@ function makeCommaNumStr ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeCommaNumStr_,
+    make_str_fn  = utilObj._makeCommaNumStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -1159,7 +1157,7 @@ function makeDateStr ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    make_str_fn   = __util._makeDateStr_,
+    make_str_fn   = utilObj._makeDateStr_,
 
     idx, expect_list, arg_map, tmp_obj,
     expect_str, solve_str, msg_str
@@ -1197,11 +1195,11 @@ function makeDebounce01Fn ( test_obj ) {
     curry_fn;
 
   test_obj.expect( 2 );
-  curry_fn = __util._makeDebounceFn_();
+  curry_fn = utilObj._makeDebounceFn_();
 
   test_obj.ok( curry_fn === __undef );
 
-  curry_fn = __util._makeDebounceFn_({
+  curry_fn = utilObj._makeDebounceFn_({
     _fn_ : run_fn,
     _do_asap_  : __true,
     _delay_ms_ : 10
@@ -1219,7 +1217,7 @@ function makeDebounce02Fn ( test_obj ) {
     run_fn = function () { test_idx++; },
     curry_fn;
 
-  curry_fn = __util._makeDebounceFn_({
+  curry_fn = utilObj._makeDebounceFn_({
     _fn_ : run_fn,
     _do_asap_  : __false,
     _delay_ms_ : 10
@@ -1243,7 +1241,7 @@ function makeDebounce03Fn ( test_obj ) {
     ctx_map = { str : 'hi there' },
     curry_fn;
 
-  curry_fn = __util._makeDebounceFn_({
+  curry_fn = utilObj._makeDebounceFn_({
     _fn_       : __run03Fn,
     _ctx_data_ : ctx_map,
     _do_asap_  : __true,
@@ -1259,13 +1257,13 @@ function makeDebounce03Fn ( test_obj ) {
 }
 
 function __run04Fn () {
-  this._list_ = __util._makeArgList_( arguments );
+  this._list_ = utilObj._makeArgList_( arguments );
 }
 
 function makeDebounce04Fn ( test_obj ) {
   var ctx_map = {}, curry_fn;
 
-  curry_fn = __util._makeDebounceFn_({
+  curry_fn = utilObj._makeDebounceFn_({
     _fn_       : __run04Fn,
     _ctx_data_ : ctx_map,
     _do_asap_  : __false,
@@ -1378,7 +1376,7 @@ function makeEllipsisStr ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    make_str_fn   = __util._makeEllipsisStr_,
+    make_str_fn   = utilObj._makeEllipsisStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -1399,7 +1397,7 @@ function makeEllipsisStr ( test_obj ) {
 
 function makeErrorObj ( test_obj ) {
   var
-    key_list     = [ 'name', 'description', 'data' ],
+    key_list     = [ 'name', 'message', 'data' ],
     default_list = [ aKey + ':error', __blank, __undef ],
     assert_table = [
       // [ arg_list, expect_list ]
@@ -1419,14 +1417,14 @@ function makeErrorObj ( test_obj ) {
       [ [ '_bad_data_', '_the_list_is_missing_' ],
         [ aKey + ':_bad_data_', '_the_list_is_missing_', __undef ]
       ],
-      [ [ '_bad_data_', '_the_list_is_missing_', { is : __true } ],
-        [ aKey + ':_bad_data_', '_the_list_is_missing_', { is : __true } ]
+      [ [ '_bad_data_', '_the_list_is_missing_', __undef ],
+        [ aKey + ':_bad_data_', '_the_list_is_missing_', __undef ]
       ]
     ],
 
     key_count    = key_list.length,
     assert_count = assert_table.length,
-    make_fn      = __util._makeErrorObj_,
+    make_fn      = utilObj._makeErrorObj_,
     test_count   = __0,
 
     idx, expect_list, arg_list, expect_obj, solve_obj,
@@ -1461,14 +1459,16 @@ function makeEscRxStr ( test_obj ) {
   var
     // [ arg_list, expect_list ]
     assert_table = [
-      [ [         ],           __blank ],
-      [ [ __null  ],           __blank ],
-      [ [ __undef ],           __blank ],
-      [ [ __0     ],               '0' ]
+      [ [         ],               __blank ],
+      [ [ __null  ],               __blank ],
+      [ [ __undef ],               __blank ],
+      [ [ __0     ],                   '0' ],
+      [ [ 'Is [This]* correct?' ], 'Is \\[This\\]\\* correct\\?' ],
+      [ [ 'multi-line\n now-then' ], 'multi\\-line\n now\\-then' ]
     ],
 
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeEscRxStr_,
+    make_str_fn  = utilObj._makeEscRxStr_,
 
     idx, expect_list, arg_list, expect_str,
     solve_str, msg_str
@@ -1511,7 +1511,7 @@ function makeExtractMap ( test_obj ) {
         { a_str : 'hello', foo : __undef } ]
     ],
     assert_count = assert_table.length,
-    extract_fn    = __util._makeExtractMap_,
+    extract_fn    = utilObj._makeExtractMap_,
 
     idx, expect_list, arg_list, msg_str,
     solve_data, expect_data
@@ -1534,7 +1534,7 @@ function makeGuidStr ( test_obj ) {
   var
     seen_map     = {},
     assert_count = 100,
-    make_str_fn  = __util._makeGuidStr_,
+    make_str_fn  = utilObj._makeGuidStr_,
     guid_rx      = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/,
     idx, solve_str;
 
@@ -1551,10 +1551,10 @@ function makeGuidStr ( test_obj ) {
 }
 function makeMapUtilObj ( test_obj ) {
   var
-    map_util_obj = __util._makeMapUtilObj_(),
+    map_util_obj = utilObj._makeMapUtilObj_(),
     arg_list   = [ [ 'cows', 'donkeys', 'sheep' ] ],
     field_list = [ 'moo', 'garaaah', 'bahbah' ],
-    clone_list = __util._cloneData_( field_list ),
+    clone_list = utilObj._cloneData_( field_list ),
     map_fn   = function ( field_data, idx, list, arg_list ) {
       var
         name_list  = arg_list[  __0 ],
@@ -1617,11 +1617,11 @@ function makeMetricStr ( test_obj ) {
       [ [       1e6 ],   '1.00M'  ],
       [ [      -1e9 ],  '-1.00G'  ],
       [ [       1e9 ],   '1.00G'  ],
-      [ [  2.8693e9 ],   '2.87G'  ],
+      [ [  2.8693e9 ],   '2.87G'  ]
     ],
 
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeMetricStr_,
+    make_str_fn  = utilObj._makeMetricStr_,
 
     idx,        expect_list, arg_list,
     expect_str, solve_str,   msg_str
@@ -1640,6 +1640,7 @@ function makeMetricStr ( test_obj ) {
   }
   test_obj.done();
 }
+
 function makeOptionHtml ( test_obj ) {
   var
     assert_table  = [
@@ -1650,34 +1651,45 @@ function makeOptionHtml ( test_obj ) {
       [ [],          __blank ],
       [ [ 1,2,3,4],  __blank ],
       [ {},          __blank ],
-      [ { _val_list_ : [ 1 ] }, '<option value="1">1</option>' ],
-      [ { _val_list_ : [ 1 ], _label_map_ : { 1 : 'One' } },
+      [ { _enum_table_ : [ { _value_: 1 } ] }, '<option value="1">1</option>' ],
+      [ { _enum_table_ : [ { _value_: 1, _label_: 'One' } ] },
         '<option value="1">One</option>'
       ],
-      [ { _val_list_  : [ 'rosey', 'betty' ],
-        _label_map_   : { 'rosey' : 'The Rose' },
-        _select_list_ : [ 'betty' ]
-      },
+      [ { _enum_table_  : [
+            { _value_ : 'rosey', _label_: 'The Rose' },
+            { _value_ : 'betty' }
+          ],
+          _match_list_ : [ 'betty' ]
+        },
         '<option value="rosey">The Rose</option>'
         + '<option value="betty" selected="selected">Betty</option>'
       ],
-      [ { _val_list_  : [ 'rosey', 'betty', 'debauch',
-          { cow: __null }, [ 32 ], __undef, 99, 865, -22, __null
-         ],
-          _label_map_   : { 'debauch' : 'De Bauch Airy' },
-          _select_list_ : [ 'debauch', -22 ]
+      [ { _enum_table_  :
+          [
+            { _value_ : 'rosey' },
+            { _value_ : 'betty' },
+            { _value_ : 'debauch', _label_: 'De Bauch Airy' },
+            { cow: __null },
+            { _value_ : [ 32 ] },
+            { _value_ : __undef },
+            { _value_ : 99 },
+            { _value_ : 865 },
+            { _value_ : -22 },
+            { _value_ : __null }
+          ],
+          _match_list_ : [ 'debauch', '-22' ]
         },
         '<option value="rosey">Rosey</option>'
-        + '<option value="betty">Betty</option>'
-        + '<option value="debauch" selected="selected">De Bauch Airy</option>'
-        + '<option value="99">99</option>'
-        + '<option value="865">865</option>'
-        + '<option value="-22" selected="selected">-22</option>'
+          + '<option value="betty">Betty</option>'
+          + '<option value="debauch" selected="selected">De Bauch Airy</option>'
+          + '<option value="99">99</option>'
+          + '<option value="865">865</option>'
+          + '<option value="-22" selected="selected">-22</option>'
       ]
     ],
 
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeOptionHtml_,
+    make_str_fn  = utilObj._makeOptionHtml_,
 
     idx,        expect_list, arg_map,
     expect_str, solve_str,   msg_str
@@ -1728,7 +1740,7 @@ function makePadNumStr ( test_obj ) {
       [ [ '-025',   5  ], '-0025'  ]
     ],
     assert_count = assert_table.length,
-    make_str_fn  = __util._makePadNumStr_,
+    make_str_fn  = utilObj._makePadNumStr_,
 
     idx, expect_list, arg_list, expect_str,
     solve_str, msg_str
@@ -1772,7 +1784,7 @@ function makePctStr ( test_obj ) {
       [ [ (2/3),   __0  ], '67%'      ]
     ],
     assert_count = assert_table.length,
-    make_str_fn  = __util._makePctStr_,
+    make_str_fn  = utilObj._makePctStr_,
 
     idx, expect_list, arg_list, expect_str, solve_str, msg_str
     ;
@@ -1799,34 +1811,38 @@ function makeRadioHtml ( test_obj ) {
       [ [],          __blank ],
       [ [ 1,2,3,4],  __blank ],
       [ {},          __blank ],
-      [ { _group_name_ : 'fred', _match_str_:1, _val_list_: [1,2,3]},
+      [ { _group_name_ : 'fred', _match_str_:1, _enum_table_: [
+        { _value_ :1 }, { _value_:2 }, { _value_:3} ] },
         '<label>'
-        + '<input type="radio" name="fred" value="1" checked="checked"/>'
+        + '<input type="radio" name="fred" value="1" checked="checked">'
         + '1</label>'
-        + '<label><input type="radio" name="fred" value="2"/>2</label>'
-        + '<label><input type="radio" name="fred" value="3"/>3</label>'
+        + '<label><input type="radio" name="fred" value="2">2</label>'
+        + '<label><input type="radio" name="fred" value="3">3</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: __null,
-          _val_list_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
-            '6', 'gal', 'pal', __undef ]
+          _enum_table_: [ [ 'foolish' ], { some: 'map', count: 22 }, __null,
+            { _value_: 6 }, { _value_ :'gal' }, { _value_ : 'pal' }, __undef ]
           },
-        '<label><input type="radio" name="bs" value="6"/>6</label>'
-        + '<label><input type="radio" name="bs" value="gal"/>Gal</label>'
-        + '<label><input type="radio" name="bs" value="pal"/>Pal</label>'
+        '<label><input type="radio" name="bs" value="6">6</label>'
+        + '<label><input type="radio" name="bs" value="gal">Gal</label>'
+        + '<label><input type="radio" name="bs" value="pal">Pal</label>'
       ],
       [ { _group_name_ : 'bs', _match_str_: 'gal',
-          _val_list_: [ '6', 'gal', 'pal' ],
-          _label_map_ : { 6 : 'Six', gal: 'Girl', pal : 'Friend' }
-      },
-        '<label><input type="radio" name="bs" value="6"/>Six</label>'
+          _enum_table_ : [
+            { _value_ : 6, _label_ : 'Six' },
+            { _value_ : 'gal', _label_ : 'Girl' },
+            { _value_ : 'pal', _label_ : 'Friend' }
+          ]
+        },
+        '<label><input type="radio" name="bs" value="6">Six</label>'
         + '<label><input type="radio" name="bs" value="gal" '
-          + 'checked="checked"/>Girl</label>'
-        + '<label><input type="radio" name="bs" value="pal"/>Friend</label>'
+          + 'checked="checked">Girl</label>'
+        + '<label><input type="radio" name="bs" value="pal">Friend</label>'
       ]
     ],
 
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeRadioHtml_,
+    make_str_fn  = utilObj._makeRadioHtml_,
 
     idx,        expect_list, arg_map,
     expect_str, solve_str,   msg_str
@@ -1882,7 +1898,7 @@ function makeReplaceFn ( test_obj ) {
     arg_list     = expect_list[ __0 ];
     expect1_str  = expect_list[ __1 ];
     expect2_str  = expect_list[ __2 ];
-    make_str_fn  = __util._makeReplaceFn_.apply( __undef, arg_list );
+    make_str_fn  = utilObj._makeReplaceFn_.apply( __undef, arg_list );
 
     solve1_str = make_str_fn( tmplt1_str );
     msg_str    = __Str( test_count ) + '. '
@@ -1902,11 +1918,16 @@ function makeRekeyMap ( test_obj ) {
   var
     assert_table  = [
       // [ arg_list, expect_data ]
-      [ [ {a:1, b:2, c:3}, { a: 'x', b: 'y', c: 'z'} ], {x:1, y:2, z:3}, ]
+      [ [ {a:1, b:2, c:3}, { a: 'x', b: 'y', c: 'z'} ], {x:1, y:2, z:3} ],
+      [ [ {a:1, b:2, c:3}, { a: 'x', b: 'y', c: 'z'}, '_reval_' ], {a:'x', b:'y', c:'z'} ],
+      [ [ {a:1, b:2, l:[{c:'foo'}]}, { a: 'x', b: 'y', c: 'z'}, '_reval_' ],
+        {a:'x', b:'y', l:[{c:'z'}]} ],
+      [ [ {a:1, b:2, l:[{c:'foo'}]}, { a: 'x', b: 'y', c: 'z'}, '_rekey_' ],
+        {x:1, y:2, l:[{z:'foo'}]} ]
     ],
 
     assert_count = assert_table.length,
-    make_map_fn  = __util._makeRekeyMap_,
+    make_map_fn  = utilObj._makeRekeyMap_,
 
     idx,        expect_list, arg_list,
     expect_map, solve_map,   msg_str
@@ -1959,16 +1980,16 @@ function makeScrubStr ( test_obj ) {
       [ [ '<h1>hello</h1>', 'freddy' ], 'hello' ],
       [ [ '<div>hello</div>', __true ], 'hello' ],
       [ [ '<div><h1>hello</h1><p>This is lc.</p></div>', __1 ],
-        'hello This is lc.' ],
+        'helloThis is lc.' ],
       [ [ '<div><h1>Hello!</h1><p>This is lc.</p></div>', __1 ],
-        'Hello! This is lc.' ],
+        'Hello!This is lc.' ],
       [ [ '<ul><li>Fred</li><li>Barney</li><li>Wilma</li><li>Betty</li></ul>',
         __true ],
         'Fred Barney Wilma Betty' ]
     ],
 
     assert_count = assert_table.length,
-    make_str_fn   = __util._makeScrubStr_,
+    make_str_fn   = utilObj._makeScrubStr_,
 
     idx,        expect_list, arg_list,
     expect_str, solve_str,   msg_str
@@ -2010,7 +2031,7 @@ function makeSeenMap ( test_obj ) {
         {red:data_map,green:data_map,blue:data_map} ]
     ],
     assert_count = assert_table.length,
-    make_map_fn  = __util._makeSeenMap_,
+    make_map_fn  = utilObj._makeSeenMap_,
 
     idx, expect_list, arg_list, expect_map, solve_map, msg_str
     ;
@@ -2271,7 +2292,7 @@ function makeSeriesMap ( test_obj ) {
     delta_count    = delta_list.length,
     expect_count   = __0,
     interval_count = interval_list.length,
-    make_map_fn    = __util._makeSeriesMap_,
+    make_map_fn    = utilObj._makeSeriesMap_,
 
     delta_idx, delta_ms, interval_idx, interval_int,
     date_obj, tz_offset_ms,
@@ -2409,7 +2430,7 @@ function makeStrFromMap ( test_obj ) {
       }, 'fff === Wilma | isss === 48' ]
     ],
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeStrFromMap_,
+    make_str_fn  = utilObj._makeStrFromMap_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -2432,11 +2453,11 @@ function makeThrottle01Fn ( test_obj ) {
   var idx = __0, curry_fn;
 
   test_obj.expect( 3 );
-  curry_fn = __util._makeThrottleFn_();
+  curry_fn = utilObj._makeThrottleFn_();
 
   test_obj.ok( curry_fn === __undef );
 
-  curry_fn = __util._makeThrottleFn_({
+  curry_fn = utilObj._makeThrottleFn_({
     _fn_       : function () { idx++; },
     _do_asap_  : __false,
     _delay_ms_ : 10
@@ -2503,7 +2524,7 @@ function makeTmpltStr ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeTmpltStr_,
+    make_str_fn  = utilObj._makeTmpltStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -2535,7 +2556,7 @@ function makeUcFirstStr ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    make_str_fn  = __util._makeUcFirstStr_,
+    make_str_fn  = utilObj._makeUcFirstStr_,
 
     idx, expect_list, arg_map, expect_str, solve_str, msg_str
     ;
@@ -2552,7 +2573,7 @@ function makeUcFirstStr ( test_obj ) {
   test_obj.done();
 }
 
-function parseSafeJson ( test_obj ) {
+function safeJsonParse ( test_obj ) {
   var
     assert_table = [
       // [ arg_list, expect_data ]
@@ -2563,14 +2584,14 @@ function parseSafeJson ( test_obj ) {
       [ [ __1 ],             __1 ],
       [ [ __1, [] ],         __1 ],
       [ [ '', [] ],           [] ],
-      [ [ '<bad>', __2 ],    __2 ],
-      [ [ '<bad>', '22' ],  '22' ],
-      [ [ '<bad>', 'help' ], 'help' ],
-      [ [ '<bad>', [] ],      [] ],
-      [ [ '<bad>', {} ],      {} ]
+      [ [ '<a>', __2 ],    __2 ],
+      [ [ '<h1>', '22' ],  '22' ],
+      [ [ '<h2>', 'help' ], 'help' ],
+      [ [ '<h3>', [] ],      [] ],
+      [ [ '<h4>', {} ],      {} ]
     ],
     assert_count = assert_table.length,
-    parse_fn     = __util._parseSafeJson_,
+    parse_fn     = utilObj._safeJsonParse_,
 
     idx, expect_list, arg_list,
     expect_data, solve_data, msg_str
@@ -2580,7 +2601,7 @@ function parseSafeJson ( test_obj ) {
 
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list  = assert_table[ idx ];
-    arg_list     = __util._cloneData_( expect_list[ __0 ] );
+    arg_list     = utilObj._cloneData_( expect_list[ __0 ] );
     expect_data  = expect_list[ __1 ];
     solve_data   = parse_fn.apply( __undef, arg_list );
     msg_str      = __Str( idx ) + '. arg_list: '
@@ -2598,7 +2619,6 @@ function parseSafeJson ( test_obj ) {
 }
 
 function mergeMaps ( test_obj ) {
-  //noinspection JSUnusedGlobalSymbols
   var
     base0_map = { attr1 : 'val1', attr2 : 'val2' },
     base1_map = { attr3 : 10,     attr4 : 20     },
@@ -2642,7 +2662,7 @@ function mergeMaps ( test_obj ) {
     ],
 
     assert_count  = assert_table.length,
-    merge_maps_fn = __util._mergeMaps_,
+    merge_maps_fn = utilObj._mergeMaps_,
 
     idx, expect_list, arg_list,
     expect_map, solve_map, msg_str
@@ -2651,7 +2671,7 @@ function mergeMaps ( test_obj ) {
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list = assert_table[ idx ];
-    arg_list    = __util._cloneData_( expect_list[ __0 ] );
+    arg_list    = utilObj._cloneData_( expect_list[ __0 ] );
     expect_map  = expect_list[ __1 ];
     solve_map   = merge_maps_fn.apply( __undef, arg_list );
     msg_str = __Str( idx ) + '. arg_list: '
@@ -2685,7 +2705,7 @@ function pushUniqListVal ( test_obj ) {
     ],
 
     assert_count = assert_table.length,
-    push_uniq_fn = __util._pushUniqListVal_,
+    push_uniq_fn = utilObj._pushUniqListVal_,
 
     idx, jdx,     val_list,     val_count,
     expect_list,  expect_data,  solve_list,
@@ -2741,11 +2761,13 @@ function rmListVal ( test_obj ) {
       [ [ test0_list, 'string'   ], expect2_list, __2 ],
       [ [ test0_list, 'fetzer'   ], expect2_list, __0 ],
       [ [ test0_list, '0'        ], expect2_list, __0 ],
-      [ [ test0_list, __0        ], expect3_list, __1 ]
+      [ [ test0_list, __0        ], expect3_list, __1 ],
+      [ [ [ 1, 2, 3, 4, 99, 'boo' ], 'boo', 99 ], [ 1, 2, 3, 4 ], 2 ],
+      [ [ [ 1, 2, 3, 4, 99, 'boo' ], 1,2,3,4 ], [ 99, 'boo' ], 4 ]
     ],
 
     assert_count = assert_table.length,
-    rm_val_fn    = __util._rmListVal_,
+    rm_val_fn    = utilObj._rmListVal_,
 
     idx,          expect_list,  arg_list,
     expect_data,  expect_count, solve_list,
@@ -2783,9 +2805,9 @@ function pollFunction ( test_obj ) {
     };
 
   test_obj.expect( __3 );
-  test_obj.ok( ! __util._pollFunction_ ( __undef, __0, 29, finish_fn ),
+  test_obj.ok( ! utilObj._pollFunction_ ( __undef, __0, 29, finish_fn ),
     'no fn should fail ' );
-  test_obj.ok( __util._pollFunction_( test_fn, __0, 4, finish_fn ),
+  test_obj.ok( utilObj._pollFunction_( test_fn, __0, 4, finish_fn ),
     'proper call should return true.' );
 }
 
@@ -2830,7 +2852,7 @@ function setStructData ( test_obj ) {
     ],
 
     assert_count  = assert_table.length,
-    set_deep_fn = __util._setStructData_,
+    set_deep_fn = utilObj._setStructData_,
 
     idx, expect_list, arg_list,
     expect_data, solve_data, msg_str
@@ -2839,7 +2861,7 @@ function setStructData ( test_obj ) {
   test_obj.expect( assert_count );
   for ( idx = __0; idx < assert_count; idx++ ) {
     expect_list = assert_table[ idx ];
-    arg_list    = __util._cloneData_( expect_list[ __0 ] );
+    arg_list    = utilObj._cloneData_( expect_list[ __0 ] );
     expect_data = expect_list[ __1 ];
     solve_data  = arg_list[ __0 ];
     set_deep_fn.apply( __undef, arg_list );
@@ -2874,7 +2896,7 @@ function shuffleList ( test_obj ) {
 
     assert_count  = assert_table.length,
     expect_count  = assert_count + 2,
-    shuffle_fn    = __util._shuffleList_,
+    shuffle_fn    = utilObj._shuffleList_,
     test_idx      = __0,
 
     idx,         expect_list, arg_list,
@@ -2882,7 +2904,6 @@ function shuffleList ( test_obj ) {
     solve_bool,  msg_str,     pass_bool,
     jdx,         clone_json
     ;
-
 
   // Create 2 extra tests for each shuffled list
   assert_table.filter( function ( list ) {
@@ -2895,7 +2916,7 @@ function shuffleList ( test_obj ) {
     arg_list     = expect_list[ __0 ];
     expect_bool  = expect_list[ __1 ];
     orig_list    = arg_list[ __0 ];
-    clone_list   = __util._cloneData_( orig_list );
+    clone_list   = utilObj._cloneData_( orig_list );
     solve_bool   = shuffle_fn.apply( __undef, arg_list );
 
     msg_str = __Str( test_idx ) + '. arg_list: '
@@ -2954,7 +2975,7 @@ function trimStrList ( test_obj ) {
     ],
 
     assert_count  = assert_table.length,
-    trim_fn       = __util._trimStrList_,
+    trim_fn       = utilObj._trimStrList_,
 
     idx, expect_list, arg_list,
     expect_data, solve_data, msg_str
@@ -2988,7 +3009,7 @@ function decodeHtml ( test_obj ) {
       [ [ '<div>text</div>' ],         'text' ]
     ],
     assert_count = assert_table.length,
-    test_fn      = __utilb._decodeHtml_,
+    test_fn      = utilBobj._decodeHtml_,
 
     idx,        expect_list, arg_list,
     expect_str, solve_str,   msg_str
@@ -3022,13 +3043,13 @@ function fillForm ( test_obj ) {
 
   test_obj.expect( 11 );
 
-  test_obj.ok( __utilb._fillForm_(         ) === __false, 'a. no form false' );
-  test_obj.ok( __utilb._fillForm_( __undef ) === __false, 'b. bad form false' );
-  test_obj.ok( __utilb._fillForm_( {}      ) === __false, 'c. bad form false' );
-  test_obj.ok( __utilb._fillForm_( $form_01) === __true,  'd. good form true' );
-  test_obj.ok( __utilb._fillForm_( $form_02) === __true,  'e. good form true' );
+  test_obj.ok( utilBobj._fillForm_(         ) === __false, 'a. no form false' );
+  test_obj.ok( utilBobj._fillForm_( __undef ) === __false, 'b. bad form false' );
+  test_obj.ok( utilBobj._fillForm_( {}      ) === __false, 'c. bad form false' );
+  test_obj.ok( utilBobj._fillForm_( $form_01) === __true,  'd. good form true' );
+  test_obj.ok( utilBobj._fillForm_( $form_02) === __true,  'e. good form true' );
 
-  __utilb._fillForm_( $form_01, { attr1 : 'my input', attr2 : 'My writing' });
+  utilBobj._fillForm_( $form_01, { attr1 : 'my input', attr2 : 'My writing' });
 
   solve_str = $form_01.find( '[name="attr1"]' ).val();
   test_obj.ok( solve_str === 'my input', '0. ' + solve_str );
@@ -3042,7 +3063,7 @@ function fillForm ( test_obj ) {
   solve_bool = $form_02.find( '[name="attr2"]' ).is( ':checked' );
   test_obj.ok( solve_bool === __true, '3. ' + __Str( solve_bool ) );
 
-  __utilb._fillForm_( $form_02, { attr1 : __true, attr2 : __true });
+  utilBobj._fillForm_( $form_02, { attr1 : __true, attr2 : __true });
 
   solve_bool = $form_02.find( '[name="attr1"]' ).is( ':checked' );
   test_obj.ok( solve_bool === __true, '4. ' + __Str( solve_bool ) );
@@ -3113,22 +3134,22 @@ function getFormMap ( test_obj ) {
     solve_map;
 
   test_obj.expect( 5 );
-  __utilb._fillForm_( $form_01,  form_01_map );
+  utilBobj._fillForm_( $form_01,  form_01_map );
 
-  solve_map = __utilb._getFormMap_();
+  solve_map = utilBobj._getFormMap_();
   test_obj.ok( solve_map === __undef, '0. no args result in undef' );
 
-  solve_map = __utilb._getFormMap_( $() );
+  solve_map = utilBobj._getFormMap_( $() );
   test_obj.deepEqual( solve_map, {}, '1. Empty container results in empty'
     + ' map' );
 
-  solve_map = __utilb._getFormMap_( $form_00 );
+  solve_map = utilBobj._getFormMap_( $form_00 );
   test_obj.deepEqual( solve_map, form_00_map, '2. Maps match' );
 
-  solve_map = __utilb._getFormMap_( $form_01 );
+  solve_map = utilBobj._getFormMap_( $form_01 );
   test_obj.deepEqual( solve_map, form_01_map, '3. Maps match' );
 
-  solve_map = __utilb._getFormMap_( $form_02 );
+  solve_map = utilBobj._getFormMap_( $form_02 );
   test_obj.deepEqual( solve_map, form_02_map, '4. Maps match' );
 
   test_obj.done();
@@ -3167,8 +3188,8 @@ function resizeTextarea ( test_obj ) {
 
   test_obj.expect( assert_count * __2  + __2 );
 
-  test_obj.ok( __utilb._resizeTextarea_() === __false, '0. No args returns false' );
-  test_obj.ok( __utilb._resizeTextarea_( $form_01 ) === __true,
+  test_obj.ok( utilBobj._resizeTextarea_() === __false, '0. No args returns false' );
+  test_obj.ok( utilBobj._resizeTextarea_( $form_01 ) === __true,
     '1. valid form returns true' );
 
 
@@ -3178,8 +3199,8 @@ function resizeTextarea ( test_obj ) {
     arg_str     = expect_list[ __0 ];
     expect_map  = expect_list[ __1 ];
 
-    __utilb._fillForm_( $form_01, { tex : arg_str } );
-    solve_map = __utilb._getFormMap_( $form_01 );
+    utilBobj._fillForm_( $form_01, { tex : arg_str } );
+    solve_map = utilBobj._getFormMap_( $form_01 );
 
     msg_str = __Str( text_idx ) + '. arg_str: ' + arg_str
       + '\n solve_map: '  + JSON.stringify( solve_map  )
@@ -3187,8 +3208,8 @@ function resizeTextarea ( test_obj ) {
     test_obj.deepEqual( solve_map, expect_map, msg_str );
     text_idx++;
 
-    __utilb._resizeTextarea_( $form_01 );
-    solve_map = __utilb._getFormMap_( $form_01 );
+    utilBobj._resizeTextarea_( $form_01 );
+    solve_map = utilBobj._getFormMap_( $form_01 );
 
     msg_str = __Str( text_idx ) + '. arg_str: ' + arg_str
       + '\n solve_map: '  + JSON.stringify( solve_map  )
@@ -3250,7 +3271,7 @@ function addLocalSpin ( test_obj ) {
   var
     spin_html = liteBoxMap._spin_html_,
     blow_html = '<p>This html should be destroy</p>',
-    $div = $('<div/>'),
+    $div = $('<div></div>'),
     solve_str
     ;
 
@@ -3321,31 +3342,31 @@ function showErrorList ( test_obj ) {
     row01_map = { _code_:'x29',_name_:'bad apples',_descr_:'I am blue'},
     row02_map = {},
     rows00_html = 'unknown error',
-    rows01_html = __util._makeTmpltStr_({
+    rows01_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._erow_tmplt_,
       _lookup_map_ : row01_map
     }),
-    rows02_html = __util._makeTmpltStr_({
+    rows02_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._erow_tmplt_,
       _lookup_map_ : row02_map
     }),
-    content00_html = __util._makeTmpltStr_({
+    content00_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._error_tmplt_,
       _lookup_map_ : { _inner_html_ : rows00_html }
     }),
-    content01_html = __util._makeTmpltStr_({
+    content01_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._error_tmplt_,
       _lookup_map_ : { _inner_html_ : rows01_html }
     }),
-    content02_html = __util._makeTmpltStr_({
+    content02_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._error_tmplt_,
       _lookup_map_ : { _inner_html_ : rows02_html }
     }),
-    blank1_html = __util._makeTmpltStr_( {
+    blank1_html = utilObj._makeTmpltStr_( {
       _input_str_  : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : content00_html }
     }),
-    blank2_html = __util._makeTmpltStr_( {
+    blank2_html = utilObj._makeTmpltStr_( {
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : content00_html }
     }),
@@ -3353,19 +3374,19 @@ function showErrorList ( test_obj ) {
       + '<div class="' + aKey + '-_lb_title_"></div>'
       + '<div class="' + aKey + '-_lb_close_"></div>'
       + '<div class="' + aKey + '-_lb_content_"></div></div>',
-    solve01_1_html = __util._makeTmpltStr_({
+    solve01_1_html = utilObj._makeTmpltStr_({
       _input_str_ : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : content01_html }
     }),
-    solve01_2_html = __util._makeTmpltStr_({
+    solve01_2_html = utilObj._makeTmpltStr_({
       _input_str_ : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : content01_html }
     }),
-    solve02_1_html = __util._makeTmpltStr_({
+    solve02_1_html = utilObj._makeTmpltStr_({
       _input_str_ : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : content02_html }
     }),
-    solve02_2_html = __util._makeTmpltStr_({
+    solve02_2_html = utilObj._makeTmpltStr_({
       _input_str_ : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : content02_html }
     }),
@@ -3444,23 +3465,23 @@ function __showLbCb ( $lite_box ) {
 
 function showLb ( test_obj ) {
   var
-    blank_a_html   = __util._makeTmpltStr_({
+    blank_a_html   = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : __blank }
     }),
-    blank_b_html   = __util._makeTmpltStr_({
+    blank_b_html   = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : __blank }
     }),
-    t00_a_html   = __util._makeTmpltStr_({
+    t00_a_html     = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : 'hello world' }
     }),
-    t00_b_html   = __util._makeTmpltStr_({
+    t00_b_html     = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : 'hello world' }
     }),
-    t01_a_html   = __util._makeTmpltStr_({
+    t01_a_html     = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : {
         _content_html_ : 'mello world',
@@ -3468,7 +3489,7 @@ function showLb ( test_obj ) {
         _close_block_  : ' style="display: block;"'
       }
     }),
-    t01_b_html   = __util._makeTmpltStr_({
+    t01_b_html     = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : {
         _content_html_ : 'mello world',
@@ -3616,38 +3637,38 @@ function __showSuccessCb ( $lite_box ) {
 
 function showSuccess ( test_obj ) {
   var
-    blank_snip = __util._makeTmpltStr_({
+    blank_snip = utilObj._makeTmpltStr_({
       _input_str_ : liteBoxMap._success_tmplt_
     }),
-    blank1_html   = __util._makeTmpltStr_({
+    blank1_html   = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : blank_snip }
     }),
-    blank2_html   = __util._makeTmpltStr_({
+    blank2_html   = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : blank_snip }
     }),
-    success_snip = __util._makeTmpltStr_({
+    success_snip = utilObj._makeTmpltStr_({
       _input_str_ : liteBoxMap._success_tmplt_,
       _lookup_map_ : { _msg_str_ : 'Success!' }
     }),
-    success1_html = __util._makeTmpltStr_({
+    success1_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : success_snip }
     }),
-    success2_html = __util._makeTmpltStr_({
+    success2_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : success_snip }
     }),
-    hello_snip = __util._makeTmpltStr_({
+    hello_snip = utilObj._makeTmpltStr_({
       _input_str_ : liteBoxMap._success_tmplt_,
       _lookup_map_ : { _msg_str_ : 'Hi bunny' }
     }),
-    hello1_html = __util._makeTmpltStr_({
+    hello1_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer01_tmplt_,
       _lookup_map_ : { _content_html_ : hello_snip }
     }),
-    hello2_html = __util._makeTmpltStr_({
+    hello2_html = utilObj._makeTmpltStr_({
       _input_str_  : liteBoxMap._outer02_tmplt_,
       _lookup_map_ : { _content_html_ : hello_snip }
     }),
@@ -3772,7 +3793,7 @@ module.exports = {
   _makeTmpltStr_    : makeTmpltStr,
   _makeUcFirstStr_  : makeUcFirstStr,
   _mergeMaps_       : mergeMaps,
-  _parseSafeJson_   : parseSafeJson,
+  _safeJsonParse_   : safeJsonParse,
   _pollFunction_    : pollFunction,
   _pushUniqListVal_ : pushUniqListVal,
   _rmListVal_       : rmListVal,

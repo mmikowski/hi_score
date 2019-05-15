@@ -1,37 +1,43 @@
 /*
- * 05_css_base.js
+ * 05_02_css_base.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._05_css_base_._makeInstanceFn_( app_map, option_map );
- * Synopsis : Add _05_css_base_ capabilities to app_map
+ * Use      : xhi._05_02_css_base_._makeInstanceFn_( app_map, option_map );
+ * Synopsis : Add _05_02_css_base_ capabilities to app_map
  * Provides : PowerCSS structure CSS data
  * Requires : xhi._01_util_ instance in app_map
  *
 */
 /*global xhi */
-// == BEGIN MODULE xhi._05_css_base_ ==================================
-xhi._05_css_base_ = (function () {
+// == BEGIN MODULE xhi._05_02_css_base_ ===============================
+xhi._05_02_css_base_ = (function () {
   'use strict';
   // == BEGIN public method /makeInstanceFn/ ==========================
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
-    //noinspection MagicNumberJS
     var
-      subName = '_05_css_base_',
+      // Set app symbols
+      subName = '_05_02_css_base_',
       aKey    = aMap._aKey_,
       vMap    = aMap._vMap_,
 
+      // Set object symbols
+      utilObj = aMap._01_util_,
+
+      // Set function symbols
+      pFn     = utilObj._makeReplaceFn_( '_p_', aKey ),
+      nowMsFn = utilObj._getNowMs_(),
+
+      // Set string-like symbols
       __true  = vMap._true_,
 
-      __util  = aMap._01_util_,
-      __p     = __util._makeReplaceFn_( '_p_', aKey ),
-      nowMs   = __util._getNowMs_(),
+      // Set config map
       configMap = {
         _global_mixin_map_ : {
           _spc_rem_00_ : '.375rem',  // 06px intra-group
           _spc_rem_01_ : '.75rem',   // 12px icon-to-label
           _spc_rem_02_ : '1.125rem', // 18px item indent, word space
-          _spc_rem_03_ : '1.5rem',   // 24px peer item, sentence space
+          _spc_rem_03_ : '1.5rem',   // 24px per item, sentence space
           _spc_rem_04_ : '1.875rem', // 30px Between groups
           _spc_rem_04a_: '2rem',     // 32px Test
           _spc_rem_05_ : '2.25rem',  // 36px Box padding
@@ -151,8 +157,8 @@ xhi._05_css_base_ = (function () {
             _txt_inv_lt_hex_    : '#ffffff', // === _area_hover_hex_
 
             // The top-left logo image path.
-            _logo_url_           : __p('url(img/{_p_}-logo-white.png)')
-              + '?' + nowMs,
+            _logo_url_           : pFn('url(img/{_p_}-logo-white.png)')
+              + '?' + nowMsFn,
 
             // Shadows colors are listed from near to far. Near shadows that
             // use rgba_shdw_00, for example, will be smaller but more
@@ -233,8 +239,8 @@ xhi._05_css_base_ = (function () {
             _txt_inv_lt_hex_    : '#ffffff',
 
             // The top-left logo image path.
-            _logo_url_           : __p('url(img/{_p_}-logo-white.png)')
-              + '?' + nowMs,
+            _logo_url_           : pFn('url(img/{_p_}-logo-white.png)')
+              + '?' + nowMsFn,
 
             // Shadows colors are listed from near to far. Near shadows that
             // use rgba_shdw_00, for example, will be smaller but more
@@ -314,8 +320,8 @@ xhi._05_css_base_ = (function () {
             _txt_xlt_hex_       : '#77848f',
 
             // The top-left logo image path.
-            _logo_url_           : __p('url(img/{_p_}-logo-white.png)')
-              + '?' + nowMs,
+            _logo_url_           : pFn('url(img/{_p_}-logo-white.png)')
+              + '?' + nowMsFn,
 
             // Shadows colors are listed from near to far. Near shadows that
             // use rgba_shdw_00, for example, will be smaller but more
@@ -422,7 +428,7 @@ xhi._05_css_base_ = (function () {
           //
           // This is probably redundant with shell_card_
           // TODO 2017-11-29 mmikowski info - review and remove or keep
-          // { _selector_str_ : __p('.{_p_}-_x_box_'),
+          // { _selector_str_ : pFn('.{_p_}-_x_box_'),
           //   _rule_map_ : {
           //     _border_top_    : [[ '_d1875rem_', '_solid_', '_accent_hex_' ]],
           //     _overflow_      : '_hidden_',
@@ -433,15 +439,15 @@ xhi._05_css_base_ = (function () {
           //     _clear_         : '_both_'
           //   }
           // },
-          // { _selector_str_ : __p('.{_p_}-_x_box_inr_' ),
+          // { _selector_str_ : pFn('.{_p_}-_x_box_inr_' ),
           //   _rule_map_ : {
           //     _padding_ : [[ '_spc_rem_03_', '_1d25rem_', '_spc_rem_03_', '_1d75rem_' ]]
           //   }
           // },
-          // { _selector_str_ : __p('.{_p_}-_x_box_inr_ p' ),
+          // { _selector_str_ : pFn('.{_p_}-_x_box_inr_ p' ),
           //   _rule_map_ : { _margin_: [[ '_0_','_0_','_1rem_','_0_' ]] }
           // },
-          // { _selector_str_ : __p('.{_p_}-_x_box_title_'),
+          // { _selector_str_ : pFn('.{_p_}-_x_box_title_'),
           //   _rule_map_ : {
           //     _padding_     : [[ '_0_', '_1d25rem_', '_0_', '_1d25rem_' ]],
           //     _font_size_   : '_spc_rem_02_',
@@ -452,35 +458,35 @@ xhi._05_css_base_ = (function () {
           //   }
           // },
           //
-          { _selector_str_ : __p('.{_p_}-_x_hlink_'),
+          { _selector_str_ : pFn('.{_p_}-_x_hlink_'),
             _rule_map_ : { _display_ : '_none_' }
           },
-          { _selector_str_ : __p('button.{_p_}-_x_lh_'),
+          { _selector_str_ : pFn('button.{_p_}-_x_lh_'),
             _rule_map_ : {
               _float_        : '_left_',
               _margin_left_  : '_0_'
             }
           },
-          { _selector_str_ : __p('button.{_p_}-_x_rh_'),
+          { _selector_str_ : pFn('button.{_p_}-_x_rh_'),
             _rule_map_ : {
               _float_        : '_right_',
               _margin_right_ : '_0_'
             }
           },
-          { _selector_str_ : __p('button.{_p_}-_x_inline_'),
+          { _selector_str_ : pFn('button.{_p_}-_x_inline_'),
             _rule_map_     : {
               _display_ : '_inline_block_',
               _margin_  : '_0_'
             }
           },
-          { _selector_str_ : __p('button.{_p_}-_x_alt_'),
+          { _selector_str_ : pFn('button.{_p_}-_x_alt_'),
             _rule_map_ : {
               _background_  : '_area_hex_',
               _color_       : '_link_hex_',
               _text_shadow_ : '_none_'
             }
           },
-          { _selector_str_ : __p('button.{_p_}-_x_disable_,'
+          { _selector_str_ : pFn('button.{_p_}-_x_disable_,'
             + 'button.{_p_}-_x_disable_:hover'),
             _rule_map_ : {
               _background_   : '_area_lt_hex_',
@@ -489,7 +495,7 @@ xhi._05_css_base_ = (function () {
               _border_color_ : '_txt_xlt_hex_'
             }
           },
-          { _selector_str_ : __p('div.{_p_}-_x_fill_abs_'),
+          { _selector_str_ : pFn('div.{_p_}-_x_fill_abs_'),
             _rule_map_ : {
               _position_  : '_absolute_',
               _margin_    : '_0_',
@@ -519,25 +525,25 @@ xhi._05_css_base_ = (function () {
             }
           },
 
-          /* BEGIN {_p_}-_x_*_ selectors */
+          // BEGIN {_p_}-_x_*_ selectors
           // BEGIN shared link classes
-          { _selector_str_ : __p('.{_p_}-_x_link_,.{_p_}-_x_link_inv_'),
+          { _selector_str_ : pFn('.{_p_}-_x_link_,.{_p_}-_x_link_inv_'),
             _rule_map_     : {
               _color_  : '_link_hex_',
               _cursor_ : '_pointer_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_link_:hover'),
+          { _selector_str_ : pFn('.{_p_}-_x_link_:hover'),
             _rule_map_     : {
               _text_decoration_ : '_underline_',
               _color_           : '_link_dk_hex_'
             }
           },
           // Do not underline icon links
-          { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_link_:hover'),
+          { _selector_str_ : pFn('.{_p_}-_x_icon_.{_p_}-_x_link_:hover'),
             _rule_map_     : { _text_decoration_ : '_none_' }
           },
-          { _selector_str_ : __p('.{_p_}-_x_link_inv_:hover'),
+          { _selector_str_ : pFn('.{_p_}-_x_link_inv_:hover'),
             _rule_map_     : {
               _text_decoration_ : '_underline_',
               _color_           : '_link_lt_hex_'
@@ -546,7 +552,7 @@ xhi._05_css_base_ = (function () {
           // . END shared link classes
 
           // BEGIN Shared icon class
-          { _selector_str_ : __p('.{_p_}-_x_icon_'),
+          { _selector_str_ : pFn('.{_p_}-_x_icon_'),
             _rule_map_     : {
               _display_      : '_inline_block_',
               _margin_       : [[ '_0_', '_spc_rem_00_' ]],
@@ -557,18 +563,18 @@ xhi._05_css_base_ = (function () {
               _text_align_   : '_center_'
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_x_icon_.{_p_}-_x_small_' ),
+          { _selector_str_ : pFn( '.{_p_}-_x_icon_.{_p_}-_x_small_' ),
             _rule_map_     : { _font_size_ : '_1rem_' }
           },
-          { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_color_'),
+          { _selector_str_ : pFn('.{_p_}-_x_icon_.{_p_}-_x_color_'),
             _rule_map_     : { '_color_' : '_icon_hex_' }
           },
-          { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_color_:hover'
+          { _selector_str_ : pFn('.{_p_}-_x_icon_.{_p_}-_x_color_:hover'
             + '.{_p_}-_x_icon_.{_p_}-_x_color_.{_p_}._x_select_'
           ),
             _rule_map_     : { '_color_' : '_icon_hover_hex_' }
           },
-          { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_rh_'),
+          { _selector_str_ : pFn('.{_p_}-_x_icon_.{_p_}-_x_rh_'),
             _rule_map_     : {
               _margin_right_: '_0_',
               _margin_left_ : '_spc_rem_01_',
@@ -576,7 +582,7 @@ xhi._05_css_base_ = (function () {
               _text_align_  : '_right_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_icon_.{_p_}-_x_lh_'),
+          { _selector_str_ : pFn('.{_p_}-_x_icon_.{_p_}-_x_lh_'),
             _rule_map_     : {
               _margin_left_ : '_0_',
               _margin_right_: '_spc_rem_01_',
@@ -587,7 +593,7 @@ xhi._05_css_base_ = (function () {
           // . END Shared icon class
 
           // BEGIN Share tab interface classes
-          { _selector_str_ : __p('.{_p_}-_x_tab_'),
+          { _selector_str_ : pFn('.{_p_}-_x_tab_'),
             _rule_map_     : {
               _position_        : '_relative_',
               _height_          : '_3rem_',
@@ -600,7 +606,7 @@ xhi._05_css_base_ = (function () {
               _list_style_type_ : '_none_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tab_>li'),
+          { _selector_str_ : pFn('.{_p_}-_x_tab_>li'),
             _rule_map_ : {
               _float_       : '_left_',
               _width_       : '_50p_',
@@ -609,20 +615,20 @@ xhi._05_css_base_ = (function () {
               _cursor_      : '_pointer_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tab_>li:hover'),
+          { _selector_str_ : pFn('.{_p_}-_x_tab_>li:hover'),
             _rule_map_ : {
               _color_       : '_area_hover_hex_',
               _background_  : '_area_lt_hex_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tab_>li.{_p_}-_x_active_'),
+          { _selector_str_ : pFn('.{_p_}-_x_tab_>li.{_p_}-_x_active_'),
             _rule_map_     : {
               _color_      : '_link_hex_',
               _background_ : '_area_hex_',
               _cursor_     : '_default_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tbox_>li'),
+          { _selector_str_ : pFn('.{_p_}-_x_tbox_>li'),
             _rule_map_     : {
               _display_    : '_none_',
               _padding_    : [[ '_d5rem_', '_d5rem_','_0_','_d5rem_' ]],
@@ -631,13 +637,13 @@ xhi._05_css_base_ = (function () {
               _cursor_      : '_default_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tbox_>li.{_p_}-_x_active_'),
+          { _selector_str_ : pFn('.{_p_}-_x_tbox_>li.{_p_}-_x_active_'),
             _rule_map_     : { _display_ : '_block_' }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tbox_list_'),
+          { _selector_str_ : pFn('.{_p_}-_x_tbox_list_'),
             _rule_map_     : { _list_style_type_ : '_none_' }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li'),
+          { _selector_str_ : pFn('.{_p_}-_x_tbox_list_>li'),
             _rule_map_     : {
               _position_      : '_relative_',
               _margin_bottom_ : '_d5rem_',
@@ -650,13 +656,13 @@ xhi._05_css_base_ = (function () {
               _cursor_        : '_pointer_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li.{_p_}-_x_active_'),
+          { _selector_str_ : pFn('.{_p_}-_x_tbox_list_>li.{_p_}-_x_active_'),
             _rule_map_     : {
               _background_   : '_area_hex_',
               _color_        : '_txt_dk_hex_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_tbox_list_>li:hover'),
+          { _selector_str_ : pFn('.{_p_}-_x_tbox_list_>li:hover'),
             _rule_map_     : {
               _background_   : '_area_hex_',
               _color_        : '_txt_dk_hex_',
@@ -666,7 +672,7 @@ xhi._05_css_base_ = (function () {
           // . END Share tab interface classes
 
           // BEGIN shared list classes
-          { _selector_str_ : __p('.{_p_}-_x_list_title_'),
+          { _selector_str_ : pFn('.{_p_}-_x_list_title_'),
             _rule_map_ : {
               _line_height_    : '_1d25rem_',
               _font_size_      : '_spc_rem_02_',
@@ -676,7 +682,7 @@ xhi._05_css_base_ = (function () {
               _word_break_     : '_break_word_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_list_float_text_'),
+          { _selector_str_ : pFn('.{_p_}-_x_list_float_text_'),
             _rule_map_ : {
               _float_          : '_right_',
               _margin_left_    : '_d5rem_',
@@ -690,7 +696,7 @@ xhi._05_css_base_ = (function () {
           // . END shared list classes
 
           // BEGIN shared toggle classes
-          { _selector_str_ : __p('.{_p_}-_x_toggle_'),
+          { _selector_str_ : pFn('.{_p_}-_x_toggle_'),
             _rule_map_     : {
               _z_index_     : '_2_',
               _position_    : '_absolute_',
@@ -698,7 +704,7 @@ xhi._05_css_base_ = (function () {
               _right_       : '_0_'
           }
           },
-          { _selector_str_ : __p('.{_p_}-_x_toggle_>li'),
+          { _selector_str_ : pFn('.{_p_}-_x_toggle_>li'),
             _rule_map_     : {
               _float_       : '_right_',
               _position_    : '_relative_',
@@ -719,7 +725,7 @@ xhi._05_css_base_ = (function () {
           // . END shared toggle classes
 
           // BEGIN Shared action titles
-          { _selector_str_ : __p('.{_p_}-_x_title_'),
+          { _selector_str_ : pFn('.{_p_}-_x_title_'),
             _rule_map_     : {
               _z_index_        : '_1_',
               _display_        : '_inline_block_',
@@ -733,13 +739,13 @@ xhi._05_css_base_ = (function () {
               _color_          : '_txt_xlt_hex_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_toggle_>li:hover'),
+          { _selector_str_ : pFn('.{_p_}-_x_toggle_>li:hover'),
             _rule_map_     : {
               _background_  : '_link_dk_hex_',
               _color_       : '_area_hover_hex_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_toggle_>li.{_p_}-_x_txt_'),
+          { _selector_str_ : pFn('.{_p_}-_x_toggle_>li.{_p_}-_x_txt_'),
             _rule_map_ : {
               _padding_top_ : '_d5rem_',
               _font_size_   : '_1rem_',
@@ -754,7 +760,7 @@ xhi._05_css_base_ = (function () {
           // . END Shared action titles
 
           // BEGIN Shared generic modifiers
-          { _selector_str_ : __p('.{_p_}-_x_noselect_'),
+          { _selector_str_ : pFn('.{_p_}-_x_noselect_'),
             _rule_map_     : {
               __webkit_user_select_ : '_none_',
               __moz_user_select_    : '_none_',
@@ -762,10 +768,10 @@ xhi._05_css_base_ = (function () {
               _user_select_         : '_none_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_bold_'),
+          { _selector_str_ : pFn('.{_p_}-_x_bold_'),
             _rule_map_     : {_font_weight_ : '_800_'}
           },
-          { _selector_str_ : __p('.{_p_}-_x_clearfloat_'),
+          { _selector_str_ : pFn('.{_p_}-_x_clearfloat_'),
             _rule_map_     : {
               _visibility_ : [['_hidden_', '_important_']],
               _float_      : [['_none_', '_important_']],
@@ -773,10 +779,10 @@ xhi._05_css_base_ = (function () {
               _clear_      : [['_both_', '_important_']]
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_form_' ),
+          { _selector_str_ : pFn('.{_p_}-_x_form_' ),
             _rule_map_ : { _min_width_ : [ '15rem' ] }
           },
-          { _selector_str_ : __p('.{_p_}-_x_form_ input[type=text],'
+          { _selector_str_ : pFn('.{_p_}-_x_form_ input[type=text],'
               + '.{_p_}-_x_form_ input[type=password],'
               + '.{_p_}-_x_form_ textarea'
             ),
@@ -789,30 +795,31 @@ xhi._05_css_base_ = (function () {
               _color_         : '_txt_hex_'
             }
           },
-          { _selector_str_ : __p('.{_p_}-_x_form_ textarea:focus,'
+          { _selector_str_ : pFn('.{_p_}-_x_form_ textarea:focus,'
               + '.{_p_}-_x_form_ input:focus'),
             _rule_map_     : {
               _background_   : '_area_focus_hex_',
               _border_color_ : '_link_hex_'
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_x_form_ input[type=radio]' ),
+          { _selector_str_ : pFn( '.{_p_}-_x_form_ input[type=radio]' ),
             _rule_map_ : { _margin_right_ : '_d5rem_' }
           },
-          { _selector_str_ : __p( '.{_p_}-_x_form_ label' ),
+          { _selector_str_ : pFn( '.{_p_}-_x_form_ label' ),
             _rule_map_ : {
               _cursor_       : '_pointer_',
               _margin_right_ : '_2rem_'
             }
           },
-          { _selector_str_ : __p( '.{_p_}-_x_form_ label:hover' ),
+          { _selector_str_ : pFn( '.{_p_}-_x_form_ label:hover' ),
             _rule_map_ : { _text_decoration_ : '_underline_' }
           }
           // . END Shared generic modifiers
-          /* END {_p_}-_x_*_ selectors */
+          // . END {_p_}-_x_*_ selectors
         ]
       },
 
+      // Declare other module-scope variables
       instanceMap, optionMap
       ;
     // == . END MODULE SCOPE VARIABLES =================================
@@ -824,7 +831,7 @@ xhi._05_css_base_ = (function () {
       _paletteMapList_ : configMap._palette_map_list_
     };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }
@@ -835,4 +842,4 @@ xhi._05_css_base_ = (function () {
   // == . END public method /makeInstanceFn/ ==========================
   return { _makeInstanceFn_ : makeInstanceFn };
 }());
-// == . END MODULE xhi._05_css_base_ ==================================
+// == . END MODULE xhi._05_02_css_base_ ===============================

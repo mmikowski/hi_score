@@ -1,8 +1,8 @@
 /*
- * 06_css.js
+ * 05_css.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._06_css_._makeInstanceFn_( app_map, option_map );
+ * Use      : xhi._05_css_._makeInstanceFn_( app_map, option_map );
  * Synopsis : Add _css_ capabilities to app_map
  * Provides : Run-time CSS styling using PowerCSS
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_(),
@@ -10,35 +10,37 @@
 */
 /*global xhiCSS, xhi */
 
-// == BEGIN MODULE xhi._06_css_ =======================================
-xhi._06_css_ = (function () {
+// == BEGIN MODULE xhi._05_css_ ==========================================
+xhi._05_css_ = (function () {
   'use strict';
-  // == BEGIN public method /makeInstanceFn/ ==========================
+  // == BEGIN public method /makeInstanceFn/ =============================
   function makeInstanceFn ( aMap, argOptionMap ) {
-    // == BEGIN MODULE SCOPE VARIABLES ==================================
+    // == BEGIN MODULE SCOPE VARIABLES ===================================
     var
-      subName   = '_06_css_',
+      // Set app symbols
       aKey      = aMap._aKey_,
       nMap      = aMap._nMap_,
+      subName   = '_05_css_',
       vMap      = aMap._vMap_,
 
+      // Set object symbols
+      utilObj    = aMap._01_util_,
+      logObj  = utilObj._getLogObj_(),
+
+      // Set function symbols
+      logFn     = logObj._logMsg_,
+      castIntFn = utilObj._castInt_,
+
+      // Set number symbols
       __n1      = nMap._n1_,
       __0       = nMap._0_,
+
+      // Set string-like symbols
       __false   = vMap._false_,
       __true    = vMap._true_,
       __undef   = vMap._undef_,
 
-      __util    = aMap._01_util_,
-      __logObj  = __util._getLogObj_(),
-      __logMsg  = __logObj._logMsg_,
-
-      // Add as needed
-      // __castBool, __castList, __castObj, __castJQ,
-      // __castFn,   __castNum  __castMap,  __castStr
-      // __getVarType
-      //
-      __castInt = __util._castInt_,
-
+      // Set module config and state maps
       stateMap  = {
         _is_ready_    : __false,
         _palette_idx_ : __undef
@@ -58,7 +60,7 @@ xhi._06_css_ = (function () {
     // BEGIN public method /getPaletteCount/
     function getPaletteCount () {
       var
-        palette_map_list = aMap._05_css_base_._paletteMapList_;
+        palette_map_list = aMap._05_02_css_base_._paletteMapList_;
       return palette_map_list[ vMap._length_ ];
     }
 
@@ -67,7 +69,7 @@ xhi._06_css_ = (function () {
     // BEGIN public method /getPaletteMixinMap/
     function getPaletteMixinMap () {
       var
-        palette_map_list = aMap._05_css_base_._paletteMapList_,
+        palette_map_list = aMap._05_02_css_base_._paletteMapList_,
         palette_idx      = stateMap._palette_idx_;
       return palette_map_list[ palette_idx ];
     }
@@ -77,16 +79,18 @@ xhi._06_css_ = (function () {
     // BEGIN public method /setPaletteIdx/
     function setPaletteIdx ( arg_idx ) {
       var
-        idx              = __util._castInt_( arg_idx, 0 ),
-        palette_map_list = aMap._05_css_base_._paletteMapList_,
-        palette_idx      = stateMap._palette_idx_,
+        idx              = utilObj._castInt_( arg_idx, 0 ),
+        palette_map_list = aMap._05_02_css_base_._paletteMapList_,
         palette_count    = palette_map_list[ vMap._length_ ],
-        palette_mixin_map;
+
+        palette_idx, palette_mixin_map;
 
       // Return current palette index if request is out of range
       // or matches existing.
-      if ( idx === palette_idx || idx > palette_count || idx < __0 ) {
-        return palette_idx;
+      if ( idx === stateMap._palette_idx_
+        || idx > palette_count || idx < __0
+      ) {
+        return stateMap._palette_idx_;
       }
 
       // Get the mixin map for the requested idx.  If no map exists,
@@ -128,10 +132,10 @@ xhi._06_css_ = (function () {
     //
     function initPaletteMap ( arg_palette_idx ) {
       var
-        input_palette_idx = __castInt( arg_palette_idx, __n1 ),
+        input_palette_idx = castIntFn( arg_palette_idx, __n1 ),
         local_map_key     = aKey + '-_palette_map_',
         local_idx_key     = aKey + '-_palette_idx_',
-        palette_map_list  = aMap._05_css_base_._paletteMapList_,
+        palette_map_list  = aMap._05_02_css_base_._paletteMapList_,
         palette_map_count = palette_map_list[ vMap._length_ ],
 
         solve_idx, solve_map,
@@ -160,7 +164,7 @@ xhi._06_css_ = (function () {
           solve_map = vMap._str2dataFn_( local_json );
         }
         catch ( error ) {
-          __logMsg( '_error_', '_cannot_parse_local_palette_json_', error );
+          logFn( '_error_', '_cannot_parse_local_palette_json_', error );
         }
         if ( solve_map ) {
           solve_idx = __n1;
@@ -170,7 +174,7 @@ xhi._06_css_ = (function () {
 
       // 3. Use local store index: Localstorage.<key>-_palette_idx_
       if ( localStorage[ vMap._hasOwnProperty_ ]( local_idx_key ) ) {
-        local_idx = __castInt( localStorage[ local_idx_key ], __0 );
+        local_idx = castIntFn( localStorage[ local_idx_key ], __0 );
         solve_idx = local_idx > palette_map_count
           ? palette_map_count - 1 : local_idx < __0
             ? __0 : local_idx
@@ -194,26 +198,25 @@ xhi._06_css_ = (function () {
       palette_map = initPaletteMap( arg_palette_idx );
       xhiCSS._initModule_( { _style_el_prefix_ : aKey } );
       xhiCSS._setGlobalMixinMap_( {
-        _mixin_map_ : aMap._05_css_base_._globalMixinMap_
+        _mixin_map_ : aMap._05_02_css_base_._globalMixinMap_
       } );
 
       xhiCSS._setVsheet_( {
         _vsheet_id_     : '_base_',
         _mode_str_      : '_add_',
-        _mixin_map_     : aMap._05_css_base_._mixinMap_,
-        _selector_list_ : aMap._05_css_base_._selectorList_
+        _selector_list_ : aMap._05_02_css_base_._selectorList_
       } );
 
       xhiCSS._setVsheet_( {
         _vsheet_id_     : '_lb_',
         _mode_str_      : '_add_',
-        _selector_list_ : aMap._05_css_lb_._selectorList_
+        _selector_list_ : aMap._05_03_css_lb_._selectorList_
       } );
 
       xhiCSS._setVsheet_( {
         _vsheet_id_     : '_shell_',
         _mode_str_      : '_add_',
-        _selector_list_ : aMap._05_css_shell_._selectorList_
+        _selector_list_ : aMap._05_04_css_shell_._selectorList_
       } );
 
       xhiCSS._setCascade_( {
@@ -238,16 +241,16 @@ xhi._06_css_ = (function () {
       _initModuleFn_ : initModuleFn
     };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }
 
     return instanceMap;
-    // == . END PUBLIC METHODS ========================================
+    // == . END PUBLIC METHODS ===========================================
   }
-  // == . END public method /makeInstanceFn/ ==========================
+  // == . END public method /makeInstanceFn/ =============================
   return { _makeInstanceFn_ : makeInstanceFn };
 }());
-// == . END MODULE xhi._06_css_ =======================================
+// == . END MODULE xhi._05_css_ ==========================================
 

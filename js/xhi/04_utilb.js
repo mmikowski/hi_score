@@ -15,34 +15,42 @@ xhi._04_utilb_ = (function ( $ ) {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ==================================
     var
-      subName   = '_04_utilb_',
+      // Set app symbols
       nMap      = aMap._nMap_,
+      subName   = '_04_utilb_',
       vMap      = aMap._vMap_,
 
-      cssKmap   = xhiCSS._cfg_._cssKeyMap_,
-      cssVmap   = xhiCSS._cfg_._cssValMap_,
+      docRef  = window.document,
 
-      __docRef  = window.document,
+      // Set object symbols
+      cssKmap = xhiCSS._cfg_._cssKeyMap_,
+      cssVmap = xhiCSS._cfg_._cssValMap_,
+      utilObj = aMap._01_util_,
+
+      // Set function symbols
+      castJQFn  = utilObj._castJQ_,
+      castFnFn  = utilObj._castFn_,
+      castIntFn = utilObj._castInt_,
+      castNumFn = utilObj._castNum_,
+      castMapFn = utilObj._castMap_,
+      castStrFn = utilObj._castStr_,
+
+      // Set number symbols
+      __0       = nMap._0_,
+
+      // Set string-ish symbols
       __blank   = vMap._blank_,
       __false   = vMap._false_,
       __true    = vMap._true_,
+      __val     = vMap._val_,
 
-      __0       = nMap._0_,
-
-      // Add as needed __castBool, __castList, __castObj, __getVarType
-      __util    = aMap._01_util_,
-      __castJQ  = __util._castJQ_,
-      __castFn  = __util._castFn_,
-      __castInt = __util._castInt_,
-      __castNum = __util._castNum_,
-      __castMap = __util._castMap_,
-      __castStr = __util._castStr_,
-
+      // Set config and state maps
       configMap = {
         _textarea_min_ht_px_ : 30,
         _textarea_max_ht_px_ : 400
       },
 
+      // Declare other module-scope variables
       onBufferReady,
       instanceMap, optionMap
     ;
@@ -57,7 +65,7 @@ xhi._04_utilb_ = (function ( $ ) {
     // See http://stackoverflow.com/questions/1912501/\
     //   unescape-html-entities-in-javascript
     function decodeHtml ( arg_str ) {
-      var str = __castStr( arg_str, __blank );
+      var str = castStrFn( arg_str, __blank );
       return $( '<div></div>' )[ vMap._html_ ]( str )[ vMap._text_ ]();
     }
 
@@ -71,17 +79,17 @@ xhi._04_utilb_ = (function ( $ ) {
     //
     function fillForm ( arg_$form, arg_map ) {
       var
-        lookup_map = __castMap( arg_map, {} ),
-        $form      = __castJQ( arg_$form )
+        lookup_map = castMapFn( arg_map, {} ),
+        $form      = castJQFn( arg_$form )
       ;
 
       if ( !$form ) { return __false; }
       $.each( lookup_map, function ( k, v ) {
-        var solve_str = __castStr( v );
+        var solve_str = castStrFn( v );
         $form[ vMap._find_ ]( '[name=' + k + ']' ).each( function () {
           var
             $input      = $( this ),
-            current_str = $input.val()
+            current_str = $input[ __val ]()
           ;
 
           if ( $input.is( 'input:radio' ) ) {
@@ -91,7 +99,7 @@ xhi._04_utilb_ = (function ( $ ) {
           else if ( $input.is( 'input:checkbox' ) ) {
             $input.prop( 'checked', !!v );
           }
-          else { $input.val( solve_str ); }
+          else { $input[ __val ]( solve_str ); }
         } );
       } );
       return __true;
@@ -102,7 +110,7 @@ xhi._04_utilb_ = (function ( $ ) {
     // BEGIN Public method /fixInputByType/
     function fixInputByType ( arg_$input ) {
       var
-        $elem = __castJQ( arg_$input ),
+        $elem = castJQFn( arg_$input ),
         input_str, data_type, solve_data
       ;
 
@@ -114,13 +122,13 @@ xhi._04_utilb_ = (function ( $ ) {
 
       switch ( data_type ) {
         case 'number':
-          solve_data = __castNum( input_str, __0 );
+          solve_data = castNumFn( input_str, __0 );
           break;
         case 'integer':
-          solve_data = __castInt( input_str, __0 );
+          solve_data = castIntFn( input_str, __0 );
           break;
         default:
-          solve_data = __castStr( input_str, __blank );
+          solve_data = castStrFn( input_str, __blank );
           break;
       }
       return solve_data;
@@ -139,7 +147,7 @@ xhi._04_utilb_ = (function ( $ ) {
     //
     function getFormMap ( arg_$form ) {
       var
-        $form    = __castJQ( arg_$form ),
+        $form    = castJQFn( arg_$form ),
         form_map = {};
 
       if ( !$form ) { return; }
@@ -171,7 +179,6 @@ xhi._04_utilb_ = (function ( $ ) {
 
       return form_map;
     }
-
     // . END Public method /getFormMap/
 
     // BEGIN Public method /onDomReady/
@@ -197,11 +204,11 @@ xhi._04_utilb_ = (function ( $ ) {
 
       function onBuf ( arg_fn ) {
         var
-          callback_fn = __castFn( arg_fn ),
+          callback_fn = castFnFn( arg_fn ),
           img_el, s_obj;
 
         if ( !bodyEl ) {
-          bodyEl = __docRef[ vMap._getElsByTagName_ ]( vMap._body_ )[ __0 ];
+          bodyEl = docRef[ vMap._getElsByTagName_ ]( vMap._body_ )[ __0 ];
         }
         if ( !( callback_fn && bodyEl ) ) { return __false; }
 
@@ -243,8 +250,8 @@ xhi._04_utilb_ = (function ( $ ) {
     //
     function resizeTextarea ( arg_$textarea, arg_max_ht_px ) {
       var
-        $textarea = __castJQ( arg_$textarea ),
-        max_ht_px = __castInt( arg_max_ht_px,
+        $textarea = castJQFn( arg_$textarea ),
+        max_ht_px = castIntFn( arg_max_ht_px,
           configMap._textarea_max_ht_px_ ),
         min_ht_px = configMap._textarea_min_ht_px_,
 
@@ -257,7 +264,7 @@ xhi._04_utilb_ = (function ( $ ) {
       outer_ht_px  = $textarea[ vMap._outerHeight_ ]();
 
       if ( ( scroll_ht_px > outer_ht_px )
-        || ( scroll_ht_px < outer_ht_px - 30 )
+        || ( scroll_ht_px < outer_ht_px - configMap._textarea_min_ht_px_ )
       ) { solve_ht_px = scroll_ht_px + 8; }
       else { return __true; }
 
@@ -277,7 +284,7 @@ xhi._04_utilb_ = (function ( $ ) {
       _resizeTextarea_ : resizeTextarea
     };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }

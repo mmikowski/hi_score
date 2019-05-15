@@ -4,11 +4,11 @@
  *
  * Use      : xhi._07_shell_._makeInstance_( app_map );
  * Synopsis : Add _07_shell_ capabilities to app_map
- * Provides : Page shell controller
+ * Provides : Browser shell controller
  * Requires :
  *   - aMap (app map) with instances of the following:
  *     00_root, 01_util, 03_model, 04_utilb,
- *     05_css_base, 05_css_lb, 05_css_shell, and 06_lb.
+ *     05_02_css_base, 05_03_css_lb, 05_04_css_shell, and 06_lb.
  *     02_data is NOT required
  *   - jQuery   (as xhiJQ )
  *   - PowerCSS (as xhiCSS)
@@ -20,29 +20,36 @@ xhi._07_shell_ = (function ( $ ) {
     // == BEGIN MODULE SCOPE VARIABLES ===================================
     'use strict';
     var
-      subName = '_07_shell_',
+      // Set app symbols
       aKey    = aMap._aKey_,
-      vMap    = aMap._vMap_,
       nMap    = aMap._nMap_,
+      subName = '_07_shell_',
+      vMap    = aMap._vMap_,
 
-      __data2strFn = vMap._data2strFn_,
+      // Set object symbols
+      utilObj = aMap._01_util_,
+      logObj  = utilObj._getLogObj_(),
 
-      __0     = nMap._0_,
-      __1     = nMap._1_,
+      // Set function symbols
+      data2strFn = vMap._data2strFn_,
+      logFn      = logObj._logMsg_,
 
+      // Set number symbols
+      __0 = nMap._0_,
+      __1 = nMap._1_,
+
+      // Set string-ish symbols`
       __blank = vMap._blank_,
       __true  = vMap._true_,
 
-      __util  = aMap._01_util_,
-      __logObj = __util._getLogObj_(),
-      __logMsg = __logObj._logMsg_,
-
+      // Set config and state maps
       configMap = {
         _main_tmplt_ : '<h1>Hello world from |'
         + aKey + '| namespace</h1>'
       },
       stateMap = {},
 
+      // Declare other module-wide variables
       $Map, optionMap, instanceMap
     ;
     // == . END MODULE SCOPE VARIABLES ===================================
@@ -61,7 +68,7 @@ xhi._07_shell_ = (function ( $ ) {
     // BEGIN Public method /initModuleFn/
     function initModuleFn ( $top_box ) {
       // Set styles
-      aMap._06_css_._initModuleFn_();
+      aMap._05_css_._initModuleFn_();
 
       // Initial DOM content using methods above
       // and then set jQuery (xhiJQ) collection cache
@@ -69,15 +76,15 @@ xhi._07_shell_ = (function ( $ ) {
       set$Map( $top_box );
 
       // Report debug values
-      __logMsg( '_info_', $,
+      logFn( '_info_', $,
         '\n  __0       === ' + __0,
         '\n  __1       === ' + __1,
         '\n  __blank   === ' + __blank,
         '\n  aKey      === ' +   aKey,
-        '\n  $Map      === ' + __data2strFn( $Map      ),
-        '\n  aMap      === ' + __data2strFn( aMap      ),
-        '\n  configMap === ' + __data2strFn( configMap ),
-        '\n  stateMap  === ' + __data2strFn( stateMap  )
+        '\n  $Map      === ' + data2strFn( $Map      ),
+        '\n  aMap      === ' + data2strFn( aMap      ),
+        '\n  configMap === ' + data2strFn( configMap ),
+        '\n  stateMap  === ' + data2strFn( stateMap  )
       );
       // Bind shell event handlers (taps, drags, long-press, etc)
     }
@@ -85,7 +92,7 @@ xhi._07_shell_ = (function ( $ ) {
 
     instanceMap = { _initModuleFn_ : initModuleFn };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }

@@ -1,33 +1,35 @@
 /*
- * 02_fake.js
+ * 02_01_data_mock.js
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
- * Use      : xhi._02_fake_._makeInstanceFn_( app_map, option_map );
- * Synopsis : Add _02_fake_ capabilities to app_map
- * Provides : Fake shared data transfer methods (AJAX, Websockets)
+ * Use      : xhi._02_01_data_mock_._makeInstanceFn_( aMap, argOptionMap );
+ * Synopsis : Add _02_01_data_mock_ to the app map.
+ * Provides : Mock data resources used by aMap.02_data.js
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
+ * Important: We suggest creating your own 02_01_data_mock for each app.
+ *   There is little benefit of using an instance of this module.
+ *   Notice appMap.02_01_data_mock is listed before and should be
+ *   loaded before the appMap.02_data. Thus it is a resource for 02_data
+ *   and should not rely on or expect 02_data to exist.
  *
- * Vision   : This module should be replaced by 02_data.ajax-fake.js
- *            and 02_data.wsockets-fake.js, and similar.
- *            At present it is a placeholder.
 */
 /*global xhi */
 
-// == BEGIN MODULE xhi._02_fake_ ======================================
-xhi._02_fake_ = (function () {
+// == BEGIN MODULE xhi._02_01_data_mock_ ==============================
+xhi._02_01_mock_ = (function () {
   'use strict';
   // == BEGIN public method /makeInstanceFn/ ==========================
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
-      subName  = '_02_fake_',
       aKey     = aMap._aKey_,
-      vMap     = aMap._vMap_,
       nMap     = aMap._nMap_,
+      subName  = '_02_fake_',
+      vMap     = aMap._vMap_,
 
-      __util   = aMap._01_util_,
-      __logObj = __util._getLogObj_(),
-      __logMsg = __logObj._logMsg_,
+      utilObj   = aMap._01_util_,
+      logObj = utilObj._getLogObj_(),
+      logFn = logObj._logMsg_,
 
       instanceMap, optionMap
     ;
@@ -41,15 +43,15 @@ xhi._02_fake_ = (function () {
 
     // == BEGIN PUBLIC METHODS ========================================
     function fetchExampleMap () {
-      __logMsg( '_warn_', '_place_mock_fetch_here_' );
+      logFn( '_warn_', '_place_mock_fetch_here_' );
     }
 
     function configModule () {
-      __logMsg( '_warn_', '_place_mock_config_here_' );
+      logFn( '_warn_', '_place_mock_config_here_' );
     }
 
     function logInfo () {
-      __logMsg( '_info_', aKey, vMap, nMap );
+      logFn( '_info_', aKey, vMap, nMap );
     }
 
     instanceMap = {
@@ -58,7 +60,7 @@ xhi._02_fake_ = (function () {
       _configModule_    : configModule
     };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== vMap._true_ ) {
       aMap[ subName ] = instanceMap;
     }
@@ -69,4 +71,4 @@ xhi._02_fake_ = (function () {
   // == . END public method /makeInstanceFn/ ==========================
   return { _makeInstanceFn_ : makeInstanceFn };
 }());
-// == . END MODULE xhi._02_fake_ ======================================
+// == . END MODULE xhi._02_01_data_mock_ ==============================

@@ -1,6 +1,6 @@
---- js/vendor/jquery-3.3.1.js 2018-05-04 13:14:31.111150014 -0700
-+++ js/vendor/jquery-3.3.1.js 2018-05-04 13:29:24.901025052 -0700
-@@ -10327,38 +10327,7 @@
+--- js/vendor/jquery-3.4.1.js	2019-05-06 14:44:52.182750517 -0700
++++ js/vendor/jquery-3.4.1.js	2019-05-06 14:45:25.790320938 -0700
+@@ -10561,38 +10561,6 @@
  	} );
  }
  
@@ -36,8 +36,9 @@
 -
 -
 -
-+if ( !noGlobal ) { window.jQuery = jQuery; }
- 
- return jQuery;
+-
+-return jQuery;
 -} );
++if ( !noGlobal ) { window.jQuery = jQuery; }
++  return jQuery;
 +});

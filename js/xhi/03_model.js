@@ -19,15 +19,23 @@ xhi._03_model_ = (function () {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
+      // Set app symbols
+      aKey      = aMap._aKey_,
+      nMap      = aMap._nMap_,
       subName   = '_03_model_',
-      // aKey   = aMap._aKey_,
       vMap      = aMap._vMap_,
 
-      __true    = vMap._true_,
-      __util    = aMap._01_util_,
-      __logObj  = __util._getLogObj_(),
-      __logMsg  = __logObj._logMsg_,
+      // Set object symbols
+      utilObj = aMap._01_util_,
+      logObj  = utilObj._getLogObj_(),
 
+      // Set function symbols
+      logFn   = logObj._logMsg_,
+
+      // Set string symbols
+      __true    = vMap._true_,
+
+      // Initialize config and state maps
       configMap = {},
       stateMap  = {},
 
@@ -44,14 +52,14 @@ xhi._03_model_ = (function () {
       if ( type_str === '_stateMap_' ) {
         return stateMap;
       }
-      __logMsg( '_warn_', '_requested_map_not_available_', type_str );
+      logFn( '_warn_', '_requested_map_not_available_', type_str );
 
     }
     // . END Public method /getMapFn/
 
     // BEGIN Public method /setConfigMapFn/
     function setConfigMapFn ( arg_set_map ) {
-      return __util._setConfigMap_({
+      return utilObj._setConfigMap_({
         _input_map_    : arg_set_map,
         _settable_map_ : { _auth_key_ : __true },
         _config_map_   : configMap
@@ -61,6 +69,7 @@ xhi._03_model_ = (function () {
 
     // BEGIN Public method /initModuleFn/
     function initModuleFn () {
+      logFn( '_debug_', aKey, nMap );
       return __true;
     }
     // . END Public method /initModuleFn/
@@ -72,7 +81,7 @@ xhi._03_model_ = (function () {
       _setConfigMapFn_ : setConfigMapFn
     };
 
-    optionMap = __util._castMap_( argOptionMap, {} );
+    optionMap = utilObj._castMap_( argOptionMap, {} );
     if ( optionMap._dont_autoadd_ !== __true ) {
       aMap[ subName ] = instanceMap;
     }

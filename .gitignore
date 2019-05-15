@@ -2,6 +2,7 @@
 .coveralls.yml
 .git
 .idea
+run
 CODE_OF_CONDUCT.html
 README*.html
 build
@@ -15,5 +16,3 @@ js/vendor
 lib/xhi_state.json
 node_modules
 npm-debug.log
-package-lock.json
-
