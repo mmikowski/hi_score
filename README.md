@@ -43,11 +43,18 @@ configured with the `package.json` file we're already using.
       -Magic-System
 [^2]: Html,CSS,JavaScript
 
-While `hi_score` is highly opinionated, it is also modular and designed
+Anything that can complicate the delivery of **HCJ** is looked at with extreme
+scrutiny. For example, one is tempted by the lure of stronger typing using a
+the [TypeScript][_43] JavaScript-superset or [Flow][_44] tools. However, both
+introduce complexity and a cross compile. Instead, we have implemented
+[type-casting][_05] which allows us to maintain a zero-compile development
+environment and improves the readability of our code.
+
+While `hi_score` is opinionated, it is also modular and designed
 for change. For example, the `bin/xhi` tool is easily extended by dropping a
-short snippet into the the `lib/` directory. The architecture and code style
-docs used by `bin/xhi` are easily edited in the `docs/` directory. Additional
-vendor libraries and patches [are encouraged][_01].
+short module into the the `lib/` directory. The architecture and code style
+docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers
+are encourated to add vendor libraries and patches [as needed][_01].
 
 ## Latest release
 Version 1.5.1 released 2019-05-19 includes an event pub-sub system in the
@@ -115,9 +122,9 @@ Nobody's going to kick our ass on iterations with cycle times like these.
 
 
 ### Benefits - Libraries
+- Type safety using [type-casting][_05]
 - Component libraries for 8 layers of a component SPA architecture
 - Libraries are battle-test and regression-tested with over 97% coverage of core utilities
-- Type safety using [type-casting][_05]
 - Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
 - All code written to a consistent [standard][_04]
 - Integrated browsable HTML documentation using markdown and `pandoc`
@@ -892,4 +899,5 @@ Released 2019-05-19
 [_37]:https://www.npmjs.com/package/websocket
 [_38]:https://docs.npmjs.com/misc/scripts
 [_42]:http://michaelmikowski.com/ova/
-
+[_43]:https://www.typescriptlang.org/
+[_44]:https://flow.org/en/docs/getting-started/
