@@ -5,12 +5,6 @@
  *
  * Michael S. Mikowski - mike.mikowski@gmail.com
 */
-/*jslint         browser : true, continue : true,
-  devel  : true, indent  : 2,    maxerr   : 50,
-  newcap : true, nomen   : true, plusplus : true,
-  regexp : true, sloppy  : true, vars     : false,
-  white  : true, todo    : true, unparam  : true
-*/
 /*global xhiJQ, xhi:true, ex01 */
 xhiJQ(function () {
   'use strict';

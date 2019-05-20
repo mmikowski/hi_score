@@ -854,7 +854,6 @@ function getVarType ( test_obj ) {
 
   test_obj.expect( 12 );
 
-
   test_obj.ok( get_fn( bool1  ) === '_Boolean_',   msg_str );
   test_obj.ok( get_fn( bool2  ) === '_Boolean_',   msg_str );
   test_obj.ok( get_fn( d_obj  ) ===  'Date',       msg_str );
@@ -3043,7 +3042,7 @@ function fillForm ( test_obj ) {
 
   test_obj.expect( 11 );
 
-  test_obj.ok( utilBobj._fillForm_(         ) === __false, 'a. no form false' );
+  test_obj.ok( utilBobj._fillForm_(         ) === __false, 'a. no form  false' );
   test_obj.ok( utilBobj._fillForm_( __undef ) === __false, 'b. bad form false' );
   test_obj.ok( utilBobj._fillForm_( {}      ) === __false, 'c. bad form false' );
   test_obj.ok( utilBobj._fillForm_( $form_01) === __true,  'd. good form true' );

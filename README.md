@@ -1,31 +1,67 @@
 ![hi_score][_0A]
 [![Coverage Status](https://coveralls.io/repos/github/mmikowski/hi_score/badge.svg?branch=master)](https://coveralls.io/github/mmikowski/hi_score?branch=master)
 
-*Full-lifecycle starter project for SPAs*
+*Full-lifecycle tools, libraries, and architecture for Single Page Web
+Applications (SPAs)*
 
 ---
+From the author of [Single Page Web Applications, JavaScript end-to-end][_00]
+
 ## Overview
-`hi_score` is a full-lifecycle starter project for web application
-development. It embodies good practice for most lifecycle stages gathered from
-decades of hands-on experience.  It also embraces the feature-module (or "web
-component") design pattern detailed in the book [Single Page Web
-Applicaitons][_00] but updated based on experience.  Please do swap assets and
-libraries as required - [that's the point][_01].
+If you want to create a single page web application these days there is no
+shortage of "help". Unsuspecting developers are lured into using starter
+projects featuring the latest SPA framework (like React, Vue, Angular,
+Aurelia or Ext.js) along with a CSS subsystem like (SASS or LESS or Stylus
+or SCSS), a cross-compiler (typically Babble), a build system ( like Brunch
+or Webpack or Parcel) and so on and ad-nauseum. There's only one guarantee
+about these systems: they're 'Magic'.
 
-## Recent changes
+Sorry Gandolf, but we don't mean 'Magic' in a good way. Sure, we'll be able to
+create the sample 'TODO' application in record time because of its
+demo-on-rails nature.  But once we move even a little off those rails, things
+start to go south fast.  The logic path running from source code to the
+rendered **HCJ**[^1] becomes so convoluted and complex that it's impossible
+for a human to trace in a reasonable amount of time.  Those who have spent
+quality time with these starter-pack-ecosystems almost certainly have plenty
+of terrifying anecdotes to insert here as needed.
 
-### Version 1.5.x
-Version 1.5.0 was release 2019-05-14 and includes enhanced 01\_util and
-improved correctness for all JS.  See more version notes at the bottom of this
-page. We plan to update the virtual appliance images soon!
+[^1]: HTML,CSS,JavaScript
+
+`hi_score` provides a profoundly different approach compared
+**OACAWSSYTSEMS**[^1]. The goal is to have the developer **fully
+understand** the HTML, CSS, and JavaScript so he can **iterate and debug** his
+code **as fast as possible.** It extensively automates processes **around**
+the generation of **HCJ**[^2] assets instead of making the generation an
+untraceable tower of Babel. It provides a **single** lifecycle tool which
+documents a **single** proven architecture, a **single** proven coding style,
+and a **single** proven library (designed for the architecture) to greatly
+accelerate SPA development and iteration.  All lifecycle stages including
+install, setup, update, testing, linting, coverage, build, etc -- are
+configured with the `package.json` file we're already using.
+
+[^1]: Our-Awesomely-Complex-Aren't-We-So-Smart-You're-Too-Stupid-Ecosystem
+      -Magic-System
+[^2]: Html,CSS,JavaScript
+
+While `hi_score` is highly opinionated, it is also modular and designed
+for change. For example, the `bin/xhi` tool is easily extended by dropping a
+short snippet into the the `lib/` directory. The architecture and code style
+docs used by `bin/xhi` are easily edited in the `docs/` directory. Additional
+vendor libraries and patches [are encouraged][_01].
+
+## Latest release
+Version 1.5.1 released 2019-05-19 includes an event pub-sub system in the
+`js/xhi/03_model.js` instance. This provides an integrated event log system
+for use in unit and regression tests.
 
 ---
 ## Quick start
-
 On Mac, Ubuntu Linux, or WSL, getting an app running with `hi_score` couldn't
-get much easier.  Just enter 4 commands into a Bash shell.  Wait for each
+get much easier. After you have the [prerequisites installed ](#prerequisites),
+enter the following commands into a Bash shell.  Wait for each
 to finish before proceeding to the next. The build process prompts
 the user to review TODO notes. Just press `return` to accept them.
+
 
 ```bash
   git clone git@github.com:mmikowski/hi_score.git
@@ -34,76 +70,83 @@ the user to review TODO notes. Just press `return` to accept them.
   google-chrome http://localhost:8080/build/latest/dist
 ```
 
-On completion, you should see a fully working typing tutor application, 
-TypeBomb 2. Compare it with the [online version][_0BA].
+![Typebomb2][_0B]
 
-If you have trouble installing the prerequisites, you might grab the 
-and run the [Virtual Appliance](#development-platform).
+Once these steps are completed we should see a fully working typing tutor
+game, TypeBomb 2. We can compare it with the [online version][_0BA] to ensure
+it is working correctly.  Use the developer tools to inspect the CSS, the DOM,
+and the JavaScript.  Notice how CSS classes are obsfucated and namespaced. We
+were doing this years before Facebook, Google, or Twitter.
+
+## What we have wrought
+The `bin/xhi build,dev_start` command greatly steamlines deployment.
+It downloads vendor assets; copies, configures, and patches vendor files;
+configures and starts an HTTP server; lints code with ESLint and other checks,
+lists TODO items for developer review; runs all regression test suites in
+`test.d`; calculates and reports test coverage; minimizes, obsfucates, and
+creates a unique distribution directory containing multiple applications. The
+latest build can always be found in `build/latest/dist`. All of this is done
+in around 2 seconds on modern hardware with a fast internet connection.
+Nobody's going to kick our ass on iterations with cycle times like these.
 
 ---
 ## Key benefits
-The `bin/xhi` tool guides developers through lifecycle stages and employs
-sophisticated dependency checking to help avoid mistakes. The `bin/xhi
-build,dev_start` command installs vendor assets; copies, configures, and
-patches vendor files for development; configures and starts an HTTP server;
-lints code with ESLint and other checks, lists TODO items for developer
-review; runs all regression test suites in `test.d`; calculates and reports
-test coverage; minimizes, obsfucates, and creates a unique distribution
-directory containing multiple applications. The latest build can always be
-found in `build/latest/dist`.
+### The `bin/xhi` lifecycle tool
+- Guides the user and automates nearly all steps through the web
+  application lifecycle (see `bin/xhi help all`)
+- Uses sophisticated dependency checking to ensures prerequisites steps are
+  run or re-run only as needed
+- Integrates with NPM lifecycle and fully configured with `package.json`
+- Fully manages **and patches** vendor assets such as JavaScript, CSS,
+  fonts, and images; commit hook is also installed (`bin/xhi setup`)
+- Displays online design docs and code standards (`bin/xhi design`)
+- Ensures a full suite of tests are run  before commit (`bin/xhi dev_commit`)
+- Runs http-server for immediate use (`bin/xhi dev_start`)
+- Upgrades libraries to precise versions on request (`bin/xhi dev_upgrade`)
+- Runs suite of regression tests from the `test.d` drop directory (`bin/xhi dev_test`)
+- Extensively lints changed code using ESLint, whitespace checks, strict check,
+  and open TODO comment listing (`bin/xhi dev_lint`)
+- Reports code coverate of tests using Istanbul (`bin/xhi dev_cover`)
+- Performs all tests prior to commit (`bin/xhi dev_commit`)
+- One-touch build ensures all tests, lint, and coverage pass, and creates
+  a pristine build with dist, meta, and coverage reports. Symbols are
+  compressed and shuffled by frequency for each build using Superpack
+  (`bin/xhi build`)
 
-`hi_score` has three example applications. Two (`app-ex01.html` and
-`app-ex02.html`) are quite simple. The third, Typebomb2 (`app-tb02.html`) is
-the latest addition and it is far less trivial. Use the Chrome developer tools
-to inspect the CSS, the DOM, and the JavaScript. Notice how CSS classes are
-obsfucated and namespaced. A snapshot of the game in action is shown below.
-`hi_score` solves lots of hard stuff out-of-the-box so we can focus on
-improving things that really matter, like JavaScript, HTML, CSS and
-application logic. 
 
-Key benefits are listed below.
-
-- Full-lifecycle good practice and automation with `bin/xhi`
-- Integration with Git and NPM lifecycles
-- Fully managed and patched vendor assets configured with `package.json`
-- Vendor assets include JavaScript, CSS, fonts, images, and others
-- Development web server
-- Drop-directory TDD with JSDOM
-- Code coverage reports for each build
-- Linting (ESLint, whitespace check, strict check, TODO check)
-- Automatic install of comprehensive commit-hook
-- Battle-tested libraries with over 97% coverage of core utilities
+### Benefits - Libraries
+- Component libraries for 8 layers of a component SPA architecture
+- Libraries are battle-test and regression-tested with over 97% coverage of core utilities
+- Type safety using [type-casting][_05]
 - Automatic namespacing and run-time control of CSS using [PowerCSS][_11]
 - All code written to a consistent [standard][_04]
-- Type safety using [type-casting][_05]
 - Integrated browsable HTML documentation using markdown and `pandoc`
-- Three example applications
-- One-touch build ensures dozens of prequisites and tests pass
-- Builds create pristine distribution, metadata, and coverage directories
-- Compression and shuffling of symbols for each build
+- Non-trivial example application (Typebomb 2)
+- Use `bin/make-doc` to create HTML documents from markdown in the history
+- Easily support multple related applications in a single build
 
 ---
-## How to use
-A good way to use `hi_score` is as a `git` upstream source. One may then
-create new application using the `hi_score` infrastructure without missing
-upstream improvements or bug fixes.
+## How to use - Repository
+A good way to integrate the `hi_score` repository is to use it as a `git`
+upstream source. One may then create new application using the `hi_score`
+infrastructure without missing upstream improvements or bug fixes.
 
 First create a new empty repository on Github and copy the `ssh` repository
 URL, which should look similar to `git@github.com:<user>/<repo_name>` and then
 proceed as below:
 
-```text
+```bash
   mkdir -p ~/Github
   cd ~/Github
 
   # Clone the empty repository
-  git clone git@github.com:<user>/<repo_name>
-  cd <repo_name>
+  git clone "git@github.com:${_git_user}/${_repo_name}"
+  cd "${_repo_name}"
 
   # Create master branch
-  touch README.<app_name>.md # Add app specific docs here
+  touch "README.${_app_name}.md" # Add app specific docs here
   git add .
-  git commit -m 'First commit for <repo_name>'
+  git commit -m "First commit for ${_repo_name}"
   git push
 
   # Verify origin
@@ -127,13 +170,23 @@ proceed as below:
   git push
 ```
 
-We suggest you structure your apps as illustrated by the Typebomb2 app. This
-follows the *feature module* pattern which has been embraced by the recent
-libraries such as React and Vue.js (we've been advocating it since 2011, go
-figure). You may view this guide any time using `bin/xhi design`. The core
-concept is to create feature modules that contain their own isolated data and
-models when appropriate. This is pragmatic and recognizes the fractal nature
-of MVC. A slicker image is shown below.
+## How to use - IDE Conifuration
+We provide configs for JetBrain's IDE IntelliJ or Webstorm in the repository.
+Other IDEs will work fine, but we will need to manually adjust them to
+support the code style. The good news is we should only need to do this once
+per IDE and then it can be added to the repository. Contributions for VSCode,
+VIM, and other environments are welcome.
+
+## How to use - Application Structure
+Create a separate JS directory for each application. Typebomb2, for example,
+has the `js` directory of `js/app-tb02`.  We suggest you populate this
+directory as illustrated by the Typebomb2 app. This follows the *feature
+module* pattern which has been embraced by the recent libraries such as React
+and Vue.js (we've been advocating it since 2011, go figure). You may view this
+guide any time using `bin/xhi design`. The core concept is to create feature
+modules that contain their own isolated data and models when appropriate. This
+is pragmatic and recognizes the fractal nature of MVC. A slicker image is
+shown below.
 
 ![Feature module architecture][_0C]
 
@@ -143,19 +196,21 @@ following files for each layer shown in the diagram:
 
 ```
 Module layers
-=======================================
-tb02.00_root.js            |        ^
-tb02.01_util.js          load       |
-tb02.02_data.js          order      |
-tb02.03_model.js           |      call,
-tb02.04_utilb.js           |      init
-tb02.06_css.js           events   order
-tb02.06_<feature>.js       |        |
-tb02.07_shell.js           |        |
-tb02.08_app.js             v        |
+================================================
+app-tb02/tb02.00_root.js            |        ^
+app-tb02/tb02.01_util.js          load       |
+app-tb02/tb02.02_01_mockdata.js   order      |
+app-tb02/tb02.02_data.js            |        |
+app-tb02/tb02.03_model.js           |      call,
+app-tb02/tb02.04_utilb.js           |      init
+app-tb02/tb02.05_css.js           events   order
+app-tb02/tb02.06_lb.js              |        |
+app-tb02/tb02.07_shell.js           |        |
+app-tb02/tb02.08_app.js             v        |
 ```
 
-All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi` libraries in one of three ways:
+All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi`
+libraries in one of three ways:
 
 1. Create a configured instance and use as-is
 1. Create an instance and decorate
@@ -167,25 +222,26 @@ purposes, we have included all layers for Typebomb2. One can copy these to a
 new namespace to create a new app and then edit from there.
 
 ```bash
+  export _namesace='foo';
   cd hi_score
-  cp app-tb02.html app-<ns>.html
+  cp app-tb02.html app-${_namespace}.html
 
-  cd js
-  cp tb02.00_root.js          <ns>.00_root.js
-  cp tb02.01_util.js          <ns>.01_util.js
-  cp tb02.02_data.js          <ns>.02_data.js
-  cp tb02.03_model.js         <ns>.03_model.js
-  cp tb02.04_utilb.js         <ns>.04_utilb.js
-  cp tb02.05.css_<feature>.js <ns>.05.css_<feature>.js
-  cp tb02.06_css.js           <ns>.06_css.js
-  cp tb02.06_<feature>.js     <ns>.06_<feature>.js
-  cp tb02.07_shell.js         <ns>.07_shell.js
-  cp tb02.08_app.js           <ns>.08_app.js
-  cp tb02.08_app-build.js     <ns>.08_app-build.js
+  mkdir "js/app-${_namespace}";
+  cd "js/app-${_namespace}";
+  cp ../app-tb02/tb02.00_root.js          "${_namepace}.00_root.js"
+  cp ../app-tb02/tb02.01_util.js          "${_namepace}.01_util.js"
+  cp ../app-tb02/tb02.02_data.js          "${_namepace}.02_data.js"
+  cp ../app-tb02/tb02.03_model.js         "${_namepace}.03_model.js"
+  cp ../app-tb02/tb02.04_utilb.js         "${_namepace}.04_utilb.js"
+  cp ../app-tb02/tb02.05_02_css_base.js   "${_namepace}.05_02_css_base.js"
+  cp ../app-tb02/tb02.05_css.js           "${_namepace}.05_css.js"
+  cp ../app-tb02/tb02.07_shell.js         "${_namepace}.07_shell.js"
+  cp ../app-tb02/tb02.08_app.js           "${_namepace}.08_app.js"
+  cp ../app-tb02/tb02.08_app-build.js     "${_namepace}.08_app-build.js"
   git add .
 
   cd ../template
-  cp app-tb02.html app-<ns>.html
+  cp app-tb02.html "app-${_namespace}.html"
 ```
 We need to change all references from `tb02` in these new files to our new
 namespace, `<ns>`. We will also need to add a new build manifest in
@@ -371,16 +427,71 @@ hardware, cloud instances like Amazon EC2, and containers. Our server platform
 is Ubuntu 16.04 LTS. Later version of Ubuntu and other distributions should
 work well.
 
-
 ---
-## Development platform
-### Appliance
+## Prerequisites
+### Ubuntu Derivative Prerequisites
+When using Ubuntu Linux 16.04+ or a derivative -- such a Linux Mint, Kubuntu,
+Xubuntu, Lubuntu, or similar -- simply ensure the following libraries are
+installed. One can simply run the attached commands one at a time to ensure
+all prerequisites are met.
+
+```
+  # Install required libraries
+  sudo apt install build-essential git \
+    libfile-slurp-perl liblist-moreutils-perl \
+    net-tools \
+    openssh-server pandoc pandoc-citeproc \
+    unzip zip
+
+  # Install recommended libraries
+  sudo apt install apt-file htop kdiff3 \
+    mysql-client mysql-server \
+    meld ppa-purge sysstat vim-gtk vim-nox vim-syntax-gtk
+
+  # Install nodejs
+  curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+```
+
+### Other Linux distribution Prerequisites
+Other Linux distributions should generally work as long as the same libraries
+can be installed as with Ubuntu. With Fedora 30, for example, the following
+should be pretty close:
+
+```bash
+  yum install gcc gcc-c++ make openssl-devel
+
+  # Now make sure the perl libraries and node.js 10+ is installed
+```
+
+See [this guide][_06] for NodeJS package installation on other Linux distros.
+Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
+
+### Macintosh Prerequisites
+We found Mac High Sierra worked after the following.
+
+```bash
+  brew install pandoc
+  # See https://nodejs.org/en/download/package-manager/#macos for nodejs
+```
+
+Another path is to use Parallels or VMFusion to import the
+[Virtual Appliance vmx.zip][_42] file (unzip this file before use).
+VirtualBox also will work but doesn't integrate as well to OSX as it should.
+
+### Windows 10 Prerequisites
+In theory, the Windows Subsystem for Linux running an Ubuntu distro should
+work as with the prerequisites [listed above](#ubuntu-prerequisite).
+However, we haven't tested it. On may also use the virutal
+appliance detailed above.
+
+### Virtual Appliance Prerequisites
 Download the latest [latest virual appliance][_42] to try `hi_score` by
 running a host in a virtual machine.  Pick the latest `ova2` image for virutal
 box, and the latest `vmx.zip` image for VMware or Parallels.  The login and
-password are `hi_score`. 
+password are `hi_score`.
 
-![Virual_appliance][_0E]
+![Virtual_appliance][_0E]
 
 After signing in, change the password for your safety, and also please upgrade
 the software to the latest security patches. Open a terminal and enter the
@@ -396,62 +507,6 @@ next.
 
 After reboot, return to the `Quick Start` section. If you would like to learn
 more about the appliance setup, you may read on below.
-
-### Setup on Ubuntu and derivatives
-If you are using Ubuntu Linux 16.04+ for your workstation or deployment
-everything should just work with as long as the required libraries are
-installed as shown below:
-
-```
-  # Install required libraries
-  sudo apt install build-essential git \
-    libfile-slurp-perl liblist-moreutils-perl \
-    mysql-client mysql-server net-tools \
-    openssh-server pandoc pandoc-citeproc \
-    unzip zip
-
-  # Install recommended libraries
-  sudo apt install apt-file htop kdiff3 \
-    meld ppa-purge sysstat vim-gtk vim-nox vim-syntax-gtk
-
-  # Install nodejs
-  curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-  sudo apt install -y nodejs
-```
-
-Most Ubuntu derivatives such as Mint or Kubuntu should work just as well.
-
-### Setup on other Linux distros
-Other Linux distributions should generally work as long as the same libraries
-can be installed as with Ubuntu. It works fine on current versions of CentOS.
-Development libraries should be installed as shown below.
-
-```bash
-  yum install gcc gcc-c++ make openssl-devel
-  # We're probably missing git and a few other tools here
-```
-
-See [this guide][_06] for NodeJS package installation on other Linux distros.
-Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
-
-### Setup on Mac
-We found Mac High Sierra worked after the following steps:
-
-1. Install NodeJS 10+
-2. Install pandoc
-
-```bash
-brew install pandoc
-```
-
-Another path is to use Parallels or VMFusion to import the [vmx.zip][_42]
-(unzip this file before use). VirtualBox also will work but doesn't integrate
-as well to OSX as it should.
-
-### Setup on Windows 10
-In theory, the Windows Subsystem for Linux running an Ubuntu distro should
-work with as above. However, we haven't tested it. On may also use the virutal
-appliance detailed above.
 
 ---
 ## Vendor assets
@@ -537,7 +592,7 @@ The `xhi_02_SetupMatrix.patch_matrix` directs patch application.  This
 capability allows us to use great tools tweaked for our needs while
 maintaining the upstream source. For example, we patch `uglify-js` to support
 object property name compression and shuffling by `superpack`. We also patch
-`font-awesome` CSS files to have the correct path for our environment.  
+`font-awesome` CSS files to have the correct path for our environment.
 
 The `bin/xhi setup` stage applies patches *after vendor assets are copied to
 their directories*. The configuration for patches are in `package.json` in the
@@ -766,29 +821,34 @@ MIT
 - (x) Revise code standards and images
 - (x) Update AMI image for deployment and add screen shot
 - (x) Update README with images
-- (x) Support symbol renaming to avoid conflicts 
+- (x) Support symbol renaming to avoid conflicts
       (jQuery => xhiJQ, pcss => xhiCSS)
 
-### Version 1.5.x
-Begun 2019-01-01 ...
+### Version 1.5.0
+Release 2019-01-01
 - (x) 01\_utils add capabilities and documentation
 - (x) Update all libs to latest
 - (x) Revised templates per latest best practice
-- (i) Update tb02 libs to latest best practice
+
+### Version 1.5.1
+Released 2019-05-19
+- (x) Include event pub-sub system in the `js/xhi/03_model.js` instance.
+  This provides an integrated event log system for use in regression tests
 
 ### Backlog
+- (i) Update tb02 libs to latest best practice
+- (i) Provide CSS => PowerCSS parser
 - (o) Convert superpack Perl to JS, use `package.json` config
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
 - (o) Update quick reference code standard
 - (o) Test load times using remote server
-- (o) Use LetsEncrypt HTTPS by default for `bin/xhi prod_start` 
-- (o) Configure for HTTP/2 for `bin/xhi prod_start` 
+- (o) Use LetsEncrypt HTTPS by default for `bin/xhi prod_start`
+- (o) Configure for HTTP/2 for `bin/xhi prod_start`
 - (o) Implement `bin/xhi deploy`
 - (o) Push to NPM using `bin/xhi publish`
 ---
 
 ## End
-
 [_0A]:img/hi_score.png
 [_0B]:doc/images/tb2-001.png
 [_0BA]:https://michaelmikowski.com/typebomb/index.html
