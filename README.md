@@ -8,53 +8,28 @@ Applications (SPAs)*
 From the author of [Single Page Web Applications, JavaScript end-to-end][_00]
 
 ## Overview
-If you want to create a single page web application these days there is no
-shortage of "help". Unsuspecting developers are lured into using starter
-projects featuring the latest SPA framework (like React, Vue, Angular,
-Aurelia or Ext.js) along with a CSS subsystem like (SASS or LESS or Stylus
-or SCSS), a cross-compiler (typically Babble), a build system ( like Brunch
-or Webpack or Parcel) and so on and ad-nauseum. There's only one guarantee
-about these systems: they're 'Magic'.
+If you want to create a single page web application these days there is no shortage of help. Unsuspecting developers are lured into using starter projects featuring the latest SPA framework (like React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babble), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum. There's only one guarantee about these systems: they're 'Magic'.
 
-Sorry Gandolf, but we don't mean 'Magic' in a good way. Sure, we'll be able to
-create the sample 'TODO' application in record time because of its
-demo-on-rails nature.  But once we move even a little off those rails, things
-start to go south fast.  The logic path running from source code to the
-rendered **HCJ**[^1] becomes so convoluted and complex that it's impossible
-for a human to trace in a reasonable amount of time.  Those who have spent
-quality time with these starter-pack-ecosystems almost certainly have plenty
-of terrifying anecdotes to insert here as needed.
+Sorry Gandalf, but we don't mean 'Magic' in a good way. Sure, we'll be able to create that sample TODO-application-designed-to-impress-the-CTO in record time because of its demo-on-rails nature.  But once we veer a bit off those rails, things start to go south fast.  The transpile path from source code to the rendered **HCJ**[^1] so complex that it's impossible for a human to trace. When it breaks - and it will - all that magic becomes a nightmare. That's because these solutions have traded the core **three** HCJ languages for a tower-of-Babel collection **many** (often 5 or 10) transpiled languages that are **larger, harder to learn, less documented, and more prone to break.** 
 
-[^1]: HTML,CSS,JavaScript
+[^1]: HTML+CSS+JavaScript
 
-`hi_score` provides a profoundly different approach compared
-**OACAWSSYTSEMS**[^1]. The goal is to have the developer **fully
-understand** the HTML, CSS, and JavaScript so he can **iterate and debug** his
-code **as fast as possible.** It extensively automates processes **around**
-the generation of **HCJ**[^2] assets instead of making the generation an
-untraceable tower of Babel. It provides a **single** lifecycle tool which
-documents a **single** proven architecture, a **single** proven coding style,
-and a **single** proven library (designed for the architecture) to greatly
-accelerate SPA development and iteration.  All lifecycle stages including
-install, setup, update, testing, linting, coverage, build, etc -- are
-configured with the `package.json` file we're already using.
+We call these systems 
+`hi_score` is **profoundly** different. Easy things are easy. Hard things are possible. Let's compare:
 
-[^1]: Our-Awesomely-Complex-Aren't-We-So-Smart-You're-Too-Stupid-Ecosystem
-      -Magic-System
-[^2]: Html,CSS,JavaScript
+- Instead of leaving it to the developer to muddle through development lifecycles and testing, `hi_score` provide full-lifecycle automation and documentation around the generation of **HCJ**.
+- Instead of the **Tower-of-Bable**, `hi_score` provides a **zero-compile** environment where developers constantly build skills on core **HCJ** within a proven architecture.
+- Instead "writing **HCJ** for developers" and assuming they are too stupid to do it themselves, `hi_score` assists the developer i**HCJ** that they **fully understand**.
+- Instead of sending completely unrecognizable multi-transpiled **HCJ** to the browser, `hi_score` sends delveloper-managed code that is easy to debug and can be rapidly changed and tested.
+- Instead of trying to bake pre-determined "best practice" into code - which makes lots of hard things impossible - `hi_score` provides tools and customizable docs that can automate whatever "best practice" is for the development team.
+- Instead of requiring an IDE and a complex and fagile management server to help manage the complexities of the **Tower of Babble**, `hi_score` can be developed easily without either. 
 
-Anything that can complicate the delivery of **HCJ** is looked at with extreme
-scrutiny. For example, one is tempted by the lure of stronger typing using a
-the [TypeScript][_43] JavaScript-superset or [Flow][_44] tools. However, both
-introduce complexity and a cross compile. Instead, we have implemented
-[type-casting][_05] which allows us to maintain a zero-compile development
-environment and improves the readability of our code.
+`hi_score` provides a **single** lifecycle tool which documents a **single** proven architecture, a **single** proven coding style, a **single** visual design guide, and a **single** proven library to greatly accelerate SPA development and iteration.  All lifecycle stages including install, setup, update, testing, linting, coverage, build, etc -- are configured with the `package.json` file we're already using.  Anything that can complicate the delivery of **HCJ** is looked at with extreme scrutiny. For example, we were tempted by the lure of stronger typing provided by [TypeScript][_43] or [Flow][_44]. However, both of these tools introduce complexity and one or more transpiles. Instead we retain the **zero-compile** environment by using [type-casting][_05] which also provides useful self-documentation.
 
-While `hi_score` is opinionated, it is also modular and designed
-for change. For example, the `bin/xhi` tool is easily extended by dropping a
-short module into the the `lib/` directory. The architecture and code style
-docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers
-are encourated to add vendor libraries and patches [as needed][_01].
+[^1]: Our-Awesomely-Complex-Aren't-We-So-Smart-You're-So-Stupid-Ecosystem-Magic
+[^2]: Html+CSS+JavaScript
+
+While `hi_score` is opinionated, it is also modular and designed for change. For example, the `bin/xhi` tool is easily extended by dropping a short module into the the `lib/` directory. The architecture and code style docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers are encourated to add vendor libraries and patches [as needed][_01].
 
 ## Latest release
 Version 1.5.1 released 2019-05-19 includes an event pub-sub system in the
