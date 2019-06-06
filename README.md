@@ -10,17 +10,17 @@ From the author of [Single Page Web Applications, JavaScript end-to-end][_00]
 ## Overview
 If you want to create a single page web application these days there is no shortage of help. Developers are lured into using starter projects featuring the latest SPA framework (like React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babel), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum, and a sophisticated IDE and management server is required to coordinate updates. We call these highly coplex developer environment "Towers of Babel". There's only one guarantee about these systems: they're *Magic*.
 
-Appologies to Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails.  But once we veer a bit off those rails, things start to go south fast.  The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is usually so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a moltey crew of transpiled languages that are often larger, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share an existing app's resources - can become impossible.
+Apologies to Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails.  But once we veer a bit off those rails, things start to go south fast.  The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is usually so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a Mötley Crüe of transpiled languages that are often larger, more numerous, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share an existing app's resources - can become impossible.
 
 `hi_score` is **profoundly** different. Simple problems are easy to solve, and difficult solutions are possible.  We insist on a **zero-compile** development environment. We use [type-casting][_05], for example, to provide type safety instead of using the transpile-laden [TypeScript][_43] or [Flow][_44] tools. `hi_score` helps developers *become better* at HTML + CSS + JavaScript instead of *avoiding* them.  It provides a **single** lifecycle tool which documents a **single** highly successful architecture, a **single** proven coding style, a **single** visual design guide, and a **single** highly successful xhi library all designed to greatly accelerate and improve SPA development.  All lifecycle stages are configured with the **single** `package.json` file.
 
 
 ## Latest release
-Version 1.5.2 released 2019-06-04 includes an event pub-sub system in the `js/xhi/03_model.js` instance. This provides an integrated event log system for use in unit and regression tests. We will update the typebomb2 example in later releases to better illustrate its use.
+Version 1.6.0 released 2019-06-04 includes a rather robust event subscription, publishing, and unsubcription system to the `js/xhi/03_model.js` instance. We will update the typebomb2 example in later releases to better illustrate its use. The event loggins is very useful for regression tests.
 
 ---
 ## Quick start
-On Mac, Ubuntu Linux, or WSL, getting an app running with `hi_score` couldn't get much easier. After you have the [prerequisites installed ](#prerequisites), enter the following commands into a Bash shell.  Wait for each to finish before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
+On Mac, Ubuntu Linux, or WSL, getting an app running with `hi_score` couldn't get much easier. After checking the [prerequisites installed ](#prerequisites), enter the following into a Bash shell.  Wait for each command to finish before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
 
 ```bash
   git clone git@github.com:mmikowski/hi_score.git
@@ -33,8 +33,8 @@ On Mac, Ubuntu Linux, or WSL, getting an app running with `hi_score` couldn't ge
 
 Once these steps are completed we should see a fully working typing tutor game, TypeBomb 2. We can compare it with the [online version][_0BA] to ensure it is working correctly.  Use the developer tools to inspect the CSS, the DOM, and the JavaScript.  Notice how CSS classes are obsfucated and namespaced. We were doing this years before Facebook, Google, or Twitter.
 
-## What we have wrought
-The `bin/xhi build,dev_start` command greatly steamlines deployment.  It downloads vendor assets; copies, configures, and patches vendor files; configures and starts an HTTP server; lints code with ESLint and other checks, lists TODO items for developer review; runs all regression test suites in `test.d`; calculates and reports test coverage; minimizes, obsfucates, and creates a unique distribution directory containing multiple applications. The latest build can always be found in `build/latest/dist`. All of this is done in around 2 seconds on modern hardware with a fast internet connection.  Nobody's going to kick our ass on iterations with cycle times like these.
+## What did we just do in ~2 seconds?
+The `bin/xhi build,dev_start` command does quite a bit more the first time it is run due to dependency checks: The `bin/xhi` tool downloads vendor assets; copies, configures, and patches vendor files; configures and starts an HTTP server; ESlints source code, checks for tabs and trailing space, lists TODO items for developer review; runs all regression test suites found in `test.d`; calculates and reports test coverage; minimizes, obsfucates, and super-packs three applications, and finally it creates unique distribution directories for each application complete with full build reports. All of this is done in around 2 seconds on modern hardware with a good internet connection.
 
 ---
 ## Key benefits
@@ -766,8 +766,11 @@ Released 2019-05-19
 - (x) Include event pub-sub system in the `js/xhi/03_model.js` instance.
   This provides an integrated event log system for use in regression tests
 
+### 1.6.0 
+- (x) Significantly updated documentation.
+
 ### Backlog
-- (i) Update tb02 libs to latest best practice
+- (i) Update tb02 libs to latest best practice (events)
 - (i) Provide CSS => PowerCSS parser
 - (o) Convert superpack Perl to JS, use `package.json` config
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
