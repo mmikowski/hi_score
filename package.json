@@ -205,8 +205,7 @@
       ],
       "Show architecture docs",
       [
-        "Show the guidlines for architecture in 'doc/spa-arch.md.'",
-        "Use the module template 'js/xhi/xhi-module-tmplt.js.'",
+        "Show architecture, style, and VDG docs from doc/spa-arch.md",
         "NPM SCRIPTS      : none.",
         "SUCCESS CRITERIA : Document is shown without error."
       ],

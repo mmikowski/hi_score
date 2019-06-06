@@ -8,42 +8,19 @@ Applications (SPAs)*
 From the author of [Single Page Web Applications, JavaScript end-to-end][_00]
 
 ## Overview
-If you want to create a single page web application these days there is no shortage of help. Unsuspecting developers are lured into using starter projects featuring the latest SPA framework (like React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babble), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum. There's only one guarantee about these systems: they're 'Magic'.
+If you want to create a single page web application these days there is no shortage of help. Developers are lured into using starter projects featuring the latest SPA framework (like React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babel), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum, and a sophisticated IDE and management server is required to coordinate updates. We call these highly coplex developer environment "Towers of Babel". There's only one guarantee about these systems: they're *Magic*.
 
-Sorry Gandalf, but we don't mean 'Magic' in a good way. Sure, we'll be able to create that sample TODO-application-designed-to-impress-the-CTO in record time because of its demo-on-rails nature.  But once we veer a bit off those rails, things start to go south fast.  The transpile path from source code to the rendered **HCJ**[^1] so complex that it's impossible for a human to trace. When it breaks - and it will - all that magic becomes a nightmare. That's because these solutions have traded the core **three** HCJ languages for a tower-of-Babel collection **many** (often 5 or 10) transpiled languages that are **larger, harder to learn, less documented, and more prone to break.** 
+Appologies to Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails.  But once we veer a bit off those rails, things start to go south fast.  The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is usually so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a moltey crew of transpiled languages that are often larger, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share an existing app's resources - can become impossible.
 
-[^1]: HTML+CSS+JavaScript
+`hi_score` is **profoundly** different. Simple problems are easy to solve, and difficult solutions are possible.  We insist on a **zero-compile** development environment. We use [type-casting][_05], for example, to provide type safety instead of using the transpile-laden [TypeScript][_43] or [Flow][_44] tools. `hi_score` helps developers *become better* at HTML + CSS + JavaScript instead of *avoiding* them.  It provides a **single** lifecycle tool which documents a **single** highly successful architecture, a **single** proven coding style, a **single** visual design guide, and a **single** highly successful xhi library all designed to greatly accelerate and improve SPA development.  All lifecycle stages are configured with the **single** `package.json` file.
 
-We call these systems 
-`hi_score` is **profoundly** different. Easy things are easy. Hard things are possible. Let's compare:
-
-- Instead of leaving it to the developer to muddle through development lifecycles and testing, `hi_score` provide full-lifecycle automation and documentation around the generation of **HCJ**.
-- Instead of the **Tower-of-Bable**, `hi_score` provides a **zero-compile** environment where developers constantly build skills on core **HCJ** within a proven architecture.
-- Instead "writing **HCJ** for developers" and assuming they are too stupid to do it themselves, `hi_score` assists the developer i**HCJ** that they **fully understand**.
-- Instead of sending completely unrecognizable multi-transpiled **HCJ** to the browser, `hi_score` sends delveloper-managed code that is easy to debug and can be rapidly changed and tested.
-- Instead of trying to bake pre-determined "best practice" into code - which makes lots of hard things impossible - `hi_score` provides tools and customizable docs that can automate whatever "best practice" is for the development team.
-- Instead of requiring an IDE and a complex and fagile management server to help manage the complexities of the **Tower of Babble**, `hi_score` can be developed easily without either. 
-
-`hi_score` provides a **single** lifecycle tool which documents a **single** proven architecture, a **single** proven coding style, a **single** visual design guide, and a **single** proven library to greatly accelerate SPA development and iteration.  All lifecycle stages including install, setup, update, testing, linting, coverage, build, etc -- are configured with the `package.json` file we're already using.  Anything that can complicate the delivery of **HCJ** is looked at with extreme scrutiny. For example, we were tempted by the lure of stronger typing provided by [TypeScript][_43] or [Flow][_44]. However, both of these tools introduce complexity and one or more transpiles. Instead we retain the **zero-compile** environment by using [type-casting][_05] which also provides useful self-documentation.
-
-[^1]: Our-Awesomely-Complex-Aren't-We-So-Smart-You're-So-Stupid-Ecosystem-Magic
-[^2]: Html+CSS+JavaScript
-
-While `hi_score` is opinionated, it is also modular and designed for change. For example, the `bin/xhi` tool is easily extended by dropping a short module into the the `lib/` directory. The architecture and code style docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers are encourated to add vendor libraries and patches [as needed][_01].
 
 ## Latest release
-Version 1.5.1 released 2019-05-19 includes an event pub-sub system in the
-`js/xhi/03_model.js` instance. This provides an integrated event log system
-for use in unit and regression tests.
+Version 1.5.2 released 2019-06-04 includes an event pub-sub system in the `js/xhi/03_model.js` instance. This provides an integrated event log system for use in unit and regression tests. We will update the typebomb2 example in later releases to better illustrate its use.
 
 ---
 ## Quick start
-On Mac, Ubuntu Linux, or WSL, getting an app running with `hi_score` couldn't
-get much easier. After you have the [prerequisites installed ](#prerequisites),
-enter the following commands into a Bash shell.  Wait for each
-to finish before proceeding to the next. The build process prompts
-the user to review TODO notes. Just press `return` to accept them.
-
+On Mac, Ubuntu Linux, or WSL, getting an app running with `hi_score` couldn't get much easier. After you have the [prerequisites installed ](#prerequisites), enter the following commands into a Bash shell.  Wait for each to finish before proceeding to the next. The build process prompts the user to review TODO notes. Just press `return` to accept them.
 
 ```bash
   git clone git@github.com:mmikowski/hi_score.git
@@ -54,47 +31,36 @@ the user to review TODO notes. Just press `return` to accept them.
 
 ![Typebomb2][_0B]
 
-Once these steps are completed we should see a fully working typing tutor
-game, TypeBomb 2. We can compare it with the [online version][_0BA] to ensure
-it is working correctly.  Use the developer tools to inspect the CSS, the DOM,
-and the JavaScript.  Notice how CSS classes are obsfucated and namespaced. We
-were doing this years before Facebook, Google, or Twitter.
+Once these steps are completed we should see a fully working typing tutor game, TypeBomb 2. We can compare it with the [online version][_0BA] to ensure it is working correctly.  Use the developer tools to inspect the CSS, the DOM, and the JavaScript.  Notice how CSS classes are obsfucated and namespaced. We were doing this years before Facebook, Google, or Twitter.
 
 ## What we have wrought
-The `bin/xhi build,dev_start` command greatly steamlines deployment.
-It downloads vendor assets; copies, configures, and patches vendor files;
-configures and starts an HTTP server; lints code with ESLint and other checks,
-lists TODO items for developer review; runs all regression test suites in
-`test.d`; calculates and reports test coverage; minimizes, obsfucates, and
-creates a unique distribution directory containing multiple applications. The
-latest build can always be found in `build/latest/dist`. All of this is done
-in around 2 seconds on modern hardware with a fast internet connection.
-Nobody's going to kick our ass on iterations with cycle times like these.
+The `bin/xhi build,dev_start` command greatly steamlines deployment.  It downloads vendor assets; copies, configures, and patches vendor files; configures and starts an HTTP server; lints code with ESLint and other checks, lists TODO items for developer review; runs all regression test suites in `test.d`; calculates and reports test coverage; minimizes, obsfucates, and creates a unique distribution directory containing multiple applications. The latest build can always be found in `build/latest/dist`. All of this is done in around 2 seconds on modern hardware with a fast internet connection.  Nobody's going to kick our ass on iterations with cycle times like these.
 
 ---
 ## Key benefits
-### The `bin/xhi` lifecycle tool
-- Guides the user and automates nearly all steps through the web
-  application lifecycle (see `bin/xhi help all`)
-- Uses sophisticated dependency checking to ensures prerequisites steps are
-  run or re-run only as needed
+### Benefits - Compared to **Tower of Babel**
+- Instead of leaving it to the developer to muddle through development lifecycles and testing, `hi_score` provide full-lifecycle automation and documentation around the generation of **HCJ**.
+- Instead of the **Tower-of-Bable**, `hi_score` provides a **zero-compile** environment where developers constantly build skills on core **HCJ** within a proven architecture.
+- Instead "writing **HCJ** for developers" and assuming they are too stupid to do it themselves, `hi_score` assists the developer i**HCJ** that they **fully understand**.
+- Instead of sending completely unrecognizable multi-transpiled **HCJ** to the browser, `hi_score` sends delveloper-managed code that is easy to debug and can be rapidly changed and tested.
+- Instead of trying to bake pre-determined "best practice" into code - which makes lots of hard things impossible - `hi_score` provides tools and customizable docs that can automate whatever "best practice" is for the development team.
+- Instead of requiring a complex and fagile server to serve transpiled files and manage the complexities of the **Tower of Babel**, `hi_score` only uses a simple HTTP server
+- Instead of almost requiring a comprehensive IDE to use successfully, `hi_score` code can be developed and tested using just a terminal. An IDE is just icing on the cake.
+
+### Benefits - The `bin/xhi` lifecycle tool
+- Guides the user and automates nearly all steps through the web application lifecycle (see `bin/xhi help all`)
+- Uses sophisticated dependency checking to ensures prerequisites steps are run or re-run only as needed
 - Integrates with NPM lifecycle and fully configured with `package.json`
-- Fully manages **and patches** vendor assets such as JavaScript, CSS,
-  fonts, and images; commit hook is also installed (`bin/xhi setup`)
+- Fully manages **and patches** vendor assets such as JavaScript, CSS, fonts, and images; commit hook is also installed (`bin/xhi setup`)
 - Displays online design docs and code standards (`bin/xhi design`)
 - Ensures a full suite of tests are run  before commit (`bin/xhi dev_commit`)
 - Runs http-server for immediate use (`bin/xhi dev_start`)
 - Upgrades libraries to precise versions on request (`bin/xhi dev_upgrade`)
 - Runs suite of regression tests from the `test.d` drop directory (`bin/xhi dev_test`)
-- Extensively lints changed code using ESLint, whitespace checks, strict check,
-  and open TODO comment listing (`bin/xhi dev_lint`)
+- Extensively lints changed code using ESLint, whitespace checks, strict check, and open TODO comment listing (`bin/xhi dev_lint`)
 - Reports code coverate of tests using Istanbul (`bin/xhi dev_cover`)
 - Performs all tests prior to commit (`bin/xhi dev_commit`)
-- One-touch build ensures all tests, lint, and coverage pass, and creates
-  a pristine build with dist, meta, and coverage reports. Symbols are
-  compressed and shuffled by frequency for each build using Superpack
-  (`bin/xhi build`)
-
+- One-touch build ensures all tests, lint, and coverage pass, and creates a pristine build with dist, meta, and coverage reports. Symbols are compressed and shuffled by frequency for each build using Superpack (`bin/xhi build`)
 
 ### Benefits - Libraries
 - Type safety using [type-casting][_05]
@@ -109,13 +75,9 @@ Nobody's going to kick our ass on iterations with cycle times like these.
 
 ---
 ## How to use - Repository
-A good way to integrate the `hi_score` repository is to use it as a `git`
-upstream source. One may then create new application using the `hi_score`
-infrastructure without missing upstream improvements or bug fixes.
+A good way to integrate the `hi_score` repository is to use it as a `git` upstream source. One may then create new application using the `hi_score` infrastructure without missing upstream improvements or bug fixes.
 
-First create a new empty repository on Github and copy the `ssh` repository
-URL, which should look similar to `git@github.com:<user>/<repo_name>` and then
-proceed as below:
+First create a new empty repository on Github and copy the `ssh` repository URL, which should look similar to `git@github.com:<user>/<repo_name>` and then proceed as below:
 
 ```bash
   mkdir -p ~/Github
@@ -153,28 +115,14 @@ proceed as below:
 ```
 
 ## How to use - IDE Conifuration
-We provide configs for JetBrain's IDE IntelliJ or Webstorm in the repository.
-Other IDEs will work fine, but we will need to manually adjust them to
-support the code style. The good news is we should only need to do this once
-per IDE and then it can be added to the repository. Contributions for VSCode,
-VIM, and other environments are welcome.
+We provide configs for JetBrain's IDE IntelliJ or Webstorm in the repository.  Other IDEs will work fine, but we will need to manually adjust them to support the code style. The good news is we should only need to do this once per IDE and then it can be added to the repository. Contributions for VSCode, VIM, and other environments are welcome.
 
 ## How to use - Application Structure
-Create a separate JS directory for each application. Typebomb2, for example,
-has the `js` directory of `js/app-tb02`.  We suggest you populate this
-directory as illustrated by the Typebomb2 app. This follows the *feature
-module* pattern which has been embraced by the recent libraries such as React
-and Vue.js (we've been advocating it since 2011, go figure). You may view this
-guide any time using `bin/xhi design`. The core concept is to create feature
-modules that contain their own isolated data and models when appropriate. This
-is pragmatic and recognizes the fractal nature of MVC. A slicker image is
-shown below.
+Create a separate JS directory for each application. Typebomb2, for example, has the `js` directory of `js/app-tb02`.  We suggest you populate this directory as illustrated by the Typebomb2 app. This follows the *feature module* pattern which has been embraced by the recent libraries such as React and Vue.js (we've been advocating it since 2011, go figure). You may view this guide any time using `bin/xhi design`. The core concept is to create feature modules that contain their own isolated data and models when appropriate. This is pragmatic and recognizes the fractal nature of MVC. A slicker image is shown below.
 
 ![Feature module architecture][_0C]
 
-We have provided the `js/xhi` libraries to either provide capabilities
-directly or as an illustration. For example, in Typebomb2 you will notice the
-following files for each layer shown in the diagram:
+We have provided the `js/xhi` libraries to either provide capabilities directly or as an illustration. For example, in Typebomb2 you will notice the following files for each layer shown in the diagram:
 
 ```
 Module layers
@@ -191,55 +139,56 @@ app-tb02/tb02.07_shell.js           |        |
 app-tb02/tb02.08_app.js             v        |
 ```
 
-All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi`
-libraries in one of three ways:
+All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi` libraries in one of three ways:
 
 1. Create a configured instance and use as-is
 1. Create an instance and decorate
 1. Use the module to guide development
 
-More specific notes about Typebomb2 app are provide in `README.app-tb02.md`.
-One can omit unused layers for a given app. However, for illustrative
-purposes, we have included all layers for Typebomb2. One can copy these to a
-new namespace to create a new app and then edit from there.
+More specific notes about Typebomb2 app are provide in `README.app-tb02.md`.  One can omit unused layers for a given app. However, for illustrative purposes, we have included all layers for Typebomb2. One can copy these to a new namespace to create a new app and then edit from there.
 
 ```bash
   export _namesace='foo';
   cd hi_score
-  cp app-tb02.html app-${_namespace}.html
+  cp app-tb02.html app-${_ns}.html
 
-  mkdir "js/app-${_namespace}";
-  cd "js/app-${_namespace}";
-  cp ../app-tb02/tb02.00_root.js          "${_namepace}.00_root.js"
-  cp ../app-tb02/tb02.01_util.js          "${_namepace}.01_util.js"
-  cp ../app-tb02/tb02.02_data.js          "${_namepace}.02_data.js"
-  cp ../app-tb02/tb02.03_model.js         "${_namepace}.03_model.js"
-  cp ../app-tb02/tb02.04_utilb.js         "${_namepace}.04_utilb.js"
-  cp ../app-tb02/tb02.05_02_css_base.js   "${_namepace}.05_02_css_base.js"
-  cp ../app-tb02/tb02.05_css.js           "${_namepace}.05_css.js"
-  cp ../app-tb02/tb02.07_shell.js         "${_namepace}.07_shell.js"
-  cp ../app-tb02/tb02.08_app.js           "${_namepace}.08_app.js"
-  cp ../app-tb02/tb02.08_app-build.js     "${_namepace}.08_app-build.js"
+  mkdir "js/app-${_ns}";
+  cd "js/app-${_ns}";
+  cp ../app-tb02/tb02.00_root.js          "${_ns}.00_root.js"
+  cp ../app-tb02/tb02.01_util.js          "${_ns}.01_util.js"
+  cp ../app-tb02/tb02.02_data.js          "${_ns}.02_data.js"
+  cp ../app-tb02/tb02.03_model.js         "${_ns}.03_model.js"
+  cp ../app-tb02/tb02.04_utilb.js         "${_ns}.04_utilb.js"
+  cp ../app-tb02/tb02.05_02_css_base.js   "${_ns}.05_02_css_base.js"
+  cp ../app-tb02/tb02.05_css.js           "${_ns}.05_css.js"
+  cp ../app-tb02/tb02.07_shell.js         "${_ns}.07_shell.js"
+  cp ../app-tb02/tb02.08_app.js           "${_ns}.08_app.js"
+  cp ../app-tb02/tb02.08_app-build.js     "${_ns}.08_app-build.js"
   git add .
 
   cd ../template
-  cp app-tb02.html "app-${_namespace}.html"
+  cp app-tb02.html "app-${_ns}.html"
 ```
-We need to change all references from `tb02` in these new files to our new
-namespace, `<ns>`. We will also need to add a new build manifest in
-`package.json`. See the `xhi_11_BuildMatrix` configuration for `tb02` as a
-guide. The result is an architecture that is designed to work well for every
-phase of the SPA lifecycle.
+We need to change all references from `tb02` in these new files to our new namespace, `${_ns}`. We will also need to add a new build manifest in `package.json`. See the `xhi_11_BuildMatrix` configuration for `tb02` as a guide. The result is an architecture that is designed to work well for every phase of the SPA lifecycle.
 
-One can delete all the example apps (`tb02`, `ex01`, `ex02`) from the project
-if they get in the way. However we recommend retaining at least `tb02` for
-reference because it will continue to be refined along with the `hi_score`
-project. One can refresh upstream at any time as shown below.
+One can delete all the example apps (`tb02`, `ex01`, `ex02`) from the project if they get in the way. However we recommend retaining at least `tb02` for reference because it will continue to be refined along with the `hi_score` project. One can refresh upstream at any time as shown below.
 
 ```bash
-  git fetch upstream
-  git merge upstream/master
+  # Refresh view of branches
+  git fetch -a --prune
+
+  # Pull latest master or dev branch
+  git checkout master
+  git pull
+
+  # Create a new branch to test merge
+  git checkout -b upstream-check
+
+  # Refresh view of upstream and test merge
+  git fetch -a --prune upstream
+  git merge --no-commit upstream/master
 ```
+
 We recommend you run `bin/xhi install,setup` after any such merge.
 
 ---
@@ -259,7 +208,7 @@ The lifecycle stages supported by `bin/xhi` are shown below. Those marked
     xhi>  00 help        : Help on 'xhi' tool, use -v for verbose
     xhi>  01 install     : Download and install npm modules
     xhi>  02 setup       : Patch and distribute vendor npm assets
-    xhi>  03 design      : Show architecture docs
+    xhi>  03 design      : Show architecture, style, and VDG docs
     xhi>  04 dev_pull    : Download and merge SCMS assets (git pull)
     xhi>  05 dev_upgrade : Upgrade packages to latest
     xhi>  06 dev_start   : Start local HTTP server
@@ -408,87 +357,6 @@ The server component of **hi\_score** is designed to run on industry-standard
 hardware, cloud instances like Amazon EC2, and containers. Our server platform
 is Ubuntu 16.04 LTS. Later version of Ubuntu and other distributions should
 work well.
-
----
-## Prerequisites
-### Ubuntu Derivative Prerequisites
-When using Ubuntu Linux 16.04+ or a derivative -- such a Linux Mint, Kubuntu,
-Xubuntu, Lubuntu, or similar -- simply ensure the following libraries are
-installed. One can simply run the attached commands one at a time to ensure
-all prerequisites are met.
-
-```
-  # Install required libraries
-  sudo apt install build-essential git \
-    libfile-slurp-perl liblist-moreutils-perl \
-    net-tools \
-    openssh-server pandoc pandoc-citeproc \
-    unzip zip
-
-  # Install recommended libraries
-  sudo apt install apt-file htop kdiff3 \
-    mysql-client mysql-server \
-    meld ppa-purge sysstat vim-gtk vim-nox vim-syntax-gtk
-
-  # Install nodejs
-  curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-  sudo apt-get install -y nodejs
-```
-
-### Other Linux distribution Prerequisites
-Other Linux distributions should generally work as long as the same libraries
-can be installed as with Ubuntu. With Fedora 30, for example, the following
-should be pretty close:
-
-```bash
-  yum install gcc gcc-c++ make openssl-devel
-
-  # Now make sure the perl libraries and node.js 10+ is installed
-```
-
-See [this guide][_06] for NodeJS package installation on other Linux distros.
-Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
-
-### Macintosh Prerequisites
-We found Mac High Sierra worked after the following.
-
-```bash
-  brew install pandoc
-  # See https://nodejs.org/en/download/package-manager/#macos for nodejs
-```
-
-Another path is to use Parallels or VMFusion to import the
-[Virtual Appliance vmx.zip][_42] file (unzip this file before use).
-VirtualBox also will work but doesn't integrate as well to OSX as it should.
-
-### Windows 10 Prerequisites
-In theory, the Windows Subsystem for Linux running an Ubuntu distro should
-work as with the prerequisites [listed above](#ubuntu-prerequisite).
-However, we haven't tested it. On may also use the virutal
-appliance detailed above.
-
-### Virtual Appliance Prerequisites
-Download the latest [latest virual appliance][_42] to try `hi_score` by
-running a host in a virtual machine.  Pick the latest `ova2` image for virutal
-box, and the latest `vmx.zip` image for VMware or Parallels.  The login and
-password are `hi_score`.
-
-![Virtual_appliance][_0E]
-
-After signing in, change the password for your safety, and also please upgrade
-the software to the latest security patches. Open a terminal and enter the
-following lines, waiting for each command to complete before proceeing to the
-next.
-
-```bash
-  sudo apt update
-  sudo apt upgrade
-  sudo apt dist-upgrade
-  reboot
-```
-
-After reboot, return to the `Quick Start` section. If you would like to learn
-more about the appliance setup, you may read on below.
 
 ---
 ## Vendor assets
@@ -670,9 +538,90 @@ module. During the build process selectors are shortened along with property
 values as long as they use the property-name structure. For example,
 `ex02-_shell_title_underscore_` will compress to something like `ex02-jp`.
 
+---
+## Prerequisites
+### Ubuntu Derivative Prerequisites
+When using Ubuntu Linux 16.04+ or a derivative -- such a Linux Mint, Kubuntu,
+Xubuntu, Lubuntu, or similar -- simply ensure the following libraries are
+installed. One can simply run the attached commands one at a time to ensure
+all prerequisites are met.
+
+```
+  # Install required libraries
+  sudo apt install build-essential git \
+    libfile-slurp-perl liblist-moreutils-perl \
+    net-tools \
+    openssh-server pandoc pandoc-citeproc \
+    unzip zip
+
+  # Install recommended libraries
+  sudo apt install apt-file htop kdiff3 \
+    mysql-client mysql-server \
+    meld ppa-purge sysstat vim-gtk vim-nox vim-syntax-gtk
+
+  # Install nodejs
+  curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+```
+
+### Other Linux distribution Prerequisites
+Other Linux distributions should generally work as long as the same libraries
+can be installed as with Ubuntu. With Fedora 30, for example, the following
+should be pretty close:
+
+```bash
+  yum install gcc gcc-c++ make openssl-devel
+
+  # Now make sure the perl libraries and node.js 10+ is installed
+```
+
+See [this guide][_06] for NodeJS package installation on other Linux distros.
+Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
+
+### Macintosh Prerequisites
+We found Mac High Sierra worked after the following.
+
+```bash
+  brew install pandoc
+  # See https://nodejs.org/en/download/package-manager/#macos for nodejs
+```
+
+Another path is to use Parallels or VMFusion to import the
+[Virtual Appliance vmx.zip][_42] file (unzip this file before use).
+VirtualBox also will work but doesn't integrate as well to OSX as it should.
+
+### Windows 10 Prerequisites
+In theory, the Windows Subsystem for Linux running an Ubuntu distro should
+work as with the prerequisites [listed above](#ubuntu-prerequisite).
+However, we haven't tested it. On may also use the virutal
+appliance detailed above.
+
+### Virtual Appliance Prerequisites
+Download the latest [latest virual appliance][_42] to try `hi_score` by
+running a host in a virtual machine.  Pick the latest `ova2` image for virutal
+box, and the latest `vmx.zip` image for VMware or Parallels.  The login and
+password are `hi_score`.
+
+![Virtual_appliance][_0E]
+
+After signing in, change the password for your safety, and also please upgrade
+the software to the latest security patches. Open a terminal and enter the
+following lines, waiting for each command to complete before proceeing to the
+next.
+
+```bash
+  sudo apt update
+  sudo apt upgrade
+  sudo apt dist-upgrade
+  reboot
+```
+
+After reboot, return to the `Quick Start` section. If you would like to learn
+more about the appliance setup, you may read on below.
+
+
 ## Contribute
-Any improvements or suggestions are welcome through the [issues tracker][_29].
-Pull requests are especially appreciated.
+While `hi_score` is opinionated, it is also modular and designed for change. For example, the `bin/xhi` tool is easily extended by dropping a short module into the the `lib/` directory. The architecture and code style docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers are encourated to add vendor libraries and patches [as needed][_01]. Any improvements or suggestions are welcome through the [issues tracker][_29].  Pull requests are especially appreciated.
 
 ## Release Notes
 ### Copyright (c)
