@@ -1,4 +1,4 @@
-    ![hi_score][_0A]
+![hi_score][_0A]
 [![Coverage Status](https://coveralls.io/repos/github/mmikowski/hi_score/badge.svg?branch=master)](https://coveralls.io/github/mmikowski/hi_score?branch=master)
 
 *The UnFramework for Single Page Web Applications*
