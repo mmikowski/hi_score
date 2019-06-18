@@ -6,10 +6,7 @@
 By the author of [Single Page Web Applications, JavaScript end-to-end][_00], recocognized as  a [Best Book of 2014][_0f] by Dr. Dobb's Journal.
 
 ## Why hi_score?
-
-![Virtual_appliance][_0E]
-
-Many SPA frameworks seem to express`we're so smart, you're so stupid` attitude. They don't help developers create portable web apps; instead they lock them into a large and non-portable ecosystem. They don't trust or help developers write native HTML, CSS or JavaScript; instead they pile layers of dead-end-pseudo-languages on top of them. They don't minimize complexity and iteration time; instead they require a transpile server, a sophisticated IDE, and significant system resources before one can even start to become productive. Requirements that look easy to solve are often quite difficult and expensive; harder requirements are often practically impossible.
+Many SPA frameworks seem to express a `we're so smart, you're so stupid` attitude. They don't help developers create portable web apps; instead they lock them into a large and non-portable ecosystem. They don't trust or help developers write native HTML, CSS or JavaScript; instead they pile layers of dead-end-pseudo-languages on top of them. They don't minimize complexity and iteration time; instead they require a transpile server, a sophisticated IDE, and significant system resources before one can even start to become productive. Requirements that look easy to solve are often quite difficult and expensive; harder requirements are often practically impossible.
 
 Like other SPA frameworks, `hi_score` provides an enormous head-start in creating professional, release-ready SPAs. Yet it is profoundly different from most SPA frameworks in almost every other way. It is designed to help developers create, understand, and constantly improve native web applications without the dead-end-pseudo-language lock-in. It uses a **zero-transpile** development environment while still providing a rich set of capabilities such as life-cycle management, type safety, run-time CSS, and state management. It consumes far fewer resources and is productive with just a text editor, a terminal, and a browser. Easy requirements are easy, and hard requirments are possible.
 
@@ -42,7 +39,6 @@ This build performs [many steps](#resolve-dependencies) and thousands of quality
 ![Typebomb2][_0B]
 
 ---
-
 ## Key benefits
 - Manage the [full life cycle](#the-xhi-lifecycle-tool)
 - Integrate [with NPM](#the-xhi-lifecycle-tool) using `package.json`
@@ -402,17 +398,7 @@ CSS files are installed:
 - [Font Awesome][_30]: Icon font CSS
 
 ### Patches
-The `xhi_02_SetupMatrix.patch_matrix` directs patch application.  This
-capability allows us to use great tools tweaked for our needs while
-maintaining the upstream source. For example, we patch `uglify-js` to support
-object property name compression and shuffling by `superpack`. We also patch
-`font-awesome` CSS files to have the correct path for our environment.
-
-The `bin/xhi setup` stage applies patches *after vendor assets are copied to
-their directories*. The configuration for patches are in `package.json` in the
-`xhiPatchMatrix` map. The patches are stored in the `patch` directory.
-
-Patches can be created as follows:
+The `xhi_02_SetupMatrix.patch_matrix` directs patch application.  This capability allows us to use great tools tweaked for our needs while maintaining the upstream source. For example, we patch `uglify-js` to support object property name compression and shuffling by `superpack`. We also patch `font-awesome` CSS files to have the correct path for our environment. The `bin/xhi setup` stage applies patches *after vendor assets are copied to their directories*. The configuration for patches are in `package.json` in the `xhiPatchMatrix` map. The patches are stored in the `patch` directory. Patches can be created as follows:
 
 ```bash
 cd js/vendor
@@ -428,12 +414,7 @@ diff -u js/vendor/jquery-3.4.1.js.O js/vendor/jquery-3.4.1.js
 
 ---
 ## Build
-Use `bin/xhi build` or `bin/xhi make` or `bin/xhi 11` (where 11 is the stage
-number) to build a distribution. The build script concatenates, compresses,
-and obsufucates JavaScript and CSS. It copies only the required assets into
-the the distribution directory (`build/<build_id>/dist`). The result loads
-faster, runs faster, and typically consumes roughly 1/50th (2%) of the
-development environment.
+Use `bin/xhi build` or `bin/xhi make`  to build a distribution. The tool concatenates, compresses, and obfuscates and SuperPacks JavaScript and CSS. It copies only the required assets into the the distribution directory (`build/<build_id>/dist`). The result loads faster, runs faster, and typically consumes roughly 1/50th the space of the development environment.
 
 ```
   $ ## Show disk usage of all development files
@@ -446,69 +427,27 @@ development environment.
     3.6M
 ```
 
-The `bin/xhi build` stage uses uses `superpack` to analyze symbols (variable
-names, object properties, and labels) and replaces them with shortened and
-shuffled keys. The shortest keys are used for the most frequently found
-symbols. `superpack` reports the key-to-symbol mapping and the frequency of
-use which makes further optimizations by pruning code easier (see
-`build/<build-number>/stage/<name>-sp.diag` for mapping and key use). Projects
-with many object properities can be compressed an additional 50% using
-`superpack` and this hinders reverse-engineering of the compressed code.
+The `bin/xhi build` stage uses uses SuperPack to analyze symbols (variable names, object properties, and labels) and replace them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. SuperPack reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>-sp.diag` for mapping and key use). Projects with many object properities can be compressed up to an additional 50% by SuperPack, and it hinders reverse-engineering of code.
 
-The build process enhances security because only a tiny, currated, obsfucated
-portion of our code is published and sensitive data such as SCMS metadata,
-documentation, lookup-maps, and development assets are omitted. We can publish
-these assets elsewhere at our discretion. The distribution also reduces the
-dozens of HTTP calls to just a few. This can reduce load time significantly as
-illustrated below.
+The build process enhances security because only a tiny, currated, obfuscated portion of our code is published and sensitive data such as SCMS information, documentation, lookup-maps, and development assets are omitted. We can publish these assets elsewhere at our discretion. The distribution also reduces the dozens of HTTP calls to just a few. This too reduces load time as illustrated below.
 
-| Attribute   | Original (%)     | Minified (%)     | Superpack (%)    |
+| Attribute   | Original (%)     | Minified (%)     | SuperPack (%)    |
 |-------------|-----------------:|-----------------:|-----------------:|
 | Size        | 601,027 (100.0%) | 215,400 ( 35.8%) | 162,494 ( 27.1%) |
 | Gzipped     | 151,716 ( 25.2%) |  62,895 ( 10.4%) |  57,275 ( 09.5%) |
-
-| Attribute   | Original         | Minified (%)     | Superpack (%)    |
-|-------------|-----------------:|-----------------:|-----------------:|
 | HTTP reqs   |      27 (100.0%) |       4 ( 15.4%) |       4 ( 15.4%) |
 | Local ms    |     231 (100.0%) |     166 ( 71.2%) |     144 ( 62.3%) |
 | Deploy Size |           121 MB |    8 MB (  6.6%) |    8 MB (  6.5%) |
 
-The load time measurements were made using a local HTTP server which is almost
-certainly a best-case scenario. We expect to add results for a remote server
-in the future.
+The load time measurements were made using a local HTTP server. Remote devices over slow networks would have a much larger delta in favor of SuperPack.
 
 ---
 ## Namespaces
-Namespaces enable us to provide a suite of web apps that share a great deal of
-code but have instances and data cleanly isolated. Namespacing across JS and
-CSS can help one trace behaviors to the controlling code faster and with
-greater accuracy. We can open them in the Chrome browser (`bin/xhi install &&
-google-chrome ex*.html`) and use the developer tools to see this in practice.
+Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. Namespacing across JS and CSS can help one trace behaviors to the controlling code faster and with greater accuracy. We can open them in the Chrome browser (`bin/xhi install && google-chrome ex*.html`) and use the developer tools to see this in practice.
 
-When we view Example 1 (`ex01.html`) we can open the browser development tools
-(press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac), type `ex01` into the
-JavaScript console and press `<return>` to inspect that value. We can see that
-this single variable that contains our entire application. When we enter
-`ex02` we see that it is `undefined`. When we visit the Example 2
-(`ex02.html`) instead we can see that `ex01` is `undefined` and `ex02`
-contains our app code using a similar process.
+When we view Example 1 (`ex01.html`) we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac), type `ex01` into the JavaScript console and press `<return>` to inspect that value. We can see that this single variable that contains our entire application. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 (`ex02.html`) instead we can see that `ex01` is `undefined` and `ex02` contains our app code using a similar process.
 
-We also namespace our CSS classes to avoid collisions. When we inspect the
-HTML of the Example 1 app we can see that nearly all classes start with an
-`ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`.
-As with the JavaScript namespacing, the prefixes are hierarchical. For
-example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_`
-module. During the build process selectors are shortened along with property
-values as long as they use the property-name structure. For example,
-`ex02-_shell_title_underscore_` will compress to something like `ex02-jp`.
-
----
-## Towers of Babel
-If you want to create a single page web application these days there is no shortage of help. Developers are lured into using a starter project which we will call a **Tower of Babel**. Typically these projects include a not-yet-abandoned SPA framework (maybe React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babel with JSX and Typescript and ES5.2), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum. This requires a sophisticated management server orchestrate the numerous cross-dependencies and transpiles. There are a few guarantees beside the system will be *Magic*.
-
-Sorry Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails. But once one moves away from the demo even a little bit, things tend to go south fast. The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a Mötley Crüe of transpiled languages that are often larger, more numerous, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share an existing app's resources - can become impossible.
-
-`hi_score` is designed to avoid the Tower of Babel, focus on the core web technologies, and automate the processes _around_ these assets.  We hope you like it.
+We also namespace our CSS classes to avoid collisions. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module. During the build process selectors are shortened along with property values as long as they use the property-name structure. For example, `ex02-_shell_title_underscore_` will compress to something like `ex02-jp`.
 
 ---
 ## Using an upstream source
@@ -555,6 +494,15 @@ First create a new empty repository on Github and copy the `ssh` repository URL,
   git merge --allow-unrelated-histories upstream/master
   git push
 ```
+
+---
+## Towers of Babel
+If you want to create a single page web application these days there is no shortage of help. Developers are lured into using a starter project which we will call a **Tower of Babel**. Typically these projects include a not-yet-abandoned SPA framework (maybe React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babel with JSX and Typescript and ES5.2), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum. This requires a sophisticated management server orchestrate the numerous cross-dependencies and transpiles. There are a few guarantees beside the system will be *Magic*.
+
+Sorry Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails. But once one moves away from the demo even a little bit, things tend to go south fast. The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a Mötley Crüe of transpiled languages that are often larger, more numerous, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share an existing app's resources - can become impossible.
+
+`hi_score` is designed to avoid the Tower of Babel, automate the processes _around_ the **HCJ** languages, and help the developer continuously improve their capabilities with with these core technologies. We hope you like it.
+
 ---
 ## Prerequisites
 ### Linux, Ubuntu or Debian Based
@@ -621,6 +569,8 @@ Return to the [Quick Start](#quick-start)
 
 ### Virtual Appliance Prerequisites
 Download the latest [latest virual appliance][_42] to try `hi_score` by running a host in a virtual machine.  Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels.  The login and password are `hi_score`.
+
+![Virtual_appliance][_0E]
 
 After signing in, change the password for your safety, and also please upgrade the software to the latest security patches. Open a terminal and enter the following lines, waiting for each command to complete before proceeing to the next.
 
