@@ -3,12 +3,12 @@
 
 *The UnFramework for Single Page Web Applications*
 
-By the author of [Single Page Web Applications, JavaScript end-to-end][_00], recocognized as  a [Best Book of 2014][_0f] by Dr. Dobb's Journal.
+By the author of [Single Page Web Applications, JavaScript end-to-end][_00], recognized as a [Best Book of 2014][_0f] by Dr. Dobb's Journal.
 
 ## Why hi_score?
 Many SPA frameworks seem to express a `we're so smart, you're so stupid` attitude. They don't help developers create portable web apps; instead they lock them into a large and non-portable ecosystem. They don't trust or help developers write native HTML, CSS or JavaScript; instead they pile layers of dead-end-pseudo-languages on top of them. They don't minimize complexity and iteration time; instead they require a transpile server, a sophisticated IDE, and significant system resources before one can even start to become productive. Requirements that look easy to solve are often quite difficult and expensive; harder requirements are often practically impossible.
 
-Like other SPA frameworks, `hi_score` provides an enormous head-start in creating professional, release-ready SPAs. Yet it is profoundly different from most SPA frameworks in almost every other way. It is designed to help developers create, understand, and constantly improve native web applications without the dead-end-pseudo-language lock-in. It uses a **zero-transpile** development environment while still providing a rich set of capabilities such as life-cycle management, type safety, run-time CSS, and state management. It consumes far fewer resources and is productive with just a text editor, a terminal, and a browser. Easy requirements are easy, and hard requirments are possible.
+Like other SPA frameworks, `hi_score` provides an enormous head-start in creating professional, release-ready SPAs. Yet it is profoundly different from most SPA frameworks in almost every other way. It is designed to help developers create, understand, and constantly improve native web applications without the dead-end-pseudo-language lock-in. It uses a **zero-transpile** development environment while still providing a rich set of capabilities such as life-cycle management, type safety, run-time CSS, and state management. It consumes far fewer resources and is productive with just a text editor, a terminal, and a browser. Easy requirements are easy, and hard requirements are possible.
 
 We believe **you** should own your web app, **not** your framework. If you don't like your framework, you should be able to pick up your application and move on without being locked-in. You shouldn't be forced to rewrite, refactor, or debug your application every time your framework provides another point release. If your SPA framework can't do that, perhaps it is time to consider `hi_score`, the **UnFramework**.
 
