@@ -10,12 +10,12 @@ Like other Single Page Web App (SPA) frameworks, `hi_score` provides an enormous
 
 The hi\_score framework helps developers create, understand, and constantly improve their SPAs by using **core technologies** instead of locking them into a large and non-portable ecosystem. It uses a **zero-transpile** development environment while still providing a **rich set of capabilities** such as life-cycle management, type safety, run-time CSS, and state management. It consumes **far fewer resources** and is productive with just a text editor, a terminal, and a browser. Easy problems are easy to solve, and **hard problems are possible**.
 
-**A framework should serve you**, not the other way around. You should be free to move your web app to other environments without complex migration away from non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite / refactor / debug all your apps every time our framework provides another point release.
+**A framework should serve you**, not the other way around. You should be free to move your web app to other environments without complex migration away from non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite / refactor / debug all your apps every time your framework releases a new version.
 
-If your framework is making your life more complex, perhaps it's time to get your teams off the [Tower of Babble](#towers-of-babel) and start speaking the same languages. And maybe it's time to try `hi_score` the **UnFramework**.
+If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babble](#towers-of-babel), perhaps its time to get them to speak the same core languages. Use `hi_score`, the **UnFramework**.
 
 ## Latest News
- - Versions 1.6.1-6 Updated docs, no code change
+Versions 1.6.1-7 Updated docs, no code change
 
 ---
 ## Quick start
@@ -714,7 +714,7 @@ MIT
 
 ### Versions 1.5.x
 2019-01-01 through 2019-06-15
-- (x) Add capabilities and documentation to `js/xhi/01_utils.js` 
+- (x) Add capabilities and documentation to `js/xhi/01_utils.js`
 - (x) Update all libs to latest
 - (x) Revised templates per latest best practice
 - (x) Include event pub-sub system in the `js/xhi/03_model.js` instance.
