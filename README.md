@@ -12,10 +12,10 @@ The hi\_score framework helps developers create, understand, and constantly impr
 
 **A framework should serve you**, not the other way around. You should be free to move your web app to other environments without complex migration away from non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite / refactor / debug all your apps every time your framework releases a new version.
 
-If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babble](#towers-of-babel), perhaps its time to get them to speak the same core languages. Use `hi_score`, the **UnFramework**.
+If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babel](#towers-of-babel), perhaps its time to get them to speak the same core languages. Use `hi_score`, the **UnFramework**.
 
 ## Latest News
-Versions 1.6.1-7 Updated docs, no code change
+Versions 1.6.1-8 Updated docs, no code change
 
 ---
 ## Quick start
