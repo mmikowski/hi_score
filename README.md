@@ -5,17 +5,17 @@
 
 By the author of [Single Page Web Applications, JavaScript end-to-end][_00], a Dr. Dobb's [Best Book of 2014][_0f].
 
-## Why hi_score?
+## Why hi\_score?
 Like other Single Page Web App (SPA) frameworks, `hi_score` provides an enormous head-start in creating professional, release-ready applications. Yet it is profoundly different from most of them in almost every other way.
 
-The hi_score framework helps developers create, understand, and constantly improve their SPAs by using **core technologies** instead of locking them into a large and non-portable ecosystem. It uses a **zero-transpile** development environment while still providing a **rich set of capabilities** such as life-cycle management, type safety, run-time CSS, and state management. It consumes **far fewer resources** and is productive with just a text editor, a terminal, and a browser. Easy problems are easy to solve, and **hard problems are possible**.
+The hi\_score framework helps developers create, understand, and constantly improve their SPAs by using **core technologies** instead of locking them into a large and non-portable ecosystem. It uses a **zero-transpile** development environment while still providing a **rich set of capabilities** such as life-cycle management, type safety, run-time CSS, and state management. It consumes **far fewer resources** and is productive with just a text editor, a terminal, and a browser. Easy problems are easy to solve, and **hard problems are possible**.
 
-**A framework should serve you**, not the other way around. You should be free to move your core work to other environments without complex migration away from non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite / refactor / debug all our apps every time our framework provides another point release.
+**A framework should serve you**, not the other way around. You should be free to move your web app to other environments without complex migration away from non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite / refactor / debug all your apps every time our framework provides another point release.
 
-If your framework is making your life more complex, perhaps it's time to get your team off the [Tower of Babble](#towers-of-babel) and speaking the same core languages using `hi_score` the **UnFramework**.
+If your framework is making your life more complex, perhaps it's time to get your teams off the [Tower of Babble](#towers-of-babel) and start speaking the same languages. And maybe it's time to try `hi_score` the **UnFramework**.
 
 ## Latest News
- - Versions 1.6.1-5 Updated docs, no code change
+ - Versions 1.6.1-6 Updated docs, no code change
 
 ---
 ## Quick start
