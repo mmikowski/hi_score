@@ -1,4 +1,4 @@
-    ![hi_score][_0A]
+![hi_score][_0A]
 [![Coverage Status](https://coveralls.io/repos/github/mmikowski/hi_score/badge.svg?branch=master)](https://coveralls.io/github/mmikowski/hi_score?branch=master)
 
 *The UnFramework for Single Page Web Applications*
@@ -6,19 +6,22 @@
 By the author of [Single Page Web Applications, JavaScript end-to-end][_00], a Dr. Dobb's [Best Book of 2014][_0f].
 
 ## Why hi_score?
-Like other Single Page Web App (SPA) frameworks, `hi_score` provides an enormous head-start in creating professional, release-ready applications. Yet it is profoundly different from most of them in almost every other way. 
+Like other Single Page Web App (SPA) frameworks, `hi_score` provides an enormous head-start in creating professional, release-ready applications. Yet it is profoundly different from most of them in almost every other way.
 
-`hi_score` helps developers create, understand, and constantly improve their SPAs by using core technologies instead of locking them into a large and non-portable ecosystem. It uses a **zero-transpile** development environment while still providing a rich set of capabilities such as life-cycle management, type safety, run-time CSS, and state management. It consumes far fewer resources and is productive with just a text editor, a terminal, and a browser. Easy requirements are easy, and hard requirments are possible.
+The hi_score framework helps developers create, understand, and constantly improve their SPAs by using **core technologies** instead of locking them into a large and non-portable ecosystem. It uses a **zero-transpile** development environment while still providing a **rich set of capabilities** such as life-cycle management, type safety, run-time CSS, and state management. It consumes **far fewer resources** and is productive with just a text editor, a terminal, and a browser. Easy problems are easy to solve, and **hard problems are possible**.
 
-We believe **you** should own your web app, **not** your framework. If you don't like your framework, you should be able to pick up your application and move on without being locked-in. You shouldn't be forced to rewrite, refactor, or debug your application every time your framework provides another point release. If your SPA framework can't do that, perhaps it is time to consider `hi_score`, the **UnFramework**.
+**A framework should serve you**, not the other way around. You should be free to move your core work to other environments without complex migration away from non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite / refactor / debug all our apps every time our framework provides another point release.
+
+If your framework is making your life more complex, perhaps it's time to get your team off the [Tower of Babble](#towers-of-babel) and speaking the same core languages using `hi_score` the **UnFramework**.
 
 ## Latest News
- - Versions 1.6.1-4 Updated docs
+ - Versions 1.6.1-5 Updated docs, no code change
 
 ---
 ## Quick start
 
-On Mac, Ubuntu Linux, or WSL:
+On Mac, Ubuntu Linux, or WSL please follow these steps.
+
 - Ensure [prerequisites are met](#prerequisites)
 - Enter the following commands into the terminal one at a time
 
@@ -28,61 +31,59 @@ On Mac, Ubuntu Linux, or WSL:
   bin/xhi build,dev_start
   # Press 'enter' when prompted to review TODOs
 
-  # Now open in a browser...
+  # Now open in a browser (adjust as needed)
   google-chrome http://localhost:8080/build/latest/dist/app-tb02.html
 ```
 
-Boom. Your build is done.
+This build runs [many steps](#lifecycle-dependencies), downloads thousands of assets, and runs thousands of quality checks, yet it only takes around 5 seconds on modern hardware. Subsequent builds should take less than half the time due to [dependency resolution](#lifecycle-dependencies).
 
-This build performs [many steps](#resolve-dependencies) and thousands of quality checks yet it only takes around 5 seconds on modern hardware. Subsequenty builds take less than half as long due to [dependency resolution](#resolve-dependencies). When complete we should see the **Typebomb 2** web app in a browser. Use the developer tools to inspect the CSS, the DOM, and the JavaScript and notice how everything is compressed including CSS class names (yes, we *were* doing that years before Facebook). We can also compare it with the [online version][_0BA] to ensure it is working correctly.
+We should now see the **Typebomb 2** web app in a browser and may use the developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how everything is production-ready including compressed CSS class names (yes, we **were** doing this five years before Facebook). Please compare it with the [online version][_0BA] to ensure it is working correctly.
 
-![Typebomb2][_0B]
+![Typebomb 2][_0B]
 
 ---
 ## Key benefits
 - Manage the [full life cycle](#the-xhi-lifecycle-tool)
 - Integrate [with NPM](#the-xhi-lifecycle-tool) using `package.json`
-- Avoid missing steps with sophisticated [dependency resolution](#resolve-dependencies)
-- Avoid the [Tower of Babel](#towers-of-babel)
-- Iterate rapidly in with only a browser, terminal, and text editor.
-- Recursively create HTML from markdown (`bin/make-doc`)
-- Support multple related applications in a single build
-- Learn from a non-trivial example application (Typebomb 2)
+- Never miss a lifecycle step with [dependency resolution](#lifecycle-dependencies)
+- Avoid the complexity and magic of the [Tower of Babel](#towers-of-babel)
+- Develop rapidly in with only a browser, terminal, and text editor
+- Create in-line HTML documents from markdown (`bin/make-doc`)
+- Build multiple related applications in a single project
+- Learn from a non-trivial `Typebomb 2` app
 
 
-- Debug quickly using browser tools in a zero-compile development environment
-- Get [Detailed help](#get-help) with `bin/xhi help -v`
-- Read best practice guids [Style, VDG, Library, Architecture](#get-help) as needed using `bin/xhi design`.
-- Enjoy [type-safety][_05] *without* [TypeScript][_43] or [Flow][_44]
-- Use a [layered MVC arch](#get-help) with designed for testing
-- Leverage the extensively used and tested [xhi library](#leverage-the-xhi-library) to guide the design of every layer of your app.
+- Debug instantly using browser tools in a **zero-compile** development environment
+- Get [Detailed help](#find-help) with `bin/xhi help -v`
+- Use best practice reference [Style, VDG, Library, Architecture](#find-help) using `bin/xhi design`.
+- Enjoy [type-safety][_05] *without* the complexities of [TypeScript][_43] or [Flow][_44]
+- Use a [layered MVC arch](#find-help) with designed for testing
+- Leverage the extensively used and tested [xhi library](#leverage-the-xhi-library) to guide the design of every layer of our app.
   - Extensive, highly tested utilities in `js/xhi/01_util`
   - AJAX and socket methods in `js/xhi/02_data`
   - State and logic management in `js/xhi/03_model`
+  - Feature modules as shown in `js/xhi/04_litebox.js`
   - Double-buffered dynamic CSS with [PowerCSS][_11] and `js/xhi/06_css`
   - Shell design in `js/xhi/07_shell`
 
 
-- Automatically installed commit-hook (`bin/xhi install`)
-- Automatically [deploy and patch](#patches) all vendor assets
-- Run suite of regression tests from drop directory (`bin/xhi dev_test`)
-- Included http-server (`bin/xhi dev_start`)
-- Upgrade libraries to precise versions on request (`bin/xhi dev_upgrade`)
+- Auto-installed a commit-hook (`bin/xhi install`)
+- [Deploy and patch](#patches) all vendor assets (`bin/xhi setup`)
+- Run all regression tests in a drop directory (`bin/xhi dev_test`)
+- Serve content with `http-server` (`bin/xhi dev_start`)
+- Upgrade libraries only on request (`bin/xhi dev_upgrade`)
 - Run suite of static tests (ESLint, whitespace, strict, TODOs) (`bin/xhi dev_lint`)
 - Report code coverage with Istanbul (`bin/xhi dev_cover`)
 - Run all tests prior to commit (`bin/xhi dev_commit`)
 - Build for distribution with a single command (`bin/xhi build`)
 
-
 ---
 
 ## The xhi lifecycle tool
-The `bin/xhi` tool automates good practice for almost every conceivable stage of the SPA life cycle. Configuration for **every** stage is found in the NPM `package.json` file. Indeed, this tool provides **all** [NPM lifecycle scripts][_38] such as `npm test`.
+The `bin/xhi` tool automates good practice for almost every conceivable stage of the SPA life cycle. Configuration for **every** stage is found in the NPM `package.json` file. **This tool provides all [NPM lifecycle scripts][_38] such as `npm test`.**
 
-### Get help
-The lifecycle stages supported by `bin/xhi` are shown below. Those marked
-`placeholder` are those we plan to address in future releases. Use the command
-`bin/xhi help all` to see this list.
+### Find help
+The lifecycle stages supported by `bin/xhi` are shown below. Those marked `placeholder` are those we plan to address in future releases. We use the command `bin/xhi help all` to see the entire list as shown below.
 
 ```
   $ bin/xhi help all
@@ -111,7 +112,7 @@ The lifecycle stages supported by `bin/xhi` are shown below. Those marked
     xhi>  END Stage 00 help
 ```
 
- Use `bin/xhi design` at any time to see the Architecture Guide, Style Guide, or Visual Design Guide (VDG). Many sections of this document have been removed because the information is now directly available from `bin/xhi help`. One can see detailed help on a stage or range of stages by including a `-v` flag as shown below.
+We use `bin/xhi design` to see the Architecture Guide, Style Guide, or Visual Design Guide (VDG). Detailed help on a stage or range of stages is shown with the `-v` flag shown below.
 
 ```
   $ bin/xhi help dev_lint -v
@@ -135,7 +136,7 @@ The lifecycle stages supported by `bin/xhi` are shown below. Those marked
 ```
 
 ### Run lifecycle stages
-Let's discover what lifecycle stages are available and then run a selected range of them as shown below.
+We run a range of lifecycle steps as shown below.
 
 ```
   # Get list of stages
@@ -167,10 +168,10 @@ The `bin/xhi` tool takes a `<stage-range>` argument. Stages that are provided ou
   $ xhi help 0-5
 ```
 
-Even if we specify only one stage target `bin/xhi` will often run more. That is because many targets have dependencies as discussed in the following section.
+The `bin/xhi` tool will often run more than the number of stages requested. That's because many stages have dependencies as discussed in the next section.
 
-### Resolve dependencies
-The `bin/xhi` has a resolver that ensures all required stages are run before the requested target.  For example, consider the stages that are run when we enter `bin/xhi build,dev_start` for the first time.
+### Lifecycle dependencies
+The `bin/xhi <stage-range>` command will always run the smallest safe number of steps to complete the target <stage-range> to minimize time and resources required. For example, consider the stages that are run when we enter `bin/xhi build,dev_start` for the first time as shown below.
 
 - **01 install**  Download all vendor assets
 - **02 setup** Copy, rename, and patch vendor files. Install commit hook.
@@ -181,26 +182,24 @@ The `bin/xhi` has a resolver that ensures all required stages are run before the
 - **11 build** Minimized, obfuscated, and SuperPacked three apps
 - **11 build** Created a unique dist folder for each app with meta-data and build reports
 
-#### Resolve goal requirements
-Goal requirements are stages that are always run before before the target stage. For example, if we run `bin/xhi dev_commit` the `dev_lint`, and `dev_test` stages will be run first to ensure the code quality is acceptable. If either requirement fails, `bin/xhi` exits immediately (with an exit code of 1) and the target stage is not attempted. Goal requirements are configured in `package.json.xhi_commandTable`.
+After this initial run, many of these steps will not be repeated. The install and setup stages, for example, will not be needed again unless the installation changes. The code quality checks like linting will only be needed if code files change. These dependencies are resolved by `bin/xhi` as discussed below.
 
-#### Resolve environment requirements
-Environment requirements must be successfully completed in the development environment before the target stage. For example, if we run `bin/xhi dev_commit` but have not run `bin/xhi install`, the `install` stage will be run before the `dev_commit` stage. The success or failure of each stage is saved in the state file (`lib/xhi_state.json`) and the next stage is run. If the `install` stage succeeds it will not be included in future requirements for `dev_commit` as it will have been completed in the prior run.
+#### Goal dependencies
+Goal dependencies are stages that are *always* run before before a target stage. For example, if we run `bin/xhi dev_commit` the `dev_lint`, and `dev_test` stages will *always* be run first to ensure the code quality is acceptable.  If either requirement fails, `bin/xhi` exits immediately (with an exit code of 1) and the target stage is not attempted. Goal dependencies are defined in `package.json.xhi_commandTable`. We don't suggest changing them without careful consideration, but you can.
 
-Previously completed environment requirements may be invalidated. For example, if `bin/xhi install` or `bin/xhi upgrade` fail, the tool will mark the `install` stage as failed and the stage will be attempted again in the next `bin/xhi` invocation that requires it as a requirement.
+#### Environment dependencies
+Environment dependencies must be successfully completed in the development environment before the target stage. For example, if we run `bin/xhi dev_commit` but have not run `bin/xhi install`, the `install` stage will be run before the `dev_commit` stage. The success or failure of each stage is saved in the state file (`run/xhi_state.json`) and the next stage is run. If the `install` stage succeeds it will not be included in future steps for `dev_commit` as it will have been completed in the prior run. Environment dependencies are defined in `package.json.xhi_commandTable`. Again, we don't suggest changing them without careful consideration.
 
-Explicitly requested stages will always run regardless of their last success status. For example, `bin/xhi dev_lint` may or may not run the `install` stage, but `bin/xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `bin/xhi help-dev_lint` will also run `install` since it is explicitly within the range provided (`help-dev_lint`). We can reset the status by removing the `stage_status_map` from the `run/xhi_state.json` file.
+Previously completed environment dependencies may be invalidated. For example, if `bin/xhi install` or `bin/xhi upgrade` fail, the tool will mark the `install` stage as failed and the stage will be attempted again in the next invocation that requires this stage as a dependencies.
+
+Explicitly requested stages will always run regardless of their last success status. For example, `bin/xhi dev_lint` may or may not run the `install` stage, but `bin/xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `bin/xhi help-dev_lint` will also run `install` since it is explicitly within the range provided (`help-dev_lint`). We reset the status by removing the `stage_status_map` from the `run/xhi_state.json` file.
 
 ### Exit status
-If all the stages of a range are successful an exit status of `0` is provided.
-If any stage fails processing of the range stops and an exit status of `1` is
-provided. In Bash, the return status is available in the `$?` environment
-variable. If we apply minor adjustments to disable terminal interaction
-`bin/xhi` should be capable of integration to other tool chains.
+If all the stages of a range are successfully run an exit status of `0` is returned. If any stage fails processing stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable. If we apply minor adjustments to disable terminal interaction, `bin/xhi` should be capable of integration to other tool chains.
 
 ---
 ## Create a new application
-We can create a new application by adding a set of directories as shown below.
+We create a new application by adding files as shown below.
 
 ```
 hi_score/
@@ -219,7 +218,7 @@ hi_score/
 ```
 
 
-The Typebomb 2 app uses PowerCSS instead of an external CSS file. In addition, there are no external images. Our files therefore are as shown below.
+The `Typebomb 2` app uses PowerCSS instead of an external CSS file. In addition, there are no external images as it uses embedded SVGs. Our files therefore are as shown below.
 
 ```
 hi_score/
@@ -239,15 +238,13 @@ hi_score/
 ![Feature module architecture][_0C]
 
 - All layers are order from most basic `00_root` to highest abstraction `08_app`.
-- Each layer can be created using a corresponding `xhi` library file.
+- Each layer is created using a corresponding `xhi` library file.
 - Data flows from the lowest layer `00_root` to the highest `08_app`.
 - All method calls are made from higher levels to lower. Calls from 02_data to 01_util or 03_model to 01_util are expected. Calls from a high layer like `07_shell` to a low layer like `02_data` should be scrutinized because one *probably* be calling all intermediate layer to safe state. All method calls from a lower layer to a higher layer or across modules of the same level are not allowed.
 - Use event registration to communicate changes up the stack. For example, the `03_model` may communicate an online status by publishing event data. All registered feature modules may then update their display.
 - Create feature modules that contain their own isolated data and models when appropriate. This is pragmatic and recognizes the fractal nature of MVC.
 
-
-
-When inspecting Typebomb2 you will find files for each layer.
+The `Typebomb 2` app has files for each layer as shown below.
 
 ```
 Module layers
@@ -264,16 +261,16 @@ app-tb02/tb02.07_shell.js           |        |     |
 app-tb02/tb02.08_app.js             v        |    /
 ```
 
-All these modules claim a slice of the application namespace (`tb02`) and use `js/xhi` libraries in one of three ways:
+All these modules claim a slice of the application name-space (`tb02`) and use `js/xhi` libraries in one of three ways:
 
 1. Create a configured instance and use as-is
 1. Create an instance and decorate
 1. Use the module to guide development
 
-More specific notes about Typebomb2 app are provide in `README.app-tb02.md`.  One can omit unused layers for a given app. However, for illustrative purposes, we have included all layers for Typebomb2. One can copy these to a new namespace to create a new app and edit from there.
+More specific notes about `Typebomb 2` app are provide in `README.app-tb02.md`.  One can omit unused layers for a given app. However, for illustrative purposes, we have included all layers here. One can copy these to a new name-space to create a new app and edit from there.
 
 ```bash
-  export _ns='foo'; # Namespace
+  export _ns='foo'; # Name-space
   cd ~/Github/hi_score;
   cp app-tb02.html app-${_ns}.html;
 
@@ -295,48 +292,24 @@ More specific notes about Typebomb2 app are provide in `README.app-tb02.md`.  On
   cp app-tb02.html "app-${_ns}.html"
 ```
 
-We change all references from `tb02` in these new files to our new namespace, `${_ns}`. We also create a new build manifest in `package.json` using the `xhi_11_BuildMatrix` configuration for `tb02` as a guide. Once we confirm your new app builds as expected using `bin/xhi build` (check the output in `build/latest/dist/app-${_ns}.html`) we can proceed to customize it as desired.
+There is a lot less duplicate code here than it may appear. For example, any `01_util` layer is just a singleton instance of the `js/xhi/01_util` utilities. And any model almost certainly inherits and reuses state values and methods from an instance of the `js/xhi/03_model`.
 
-One can delete all the example apps (`tb02`, `ex01`, `ex02`) from the project if they get in the way. However we recommend retaining at least `tb02` for reference because it will continue to be refined along with the `hi_score` project. One can refresh upstream at any time as shown below.
+We change all references from `tb02` in these new files to our new name-space, `${_ns}`. We also create a new build manifest in `package.json` using the `xhi_11_BuildMatrix` configuration for `tb02` as a guide. Once we confirm our new app builds as expected using `bin/xhi build` (check the output in `build/latest/dist/app-${_ns}.html`) we proceed to customize it as desired.
 
-```bash
-  # Refresh view of branches
-  git fetch -a --prune
-
-  # Pull latest master or dev branch
-  git checkout master
-  git pull
-
-  # Create a new branch to test merge
-  git checkout -b upstream-check
-
-  # Refresh view of upstream and test merge
-  git fetch -a --prune upstream
-  git merge --no-commit upstream/master
-```
-
-We recommend you run `bin/xhi install,setup` after any such merge.
+Stay tuned for a more detailed example of this in mid-2019.
 
 ---
 
 ## Vendor assets
-The `bin/xhi setup` stage patches and deploys vendor assets using the
-`xhi_02_SetupMatrix` configuration found in the `package.json` file. This
-field is correlated with the with the `devDependencies` map to ensure assets
-are properly label, patched, distributed, and ignored by Git.
+The `bin/xhi setup` stage patches and deploys vendor assets using the `xhi_02_SetupMatrix` configuration found in `package.json`. This field is correlated with the with the `devDependencies` map to ensure assets are properly label, patched, distributed, and ignored by Git.
 
-Assets are copied to their destination directory with their version number
-appended to their names. The `.gitignore` file instructs `git` to ignore all
-these files as their development management is external to our project.
-**Everytime `bin/xhi setup` is run the vendor directories are deleted and
-recreated**.
+Assets are copied to their destination directory with their version number appended to their names. The `.gitignore` file instructs `git` to ignore all these files as their development management is external to our project. **Every time `bin/xhi setup` is run the vendor directories are deleted and recreated**.
 
 ### Executable assets
 Vendor executables are copied to the `bin/vendor` directory.
 
 ### Font assets
-Vendor font files are copied to the `font/vendor` directory. These fonts are
-currently installed:
+Vendor font files are copied to the `font/vendor` directory. These fonts are currently installed:
 
 - [Font Awesome][_30]: Icon fonts
 - [Open Sans][_31]: OSS Font face
@@ -346,8 +319,7 @@ Vendor images are be copied to the `img/vendor` directory.
 
 ### JavaScript assets
 #### Client JS libraries
-Client libraries are copied to the `js/vendor` directory. This makes them
-available to the web server. The following libraries are installed:
+Client libraries are copied to the `js/vendor` directory. This makes them available to the web server. The following libraries are installed:
 
 - [jQuery][_10]: DOM manipulation
 - [PowerCSS][_11]: JS-powered CSS
@@ -359,13 +331,7 @@ available to the web server. The following libraries are installed:
 - [SprintF][_32]: Sprintf library
 - [TaffyDB][_17]: Client data management
 
-The `jQuery` namespace is changed to `xhiJQ` and the PowerCSS namespace is
-changed from `pcss` to `xhiCSS`. This avoids conflicts with other libraries.
-The naming may be updated by adjusting `bin/rename-vendor-symbols`.  When
-coding, please use these symbol (`xhiJQ` and `xhiCSS`) instead of their usual
-names (`jQuery` and `pcss`). Also, do _not_ expect the `$` symbol to represent
-jQuery. Rely on local mapping if you want that behavior, e.g. `(function ($) {
-  ... }( xhiJQ ))`. All supporting libraries are already adjust, of course.
+The `jQuery` name-space is changed to `xhiJQ` and the PowerCSS name-space is changed from `pcss` to `xhiCSS`. This avoids conflicts with other libraries. The naming may be updated by adjusting `bin/rename-vendor-symbols`.  When coding, please use these symbol (`xhiJQ` and `xhiCSS`) instead of their usual names (`jQuery` and `pcss`). Also, we do **not** expect the `$` symbol to represent jQuery. Rely on local mapping if we want that behavior, e.g. `(function ($) { ... }( xhiJQ ))`.
 
 #### Node JS libraries
 NodeJS libraries are **not** copied to a `vendor` directory. We may change
@@ -379,7 +345,7 @@ installed:
 - [websocket][_37]: Websockets interface
 
 #### Development JS libraries
-Developent libraries are used for testing a building code. They are **not**
+Development libraries are used for testing a building code. They are **not**
 copied to a `vendor` directory. The following libraries are installed:
 
 - [coveralls][_18]: Code coverage reporting
@@ -427,9 +393,9 @@ Use `bin/xhi build` or `bin/xhi make`  to build a distribution. The tool concate
     3.6M
 ```
 
-The `bin/xhi build` stage uses uses SuperPack to analyze symbols (variable names, object properties, and labels) and replace them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. SuperPack reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>-sp.diag` for mapping and key use). Projects with many object properities can be compressed up to an additional 50% by SuperPack, and it hinders reverse-engineering of code.
+The `bin/xhi build` stage uses uses SuperPack to analyze symbols (variable names, object properties, and labels) and replace them with shortened and shuffled keys. The shortest keys are used for the most frequently found symbols. SuperPack reports the key-to-symbol mapping and the frequency of use which makes further optimizations by pruning code easier (see `build/<build-number>/stage/<name>-sp.diag` for mapping and key use). Projects with many object properties can be compressed up to an additional 50% by SuperPack, and it hinders reverse-engineering of code.
 
-The build process enhances security because only a tiny, currated, obfuscated portion of our code is published and sensitive data such as SCMS information, documentation, lookup-maps, and development assets are omitted. We can publish these assets elsewhere at our discretion. The distribution also reduces the dozens of HTTP calls to just a few. This too reduces load time as illustrated below.
+The build process enhances security because only a tiny, curated, obfuscated portion of our code is published and sensitive data such as SCMS information, documentation, lookup-maps, and development assets are omitted. We can publish these assets elsewhere at our discretion. The distribution also reduces the dozens of HTTP calls to just a few. This too reduces load time as illustrated below.
 
 | Attribute   | Original (%)     | Minified (%)     | SuperPack (%)    |
 |-------------|-----------------:|-----------------:|-----------------:|
@@ -442,12 +408,12 @@ The build process enhances security because only a tiny, currated, obfuscated po
 The load time measurements were made using a local HTTP server. Remote devices over slow networks would have a much larger delta in favor of SuperPack.
 
 ---
-## Namespaces
-Namespaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. Namespacing across JS and CSS can help one trace behaviors to the controlling code faster and with greater accuracy. We can open them in the Chrome browser (`bin/xhi install && google-chrome ex*.html`) and use the developer tools to see this in practice.
+## Name-spaces
+Name-spaces enable us to provide a suite of web apps that share a great deal of code but have instances and data cleanly isolated. Name-spacing across JS and CSS can help one trace behaviors to the controlling code faster and with greater accuracy. We open them in the browser (`bin/xhi install && google-chrome ex*.html`) and use the developer tools to see this in practice.
 
-When we view Example 1 (`ex01.html`) we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac), type `ex01` into the JavaScript console and press `<return>` to inspect that value. We can see that this single variable that contains our entire application. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 (`ex02.html`) instead we can see that `ex01` is `undefined` and `ex02` contains our app code using a similar process.
+When we view Example 1 (`ex01.html`) we can open the browser development tools (press `<shift>-<ctrl>-i` or `<shift>-<cmd>-i` on a Mac), type `ex01` into the JavaScript console and press `<return>` to inspect that value. We see that this single variable that contains our entire application. When we enter `ex02` we see that it is `undefined`. When we visit the Example 2 (`ex02.html`) instead we see that `ex01` is `undefined` and `ex02` contains our app code using a similar process.
 
-We also namespace our CSS classes to avoid collisions. When we inspect the HTML of the Example 1 app we can see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript namespacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module. During the build process selectors are shortened along with property values as long as they use the property-name structure. For example, `ex02-_shell_title_underscore_` will compress to something like `ex02-jp`.
+We also name-space our CSS classes to avoid collisions. When we inspect the HTML of the Example 1 app we see that nearly all classes start with an `ex01-` prefix. When we inspect Example 2 tab we find the prefix is `ex02-`. As with the JavaScript name-spacing, the prefixes are hierarchical. For example, the `ex02-_lb_` class was generated for use by the `ex02-_lb_` module. During the build process selectors are shortened along with property values as long as they use the property-name structure. For example, `ex02-_shell_title_underscore_` will compress to something like `ex02-jp`.
 
 ---
 ## Using an upstream source
@@ -490,26 +456,43 @@ First create a new empty repository on Github and copy the `ssh` repository URL,
   # upstream  git@github.com:mmikowski/hi_score.git (push)
 
   # Merge changes from upstream and push to origin
-  git fetch upstream
+  git fetch -a --prune upstream
   git merge --allow-unrelated-histories upstream/master
   git push
 ```
 
+One can delete all the example apps (`tb02`, `ex01`, `ex02`) from the project if they get in the way. However we recommend retaining at least `tb02` for reference because it will continue to be refined along with the `hi_score` project. One can refresh upstream at any time as shown below.
+
+```bash
+  # Refresh view of branches
+  git fetch -a --prune
+
+  # Pull latest master or dev branch
+  git checkout master
+  git pull
+
+  # Create a new branch to test merge
+  git checkout -b upstream-check
+
+  # Refresh view of upstream and test merge
+  git fetch -a --prune upstream
+  git merge --no-commit upstream/master
+```
+
+We recommend running `bin/xhi install,setup` after any such merge.
+
 ---
 ## Towers of Babel
-If you want to create a single page web application these days there is no shortage of help. Developers are lured into using a starter project which we will call a **Tower of Babel**. Typically these projects include a not-yet-abandoned SPA framework (maybe React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babel with JSX and Typescript and ES5.2), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum. This requires a sophisticated management server orchestrate the numerous cross-dependencies and transpiles. There are a few guarantees beside the system will be *Magic*.
+If we want to create a single page web application these days there is no shortage of help. Developers are lured into using a starter project which we will call a **Tower of Babel**. Typically these projects include a not-yet-abandoned SPA framework (maybe React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babel with JSX and Typescript and ES5.2), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum. This requires a sophisticated management server orchestrate the numerous cross-dependencies and transpiles. There are a few guarantees beside the system will be *Magic*.
 
 Sorry Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails. But once one moves away from the demo even a little bit, things tend to go south fast. The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a Mötley Crüe of transpiled languages that are often larger, more numerous, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share an existing app's resources - can become impossible.
 
-`hi_score` is designed to avoid the Tower of Babel, automate the processes _around_ the **HCJ** languages, and help the developer continuously improve their capabilities with with these core technologies. We hope you like it.
+`hi_score` is designed to avoid the [Tower of Babel](#towers-of-babel), automate processes **around** the **HCJ**, and help the developers continuously improve their skills and understanding on the **core technologies** of web apps. We hope you like it.
 
 ---
 ## Prerequisites
 ### Linux, Ubuntu or Debian Based
-When using Ubuntu Linux 16.04+ or a derivative -- such a Linux Mint, Kubuntu,
-Xubuntu, Lubuntu, or similar -- simply ensure the following libraries are
-installed. One can simply run the attached commands one at a time to ensure
-all prerequisites are met.
+When using Ubuntu Linux 16.04+ or a derivative -- such a Linux Mint, Kubuntu, Xubuntu, Lubuntu, or similar -- simply ensure the following libraries are installed. One can simply run the attached commands one at a time to ensure all prerequisites are met.
 
 ```
   # Install required libraries
@@ -532,9 +515,7 @@ all prerequisites are met.
 Return to [Quick Start](#quick-start)
 
 ### Linux: Other
-Other Linux distributions should generally work as long as the same libraries
-can be installed as with Ubuntu. With Fedora 30, for example, the following
-should be pretty close:
+Other Linux distributions should generally work as long as the same libraries can be installed as with Ubuntu. With Fedora 30, for example, the following should be pretty close.
 
 ```bash
   yum install gcc gcc-c++ make openssl-devel
@@ -542,8 +523,7 @@ should be pretty close:
   # Now make sure the perl libraries and node.js 10+ is installed
 ```
 
-See [this guide][_06] for NodeJS package installation on other Linux distros.
-Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
+See [this guide][_06] for NodeJS package installation on other Linux distros. Here is a more [generic guide][_07] for Kubuntu and Ubuntu.
 
 Return to the [Quick Start](#quick-start)
 
@@ -555,24 +535,19 @@ We found Mac High Sierra worked after the following.
   # See https://nodejs.org/en/download/package-manager/#macos for nodejs
 ```
 
-Another path is to use Parallels or VMFusion to import the
-[Virtual Appliance vmx.zip][_42] file (unzip this file before use).
-VirtualBox also will work but doesn't integrate as well to OSX as it should.
+Another path is to use Parallels or VMFusion to import the [Virtual Appliance vmx.zip][_42] file (unzip this file before use). VirtualBox also will work but does not integrate as well to OSX as it should.
 
 ### Windows 10 Prerequisites
-In theory, the Windows Subsystem for Linux running an Ubuntu distro should
-work as with the prerequisites [listed above](#linux-ubuntu-or-debian-based).
-However, we haven't tested it. On may also use the virutal
-appliance detailed above.
+In theory, the Windows Subsystem for Linux running an Ubuntu distro should work as with the prerequisites [listed above](#linux-ubuntu-or-debian-based). However, we haven't tested it. On may also use the virutal appliance detailed above.
 
 Return to the [Quick Start](#quick-start)
 
 ### Virtual Appliance Prerequisites
-Download the latest [latest virual appliance][_42] to try `hi_score` by running a host in a virtual machine.  Pick the latest `ova2` image for virutal box, and the latest `vmx.zip` image for VMware or Parallels.  The login and password are `hi_score`.
+Download the latest [latest virtual appliance][_42] to try `hi_score` by running a host in a virtual machine.  Pick the latest `ova2` image for virtual box, and the latest `vmx.zip` image for VMware or Parallels.  The login and password are `hi_score`.
 
 ![Virtual_appliance][_0E]
 
-After signing in, change the password for your safety, and also please upgrade the software to the latest security patches. Open a terminal and enter the following lines, waiting for each command to complete before proceeing to the next.
+After signing in, change the password for safety, and upgrade the software to the latest security patches. Open a terminal and enter the following lines, waiting for each command to complete before proceeding to the next.
 
 ```bash
   sudo apt update
@@ -602,7 +577,7 @@ We provide configs for JetBrain's IDE IntelliJ or Webstorm in the repository.  O
 
 
 ## Contribute
-While `hi_score` is opinionated, it is also modular and designed for change. For example, the `bin/xhi` tool is easily extended by dropping a short module into the the `lib/` directory. The architecture and code style docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers are encourated to add vendor libraries and patches [as needed][_01]. Any improvements or suggestions are welcome through the [issues tracker][_29].  Pull requests are appreciated!
+While `hi_score` is opinionated, it is also modular and designed for change. For example, the `bin/xhi` tool is easily extended by dropping a short module into the the `lib/` directory. The architecture and code style docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers are encouraged to add vendor libraries and patches [as needed][_01]. Any improvements or suggestions are welcome through the [issues tracker][_29].  Pull requests are appreciated!
 
 ## Release Notes
 ### Copyright (c)
@@ -645,7 +620,7 @@ MIT
 - (x) Replace `install` script with `prep-libs` (v0.6.17+)
 
 ### Version 0.7.x
-- (x) Move to consturctor approach to easily create multiple concurrent namespaced apps using the common xhi core
+- (x) Move to constructor approach to easily create multiple concurrent name-spaced apps using the common xhi core
 - (x) Update index page to illustrate
 - (x) Make example app less trivial
 - (x) Number code library level
@@ -697,7 +672,7 @@ MIT
   - (x) 13 dev\_restart
   - (x) 14 dev\_stop
 - (x) Tool enhancements
-  - (x) `bin/xhi setup`     : Implement env prequisites and `lib/xhi_state.json`
+  - (x) `bin/xhi setup`     : Implement env dependencies and `lib/xhi_state.json`
   - (x) `bin/xhi setup`     : Auto-create `lib/xhi_state.json` if required
   - (x) `bin/xhi build`     : Create build directory like `dist/\<build-number\>`
   - (x) `bin/xhi build`     : Link `dist/latest` to latest build
@@ -714,15 +689,15 @@ MIT
 - (x) Store build and env state in `lib/xhi_state.json`
 - (x) Create and update virtualBox [OVA for development][_42]
 - (x) Create and update Parallels [VMX][_42] image
-- (x) Replace jslint setting from per-file to config/jslint.conf
+- (x) Replace JSLint setting from per-file to config/jslint.conf
 - (x) Expect browser env for js/xhi libraries
 - (x) Fix `js/xhi/01_util.js::makeSeriesMap` across timezones
 - (x) Update code standard
 - (x) Create AMI image for deployment
 
-### Version 1.4.x
+### Versions 1.4.x
 2017-10-10 through 2019-01-01
-- (x) Add Typebomb2 example application
+- (x) Add `Typebomb 2` example application
 - (x) Convert build system to JavaScript using `package.json` as manifest
 - (x) Enhance `js/xhi` libs and docs
 - (x) Expand and enhance utility functions (`xhi/01_util.js`)
@@ -733,30 +708,32 @@ MIT
 - (x) Revise code standards and images
 - (x) Update AMI image for deployment and add screen shot
 - (x) Update README with images
-- (x) Support symbol renaming to avoid conflicts
+- (x) Add symbol renaming to avoid conflicts
       (jQuery => xhiJQ, pcss => xhiCSS)
+- (x) Replace JSLint with ESLint and `package.json` for config
 
-### Version 1.5.0
-Release 2019-01-01
-- (x) 01\_utils add capabilities and documentation
+### Versions 1.5.x
+2019-01-01 through 2019-06-15
+- (x) Add capabilities and documentation to `js/xhi/01_utils.js` 
 - (x) Update all libs to latest
 - (x) Revised templates per latest best practice
-
-### Version 1.5.1
-Released 2019-05-19
 - (x) Include event pub-sub system in the `js/xhi/03_model.js` instance.
   This provides an integrated event log system for use in regression tests
 
-### 1.6.0
+### Version 1.6.x
+2019-06-16 ongoing
 - (x) Significantly updated documentation.
 - (x) Move `lib/xhi_state.json` to  `run/xhi_state.json`
+- (x) Update quick reference, VDG, and code standard
 
 ### Backlog
+- (i) Create new virtual appliance
 - (i) Update tb02 libs to latest best practice (events)
+- (i) Example conversion of TB2 to new app
+- (i) Improve CLI presentation of `bin/xhi design` reference by searching and using platform viewers
 - (i) Add CSS => PowerCSS parser
-- (o) Convert superpack Perl to JS and use `package.json` config
+- (o) Convert SuperPack Perl to JS and use `package.json` config
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`
-- (o) Update quick reference code standard
 - (o) Test load times using remote server
 - (o) Implement `bin/xhi deploy`
 - (o) Push to NPM using `bin/xhi publish`
