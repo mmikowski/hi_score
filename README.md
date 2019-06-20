@@ -15,7 +15,7 @@ The hi\_score framework helps developers create, understand, and constantly impr
 If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babel](#towers-of-babel), perhaps its time to get them to speak the same core languages. Use `hi_score`, the **UnFramework**.
 
 ## Latest News
-Versions 1.6.1-8 Updated docs, no code change
+Versions 1.6.1-9 Updated docs, no code change
 
 ---
 ## Quick start
@@ -62,7 +62,7 @@ We should now see the **Typebomb 2** web app in a browser and may use the develo
   - Extensive, highly tested utilities in `js/xhi/01_util`
   - AJAX and socket methods in `js/xhi/02_data`
   - State and logic management in `js/xhi/03_model`
-  - Feature modules as shown in `js/xhi/04_litebox.js`
+  - Feature modules as shown in `js/xhi/06_lb.js`
   - Double-buffered dynamic CSS with [PowerCSS][_11] and `js/xhi/06_css`
   - Shell design in `js/xhi/07_shell`
 
@@ -248,17 +248,19 @@ The `Typebomb 2` app has files for each layer as shown below.
 
 ```
 Module layers
-================================================
-app-tb02/tb02.00_root.js            |        ^    \
-app-tb02/tb02.01_util.js          load       |     |
-app-tb02/tb02.02_01_data_mock.js  order      |     |
-app-tb02/tb02.02_data.js            |        |     |
-app-tb02/tb02.03_model.js           |      call,    >  xhi library
-app-tb02/tb02.04_utilb.js           |      init    |
-app-tb02/tb02.05_css.js           events   order   |
-app-tb02/tb02.06_lb.js              |        |     |
-app-tb02/tb02.07_shell.js           |        |     |
-app-tb02/tb02.08_app.js             v        |    /
+========================================
+tb02.00_root.js            |        ^    \
+tb02.01_util.js          load       |     |
+tb02.02_data.js          order      |     |
+tb02.02_01_data_mock.js    |        |     |
+tb02.03_model.js           |      call,   |
+tb02.04_utilb.js           |      init     >  xhi library
+tb02.05_02_css_base.js   events   order   |
+tb02.05_03_css_lb.js       |        |     |
+tb02.05_css.js             |        |     |
+tb02.06_lb.js              |        |     |
+tb02.07_shell.js           |        |     |
+tb02.08_app.js             v        |    /
 ```
 
 All these modules claim a slice of the application name-space (`tb02`) and use `js/xhi` libraries in one of three ways:
@@ -267,29 +269,31 @@ All these modules claim a slice of the application name-space (`tb02`) and use `
 1. Create an instance and decorate
 1. Use the module to guide development
 
-More specific notes about `Typebomb 2` app are provide in `README.app-tb02.md`.  One can omit unused layers for a given app. However, for illustrative purposes, we have included all layers here. One can copy these to a new name-space to create a new app and edit from there.
+More specific notes about `Typebomb 2` app are provide in `README.app-tb02.md`.  One can omit unused layers for a given app. However, for illustrative purposes, we have included all layers here. One can copy these to a new name-space to create a new app and edit from there. One can easily create a generator to automate these steps, but we show them in full for now.
 
 ```bash
-  export _ns='foo'; # Name-space
   cd ~/Github/hi_score;
-  cp app-tb02.html app-${_ns}.html;
+  export _ns='mine'
 
-  mkdir "js/app-${_ns}";
-  cd "js/app-${_ns}";
-  cp ../app-tb02/tb02.00_root.js          "${_ns}.00_root.js"
-  cp ../app-tb02/tb02.01_util.js          "${_ns}.01_util.js"
-  cp ../app-tb02/tb02.02_data.js          "${_ns}.02_data.js"
-  cp ../app-tb02/tb02.03_model.js         "${_ns}.03_model.js"
-  cp ../app-tb02/tb02.04_utilb.js         "${_ns}.04_utilb.js"
-  cp ../app-tb02/tb02.05_02_css_base.js   "${_ns}.05_02_css_base.js"
-  cp ../app-tb02/tb02.05_css.js           "${_ns}.05_css.js"
-  cp ../app-tb02/tb02.07_shell.js         "${_ns}.07_shell.js"
-  cp ../app-tb02/tb02.08_app.js           "${_ns}.08_app.js"
-  cp ../app-tb02/tb02.08_app-build.js     "${_ns}.08_app-build.js"
+  cp /template/app-tb02.html "app-${_ns}.html"
+
+  mkdir "js/app-${_ns}"
+  cd "js/app-${_ns}"
+
+  cp ../app-tb02/tb02.00_root.js         "${_ns}.00_root.js
+  cp ../app-tb02/tb02.01_util.js         "${_ns}.01_util.js
+  cp ../app-tb02/tb02.02_data.js         "${_ns}.02_data.js
+  cp ../app-tb02/tb02.02_01_data_mock.js "${_ns}.02_01_data_mock.js
+  cp ../app-tb02/tb02.03_model.js        "${_ns}.03_model.js
+  cp ../app-tb02/tb02.04_utilb.js        "${_ns}.04_utilb.js
+  cp ../app-tb02/tb02.05_02_css_base.js  "${_ns}.05_02_css_base.js
+  cp ../app-tb02/tb02.05_03_css_lb.js    "${_ns}.05_03_css_lb.js
+  cp ../app-tb02/tb02.05_css.js          "${_ns}.05_css.js
+  cp ../app-tb02/tb02.06_lb.js           "${_ns}.06_lb.js
+  cp ../app-tb02/tb02.07_shell.js        "${_ns}.07_shell.js
+  cp ../app-tb02/tb02.08_app.js          "${_ns}.08_app.js
+
   git add .
-
-  cd ../template
-  cp app-tb02.html "app-${_ns}.html"
 ```
 
 There is a lot less duplicate code here than it may appear. For example, any `01_util` layer is just a singleton instance of the `js/xhi/01_util` utilities. And any model almost certainly inherits and reuses state values and methods from an instance of the `js/xhi/03_model`.
@@ -299,7 +303,6 @@ We change all references from `tb02` in these new files to our new name-space, `
 Stay tuned for a more detailed example of this in mid-2019.
 
 ---
-
 ## Vendor assets
 The `bin/xhi setup` stage patches and deploys vendor assets using the `xhi_02_SetupMatrix` configuration found in `package.json`. This field is correlated with the with the `devDependencies` map to ensure assets are properly label, patched, distributed, and ignored by Git.
 
