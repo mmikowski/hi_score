@@ -15,7 +15,7 @@ The hi\_score framework helps developers create, understand, and constantly impr
 If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babel](#towers-of-babel), perhaps its time to get them to speak the same core languages. Use `hi_score`, the **UnFramework**.
 
 ## Latest News
-Versions 1.6.1-9 Updated docs, no code change
+Versions 1.6.1-10 Updated docs, no code change
 
 ---
 ## Quick start
@@ -280,18 +280,18 @@ More specific notes about `Typebomb 2` app are provide in `README.app-tb02.md`. 
   mkdir "js/app-${_ns}"
   cd "js/app-${_ns}"
 
-  cp ../app-tb02/tb02.00_root.js         "${_ns}.00_root.js
-  cp ../app-tb02/tb02.01_util.js         "${_ns}.01_util.js
-  cp ../app-tb02/tb02.02_data.js         "${_ns}.02_data.js
-  cp ../app-tb02/tb02.02_01_data_mock.js "${_ns}.02_01_data_mock.js
-  cp ../app-tb02/tb02.03_model.js        "${_ns}.03_model.js
-  cp ../app-tb02/tb02.04_utilb.js        "${_ns}.04_utilb.js
-  cp ../app-tb02/tb02.05_02_css_base.js  "${_ns}.05_02_css_base.js
-  cp ../app-tb02/tb02.05_03_css_lb.js    "${_ns}.05_03_css_lb.js
-  cp ../app-tb02/tb02.05_css.js          "${_ns}.05_css.js
-  cp ../app-tb02/tb02.06_lb.js           "${_ns}.06_lb.js
-  cp ../app-tb02/tb02.07_shell.js        "${_ns}.07_shell.js
-  cp ../app-tb02/tb02.08_app.js          "${_ns}.08_app.js
+  cp ../app-tb02/tb02.00_root.js         "${_ns}.00_root.js"
+  cp ../app-tb02/tb02.01_util.js         "${_ns}.01_util.js"
+  cp ../app-tb02/tb02.02_data.js         "${_ns}.02_data.js"
+  cp ../app-tb02/tb02.02_01_data_mock.js "${_ns}.02_01_data_mock.js"
+  cp ../app-tb02/tb02.03_model.js        "${_ns}.03_model.js"
+  cp ../app-tb02/tb02.04_utilb.js        "${_ns}.04_utilb.js"
+  cp ../app-tb02/tb02.05_02_css_base.js  "${_ns}.05_02_css_base.js"
+  cp ../app-tb02/tb02.05_03_css_lb.js    "${_ns}.05_03_css_lb.js"
+  cp ../app-tb02/tb02.05_css.js          "${_ns}.05_css.js"
+  cp ../app-tb02/tb02.06_lb.js           "${_ns}.06_lb.js"
+  cp ../app-tb02/tb02.07_shell.js        "${_ns}.07_shell.js"
+  cp ../app-tb02/tb02.08_app.js          "${_ns}.08_app.js"
 
   git add .
 ```
