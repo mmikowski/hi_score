@@ -40,6 +40,7 @@ var
   fqProjDirname   = pathObj.dirname( fqBinDirname ),
   fqRunDirname    = fqProjDirname + '/run',
 
+  fqGitDirname    = fqProjDirname  + '/.git',
   fqBuildDirname  = fqProjDirname  + '/build',
   fqHookFilename  = fqProjDirname  + '/.git/hooks/pre-commit',
   fqLibDirname    = fqProjDirname  + '/lib',
@@ -57,13 +58,14 @@ var
     "stage_status_map" : {}
   },
 
-  // Declare run-time commandTable
-  commandTable,
+  // Run-time git flag and command table
+  hasGit = fsObj.existsSync( fqGitDirname ),
 
-  // Declare curried functions
+  // Curried functions
   abortFn, exitFn, logFn, warnFn,
 
-  // Declare after-install-variables
+  // Defined-after-install-symbols
+  commandTable,
   LineReader,     applyPatchFn,     flowObj,
   npmObj,         psObj,            shellJsObj,
   uglifyCssObj,   uglifyJsObj,      xhiLibMap,
@@ -76,7 +78,6 @@ require( fqProjDirname + '/js/xhi/01_util.js' );
 xhiLibMap = global.xhi._00_root_._makeInstanceFn_( 'xhiLibMap' );
 global.xhi._01_util_._makeInstanceFn_( xhiLibMap );
 xhiUtilObj = xhiLibMap._01_util_;
-
 // == . END MODULE SCOPE VARIABLES =====================================
 
 // == BEGIN UTILITY METHODS ============================================
@@ -724,6 +725,16 @@ function mainFn () {
     bound_fn, prefix_str
     ;
 
+  // Bail without .git directory
+  if ( ! hasGit ) {
+    return abortFn(
+      'NO GIT installation found!\n'
+      + 'Please follow the instructions in README.md to clone the Github \n'
+      + 'repository using git. This usually occurs with NPM installs \n'
+      + 'which are not yet supported. Sorry for the trouble :('
+    );
+  }
+
   // Create command table from config
   commandTable = makeCommandTable( package_matrix.xhi_commandTable );
 
@@ -851,6 +862,7 @@ function mainFn () {
 //
 // TODO 2017-09-01 mmikowski info: Prefer routine to check all missing
 //   files and fill with default content.
+
 fsObj.stat( fqStateFilename, function ( error_obj ) {
   var scratch_str;
   if ( error_obj ) {
@@ -861,6 +873,7 @@ fsObj.stat( fqStateFilename, function ( error_obj ) {
       console.log( fqRunDirname + ' exists.' );
     }
     scratch_str = JSON.stringify( emptyStateMatrix, null, 2 );
+
     fsObj.writeFile(
       fqStateFilename, scratch_str, { encoding : 'utf8' },
       initReadFn.bind({ then_fn : mainFn })
