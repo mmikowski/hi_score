@@ -21,17 +21,7 @@ var
   liteBoxMap
   ;
 
-// When debugging one can create a mock test object
-// function mockFn() {
-//    console.log( aKey + '.' + this, arguments );
-// };
-// mockTestObj = {
-//   deepEqual : mockFn.bind( 'deepEqual' ),
-//   done      : mockFn.bind( 'done'      ),
-//   expect    : mockFn.bind( 'expect'    ),
-//   ok        : mockFn.bind( 'ok'        ),
-//   test      : mockFn.bind( 'test'      )
-// };
+// See note on bottom running a single test
 
 global.window   = winRef;
 global.document = docRef;
@@ -2994,6 +2984,40 @@ function trimStrList ( test_obj ) {
   }
   test_obj.done();
 }
+
+function makeDeepData ( test_obj ) {
+  var
+    assert_table = [
+      [ [],                                               [] ],
+      [ [ __undef ],                                      [] ],
+      [ [ __null  ],                                      [] ],
+      [ [ __undef, '_map_' ],                             {} ],
+      [ [ { foo:{ bar:1 }, bar:2} ],           ['foo','bar'] ],
+      [ [ { foo:{ bar:1 }, bar:2}, '_list_' ], ['foo','bar'] ],
+      [ [ { foo:{ bar:1 }, bar:2}, '_map_'  ],       {bar:2} ]
+    ],
+
+    assert_count  = assert_table.length,
+    make_deep_fn  = utilObj._makeDeepData_,
+
+    idx, expect_list, arg_list,
+    expect_data, solve_data, msg_str
+  ;
+
+  test_obj.expect( assert_count );
+  for ( idx = __0; idx < assert_count; idx++ ) {
+    expect_list = assert_table[ idx ];
+    arg_list    = expect_list[ __0 ];
+    expect_data = expect_list[ __1 ];
+    solve_data  = make_deep_fn.apply( __undef,  arg_list );
+    msg_str     = __Str( idx ) + '. arg_list: '
+      + JSON.stringify( arg_list ) + '\n solve_data: '
+      + JSON.stringify( solve_data )
+      + '\n expect_data: ' + JSON.stringify( expect_data );
+    test_obj.deepEqual( solve_data, expect_data, msg_str );
+  }
+  test_obj.done();
+}
 // == . END 01_util tests =============================================
 
 // == BEGIN 04_utilb tests ============================================
@@ -3799,6 +3823,7 @@ module.exports = {
   _setStructData_   : setStructData,
   _shuffleList_     : shuffleList,
   _trimStrList_     : trimStrList,
+  _makeDeepData_    : makeDeepData,
 
   // UtilB
   _decodeHtml_      : decodeHtml,
@@ -3814,4 +3839,19 @@ module.exports = {
   _showBusy_      : showBusy,
   _showSuccess_   : showSuccess
 };
+
+// When debugging one can create a mock test object
+// function mockFn() {
+//    console.log( aKey + '.' + this, arguments );
+// };
+// var mockTestObj = {
+//   deepEqual : mockFn.bind( 'deepEqual' ),
+//   done      : mockFn.bind( 'done'      ),
+//   expect    : mockFn.bind( 'expect'    ),
+//   ok        : mockFn.bind( 'ok'        ),
+//   test      : mockFn.bind( 'test'      )
+// };
+// makeDeepData( mockTestObj );
+//
+// // And then run node ./00_xhi_libs.js to see the output
 

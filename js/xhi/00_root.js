@@ -100,6 +100,7 @@ xhi._00_root_ = (function () {
       _map_             : 'map',
       _match_           : 'match',
       _null_            : null,
+      _object_          : 'object',
       _off_             : 'off',
       _on_              : 'on',
       _onload_          : 'onload',

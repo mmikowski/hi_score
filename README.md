@@ -16,7 +16,8 @@ If your framework is making your life more complex, if your teams can't communic
 
 ## Latest News
 - v1.6.1-10 Updated docs, no code changes
-- v1.6.11   Added check for GIT when using `bin/xhi`. NPM installs are not yet supported.
+- v1.6.11   Added check for GIT when using `bin/xhi`. NPM installs guidance updated.
+- v1.6.12   Expanded util makeDeepKeyList => makeDeepData to return flat list OR map
 
 ---
 ## Quick start
