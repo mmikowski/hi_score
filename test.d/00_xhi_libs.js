@@ -4,6 +4,7 @@
  *
  * Node unit test suite xhi, util, utilb, lb
 */
+/*global require, module, console */
 // == BEGIN MODULE SCOPE VARIABLES  ===================================
 'use strict';
 var
@@ -2608,6 +2609,7 @@ function safeJsonParse ( test_obj ) {
 }
 
 function mergeMaps ( test_obj ) {
+  // noinspection JSUnusedGlobalSymbols
   var
     base0_map = { attr1 : 'val1', attr2 : 'val2' },
     base1_map = { attr3 : 10,     attr4 : 20     },
@@ -3754,16 +3756,6 @@ function showSuccess ( test_obj ) {
 // == . END 06_lb tests ===============================================
 // == . END NODEUNIT TEST FUNCTIONS  ==================================
 
-// Use mockTestObj for debugging tests using nodejs instead
-// of nodeunit, which obscures error messages. Use like so:
-// 1. Add the test you would like to run:
-// 2. Run node <this_file>
-// 3. Inspect the output
-// makeReplaceFn( mockTestObj );
-// makeMetricStr( mockTestObj );
-// checkDateStr( mockTestObj );
-// makeClockStr( mockTestObj );
-
 module.exports = {
   // Root
   _extendSymbolMap_ : extendSymbolMap,
@@ -3840,7 +3832,9 @@ module.exports = {
   _showSuccess_   : showSuccess
 };
 
-// When debugging one can create a mock test object
+// Use mockTestObj for debugging tests using nodejs instead
+// of nodeunit, which obscures error messages.
+//
 // function mockFn() {
 //    console.log( aKey + '.' + this, arguments );
 // };
@@ -3853,5 +3847,5 @@ module.exports = {
 // };
 // makeDeepData( mockTestObj );
 //
-// // And then run node ./00_xhi_libs.js to see the output
+// Now run `node nodeunit_xuu.js` and inspect the output.
 

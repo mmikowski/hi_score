@@ -2098,13 +2098,12 @@ xhi._01_util_ = (function () {
   // Throws    : None
   //
   function makeErrorObj ( arg_name, arg_msg ) {
-    var
-      name = ( arg_name && __Str( arg_name ) ) || 'error',
-      msg  = ( arg_msg  && __Str( arg_msg  ) ) || __blank,
-      error_obj = new Error();
+    var error_obj = new Error();
 
-    error_obj.name    = aKey + ':' + name;
-    error_obj.message = msg;
+    error_obj.name    = aKey + ':'
+      + ( ( arg_name && __Str( arg_name ) ) || 'error' );
+    error_obj.message = ( arg_msg  && __Str( arg_msg  ) ) || __blank;
+
     return error_obj;
   }
   // . END Public method /makeErrorObj/
@@ -2935,6 +2934,7 @@ xhi._01_util_ = (function () {
   //   is met, a warning is logged and __undef returned
   //
   function makeDeepData ( arg_base_data, arg_mode_str ) {
+    // noinspection JSMismatchedCollectionQueryUpdate
     var
       base_data  = castList( arg_base_data ) || castMap( arg_base_data, {} ),
       mode_str   = castStr(
