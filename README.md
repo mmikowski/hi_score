@@ -15,13 +15,14 @@ The `hi_score` framework helps developers create, understand, and constantly imp
 If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babel](#towers-of-babel), perhaps its time to use `hi_score` so they can all speak the same languages your apps actually use.
 
 ## Latest News
-Change in v1.7.0
-  - Enhanced capabilities utils
-    - makeDeepData replaced makeDeepKeyList
-    - getStructData is now more reliable
-  - Updated tests
-  - Fixed ex01 and ex02 example apps
-  - Updated docs
+Version 1.7.0 is Released with the following enhancements!
+- (x) Enhance utility capabilities
+  - (x) Replace makeDeepKeyList  with more-useful makeDeepData
+  - (x) Make getStructData more reliable for named objects
+- (x) Update test to match new capabilities
+- (x) Improve default symbol contents
+- (x) Fix ex01 and ex02 example apps to show again
+- (x) Update docs to current practices
 
 ---
 ## Quick start
@@ -738,7 +739,7 @@ MIT
 
 ### Version 1.7.x
 2019-07-25 ongoing
-- (x) Enhance capabilities utils
+- (x) Enhance utility capabilities
   - (x) Replace makeDeepKeyList  with more-useful makeDeepData
   - (x) Make getStructData more reliable for named objects
 - (x) Update test to match new capabilities
