@@ -47,7 +47,7 @@ xhi._03_model_ = (function () {
       __1  = nMap._1_,
       __3  = nMap._3_,
 
-      // Set string-like symbols
+      // Set scalar symbols
       __apply   = vMap._apply_,
       __blank   = vMap._blank_,
       __false   = vMap._false_,
@@ -357,7 +357,7 @@ xhi._03_model_ = (function () {
     //   toggleStateKeyFn( '_is_slider_open_', '_same_', __undef, __true );
     //
     //   // Publish additional information to handler
-    //   // Handler receives <event>, __true, and <poweredby_html> as args
+    //   // Handler receives <event>, __true
     //   toggleStateKeyFn(
     //      '_is_footer_shown_', __true, [ powered_html ]
     //   );
@@ -431,7 +431,9 @@ xhi._03_model_ = (function () {
         log_warn_idx  = logObj._getIdxByName_( '_warn_' )
         ;
 
-      // Use log status to set test mode
+      // If log_level is > warn ( _notice_, _info_, or _debug_ ),
+      // then log events for debugging purposes.
+      //
       stateMap._do_event_log_ = ( log_level_idx > log_warn_idx );
 
       return __true;

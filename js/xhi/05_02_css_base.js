@@ -28,7 +28,7 @@ xhi._05_02_css_base_ = (function () {
       pFn     = utilObj._makeReplaceFn_( '_p_', aKey ),
       nowMsFn = utilObj._getNowMs_(),
 
-      // Set string-like symbols
+      // Set scalar symbols
       __true  = vMap._true_,
 
       // Set config map

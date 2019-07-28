@@ -82,7 +82,7 @@ xhi._07_shell_ = (function ( $ ) {
         '\n  __blank   === ' + __blank,
         '\n  aKey      === ' +   aKey,
         '\n  $Map      === ' + data2strFn( $Map      ),
-        '\n  aMap      === ' + data2strFn( aMap      ),
+        '\n  aMap      === ' + utilObj._makeKeyList_( aMap ),
         '\n  configMap === ' + data2strFn( configMap ),
         '\n  stateMap  === ' + data2strFn( stateMap  )
       );

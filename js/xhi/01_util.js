@@ -72,7 +72,7 @@ xhi._01_util_ = (function () {
     __10  = nMap._10_,
     __100 = nMap._100_,
 
-    // Set string-like symbols
+    // Set scalar symbols
     __apply      = vMap._apply_,
     __blank      = vMap._blank_,
     __bind       = vMap._bind_,
@@ -224,7 +224,7 @@ xhi._01_util_ = (function () {
   // Summary   : getVarType( <data> );
   // Purpose   : Determine the type of data provided.
   // Example   : getVarType( [] ); // '_Array_'
-  // Arguments : (positional)
+  // Arguments : ( positional )
   //   <data> - value to examine
   // Returns   : '_Function_', '_Object_', '_Array_', '_String_',
   //             '_Number_', '_Null_', '_Boolean_', or '_Undefined_'
@@ -252,7 +252,7 @@ xhi._01_util_ = (function () {
   // Summary   : castBool( <data>, <alt_data> );
   // Purpose   : Cast a boolean value
   // Example   : castBool( __true ); // returns __true
-  // Arguments : (positional)
+  // Arguments : ( positional )
   //   <data>     - data to cast as boolean
   //   <alt_data> - alternate value to return
   // Returns   :
@@ -269,7 +269,7 @@ xhi._01_util_ = (function () {
   // Summary   : castFn( <data>, <alt_data> );
   // Purpose   : Cast a function
   // Example   : castFn( function() {} ); // returns function
-  // Arguments : (positional)
+  // Arguments : ( positional )
   //   <data>     - data to cast as function
   //   <alt_data> - alternate value to return
   // Returns   :
@@ -380,7 +380,7 @@ xhi._01_util_ = (function () {
     solve_int = makeRoundNumFn( solve_num );
 
     // Begin process optional constraints
-    if ( typeofFn( option_map ) === 'object' ) {
+    if ( typeofFn( option_map ) === vMap._object_ ) {
       return checkNumFn( solve_int, alt_data, option_map );
     }
     // . End process optional constraints
@@ -434,7 +434,7 @@ xhi._01_util_ = (function () {
     if ( var_type !== '_Array_' ) { return alt_data; }
 
     // Begin process optional constraints
-    if ( typeofFn( option_map ) === 'object' ) {
+    if ( typeofFn( option_map ) === vMap._object_ ) {
       log_list = [];
       item_count = data[ __length ];
       if ( item_count === __0 && option_map._is_empty_ok_ === __false ) {
@@ -519,7 +519,7 @@ xhi._01_util_ = (function () {
     if ( isNaN( solve_num ) ) { return alt_data; }
 
     // Begin process optional constraints
-    if ( typeofFn( option_map ) === 'object' ) {
+    if ( typeofFn( option_map ) === vMap._object_ ) {
       return checkNumFn( solve_num, alt_data, option_map );
     }
     // . End process optional constraints
@@ -583,7 +583,7 @@ xhi._01_util_ = (function () {
     if ( solve_str === __undef ) { return alt_data; }
 
     // Begin process optional constraints
-    if ( typeofFn( option_map ) === 'object' ) {
+    if ( typeofFn( option_map ) === vMap._object_ ) {
       log_list = [];
       char_count = solve_str[ __length ];
       if ( option_map._is_empty_ok_ === __false
@@ -677,17 +677,26 @@ xhi._01_util_ = (function () {
 
   // BEGIN Public prereq method /cloneData/
   // Summary   : cloneData( <data> );
-  // Purpose   : Deep clones non-recursive data structures fastest
-  // Example   : cloneData( [] ); // return copy of list
+  // Purpose   : Deep clone non-recursive data structures fast
+  // Example   : cloneData( data, [] ); // return copy data or list on fail
   // Arguments : (positional)
-  //   <data> - data to clone
-  // Returns   : undefined if data is recursive; otherwise a deep
-  //   copy is returned.
+  //   <arg_data> - data to clone
+  //   <alt_data> - alternate if clone fails
+  //
+  // Returns   : Success: A deep copy.
+  //             Failure: alt_data (malformed, recursive structures)
   // Throws    : None
   //
-  function cloneData ( data ) {
-    if ( data === __undef ) { return data; }
-    return safeJsonParse( safeJsonStringify( data ) );
+  function cloneData ( arg_data, alt_data ) {
+    var solve_data;
+    if ( arg_data === __undef ) { return arg_data; }
+    try {
+      solve_data = JSON.parse( JSON.stringify( arg_data ) );
+    }
+    catch ( ignore ) {
+      solve_data = alt_data;
+    }
+    return solve_data;
   }
   // . END Public prereq method /cloneData/
 
@@ -1641,6 +1650,13 @@ xhi._01_util_ = (function () {
           key = castStr( raw_key );
           break;
         default :
+          // Handle named objects
+          if ( typeofFn( walk_struct ) === 'object'
+            && walk_struct !== __null
+          ) {
+            key = castStr( raw_key );
+            break;
+          }
           key = __undef;
           break;
       }
@@ -2089,13 +2105,12 @@ xhi._01_util_ = (function () {
   // Throws    : None
   //
   function makeErrorObj ( arg_name, arg_msg ) {
-    var
-      name = ( arg_name && __Str( arg_name ) ) || 'error',
-      msg  = ( arg_msg  && __Str( arg_msg  ) ) || __blank,
-      error_obj = new Error();
+    var error_obj = new Error();
 
-    error_obj.name    = aKey + ':' + name;
-    error_obj.message = msg;
+    error_obj.name    = aKey + ':'
+      + ( ( arg_name && __Str( arg_name ) ) || 'error' );
+    error_obj.message = ( arg_msg  && __Str( arg_msg  ) ) || __blank;
+
     return error_obj;
   }
   // . END Public method /makeErrorObj/
@@ -2403,7 +2418,7 @@ xhi._01_util_ = (function () {
         data = pop_solve_struct;
         pop_solve_struct = null;
       }
-      else if ( data && typeofFn( data ) === 'object' ) {
+      else if ( data && typeofFn( data ) === vMap._object_ ) {
         check_obj = makeContextObj( data );
         if ( check_obj ) {
           stack_list[ __push ]( context_obj );
@@ -2910,43 +2925,53 @@ xhi._01_util_ = (function () {
   }
   // . END Public method /setConfigMap/
 
-  // BEGIN Public method /makeDeepKeyList/
-  // Purpose   : Get all unique keys in a data structure
-  // Example   : _getObjKeyList_({ foo:{ bar:1 }, bar:2})
-  //             Returns [ 'foo', 'bar' ]
+  // BEGIN Public method /makeDeepData/
+  // Purpose   : Get all unique keys in a data structure as list or map
+  // Example   : _makeDeepData_({ foo:{ bar:1 }, bar:2});
+  //               Returns [ 'foo', 'bar' ]
+  //             _makeDeepData_({ foo:{ bar:1 }, bar:2}, '_map_');
+  //               Returns { bar: 2 } // flattens map
   // Arguments : ( positional )
   //   0 : base_struct - An array or map
+  //   1 : mode_str - _list_ or _map_. Default is _list_
   // Returns   :
   //   * Success - A list of a unique keys sorted
   //   * Failure - An empty list
   // Cautions  : The key list limit is set to __100. If this
   //   is met, a warning is logged and __undef returned
   //
-  function makeDeepKeyList ( arg_base_data ) {
+  function makeDeepData ( arg_base_data, arg_mode_str ) {
     // noinspection JSMismatchedCollectionQueryUpdate
     var
-      base_obj   = typeofFn( arg_base_data ) === 'object' ? arg_base_data : {},
-      walk_obj   = base_obj,
-      solve_list = [],
+      base_data  = castList( arg_base_data ) || castMap( arg_base_data, {} ),
+      mode_str   = castStr(
+        arg_mode_str, '_list_', { _filter_rx_ : /^(_list_|_map_)$/ }
+      ),
+      walk_obj   = base_data,
+      solve_data = mode_str === '_list_' ? [] : {},
       stack_list = [],
       key_list   = makeKeyListFn( walk_obj ),
       key_count  = key_list[ __length ],
       idx        = __0,
 
-      key, loop_obj,
+      loop_key,     loop_data, loop_type,
       ctx_key_list, stack_map
       ;
 
     _OUTER_: while ( walk_obj ) {
       while ( idx < key_count ) {
-        key = key_list[ idx ];
-        loop_obj = walk_obj[ key ];
-        if ( solve_list[ __indexOf ]( key ) === __n1 ) {
-          solve_list[ __push ]( key );
+        loop_key  = key_list[ idx ];
+        loop_data = walk_obj[ loop_key ];
+        loop_type = getVarType( loop_data );
+
+        if ( mode_str === '_list_' ) {
+          if ( solve_data[ __indexOf ]( loop_key ) === __n1 ) {
+            solve_data[ __push ]( loop_key );
+          }
         }
 
-        if ( typeofFn( loop_obj ) === vMap._object_ ) {
-          ctx_key_list = makeKeyListFn( loop_obj );
+        if ( loop_type === '_Object_' || loop_type === '_Array_' ) {
+          ctx_key_list = makeKeyListFn( loop_data );
           if ( ctx_key_list[ __length ] > __0 ) {
             stack_list[ __push ]( {
               _idx_       : idx,
@@ -2955,11 +2980,14 @@ xhi._01_util_ = (function () {
               _walk_obj_  : walk_obj
             } );
 
-            idx = __n1;
-            walk_obj = loop_obj;
-            key_list = makeKeyListFn( walk_obj );
+            idx       = __n1;
+            walk_obj  = loop_data;
+            key_list  = makeKeyListFn( walk_obj );
             key_count = key_list[ __length ];
           }
+        }
+        else if ( mode_str === '_map_' ) {
+          solve_data[ loop_key ] = loop_data;
         }
         idx++;
       }
@@ -2972,9 +3000,9 @@ xhi._01_util_ = (function () {
       key_list = stack_map._key_list_;
       idx = stack_map._idx_ + __1;
     }
-    return solve_list;
+    return solve_data;
   }
-  // . END Public method /makeDeepKeyList/
+  // . END Public method /makeDeepData/
 
   // BEGIN Public method /setStructData/
   // Purpose   : Set a deep structure attribute value
@@ -3063,7 +3091,7 @@ xhi._01_util_ = (function () {
   // . END Public method /setStructData/
 
   // BEGIN Public method /shuffleList/
-  // Summary   : ShuffleList( <list>
+  // Summary   : ShuffleList( <list> )
   // Purpose   : Shuffle elements in a list
   // Example   : shuffleList( [1,2,3,4] ) returns [ 3,1,4,2 ]
   // Arguments :
@@ -3170,7 +3198,7 @@ xhi._01_util_ = (function () {
     _makeCommaNumStr_ : makeCommaNumStr,
     _makeDateStr_     : makeDateStr,
     _makeDebounceFn_  : makeDebounceFn,
-    _makeDeepKeyList_ : makeDeepKeyList,
+    _makeDeepData_    : makeDeepData,
     _makeEllipsisStr_ : makeEllipsisStr,
     _makeErrorObj_    : makeErrorObj,
     _makeExtractMap_  : makeExtractMap,

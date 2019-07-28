@@ -24,8 +24,9 @@ xhi._05_css_ = (function () {
       vMap      = aMap._vMap_,
 
       // Set object symbols
-      utilObj    = aMap._01_util_,
-      logObj  = utilObj._getLogObj_(),
+      utilObj  = aMap._01_util_,
+      logObj   = utilObj._getLogObj_(),
+      storeObj = vMap._localStoreObj_,
 
       // Set function symbols
       logFn     = logObj._logMsg_,
@@ -35,7 +36,7 @@ xhi._05_css_ = (function () {
       __n1      = nMap._n1_,
       __0       = nMap._0_,
 
-      // Set string-like symbols
+      // Set scalar symbols
       __false   = vMap._false_,
       __true    = vMap._true_,
       __undef   = vMap._undef_,
@@ -158,8 +159,8 @@ xhi._05_css_ = (function () {
       }
 
       // 2. Use local store map: Localstorage.<key>-_palette_map_
-      if ( localStorage[ vMap._hasOwnProperty_ ]( local_map_key ) ) {
-        local_json = localStorage[ local_map_key ];
+      if ( storeObj[ vMap._hasOwnProperty_ ]( local_map_key ) ) {
+        local_json = storeObj[ local_map_key ];
         try {
           solve_map = vMap._str2dataFn_( local_json );
         }
@@ -173,8 +174,8 @@ xhi._05_css_ = (function () {
       }
 
       // 3. Use local store index: Localstorage.<key>-_palette_idx_
-      if ( localStorage[ vMap._hasOwnProperty_ ]( local_idx_key ) ) {
-        local_idx = castIntFn( localStorage[ local_idx_key ], __0 );
+      if ( storeObj[ vMap._hasOwnProperty_ ]( local_idx_key ) ) {
+        local_idx = castIntFn( storeObj[ local_idx_key ], __0 );
         solve_idx = local_idx > palette_map_count
           ? palette_map_count - 1 : local_idx < __0
             ? __0 : local_idx
@@ -228,7 +229,6 @@ xhi._05_css_ = (function () {
       } );
       stateMap._is_ready_ = __true;
     }
-
     // . END public method /initModuleFn/
 
     instanceMap = {

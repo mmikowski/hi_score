@@ -35,6 +35,11 @@ precidence libraries, but it may call any of them.  See the diagram below.
  ================================ DATA FLOW ============================ >>>>
 ```
 
+## Events
+Use model events (preferred) or callbacks to broadcast changes for pushing any
+notification "up" the stack. This eliminates or minimizes cross-talk
+between feature modules and maximizes reusability.
+
 ## Using js/xhi libs
 Most libs provide a constructor to create a unique instance as needed. For
 example, one might create multiple models like so:
@@ -50,11 +55,6 @@ After instantiation, one may take the model and then add functions
 and data to the instance.  Common capabilities such as event registration,
 publishing, and handler deletion are all provided by the `xhi._03_model_`
 instance.
-
-## Implementation - Events
-We recommend using model events to broadcast changes for pushing any
-notification "up" the stack. This eliminates or minimizes cross-talk
-between feature modules and maximizes reusability.
 
 ==============================================================================
 # Code Standard

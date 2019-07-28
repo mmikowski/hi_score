@@ -27,7 +27,7 @@ xhi._05_04_css_shell_ = (function () {
       // Set function symbols
       pFn = utilObj._makeReplaceFn_( '_p_', aKey ),
 
-      // Set string-like symbols
+      // Set scalar symbols
       __blank = vMap._blank_,
 
       // Set config map

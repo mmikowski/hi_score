@@ -8,7 +8,7 @@
 /*global xhiJQ, xhi:true, ex02 */
 (function () {
   'use strict';
-  // noinspection MagicNumberJS,MagicNumberJS
+  // noinspection MagicNumberJS
   var
     libList = [
       'js/vendor/taffy-2.7.3.js',
@@ -24,13 +24,12 @@
       'js/xhi/00_root.js',
       'js/xhi/01_util.js',
       'js/xhi/02_data.js',
-      'js/xhi/02_fake.js',
       'js/xhi/03_model.js',
       'js/xhi/04_utilb.js',
-      'js/xhi/05_css_base.js',
-      'js/xhi/05_css_lb.js',
-      'js/xhi/05_css_shell.js',
-      'js/xhi/06_css.js',
+      'js/xhi/05_02_css_base.js',
+      'js/xhi/05_03_css_lb.js',
+      'js/xhi/05_04_css_shell.js',
+      'js/xhi/05_css.js',
       'js/xhi/06_lb.js',
       'js/xhi/07_shell.js',
       'js/xhi/08_app.js'

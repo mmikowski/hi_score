@@ -20,9 +20,11 @@ xhi._00_root_ = (function () {
     mathObj   = Math,
     objectObj = Object,
 
-    // Set string-like symbols
+    // Set scalar symbols
     __undef  = void 0,
 
+    // Set NumberMap
+    //
     // The nMap and vMap symbol maps are the minimimum to support the
     // full breadth of xhi client libs. Use _extendSymbolMapFn_
     // to expand these lists for project specific requirements.
@@ -49,6 +51,7 @@ xhi._00_root_ = (function () {
       _100_    : 100
     },
 
+    // Set ValueMap
     vMap = {
       _Array_           : Array,
       _Date_            : Date,
@@ -100,6 +103,7 @@ xhi._00_root_ = (function () {
       _map_             : 'map',
       _match_           : 'match',
       _null_            : null,
+      _object_          : 'object',
       _off_             : 'off',
       _on_              : 'on',
       _onload_          : 'onload',
@@ -151,8 +155,22 @@ xhi._00_root_ = (function () {
       _unsubscribe_     : 'unsubscribe',
       _utap_            : 'utap',
       _val_             : 'val'
-    }
+    },
+
+    localStoreObj, winObj
     ;
+  try { localStoreObj = localStorage; }
+  catch ( e ) {
+    localStoreObj = {};
+  }
+
+  vMap._localStoreObj_ = localStoreObj;
+
+  try { winObj = window; }
+  catch ( e ) {
+    winObj = global;
+  }
+  vMap._winObj_ = winObj;
   // == . END MODULE SCOPE VARIABLES ===================================
 
   // == BEGIN PRIVATE METHODS ==========================================

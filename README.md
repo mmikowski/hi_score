@@ -15,8 +15,13 @@ The `hi_score` framework helps developers create, understand, and constantly imp
 If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babel](#towers-of-babel), perhaps its time to use `hi_score` so they can all speak the same languages your apps actually use.
 
 ## Latest News
-- v1.6.1-10 Updated docs, no code changes
-- v1.6.11   Added check for GIT when using `bin/xhi`. NPM installs are not yet supported.
+Change in v1.7.0
+  - Enhanced capabilities utils
+    - makeDeepData replaced makeDeepKeyList
+    - getStructData is now more reliable
+  - Updated tests
+  - Fixed ex01 and ex02 example apps
+  - Updated docs
 
 ---
 ## Quick start
@@ -724,10 +729,22 @@ MIT
   This provides an integrated event log system for use in regression tests
 
 ### Version 1.6.x
-2019-06-16 ongoing
+2019-06-16 through 2019-07-25
 - (x) Significantly updated documentation.
 - (x) Move `lib/xhi_state.json` to  `run/xhi_state.json`
 - (x) Update quick reference, VDG, and code standard
+- (x) Updated docs, no code changes
+- (x)  Added check for GIT when using `bin/xhi`. NPM installs are not yet supported.
+
+### Version 1.7.x
+2019-07-25 ongoing
+- (x) Enhance capabilities utils
+  - (x) Replace makeDeepKeyList  with more-useful makeDeepData
+  - (x) Make getStructData more reliable for named objects
+- (x) Update test to match new capabilities
+- (x) Improve default symbol contents
+- (x) Fix ex01 and ex02 example apps to show again
+- (x) Update docs to current practices
 
 ### Backlog
 - (i) Create new virtual appliance

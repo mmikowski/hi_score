@@ -862,7 +862,7 @@ function mainFn () {
 //
 // TODO 2017-09-01 mmikowski info: Prefer routine to check all missing
 //   files and fill with default content.
-
+//
 fsObj.stat( fqStateFilename, function ( error_obj ) {
   var scratch_str;
   if ( error_obj ) {

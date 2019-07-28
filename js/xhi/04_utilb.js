@@ -20,7 +20,7 @@ xhi._04_utilb_ = (function ( $ ) {
       subName   = '_04_utilb_',
       vMap      = aMap._vMap_,
 
-      docRef  = window.document,
+      docObj  = window.document,
 
       // Set object symbols
       cssKmap = xhiCSS._cfg_._cssKeyMap_,
@@ -208,7 +208,7 @@ xhi._04_utilb_ = (function ( $ ) {
           img_el, s_obj;
 
         if ( !bodyEl ) {
-          bodyEl = docRef[ vMap._getElsByTagName_ ]( vMap._body_ )[ __0 ];
+          bodyEl = docObj[ vMap._getElsByTagName_ ]( vMap._body_ )[ __0 ];
         }
         if ( !( callback_fn && bodyEl ) ) { return __false; }
 

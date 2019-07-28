@@ -67,7 +67,7 @@ xhi._06_lb_ = (function ( $ ) {
       __0 = nMap._0_,
       __2 = nMap._2_,
 
-      // Set string-like symbols
+      // Set scalar symbols
       __blank = vMap._blank_,
       __false = vMap._false_,
       __null  = vMap._null_,

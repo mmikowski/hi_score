@@ -30,7 +30,7 @@ xhi._makeTmpltFn_ = function makeTmpltFn ( aMap ) {
     __0 = nMap._0_,
     __1 = nMap._1_,
 
-    // Set string-like symbols
+    // Set scalar symbols
     __blank  = vMap._blank_,
 
     // Set config and state maps
@@ -102,7 +102,7 @@ xhi._makeTmpltFn_ = function makeTmpltFn ( aMap ) {
     // Set object symbols
     // Set function symbols
     // Set number symbols
-    // Set string-like symbols
+    // Set scalar symbols
     // Set config and state maps
     // Initialize jQuery object cache
     // Declare other module-scope variables

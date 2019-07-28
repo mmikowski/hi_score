@@ -33,7 +33,7 @@ xhi._02_data_ = ( function ( $ ) {
       __0  = nMap._0_,
       __1  = nMap._1_,
 
-      // Set string-like symbols
+      // Set scalar symbols
       __Deferred = vMap._Deferred_,
       __null     = vMap._null_,
       __true     = vMap._true_,

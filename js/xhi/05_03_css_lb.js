@@ -25,7 +25,7 @@ xhi._05_03_css_lb_ = (function () {
       utilObj   = aMap._01_util_,
       pFn       = utilObj._makeReplaceFn_( '_p_', aKey ),
 
-      // Set string-like symbols
+      // Set scalar symbols
       __true    = vMap._true_,
 
       // Set config map

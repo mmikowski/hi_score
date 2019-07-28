@@ -2,7 +2,10 @@
 
 # Use this tool to remove meaningful internal variable names from the
 # compressed javascript. It can cut uglified code by 50% or more.
-
+#
+# Ubuntu require the installation of these common perl libraries
+# sudo apt install libgetopt-simple-perl libfile-slurp-perl
+#
     use warnings;
     use strict;
     use feature ':5.10';
@@ -22,7 +25,7 @@
 EOH
     }
     ## . END printHelpFn
-  
+
     ## BEGIN config Dumper and setup data
     local $Data::Dumper::Terse    => 1;
     local $Data::Dumper::Indent   => 1;
@@ -41,27 +44,27 @@ EOH
     # Updated 2017-09-07 to include all ECMA versions.
     # See https://mathiasbynens.be/notes/reserved-keywords
     my @skip_list = (
-      'abstract',   'arguments', 'await',       
-      'boolean',    'break',     'byte',        
-      'case',       'catch',     'char',        
-      'class',      'const',     'continue',    
-      'debugger',   'default',   'delete',      
-      'do',         'double',    'else',        
-      'enum',       'eval',      'export',      
-      'extends',    'false',     'final',       
-      'finally',    'float',     'for',         
-      'function',   'goto',      'if',          
-      'implements', 'import',    'in',           
-      'instanceof', 'int',       'interface',   
-      'let',        'long',      'native',      
-      'new',        'null',      'package',     
-      'private',    'protected', 'public',      
-      'return',     'short',     'static',      
+      'abstract',   'arguments', 'await',
+      'boolean',    'break',     'byte',
+      'case',       'catch',     'char',
+      'class',      'const',     'continue',
+      'debugger',   'default',   'delete',
+      'do',         'double',    'else',
+      'enum',       'eval',      'export',
+      'extends',    'false',     'final',
+      'finally',    'float',     'for',
+      'function',   'goto',      'if',
+      'implements', 'import',    'in',
+      'instanceof', 'int',       'interface',
+      'let',        'long',      'native',
+      'new',        'null',      'package',
+      'private',    'protected', 'public',
+      'return',     'short',     'static',
       'super',      'switch',    'synchronized',
-      'this',       'throw',     'throws',      
-      'transient',  'true',      'try',         
-      'typeof',     'var',       'void',        
-      'volatile',   'while',     'with',        
+      'this',       'throw',     'throws',
+      'transient',  'true',      'try',
+      'typeof',     'var',       'void',
+      'volatile',   'while',     'with',
       'yield',      '_'
     );
 
@@ -70,41 +73,9 @@ EOH
       $skip_key_mref->{ $skip_word } = 1;
     }
 
-    # TODO: test and remove this old list
-    # 'abstract'     => 1, 'boolean'      => 1,
-    # 'break'        => 1, 'byte'         => 1,
-    # 'case'         => 1, 'catch'        => 1,
-    # 'char'         => 1, 'class'        => 1,
-    # 'const'        => 1, 'continue'     => 1,
-    # 'debugger'     => 1, 'default'      => 1,
-    # 'delete'       => 1, 'do'           => 1,
-    # 'double'       => 1, 'else'         => 1,
-    # 'enum'         => 1, 'export'       => 1,
-    # 'extends'      => 1, 'final'        => 1,
-    # 'finally'      => 1, 'float'        => 1,
-    # 'for'          => 1, 'function'     => 1,
-    # 'goto'         => 1, 'if'           => 1,
-    # 'implements'   => 1, 'import'       => 1,
-    # 'in'           => 1, 'instanceof'   => 1,
-    # 'int'          => 1, 'interface'    => 1,
-    # 'let'          => 1, 'long'         => 1,
-    # 'native'       => 1, 'new'          => 1,
-    # 'package'      => 1, 'private'      => 1,
-    # 'protected'    => 1, 'public'       => 1,
-    # 'return'       => 1, 'short'        => 1,
-    # 'static'       => 1, 'super'        => 1,
-    # 'switch'       => 1, 'synchronized' => 1,
-    # 'this'         => 1, 'throw'        => 1,
-    # 'throws'       => 1, 'transient'    => 1,
-    # 'try'          => 1, 'typeof'       => 1,
-    # 'var'          => 1, 'void'         => 1,
-    # 'volatile'     => 1, 'while'        => 1,
-    # 'with'         => 1
-    ## . END config Dumper and setup data
-
     my ( $help_flag, $input_file, $log_file, $output_file );
     Getopt::Long::Configure qw( bundling );
-    Getopt::Long::GetOptions( 
+    Getopt::Long::GetOptions(
       'h|help'     => \$help_flag,
       'i|input=s'  => \$input_file,
       'l|log=s'    => \$log_file,
