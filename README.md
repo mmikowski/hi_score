@@ -15,7 +15,7 @@ The `hi_score` framework helps developers create, understand, and constantly imp
 If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babel](#towers-of-babel), perhaps its time to use `hi_score` so they can all speak the same languages your apps actually use.
 
 ## Latest News
-Version 1.7.0 is Released with the following enhancements!
+Version 1.7.0/1 is Released with the following enhancements!
 - (x) Enhance utility capabilities
   - (x) Replace makeDeepKeyList  with more-useful makeDeepData
   - (x) Make getStructData more reliable for named objects
