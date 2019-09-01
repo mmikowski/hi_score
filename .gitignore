@@ -2,7 +2,8 @@
 .coveralls.yml
 .git
 .idea
-run
+.env
+run/
 CODE_OF_CONDUCT.html
 README*.html
 build

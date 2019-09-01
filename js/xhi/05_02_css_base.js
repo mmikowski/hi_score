@@ -425,39 +425,6 @@ xhi._05_02_css_base_ = (function () {
               _cursor_        : '_pointer_'
             }
           },
-          //
-          // This is probably redundant with shell_card_
-          // TODO 2017-11-29 mmikowski info - review and remove or keep
-          // { _selector_str_ : pFn('.{_p_}-_x_box_'),
-          //   _rule_map_ : {
-          //     _border_top_    : [[ '_d1875rem_', '_solid_', '_accent_hex_' ]],
-          //     _overflow_      : '_hidden_',
-          //     _background_    : '_area_hex_',
-          //     _box_shadow_    : '_shdw_03a_',
-          //     _color_         : '_txt_hex_',
-          //     _margin_bottom_ : '_spc_rem_03_',
-          //     _clear_         : '_both_'
-          //   }
-          // },
-          // { _selector_str_ : pFn('.{_p_}-_x_box_inr_' ),
-          //   _rule_map_ : {
-          //     _padding_ : [[ '_spc_rem_03_', '_1d25rem_', '_spc_rem_03_', '_1d75rem_' ]]
-          //   }
-          // },
-          // { _selector_str_ : pFn('.{_p_}-_x_box_inr_ p' ),
-          //   _rule_map_ : { _margin_: [[ '_0_','_0_','_1rem_','_0_' ]] }
-          // },
-          // { _selector_str_ : pFn('.{_p_}-_x_box_title_'),
-          //   _rule_map_ : {
-          //     _padding_     : [[ '_0_', '_1d25rem_', '_0_', '_1d25rem_' ]],
-          //     _font_size_   : '_spc_rem_02_',
-          //     _background_  : '_frame_hex_',
-          //     _line_height_ : '_2d5rem_',
-          //     _color_       : '_txt_hex_',
-          //     _border_bottom_ : [[ '_d0625rem_', '_solid_', '_frame_dk_hex_' ]]
-          //   }
-          // },
-          //
           { _selector_str_ : pFn('.{_p_}-_x_hlink_'),
             _rule_map_ : { _display_ : '_none_' }
           },

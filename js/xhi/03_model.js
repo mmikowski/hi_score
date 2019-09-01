@@ -359,7 +359,7 @@ xhi._03_model_ = (function () {
     //   // Publish additional information to handler
     //   // Handler receives <event>, __true
     //   toggleStateKeyFn(
-    //      '_is_footer_shown_', __true, [ powered_html ]
+    //      '_is_footer_shown_', __true
     //   );
     //
     // Arguments : ( positional )
@@ -386,24 +386,30 @@ xhi._03_model_ = (function () {
         pub_key      = configMap._toggle_key_map_[ arg_state_key ],
         solve_bool, param_list;
 
-      if ( ! pub_key ) {
+      // Do not process if publish key is undef
+      if ( pub_key === __undef ) {
         return logFn( '_error_', '_state_key_not_found_', arg_state_key );
       }
 
+      // Handle same value requirment
       if ( arg_bool === '_same_' ) {
-        solve_bool = !! current_bool; // Ensure boolean value
+        solve_bool = !! current_bool;
       }
+      // Use arg_bool if defined, otherwise toggle current
       else {
         solve_bool = utilObj._castBool_( arg_bool, ! current_bool );
       }
 
-      // Do not update key unless value changed or force flag set
+      // Do not update or publish unless value changed or force flag set
       if ( solve_bool === current_bool && ! arg_do_force ) { return; }
 
+      // Set state value
       stateMap[ arg_state_key ] = solve_bool;
+
+      // Publish associated event (do not publish if event is blank)
+      if ( pub_key === __blank ) { return; }
       param_list = [ pub_key, stateMap[ arg_state_key ] ][ vMap._concat_ ](
         data_list );
-
       publishEventFn[ vMap._apply_ ]( __undef, param_list );
     }
     // . END Public method /toggleStateKeyFn/

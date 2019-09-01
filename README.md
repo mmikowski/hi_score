@@ -29,6 +29,17 @@ Version 1.7.1 enhancements:
 - (x) Fix js code standard to render correctly
 - (x) Update dependent library (`bin/xhi dev_upgrade`)
 
+Version 1.7.2 enhancements:
+- (x) `server/index.js` Replace http-server with express server
+       Supports .env, directory listing
+- (x) `package.json` Add cloud storage libs, update libs to lastest
+- (x) `bin/make_doc` Improve techniques used in bash utility 
+- (x) `doc/js-code-standard.adoc` Add section on value passing to 
+- (x) `xhi/02_data.js`        Remove no-auth hack from 
+- (x) `xhi/03_model.js`       Extend event publish capability
+- (x) `xhi/05_02_css_base.js` Remove unused code from CSS module
+- (x) `lib/xhi_06`, `lib/xhi_13` Adjust to start and stop `server/index.js`
+
 ---
 ## Quick start
 On Mac, Ubuntu Linux, or WSL please follow these steps.
@@ -744,6 +755,8 @@ MIT
 
 ### Version 1.7.x
 2019-07-25 ongoing
+
+Version 1.7.0 enhancements:
 - (x) Enhance utility capabilities
   - (x) Replace makeDeepKeyList  with more-useful makeDeepData
   - (x) Make getStructData more reliable for named objects
@@ -752,11 +765,27 @@ MIT
 - (x) Fix ex01 and ex02 example apps to show again
 - (x) Update docs to current practices
 
+Version 1.7.1 enhancements:
+- (x) Update js code standard to recent developments
+- (x) Fix js code standard to render correctly
+- (x) Update dependent library (`bin/xhi dev_upgrade`)
+
+Version 1.7.2 enhancements:
+- (x) `server/index.js` Replace http-server with express server
+       Supports .env, directory listing
+- (x) `package.json` Add cloud storage libs, update libs to lastest
+- (x) `bin/make_doc` Improve techniques used in bash utility 
+- (x) `doc/js-code-standard.adoc` Add section on value passing to 
+- (x) `xhi/02_data.js`        Remove no-auth hack from 
+- (x) `xhi/03_model.js`       Extend event publish capability
+- (x) `xhi/05_02_css_base.js` Remove unused code from CSS module
+- (x) `lib/xhi_06`, `lib/xhi_13` Adjust to start and stop `server/index.js`
+
 ### Backlog
-- (i) Create new virtual appliance
-- (i) Update tb02 libs to latest best practice (events)
-- (i) Example conversion of TB2 to new app
 - (i) Improve CLI presentation of `bin/xhi design` reference by searching and using platform viewers
+- (i) Add generator to create new apps cleanly and very quickly
+- (i) Update tb02 libs to latest best practice (events)
+- (i) Update virtual appliance
 - (i) Add CSS => PowerCSS parser
 - (o) Convert SuperPack Perl to JS and use `package.json` config
 - (o) Add UUID snippet from Git to build number, for example, `000025-1c002d`

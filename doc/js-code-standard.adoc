@@ -120,6 +120,35 @@ types include Functions, Objects, Arrays, and Regular Expressions. In all
 cases, primitives arguments are passed by value, whereas complex arguments
 are passed by reference. 
 
+=== Remember how values are passed to called functions
+- Primitive arguments are passed by *value*. In other words, *copies* of 
+  their values are passed to a called function. Any changes to these copies
+  *inside the function* do not affect the variables used in the call.
+- Complex arguments are passed by *reference*. In others, the structures 
+  are passed to a called function *without copying*. Any changes to these
+  structures *inside the function* are reflected in the variables used
+  in the call.
+
+Listing X.0 illustrates this concept.  After `mutateFn` is run the `outerStr`
+variable is unchanged, whereas the `outerList` *has*.
+
+.Listing X.0 -- Pass by value or reference
+[source,js]
+----
+var outerStr = 'Hello', outerList = [];
+
+function mutateFn ( str, list ) {
+  str += ' how are you?';
+  list.push( 'Item 1' );
+  return [ str, list ];
+}
+
+console.log( 'Before', [ outerStr, outerList ] );
+console.log( 'Mutate', mutateFn( outerStr, outerList ) );
+console.log( 'After' , [ outerStr, outerList ] );
+----
+
+=== Use meaningful names
 Provide variables with meaningful names as shown in Listing X.1 so we won’t
 have to insert a clumsy time-and-focus-sapping description every time a
 variable is used.

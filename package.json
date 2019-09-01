@@ -10,7 +10,10 @@
   "description": "A full-life-cycle starter project for SPA that favors a feature-module architecture.",
   "devDependencies": {
     "apply-patch": "0.1.2",
-    "coveralls": "3.0.4",
+    "aws-sdk": "2.516.0",
+    "azure-storage": "2.10.3",
+    "coveralls": "3.0.6",
+    "dotenv": "8.1.0",
     "diff": "4.0.1",
     "eslint": "6.2.1",
     "eslint-plugin-json": "1.4.0",
@@ -18,7 +21,6 @@
     "flow": "0.2.3",
     "font-awesome": "4.7.0",
     "font-roboto": "0.0.2",
-    "http-server": "0.11.1",
     "istanbul": "0.4.5",
     "jquery": "3.4.1",
     "jquery.event.dragscroll": "1.0.0",
@@ -28,14 +30,15 @@
     "jquery.urianchor": "1.3.5",
     "jsdom": "15.1.1",
     "line-by-line": "0.1.6",
-    "mongodb": "3.2.7",
+    "mongodb": "3.3.0",
     "mysql2": "1.6.5",
     "nodeunit": "0.11.3",
-    "npm": "6.11.1",
+    "npm": "6.11.2",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.6",
     "ps-node": "0.1.6",
     "rmdir": "1.2.0",
+    "serve-index": "1.9.1",
     "shelljs": "0.8.3",
     "taffydb": "2.7.3",
     "uglify-js": "3.6.0",
@@ -120,7 +123,7 @@
     "stop": "bin/xhi dev_stop",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.7.1",
+  "version": "1.7.2",
   "xhi_commandTable": [
     [
       "alias_list",
@@ -273,10 +276,10 @@
       [
         "dev_start"
       ],
-      "Start local HTTPS server",
+      "Start local HTTP server",
       [
-        "Start the local HTTPS server, 'http-server' in SSL mode",
-        "using localhost:8443.  This is a wrapper around ",
+        "Start the local HTTP server, server/index.js on port 3000.",
+        "To serve HTTPS consider installing http-server and run",
         "'http-server -p8443 -SU -C config/cert.pem -K config/key.pem'.",
         "Use this command directly to diagnose problems.",
         "",

@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* vim: set ft=javascript: */
 // == BEGIN SCRIPT xhi - the hi_score cli life-stage tool ==============
 /*
  * Purpose   : Run hi_score lifecycle tools
@@ -7,6 +6,7 @@
  * Author    : Michael S. Mikowski - mike.mikowski@gmail.com
  *
 */
+/*global*/
 // == BEGIN MODULE SCOPE VARIABLES =====================================
 'use strict';
 var
@@ -40,8 +40,8 @@ var
   fqProjDirname   = pathObj.dirname( fqBinDirname ),
   fqRunDirname    = fqProjDirname + '/run',
 
-  fqGitDirname    = fqProjDirname  + '/.git',
   fqBuildDirname  = fqProjDirname  + '/build',
+  fqGitDirname    = fqProjDirname  + '/.git',
   fqHookFilename  = fqProjDirname  + '/.git/hooks/pre-commit',
   fqLibDirname    = fqProjDirname  + '/lib',
   fqModuleDirname = fqProjDirname  + '/node_modules',
@@ -68,16 +68,16 @@ var
   commandTable,
   LineReader,     applyPatchFn,     flowObj,
   npmObj,         psObj,            shellJsObj,
-  uglifyCssObj,   uglifyJsObj,      xhiLibMap,
+  uglifyCssObj,   uglifyJsObj,      xhiApp,
   xhiUtilObj
   ;
 
 // Use xhi browser util library
 global.xhi = require( fqProjDirname + '/js/xhi/00_root.js' );
 require( fqProjDirname + '/js/xhi/01_util.js' );
-xhiLibMap = global.xhi._00_root_._makeInstanceFn_( 'xhiLibMap' );
-global.xhi._01_util_._makeInstanceFn_( xhiLibMap );
-xhiUtilObj = xhiLibMap._01_util_;
+xhiApp = global.xhi._00_root_._makeInstanceFn_( 'xhiApp' );
+global.xhi._01_util_._makeInstanceFn_( xhiApp );
+xhiUtilObj = xhiApp._01_util_;
 // == . END MODULE SCOPE VARIABLES =====================================
 
 // == BEGIN UTILITY METHODS ============================================

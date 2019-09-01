@@ -7,7 +7,7 @@
  * Provides : Shared data transfer methods (AJAX, Websockets)
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
 */
-/*global xhi, xhiJQ */
+/*global xhi, xhiJQ*/
 // == BEGIN MODULE xhi._02_data_ ======================================
 xhi._02_data_ = ( function ( $ ) {
   'use strict';
@@ -15,8 +15,7 @@ xhi._02_data_ = ( function ( $ ) {
   function makeInstanceFn ( aMap, argOptionMap ) {
     // == BEGIN MODULE SCOPE VARIABLES ================================
     var
-      // Set app symbols
-      aKey    = aMap._aKey_,
+      // Set app symbols (use aMap._aKey_ when needed here)
       nMap    = aMap._nMap_,
       subName = '_02_data_',
       vMap    = aMap._vMap_,
@@ -96,22 +95,13 @@ xhi._02_data_ = ( function ( $ ) {
     }
     // . END private method /cancelJqxhrList/
 
-    // BEGIN public method /handleNoauth/
-    function handleNoauth () {
-      cancelJqxhrList();
-      return $.gevent[ vMap._publish_ ](
-        aKey + '-_data_', { '_use_str_' : '_noauth_' }
-      );
-    }
-    // . END public method /handleNoauth/
-
     // BEGIN private method /onFailJqxhr/
     function onFailJqxhr ( jqxhr, status_type, error_data ) {
       var smap = this;
 
       delJqxhrFromList( jqxhr );
       if ( error_data === 'Unauthorized' ) {
-        return handleNoauth();
+        cancelJqxhrList();
       }
       if ( smap && smap._fail_fn_ ) {
         smap._fail_fn_( error_data, status_type );

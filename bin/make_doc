@@ -5,46 +5,47 @@
 ## http://www.davidpashley.com/articles/writing-robust-shell-scripts.html
 
 ## Exit when encountering undeclared variables
-## The -e check ( exit when encountering a non-zero exit status )
-## As we do our own checking
-
 set -u
+
+## We skip the -e check ( exit when encountering a non-zero exit status )
+##   as we do our own checking
 
 # This hack is to get around Mac's (c) 2007 version of Bash!
 # _appLink=$( readlink -f -- "${0}" );
 _readLinkFn(){ perl -MCwd -e 'print Cwd::abs_path shift' "$1";}
 
-_appName=$( basename $0 );
-_gitExe=$(which git);
-_pandocExe=$(which pandoc);
+_appName=$( basename "${0}" );
+_gitExe=$(command -v git);
+_pandocExe=$(command -v pandoc);
 
 _appLink=$( _readLinkFn "${0}" );
 _binDir=$( cd "${_appLink%/*}" && echo "${PWD}" );
 
-if [ -x ${_gitExe} ]; then
+if [ -x "${_gitExe}" ]; then
   _topDir=$(${_gitExe} rev-parse --show-toplevel);
   else
-  _topDir=$( dirname ${_binDir} );
+  _topDir=$( dirname "${_binDir}" );
   fi
 
 if [ ! -x "${_pandocExe}" ]; then
   echo "Please install pandoc to use this utility";
   exit 1;
 fi
-cd "${_topDir}";
+cd "${_topDir}" || exit 1;
 
-find -type f -name "*.md" \
+find ./ -type f -name "*.md" \
   | grep -v 'node_modules' \
   | grep -v 'uglifyjs' \
-  | while read _loop_file; do
+  | while read -r _loop_file; do
 
   _loop_dir=$(dirname "${_loop_file}");
   _loop_basename=$(basename -s.md "${_loop_file}");
+  _target_file="${_loop_dir}/${_loop_basename}.html"
 
-  echo "Generating ${_loop_dir}/${_loop_basename}.html from ${_loop_file}"
+  echo "${_appName} create ${_target_file}from ${_loop_file}"
   "${_pandocExe}" "${_loop_file}" \
   -f gfm \
-  -so "${_loop_dir}/${_loop_basename}.html" \
+  -so "${_target_file}" \
   -H "${_topDir}/config/md-github.style";
 done
 
