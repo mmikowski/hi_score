@@ -40,6 +40,12 @@ Version 1.7.2 enhancements:
 - (x) `xhi/05_02_css_base.js` Remove unused code from CSS module
 - (x) `lib/xhi_06`, `lib/xhi_13` Adjust to start and stop `server/index.js`
 
+Version 1.7.3 enhancements:
+- (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by 
+      appending audio elments to body.
+- (x) `js/xhi/01_util` and tests: replace `makePadNumStr` to `makePadStr`
+- (x) Eslint fixes in ~20 files for redundant global symbols
+
 ---
 ## Quick start
 On Mac, Ubuntu Linux, or WSL please follow these steps.

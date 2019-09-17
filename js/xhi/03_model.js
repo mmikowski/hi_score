@@ -21,7 +21,7 @@
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
  *
 */
-/*global xhi */
+/*global xhi*/
 // == BEGIN MODULE xhi._03_model_ =====================================
 xhi._03_model_ = (function () {
   'use strict';

@@ -4,7 +4,7 @@
  *
  * Node unit test suite xhi, util, utilb, lb
 */
-/*global require, module, console */
+/*global*/
 // == BEGIN MODULE SCOPE VARIABLES  ===================================
 'use strict';
 var
@@ -1700,37 +1700,40 @@ function makeOptionHtml ( test_obj ) {
   test_obj.done();
 }
 
-function makePadNumStr ( test_obj ) {
+function makePadStr ( test_obj ) {
   var
     assert_table  = [
-      [ [ __undef       ], __blank ],
-      [ [ __undef, __0  ], __blank ],
-      [ [ __null,  __n1 ], __blank ],
-      [ [ 'frank'       ], __blank ],
-      [ [ '   25', __n1 ],    '25' ],
-      [ [ '   25', __1  ],    '25' ],
-      [ [ '   25', __2  ],    '25' ],
-      [ [ '   25', __3  ],   '025' ],
-      [ [ '   25', __4  ],  '0025' ],
-      [ [ '00025', __n1 ],    '25' ],
-      [ [ '00025', __1  ],    '25' ],
-      [ [ '00025', __2  ],    '25' ],
-      [ [ '00025', __3  ],   '025' ],
-      [ [ '00025', __4  ],  '0025' ],
-      [ [      25, __n1 ],    '25' ],
-      [ [      25, __1  ],    '25' ],
-      [ [      25, __2  ],    '25' ],
-      [ [      25, __3  ],   '025' ],
-      [ [      25, __4  ],  '0025' ],
-      [ [ '-025', __n1 ],   '-25'  ],
-      [ [ '-025', __1  ],   '-25'  ],
-      [ [ '-025', __2  ],   '-25'  ],
-      [ [ '-025', __3  ],   '-25'  ],
-      [ [ '-025', __4  ],  '-025'  ],
-      [ [ '-025',   5  ], '-0025'  ]
+      [ [ __undef      , __0  ],     __blank ],
+      [ [ __undef, __0 , __0  ],     __blank ],
+      [ [ __null,  __n1, __0  ],     __blank ],
+      [ [ 'frank'      , __0  ],     'frank' ],
+      [ [ 'frank',    8, __0  ],  '000frank' ],
+      [ [ 'frank',    8, ' '  ],  '   frank' ],
+      [ [    '25', __n1, __0  ],        '25' ],
+      [ [    '25', __1 , __0  ],        '25' ],
+      [ [    '25', __2 , __0  ],        '25' ],
+      [ [    '25', __3 , __0  ],       '025' ],
+      [ [    '25', __4 , __0  ],      '0025' ],
+      [ [    '25', __n1, __0  ],        '25' ],
+      [ [    '25', __1 , __0  ],        '25' ],
+      [ [    '25', __2 , __0  ],        '25' ],
+      [ [    '25', __3 , __0  ],       '025' ],
+      [ [    '25', __4 , __0  ],      '0025' ],
+      [ [      25, __n1, __0  ],        '25' ],
+      [ [      25, __1 , __0  ],        '25' ],
+      [ [      25, __2 , __0  ],        '25' ],
+      [ [      25, __3 , __0  ],       '025' ],
+      [ [      25, __4 , __0  ],      '0025' ],
+      [ [     -25, __n1, __0  ],       '-25' ],
+      [ [     -25, __1 , __0  ],       '-25' ],
+      [ [     -25, __2 , __0  ],       '-25' ],
+      [ [     -25, __3 , __0  ],       '-25' ],
+      [ [     -25, __4 , __0  ],      '0-25' ],
+      [ [     -25,   5 , __0  ],     '00-25' ],
+        [ [ 'frank',    8, ' ', false  ], 'frank   ' ]
     ],
     assert_count = assert_table.length,
-    make_str_fn  = utilObj._makePadNumStr_,
+    make_str_fn  = utilObj._makePadStr_,
 
     idx, expect_list, arg_list, expect_str,
     solve_str, msg_str
@@ -3795,7 +3798,7 @@ module.exports = {
   _makeMapUtilObj_  : makeMapUtilObj,
   _makeMetricStr_   : makeMetricStr,
   _makeOptionHtml_  : makeOptionHtml,
-  _makePadNumStr_   : makePadNumStr,
+  _makePadStr_      : makePadStr,
   _makePctStr_      : makePctStr,
   _makeRadioHtml_   : makeRadioHtml,
   _makeRekeyMap_    : makeRekeyMap,

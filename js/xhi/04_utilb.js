@@ -8,7 +8,7 @@
  * Requires : xhiJQ and aMap (app map) with symbols from
  *            00_root._makeInstanceFn_()
 */
-/*global xhi, xhiJQ, xhiCSS */
+/*global xhi, xhiJQ, xhiCSS*/
 // == BEGIN MODULE xhi._04_utilb_ =====================================
 xhi._04_utilb_ = (function ( $ ) {
   'use strict';

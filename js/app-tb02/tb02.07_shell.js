@@ -22,35 +22,35 @@ tb02._07_shell_ = (function ( $ ) {
     sub$Fn  = $[ vMap._gevent_ ][ vMap._subscribe_ ],
 
     // Set num symbols
-    __0       = nMap._0_,
-
+    __0 = nMap._0_,
 
     configMap = {
       // language=TEXT (intellij)
       _main_tmplt_  : pFn(
-        '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" '
-        + 'class="{_p_}-_shell_bg_svg_" '
-        + 'viewbox="0 0 100 100" preserveAspectRatio="none">'
-        + '<path d="M 0,0 40,100 0,100 M 100,0 60,100 100,100"></path>'
+        '<div class="{_p_}-_shell_audio_"></div>'
+        + '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" '
+        +   'class="{_p_}-_shell_bg_svg_" '
+        +   'viewbox="0 0 100 100" preserveAspectRatio="none">'
+        +   '<path d="M 0,0 40,100 0,100 M 100,0 60,100 100,100"></path>'
         + '</svg>'
         + '<div class="{_p_}-_shell_title_">TypeB'
-        + '<span class="{_p_}-_x_down_">o</span>mb'
-        + '<span class="{_p_}-_x_release_">beta</span>'
+        +   '<span class="{_p_}-_x_down_">o</span>mb'
+        +   '<span class="{_p_}-_x_release_">beta</span>'
         + '</div>'
         + '<div class="{_p_}-_shell_subtext_"></div>'
         + '<div class="{_p_}-_shell_hi_score_">High Score</div>'
         + '<div class="{_p_}-_shell_level_">'
-        + '<div class="{_p_}-_shell_level_label_">Level</div>'
-        + '<div class="{_p_}-_shell_level_count_"></div>'
+        +   '<div class="{_p_}-_shell_level_label_">Level</div>'
+        +   '<div class="{_p_}-_shell_level_count_"></div>'
         + '</div>'
         + '<div class="{_p_}-_shell_lives_">'
-        + '<div class="{_p_}-_shell_lives_count_"></div>'
-        + '<div class="{_p_}-_shell_lives_gfx_"></div>'
+        +   '<div class="{_p_}-_shell_lives_count_"></div>'
+        +   '<div class="{_p_}-_shell_lives_gfx_"></div>'
         + '</div>'
         + '<div class="{_p_}-_shell_typebox_"></div>'
-        + '<div class="{_p_}-_shell_score_">'
-        + '<div class="{_p_}-_shell_score_label_">Score</div>'
-        + '<div class="{_p_}-_shell_score_int_"></div>'
+        +   '<div class="{_p_}-_shell_score_">'
+        +   '<div class="{_p_}-_shell_score_label_">Score</div>'
+        +   '<div class="{_p_}-_shell_score_int_"></div>'
         + '</div>'
       ),
       _bomb_html_  : pFn(
@@ -75,6 +75,8 @@ tb02._07_shell_ = (function ( $ ) {
       _fadeout_ms_    : 5000,
       _whoosh_ms_     : 1000
     },
+    stateMap = { _is_user_init_ : false },
+
     $Map, playSoundFn, animateExplodeFn
   ;
   // == . END MODULE SCOPE VARIABLES ==================================
@@ -86,6 +88,7 @@ tb02._07_shell_ = (function ( $ ) {
   // BEGIN DOM method /set$MapFn/
   function set$MapFn ( $body ) {
     var
+      $audio       = $body[ vMap._find_ ]( pFn( '.{_p_}-_shell_audio_' ) ),
       $hi_score    = $body[ vMap._find_ ]( pFn( '.{_p_}-_shell_hi_score_' ) ),
       $level       = $body[ vMap._find_ ]( pFn( '.{_p_}-_shell_level_' ) ),
       $lives       = $body[ vMap._find_ ]( pFn( '.{_p_}-_shell_lives_' ) ),
@@ -94,11 +97,12 @@ tb02._07_shell_ = (function ( $ ) {
       $title       = $body[ vMap._find_ ]( pFn( '.{_p_}-_shell_title_' ) ),
       $sell_fields = $( [
         $hi_score[ vMap._get_ ]( __0 ),
-        $title[ vMap._get_ ]( __0 ),
-        $subtext[ vMap._get_ ]( __0 )
+        $title[    vMap._get_ ]( __0 ),
+        $subtext[  vMap._get_ ]( __0 )
       ] );
 
     $Map = {
+      _$audio_       : $audio,
       _$body_        : $body,
       _$bg_svg_      : $body[ vMap._find_ ](
         pFn( '.{_p_}-_shell_bg_svg_' )
@@ -141,21 +145,20 @@ tb02._07_shell_ = (function ( $ ) {
       is_init_done    = false
       ;
 
-
     // BEGIN initSoundFn
     function initSoundFn () {
-      var i, name_count, sound_name;
+      var i, name_count, sound_name, sound_obj;
       if ( is_init_done ) { return; }
+      is_init_done = true;
 
       name_count = sound_name_list[ vMap._length_ ];
-
       for ( i = __0; i < name_count; i++ ) {
-        sound_name = sound_name_list[ i ];
-        sound_obj_map[ sound_name ] = new Audio(
-          'sound/' + sound_name + '.mp3'
-        );
+        sound_name    = sound_name_list[ i ];
+        sound_obj     = new Audio();
+        sound_obj.src = 'sound/' + sound_name + '.mp3';
+        sound_obj_map[ sound_name ] = sound_obj;
+        $Map._$audio_.append( sound_obj );
       }
-      is_init_done = true;
     }
     // . END initSoundFn
 
@@ -164,15 +167,24 @@ tb02._07_shell_ = (function ( $ ) {
       var sound_obj;
 
       // initialize if required
-      if ( ! is_init_done ) { initSoundFn(); }
+      if ( ! is_init_done ) {
+        return initSoundFn();
+      }
 
       sound_obj = sound_obj_map[ sound_name ];
       if ( !sound_obj ) {
-        throw '_sound_name_not_known_';
+        return logFn( '_error_', '_sound_not_found_', sound_name );
       }
 
+      if ( sound_obj.readyState !== 4 ) {
+        return logFn( '_notice_', '_sound_not_ready_', sound_name );
+      }
+
+      sound_obj.pause();
       sound_obj.currentTime = __0;
-      sound_obj.play();
+      return sound_obj.play().catch(function () {
+        logFn( '_error_', '_unexpected_audio_error_', arguments );
+      });
     }
     // . END play_sound_fn
 
@@ -234,6 +246,13 @@ tb02._07_shell_ = (function ( $ ) {
 
   // == BEGIN EVENT HANDLERS ==========================================
   // BEGIN browser-event handlers
+  function onClickBodyFn () {
+    if ( ! stateMap._is_user_init_ ) {
+      playSoundFn( 'click' );
+      stateMap._is_user_init_ = true;
+    }
+  }
+
   function onChangeLevelFn ( event_obj ) {
     var level_str = $( this )[ vMap._val_ ]();
     event_obj[ vMap._preventDefault_ ]();
@@ -446,8 +465,9 @@ tb02._07_shell_ = (function ( $ ) {
     set$MapFn( $body );
 
     // Begin browser event bindings
-    $body[ vMap._on_ ]( vMap._keypress_, onKeypressFn );
-    $body[ vMap._on_ ]( vMap._keydown_,  onKeydownFn  );
+    $body[ vMap._on_ ]( vMap._click_,    onClickBodyFn );
+    $body[ vMap._on_ ]( vMap._keypress_, onKeypressFn  );
+    $body[ vMap._on_ ]( vMap._keydown_,  onKeydownFn   );
     // . End browser event bindings
 
     // Begin model event bindings

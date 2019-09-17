@@ -7,7 +7,7 @@
  * Example : cp xhi-module-tmplt.js todo.07_01_shell_compass.js
  *
 */
-/*global xhi */
+/*global xhi*/
 // == BEGIN MODULE xhi._makeTmpltFn_ ===================================
 xhi._makeTmpltFn_ = function makeTmpltFn ( aMap ) {
   // == BEGIN MODULE SCOPE VARIABLES ===================================

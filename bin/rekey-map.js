@@ -4,7 +4,7 @@
 // used by core.js. Replace {XXX-config-matrix-XXX} with the
 // output of this file to test basic function.
 //
-/*global xhi,require, process*/
+/*global xhi*/
 'use strict';
 
 global[ 'xhi' ] = require( '../js/xhi/00_root.js' );

@@ -8,7 +8,7 @@
  * Requires : xhi._01_util_ instance in app_map
  *
 */
-/*global xhi */
+/*global xhi*/
 // == BEGIN MODULE xhi._05_02_css_base_ ===============================
 xhi._05_02_css_base_ = (function () {
   'use strict';

@@ -23,7 +23,7 @@ tb02._05_css_ = (function () {
 
     __p = __util._makeReplaceFn_( '_p_', aKey ),
     configMap = {
-      _base_list_ : [
+      _shell_list_ : [
         { _selector_str_ : __p( '*' ),
           _rule_map_     : {
             _box_sizing_        : '_border_box_',
@@ -260,6 +260,9 @@ tb02._05_css_ = (function () {
             _text_align_  : '_center_'
           }
         },
+        { _selector_str_ : __p( '.{_p_}-_shell_audio_' ),
+          _rule_map_     : { _display_ : '_none_' }
+        },
         { _selector_str_ : __p( '.{_p_}-_shell_bomb_' ),
           _rule_map_     : {
             _position_         : '_absolute_',
@@ -270,7 +273,7 @@ tb02._05_css_ = (function () {
             _border_width_     : '_d125rem_',
             _height_           : [ '1.25emm' ],
             _line_height_      : [ '1em' ],
-            _padding_          : [['_d25rem_', '_spc_rem_01_' ]],
+            _padding_          : [[ '_d25rem_', '_spc_rem_01_' ]],
             _font_family_      : '_font_family_mono_',
             _box_shadow_       : '_shdw_09_',
             _color_            : '_txt_inv_hex_',
@@ -312,8 +315,8 @@ tb02._05_css_ = (function () {
 
         _sub_  : 'sub',
 
-        __moz_none_           : '-moz-none',
-        _underscore_border_   : [[ '_d125rem_', '_solid_', '_txt_dk_hex_' ]]
+        __moz_none_         : '-moz-none',
+        _underscore_border_ : [[ '_d125rem_', '_solid_', '_txt_dk_hex_' ]]
       }
     },
     stateMap = {
@@ -483,7 +486,7 @@ tb02._05_css_ = (function () {
     xhiCSS._setVsheet_({
       _vsheet_id_     : '_shell_',
       _mode_str_      : '_add_',
-      _selector_list_ : configMap._base_list_
+      _selector_list_ : configMap._shell_list_
     });
 
     palette_map = initPaletteMap.call(

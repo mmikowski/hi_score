@@ -13,7 +13,7 @@
  *   - jQuery   (as xhiJQ )
  *   - PowerCSS (as xhiCSS)
 */
-/*global xhi, xhiJQ */
+/*global xhi, xhiJQ*/
 // == BEGIN MODULE xhi._07_shell_ ======================================
 xhi._07_shell_ = (function ( $ ) {
   function makeInstanceFn ( aMap, argOptionMap ) {

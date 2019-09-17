@@ -8,7 +8,7 @@
  * Requires : ---
  *
 */
-/*global xhi, module */
+/*global*/
 var xhi = {};
 // == BEGIN MODULE xhi._00_root_ =======================================
 xhi._00_root_ = (function () {
@@ -124,6 +124,7 @@ xhi._00_root_ = (function () {
       _show_            : 'show',
       _slice_           : 'slice',
       _sort_            : 'sort',
+      _space_           : ' ',
       _splice_          : 'splice',
       _split_           : 'split',
       _src_             : 'src',

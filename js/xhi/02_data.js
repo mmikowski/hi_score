@@ -104,9 +104,9 @@ xhi._02_data_ = ( function ( $ ) {
         cancelJqxhrList();
       }
       if ( smap && smap._fail_fn_ ) {
-        smap._fail_fn_( error_data, status_type );
+        return smap._fail_fn_( error_data, status_type );
       }
-      logFn( '_error_', '_xhr_failed_', error_data );
+      logFn( '_error_', '_unhandled_xhr_failed_', error_data );
     }
     // . END private method /onFailJqxhr/
 

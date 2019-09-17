@@ -8,7 +8,7 @@
  * Requires : aMap (app map) with symbols from 00_root._makeInstanceFn_()
  *
 */
-/*global xhi */
+/*global xhi*/
 // == BEGIN MODULE xhi._05_04_css_shell_ ==============================
 xhi._05_04_css_shell_ = (function () {
   'use strict';

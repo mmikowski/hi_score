@@ -13,7 +13,7 @@
  *   and should not rely on or expect 02_data to exist.
  *
 */
-/*global xhi */
+/*global xhi*/
 
 // == BEGIN MODULE xhi._02_01_data_mock_ ==============================
 xhi._02_01_mock_ = (function () {

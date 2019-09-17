@@ -626,7 +626,7 @@ function makeXhiObj () {
     build_rec_table  = state_matrix.build_rec_table  || [],
     stage_status_map = state_matrix.stage_status_map || {},
 
-    build_id = xhiUtilObj._makePadNumStr_( state_matrix.build_idx, 7 )
+    build_id = xhiUtilObj._makePadStr_( state_matrix.build_idx, 7, 0 )
     ;
 
   return {
