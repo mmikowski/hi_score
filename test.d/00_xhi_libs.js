@@ -2628,11 +2628,11 @@ function mergeMaps ( test_obj ) {
     attr0_list  = [ 'attr3' ],
     assert_table = [
       // [ arg_list, expect_data ]
-      [ [],                 {} ],
-      [ [ {}],              {} ],
-      [ [ __null ],         {} ],
-      [ [ __undef ],        {} ],
-      [ [ 1,2,3,4 ],        {} ],
+      [ [],                    {} ],
+      [ [ {}],                 {} ],
+      [ [ __null ],            {} ],
+      [ [ __undef ],           {} ],
+      [ [ 1,2,3,4 ],           {} ],
       [ [ __0,            __undef ],         {} ],
       [ [ __blank,             {} ],         {} ],
       [ [ base0_map,      __null  ],  base0_map ],
