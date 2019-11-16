@@ -1,0 +1,311 @@
+= Appendix B - Planning for stacks
+
+== Overview
+This document outlines the software stack used for each of five
+deployment environment. Significant care has been undertaken to ensure
+that the technologies used are as common as possible. This accelerates
+development, minimizes maintenance, and maximizes quality.
+
+All recommendations have been researched and confirmed available. The
+order presented is front-end to back.
+
+== Software stacks
+A collection of software called a stack because the software is often
+layered where the lower-level software has no integration with higher
+level software. An application, for example, may use Motif on X-windows
+on Linux 4.16.
+
+=== Back-end stack
+The software required to handle persistent data and associated business
+logic such as account information management and payment systems.
+
+=== Consumer device stack
+The systems and  software required for customers to run our client application
+on devices such as desktops, laptops, tablets, and phones. Generally this
+specifieds the device OSes and browsers supported.
+
+=== Client application stack
+The HTML5/CSS3/JS application delivered to and executed by the consumer. This
+runs on top of the Consumer device stack which specifies the OS and browser.
+This also includes the server software used to deliver the application such as
+the static and dynamic web content delivery and real-time messaging as
+required.
+
+=== Development environment stack
+Recommended software for developers of the four stacks.
+
+== Backend stack
+[cols=",,",]
+|=================================================
+|*Stack* |*Component* |*Purpose and justification*
+|*.EC2* |*Hosting* +
+Amazon EC2, Virginia data centre a|
+*
+*
+*
+*
+*
+
+a|
+*.EC2*
+
+*.Ubuntu*
+
+ a|
+**OS +
+**Ubuntu Server 16.04
+
+LTS
+
+ a|
+*
+*
+*
+*
+*
+*
+
+a|
+*.EC2*
+
+*.CWatch*
+
+ a|
+*Host monitor*
+
+https://aws.amazon.com/cloudwatch/[Cloud watch]
+
+ a|
+*
+*
+
+a|
+*.EC2*
+
+*.Ubuntu*
+
+*.Nagios*
+
+ |**Service monitor +
+**Nagios a|
+*
+*
+*
+*
+*
+*
+
+|*.TBD* |*Remote monitor* +
+TBD a|
+*
+
+a|
+*.EC2*
+
+*.Ubuntu*
+
+*.SQL*
+
+ a|
+**Database server**:
+
+PostGresQL
+
+ a|
+*
+*
+*
+*
+*
+
+a|
+*.EC2*
+
+*.Ubuntu*
+
+*.Mongo*
+
+ |**JSON IPC +
+**MongoDB server a|
+*
+*
+*
+*
+*
+*
+*
+*
+
+a|
+*.EC2*
+
+*.Ubuntu*
+
+*.NodeJS*
+
+ |**TCP Server +
+**NodeJS a|
+*
+*
+*
+*
+*
+
+a|
+*.EC2*
+
+*.Ubuntu*
+
+*.NodeJS*
+
+*.clusterjs*
+
+ |*Multiplexer: +
+clusterjs* a|
+*
+*
+*
+
+|=================================================
+
+=== Client stack
+[cols=",,",]
+|=================================================
+|*Stack* |*Component* |*Purpose and justification*
+a|
+ +
+
+*.browser*
+
+*.icon*
+
+ |*Symbol fonts* font-awesome a|
+Per `hi_score`
+
+Replace SVG icons with Font icons
+
+Saves enormous amounts of time
+
+Custom glyphs can be made using Inkscape
+
+a|
+*.browser*
+
+*.JQ*
+
+ a|
+*DOM management*
+
+jQuery
+
+ a|
+Per `hi_score`
+
+Tested, stable, standard
+
+a|
+*.browser*
+
+*.sans*
+
+ a|
+*Core font +
+ open-sans*
+
+*-fontface *
+
+ +
+
+ a|
+Per `hi_score`
+
+OSS pleasant, modern font
+
+a|
+*.browser*
+
+*.JQ*
+
+*.drag*
+
+ a|
+*Inertia scroll*
+
+jQuery plugin +
+* dragscroll *
+
+ |Per `hi_score`
+a|
+*.browser*
+
+*.JQ*
+
+*.gevent*
+
+ a|
+*Events*
+
+jQuery plugin
+
+*gevent*
+
+ |Per `hi_score`
+a|
+*.browser*
+
+*.scrolli*
+
+ a|
+*Scroll indicators*
+
+jQuery plugin
+
+ `scrolli `
+
+ |Per `hi_score`
+a|
+*.browser*
+
+*.uianchor*
+
+ a|
+*Client routing*
+
+jQuery plugin
+
+ `urianchor`
+
+ a|
+Per `hi_score`
+
+Features independent and dependent variables
+
+a|
+\.browser
+\.powercss
+
+ a|
+*Run-time styling*
+
+ `powercss`
+
+ a|
+Per `hi_score`
+
+http://powercss.org/[Run-time styling]
+
+Excellent theme support
+
+a|
+*.browser*
+
+*.powercss*
+
+ a|
+*In-memory data store*
+
+ `taffydb`
+
+ |Per `hi_score`
+|=================================================
+

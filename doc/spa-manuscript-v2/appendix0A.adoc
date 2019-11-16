@@ -1,0 +1,299 @@
+= Appendix A -- Create the development environment
+Doc Writer <mike.mikowski@gmail.com>
+:imagesdir: ../images
+:numbered:
+:source-highlighter: pigments
+
+[[create-the-development-environment]]
+== Create the Development Environment
+Web applications are built on top of many layers of software that would be
+impractical to write ourselves. Examples include the CPU instruction set,
+BIOS, network stack, graphics subsystem, window manager, web browser, and core
+JavaScript libraries.
+
+We recommend installing a Virtual Machine (VM) appliance to ensure a
+development experience consistent with this book. The following procedure
+should take 5-30 minutes depending on experience and download speed. When it
+is finished we will have a full-lifecycle SPA development environment and can
+build a distribution-ready SPA with a single command. Let's get started!
+
+[[prepare-the-operating-system]]
+== Prepare the Operating System
+
+We plan to deploy our software on AWS or Ubuntu Linux and need to develop in a
+compatible environment to minimize rework. One solution is to install and
+configure Ubuntu Linux on a computer and develop there. If this is an option
+for you, please see the link:#create-an-appliance[create an appliance] section
+to configure your OS.
+
+Theoretically one could install all the requirements installed on a Mac or
+Windows computer, but that's tedious at best. Instead, we suggest your
+install a Virtual Machine [VM] appliance. It's much easier, quicker, and less
+error-prone - even if Linux is your primary OS. The four popular software
+packages we can use to run the appliance include
+https://www.virtualbox.org/wiki/Downloads[VirtualBox (Linux, Mac, Windows)],
+https://www.vmware.com/products/workstation.html[VMware Workstation (Linux,
+Window)], https://www.vmware.com/products/fusion.html[VMware Fusion (Mac)], or
+https://www.parallels.com[Parallels]. If you have any of these installed you
+can skip to the next section.
+
+VirtualBox is the only freely available option and it works well for this
+purpose. Linux users can install it using their package manager as shown in
+Listing A.1.
+
+.Listing A.1
+[source,bash]
+----
+  # Install virtualbox in Ubuntu 16.04+
+  # Other distributions will be similar
+  sudo apt-get install virtualbox-qt
+----
+
+The other options will need to be purchased and installed according to their
+respective product pages listed above. After we have selected and installed a
+virtualization solution, we can proceed to install the appliance.
+
+[[install-the-vm-appliance]]
+== Install the VM Appliance
+Users of VirtualBox may download `ova` file available in
+http://michaelmikowski.com/ova/[this resources directory]. Users of other
+products should download the `disk1.zip` and `vmx` files instead. The `zip`
+file must be uncompressed to provide a `vmdk` file before proceeding.
+
+Users of VirtualBox may install the appliance by starting the application and
+selecting `File` > `Import appliance`. When prompted, select the downloaded
+`ova` file. Users of other products should be able to import the appliance
+using a similar procedure but selecting the `vmx` file.
+
+VirtualBox users may improve performance and host integration by installing
+the client additions software. Use the VirtualBox menu and select `Devices` >
+`Insert Guest Additions CD`. Then open a file manager and navigate to this
+virtual disk. Windows users should be able to double-click on
+`VBoxWindowsAdditions`. In Linux, we add Host integration as shown in Listing
+1.2.
+
+.Listing A.2
+[source,bash]
+----
+  cd /media/hi_score/VBOXADDITIONS*
+  sudo ./VBoxLinuxAdditions.run
+----
+
+We can now enable the shared clipboard using the VirtualBox menu: `Devices >
+Shared Clipboad > Bidirectional`. Reboot the VM to ensure all changes are
+enabled.
+
+[[configure-the-appliance]]
+== Configure the appliance
+Once we've started our virtual machine we may login as `hi_score/hi_score`.
+Please change the password to something secure immmediately as shown in
+Listing A.3.
+
+.Listing A.3
+[source,bash]
+----
+  # Change to something secure
+  sudo passwd hi_score
+----
+
+We then create an account on Github.com if we don't already have one and then
+generate an an `rsa` key-pair as shown in Listing A.4.
+
+.Listing A.4
+[source,bash]
+----
+  # Create key-pair
+  ssh-keygen -t rsa
+  # Accept defaults and press return when prompted for passphrase
+  cat .ssh/id_rsa.pub # The public key is shown below
+----
+
+Now let's paste the key text we just displayed in the terminal into our Github
+account. At the time of writing this was found on the Github website under
+`Setting` > `SSH and GPG keys` > `New SSH key`. Next, let's edit the
+`.gitignore` file to integrate with Github as shown in Listing A.4.
+
+.Listing A.5
+[source,bash]
+----
+  # Long-beard Unix freaks use this
+  vi ~/.gitconfig
+
+  # Neophytes use this
+  kate ~/.gitconfig
+----
+
+We should adjust the sections as shown in Listing A.6.
+
+[source,yaml]
+----
+[user]
+  name  = <First Last>
+  email = <email-used-for-github@domain.com>
+
+[github]
+  user = <github username>
+----
+
+[[create-a-new-project]]
+== Create a new project
+Let's create a new project that uses the `hi_score` starter project as a `git`
+upstream source. First create a new empty repository on Github and copy the
+`SSH` repository URL, which should look similar to
+`git@github.com:<user>/<repo_name>` and then proceed as shown in Listing A.6.
+
+.Listing A.6
+[source,bash]
+----
+  mkdir -p ~/Github
+  cd ~/Github
+
+  # Clone the empty repository
+  git clone git@github.com:<user>/<repo_name>
+  cd <repo_name>
+
+  # Create master branch
+  touch README.app-<namespace>.md
+  git add .
+  git commit -m 'First commit'
+  git push
+
+  # Verify origin
+  git remote -v
+  # origin  git@github.com:<user>/<repo_name>.git (fetch)
+  # origin  git@github.com:<user>/<repo_name>.git (push)
+
+  # Add upstream repository
+  git remote add upstream git@github.com:mmikowski/hi_score.git
+
+  # Verify upstream
+  git remote -v
+  # origin    git@github.com:<user>/<repo_name>.git (fetch)
+  # origin    git@github.com:<user>/<repo_name>.git (push)
+  # upstream  git@github.com:mmikowski/hi_score.git (fetch)
+  # upstream  git@github.com:mmikowski/hi_score.git (push)
+
+  # Merge changes from upstream and push to origin
+  git fetch upstream
+  git merge --allow-unrelated-histories upstream/master
+  git push
+
+----
+
+[[create-an-appliance]]
+== Create an appliance
+
+These are the steps necessary to install Kubuntu (Ubuntu with the KDE desktop)
+distribution, on a VirtualBox virtual machine. **This is not required** if we
+download and use the publicly available appliance link:#install-ova-image[as
+detailed above]. It is presented here only if we want to create our own image
+due to bandwidth or security concerns.
+
+* Configure a virtualbox with 30GB VDI disc that is Dynamically allocated,
+  4GB RAM, and two CPU threads. The RAM and CPU alottment may be adjusted later.
+* Install the latest Kubuntu ISO image and accept all defaults including
+  using all the the virtual disk space available (30GB).
+* Open a Konsole terminal and edit `Settings` > `Profiles`. Set a default
+  profile and change the font to Courier 10 Pitch, select `regular` as the
+  font style and `12pt` as the font size.
+* Update the OS
++
+[source,bash]
+----
+  sudo apt-get install wajig -y
+  sudo wajig update
+  sudo wajig upgrade
+  sudo reboot
+----
+* Install essentials and recommend libraries as shown below.
++
+[source,bash]
+----
+  sudo wajig install apt-file build-essential git \
+    htop kdiff3 libfile-slurp-perl \
+    liblist-moreutils-perl meld mysql-client mysql-server \
+    net-tools openssh-server pandoc pandoc-citeproc \
+    ppa-purge sysstat unzip vim-gtk vim-nox \
+    vim-syntax-gtk zip
+----
+* Set mysql root password set to <mysql_root> and store it to a password
+  manager, or write it down in a safe place. Do not write it on one of the
+  numerous sticky notes attached to the monitor corners.
+* Install nodejs and jslint as shown below.
++
+[source,bash]
+----
+  # Wait for this to complete
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+
+  # Wait for this to complete. Enter password if prompted.
+  sudo wajig update
+
+  # Wait for this to complete.
+  sudo wajig install nodejs -y
+
+  # Enter this to set node path
+  if ( ! echo "${NODE_PATH}" | grep '/usr/lib/node_modules' ); then
+    if [ -z "${NODE_PATH}" ]; then
+      export NODE_PATH=/usr/lib/modules;
+    else
+      export NODE_PATH=${NODE_PATH}:/usr/lib/modules;
+    fi
+    if ( ! grep -ril "/usr/lib/node_modules" /etc/profile ); then
+      echo "export NODE_PATH=${NODE_PATH}" |sudo tee -a /etc/profile
+    fi
+  fi
+----
+* Install mongodb 3.4.x as directed by their website.
+  IMPORTANT: Read the ulimit comments to improve mongo performance
+* Download and install google-chrome
+* Add large cursor: `System Settings` > `Workspace Theme` > `Cursor Theme`
+  > `Breeze Snow` and set the size to 48
+* Disable Splash screen:
+  `System Sttings` > `Workspace` > `Splash Screen` > `None`.
+* Set background
+  `System Settings` > `Startup and Shutdown` > `Background`.
+* Install Flash for Firefox when prompted
+* Install the graphics driver and guest service when prompted. Avoid
+  hardware-specific proprietary drivers such as Intel microcode as this
+  may hurt portability
+* Create a large zero file to sanitize the disk per the VMWare guidance
+  https://blogs.vmware.com/vapp/2009/10/delta-disk-support-in-ovf.html[VMware
+  guidance] by running  `dd if=/dev/zero of=zero.tmp && rm zero.tmp`.
+  Do NOT disable swap as this will require an additional step to use
+  the appliance properly. This alone reduced the exported `ova2` image
+  by 1.9 GB (from 5.1 to 3.2GB)!
+* Clear bash history `cat /dev/null > ~/.bash_history && history -c && exit`
+  as discussed on https://askubuntu.com/questions/191999[askubuntu.com]
+* Power-off the machine
+
+== Export an OVA2 image
+This image provides the best experience for Virtual Box users. After the
+virtual machine is stopped, select `File` > `Export Appliance` and export the
+image using the OVA Version 2 to `kubuntu-17.04-hi_score-002-ova2.ova` where
+we increment the `002` number for each release. Compressing the file with
+`zip` only reduces its size by 2%, so we discarded this step.
+
+== Create a VMX image
+This image is needed for Parallels and VMware users. After the virtual
+machine is stopped, select `File` > `Export Appliance` and export the image
+using the OVA Version 1. Convert this to a `VMX` file set using
+https://my.vmware.com/group/vmware/details?downloadGroup=OVFTOOL410&productId=491[VMWare
+OVF Tool]. Use the `--lax` option some minor errors don't stop processing. A
+conversion is shown below.
+
+[source,bash]
+----
+ovftool --lax kubuntu-17.04-hi_score-001-ova1.ova \
+  kubuntu-17.04-hi_score-001.vmx
+# Opening OVA source: kubuntu-17.04-hi_score-001-ova1.ova
+# Opening VMX target: kubuntu-17.04-hi_score-001.vmx
+# Warning:
+#  - Line 25: Unsupported hardware family 'virtualbox-2.2'.
+#  - Line 83: OVF hardware element 'ResourceType' with instance ID '7':
+#    No support for the virtual hardware device type '35'.
+# Writing VMX file: kubuntu-17.04-hi_score-001.vmx
+----
+
+Guidance on the `VMX` conversion is found in
+http://aspyct.org/blog/2012/08/17/open-ova-files-with-parallels/[this blog post from 2012]

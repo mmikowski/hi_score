@@ -1,0 +1,2036 @@
+= Create the Shell
+Doc Writer <mike.mikowski@gmail.com>
+:imagesdir: ../images
+:numbered:
+:source-highlighter: pigments
+:listing-caption: Listing
+
+== Purpose
+This chapter covers
+
+- The Shell module role and responsibilities in our architecture
+- Using the Shell as a staging area 
+- Using the anchor interface pattern to manage application state
+
+.SIDBAR: Do you know?
+****
+
+****
+
+== Grok the Shell
+_The Shell Module_ is a central and required component of our architecture.
+It works with the _feature modules_, the business logic, and universal browser
+interfaces (like the URI or cookies) to coordinate the application display
+state. When the user clicks the Back button, signs in, or does anything else
+that changes the bookmark-able state of the application, the Shell coordinates
+the change.
+
+We can compare the role of the Shell module to the shell of an airplane.
+_An airplane's shell_ (also called the monocoque or airframe) provides shape
+and structure to the vehicle. Assemblies like the seats, tray tables, and the
+engines are attached to it using various fasteners. All assemblies are built
+to work as independently as possible because nobody likes it a passenger opens
+a tray table and that causes the jet to bank hard to the right.
+
+_The Shell module_ provides shape and structure to our application display
+state.  Feature modules like chat, sign-in, and navigation are "attached" to
+our Shell with APIs. All feature modules are built to work as independently as
+possible because nobody like it when a user clicks on a button and the browser
+crashes.
+
+Those of you comfortable with the Model-View-Controller (MVC) architecture may
+consider the Shell the master controller, as it coordinates the controllers of
+all the subordinate feature modules.
+
+
+The Shell is responsible for the following:
+- Handling universal browser interfaces like the location bar, bookmarks,
+  history, cookies, window resizing, or page scrolling.
+- Coordinating with feature modules
+- Coordinating with the business logic layer
+- Determining the display state
+
+////
+We create a page layout that contains placeholders for our
+features and then add our first feature module to display user keystrokes.
+close the slider. Finally, we use the URI anchor as our state API using
+the _anchor interface pattern_. This provides users the browser
+controls they expects—controls like Forward and Back buttons, browser
+history, and bookmarks.
+
+By the end of this chapter we’ll have built the foundation for a
+scalable and manageable SPA. But let’s not get too far ahead of
+ourselves. First we must understand the Shell.
+
+The Shell is just one piece of an architecture which we refined over
+many commercial projects. This architecture—and where the Shell fits
+in—is shown in figure link:#_1276_13927_2353a[figure_title].
+
+image:figures/ch03/architecture.png[The Shell in our SPA architecture]
+
+The next chapter will detail the coordination of feature modules. This
+chapter covers rendering the feature containers and managing application
+state. First let’s prepare our files and namespaces.
+
+[[_1276_13927_2371]]
+Set up the files and namespaces
+-------------------------------
+
+namespacesin Shell moduleoverviewShell modulenamespaces inoverviewWe’ll
+set up our files and namespaces according to the code standards found in
+appendix A. In particular, we’ll have one JavaScript file per JavaScript
+namespace, and use self-executing anonymous functions to prevent
+pollution of the global namespace. We’ll also set up CSS files in a
+parallel structure. This convention speeds development, improves
+quality, and eases maintenance. Its value increases as we add more
+modules and developers to the project.
+
+[[_1276_13927_2373]]
+Create the file structure
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We’ve selected `spa` for the root namespace of our application. We
+synchronize the JavaScript and CSS file names, the JavaScript namespace,
+and the CSS selector names. This makes it much easier to track which
+JavaScript goes with which CSS.
+
+[[_1276_13927_2376]]
+Plan the directories and files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+file structurefor Shell moduleShell modulefile structure forWeb
+developers often place their HTML file in a directory and then place
+their CSS and JavaScript in subdirectories. We see no reason to break
+convention. Let’s create the directories and files as shown in listing
+link:#_1276_13927_2379[example_title]:
+
+....
+spa 
+  +-- css 
+  |   +-- spa.css
+  |   `-- spa.shell.css
+  +-- js 
+  |   +-- jq 
+  |   +-- spa.js 
+  |   `-- spa.shell.js 
+  +-- layout.html
+  `-- spa.html 
+....
+
+* spa directory`spa` is our root directory and our root namespace.
+* css directory`css` is the directory that contains all of our
+stylesheet files.
+* js directory`js` is the directory that contains all our JavaScript
+files.
+* js/jq directory`js/jq` is the directory that contains jQuery
+JavaScript files, including plugins.
+* `spa.js` provides our root JavaScript namespace, `spa`. This has a
+corresponding stylesheet at `css/spa.css`.
+* `spa.shell.js` provides the Shell namespace, `spa.shell`. This has a
+corresponding stylesheet at `css/spa.shell.css`.
+* `spa.html` is the file read by the browser to run our SPA.
+
+Now that we have the basics in place, let’s get jQuery installed.
+
+[[_1276_13927_2397]]
+Install jQuery and a plugin
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+jQueryfor Shell moduleShell modulejQuery filesjQuery and its plugins are
+often offered as either minified or regular files. We almost always
+install the regular files because this helps in debugging, and we
+minimize as part of our build system anyway. Don’t worry about what they
+do yet—we’ll get to that later in the chapter.
+
+jQuerydownloadingThe jQuery library provides useful cross-platform DOM
+manipulation and other utilities. We’re using version 1.9.1, which is
+available from http://docs.jquery.com/Downloading_jQuery. Let’s place it
+in our jQuery directory:
+
+....
+...
+  +-- js
+  |   +-- jq
+  |   |   +-- jquery-1.9.1.js
+  ...
+....
+
+The jQuery uriAnchor plugin`uriAnchor` plugin provides utilities to
+manage the anchor component of the URI. It’s available from github at
+https://github.com/mmikowski/urianchor. Let’s place it in the same
+jQuery directory:
+
+....
+...
+  +-- js
+  |   +-- jq
+  |   |   +-- jquery.uriAnchor-1.1.3.js
+  ...
+....
+
+Our files and directories should now look like listing
+link:#_1276_13927_2413[example_title]:
+
+....
+spa
+  +-- css
+  |   +-- spa.css
+  |   `-- spa.shell.css
+  +-- js
+  |   +-- jq
+  |   |   +-- jquery-1.9.1.js
+  |   |   `-- jquery.uriAnchor-1.1.3.js
+  |   +-- spa.js
+  |   `-- spa.shell.js
+  +-- layout.html
+  `-- spa.html
+....
+
+Now that we have all of our files in place, it’s time to start writing
+some HTML, CSS, and JavaScript.
+
+[[_1276_13927_2416]]
+Write the application HTML
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Shell moduleapplication HTML fileWhen we open our browser document
+(`spa/spa.html`) we can bask in all the SPA goodness we’ve wrought so
+far. Of course, because this is an empty file, the goodness provided is
+limited to a bug-free, highly secure blank page that does absolutely
+nothing. Let’s change the “blank page” part.
+
+The browser document (`spa/spa.html`) will always remain small. Its only
+role is to load libraries and stylesheets, and then start our
+application. Let’s fire up our favorite text editor and add all the code
+we’ll need to get through this chapter, as shown in listing
+link:#_1276_13927_2420[example_title]:
+
+....
+<!doctype html>
+<html>
+<head>
+  <title>SPA Starter</title>
+
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="css/spa.css" type="text/css"/>
+  <link rel="stylesheet" href="css/spa.shell.css" type="text/css"/>
+
+  <!-- third-party javascript -->
+  <script src="js/jq/jquery-1.9.1.js"          ></script>
+  <script src="js/jq/jquery.uriAnchor-1.1.3.js"></script>
+
+  <!-- our javascript -->
+  <script src="js/spa.js"      ></script>
+  <script src="js/spa.shell.js"></script>
+  <script>
+    $(function () { spa.initModule( $('#spa') ); });
+  </script>
+
+</head>
+<body>
+<div id="spa"></div>
+</body>
+</html>
+....
+
+* Load stylesheets first. This optimizes performance. If we add
+third-party stylesheets, we should load them first.
+* Load third-party JavaScript next. At present, the only third-party
+scripts we’re loading are jQuery and the plugin for anchor manipulation.
+* Load our JavaScript libraries are next in order of namespace depth.
+This is important, because our namespace object `spa` must be defined
+before we can define its children, for example, `spa.shell`.
+* Initialize the application once the DOM is ready. Those familiar with
+jQuery will notice our code uses shorthand, as `$(function (...`
+could’ve been written as `$(document).ready(function (...`
+
+script elementlocation ofThe performance conscious developers in the
+audience might ask “why don’t we put scripts at the end of the `body`
+container like traditional web pages?” That is a fair question, because
+this usually allows the page to render faster, as static HTML and CSS
+can be displayed before the JavaScript finishes loading. SPAs don’t work
+like that, though. They generate the HTML with JavaScript, and therefore
+placing the scripts outside the header doesn’t result in faster
+rendering. Instead, we keep all of the external scripts in the head
+element`head` section to improve organization and legibility.
+
+[[_1276_13927_2434]]
+Create the root CSS namespace
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+namespacesin Shell moduleroot CSS namespaceroot CSS namespacein Shell
+moduleShell modulenamespaces inroot CSS namespaceOur root namespace is
+`spa`, and per our convention from appendix A our root stylesheet should
+be called `spa/css/spa.css`. We previously created this file, but now
+it’s time to populate it. Because this is our root stylesheet, it’ll
+have a few more sections than our other CSS files. Let’s again use our
+favorite text editor to add the rules we need as shown in listing
+link:#_1276_13927_2437[example_title]:
+
+....
+/*
+ * spa.css
+ * Root namespace styles
+*/
+
+/** Begin reset */
+  * {
+    margin  : 0;
+    padding : 0;
+    -webkit-box-sizing : border-box;
+    -moz-box-sizing    : border-box;
+    box-sizing         : border-box;
+  }
+  h1,h2,h3,h4,h5,h6,p { margin-bottom : 10px; }
+  ol,ul,dl { list-style-position : inside;}
+/** End reset */
+
+/** Begin standard selectors */
+  body {
+    font : 13px 'Trebuchet MS', Verdana, Helvetica, Arial, sans-serif;
+    color            : #444;
+    background-color : #888;
+  }
+  a { text-decoration : none; }
+    a:link, a:visited { color : inherit; }
+    a:hover { text-decoration: underline; }
+
+  strong {
+    font-weight : 800;
+    color       : #000;
+  }
+/** End standard selectors */
+
+/** Begin spa namespace selectors */
+  #spa {
+    position : absolute;
+    top      : 8px;
+    left     : 8px;
+    bottom   : 8px;
+    right    : 8px;
+
+    min-height : 500px;
+    min-width  : 500px;
+    overflow   : hidden;
+
+    background-color : #fff;
+    border-radius    : 0 8px 0 8px;
+  }
+/** End spa namespace selectors */
+
+/** Begin utility selectors */
+  .spa-x-select {}
+  .spa-x-clearfloat {
+    height     : 0      !important;
+    float      : none   !important;
+    visibility : hidden !important;
+    clear      : both   !important;
+  }
+/** End utility selectors */
+....
+
+* Reset most selectors. We don’t trust browser defaults. CSS authors
+will recognize this as a common practice, though not without
+controversy.
+* Adjust standard selectors. We again don’t trust browser defaults, and
+because we want to ensure a common look across the application for
+certain types of elements. These can—and will—be adjusted by more
+specific selectors in other files.
+* Define namespace selectors. Generally, this is the selector for an
+element using the root name, for example, `#spa`.
+* Provide utility selectors for use across all other modules. These are
+prefixed with `spa-x-`.
+
+Per our code standards, all CSS IDs and class names in this file are
+proceeded by the `spa-` prefix. Now that we’ve created the root
+application CSS, we’ll create the corresponding JavaScript namespace.
+
+[[_1276_13927_2446]]
+Create the root JavaScript namespace
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+namespacesin Shell moduleroot JavaScript namespaceroot JavaScript
+namespacein Shell moduleShell modulenamespaces inroot JavaScript
+namespaceOur root namespace is `spa`, and per our convention from
+appendix A our root JavaScript should be called `spa/js/spa.js`. The
+minimal JavaScript required is `var spa = {};`. But, we want to add a
+method to initialize the application, and we want to ensure that the
+code will pass JSLint. We can use the template from appendix A and pare
+it down because we don’t need all the sections. Let’s open the file with
+our second-most-favorite text editor and populate it as shown in listing
+link:#_1276_13927_2449[example_title]:
+
+....
+/*
+ * spa.js
+ * Root namespace module
+*/
+
+/*jslint           browser : true,   continue : true,
+  devel  : true,    indent : 2,       maxerr  : 50,
+  newcap : true,     nomen : true,   plusplus : true,
+  regexp : true,    sloppy : true,       vars : false,
+  white  : true
+*/
+/*global $, spa */
+
+var spa = (function () {
+  var initModule = function ( $container ) {
+    $container.html(
+      '<h1 style="display:inline-block; margin:25px;">'
+        + 'hello world!'
+      + '</h1>'
+    );
+  };
+  
+  return { initModule: initModule };
+}());
+....
+
+* Set JSLint switches per the module template in appendix A.
+* JSLint toolvariables inTell JSLint to expect the `spa` and `$` global
+variables. If we find ourselves adding our own variables to this list
+after `spa`, we’re probably doing something wrong.
+* Use the module pattern from chapter 2 to create our “spa” namespace.
+This module exports one method, initModule function`initModule`, which,
+as the name suggests, is a function that initializes the application.
+
+We want to ensure our code doesn’t have any common errors or bad
+practices. Appendix A shows how to install and run the valuable JSLint
+utility, which does just that. It describes what all the
+`/*jslint ... */` switches at the top of our files mean. Besides the
+appendix, we also discuss JSLint further in chapter 5.
+
+Let’s check our code by typing `jslint`` spa/js/spa.js` at the command
+line—we shouldn’t see any warnings or errors. We can now open our
+browser document (`spa/spa.html`) and see the contract-mandated “hello
+world” demonstration as shown in figure
+link:#_1276_13927_2461[figure_title].
+
+image:figures/ch03/hello_world.png[Obligatory “hello world” screenshot]
+
+Now that we’ve greeted the world and are emboldened by the savory flavor
+of success, let’s embark on a more ambitious quest. In the next section,
+we start building our first “real-world” SPA.
+
+[[_1276_13927_2466]]
+Create the feature containers
+-----------------------------
+
+feature containersoverviewShell modulefeature containersoverviewThe
+Shell creates and manages the containers our feature modules will use.
+Our chat slider container, for example, will follow popular convention
+and be anchored on the bottom right of the browser window. The Shell is
+responsible for the slider container, but won’t manage the behavior
+inside of the container—that’s reserved for the chat feature module,
+which we’ll discussed in chapter 6.
+
+Let’s place our chat slider in an layout that’s relatively complete.
+Figure link:#_1276_13927_2470[figure_title] shows a wireframe of the
+containers we’d like to see.
+
+image:figures/ch03/wf_layout.png[Application containers wireframe]
+
+Of course, this is only a wireframe. We need to convert this into HTML
+and CSS. Let’s discuss how we might do that.
+
+[[_1276_28280_603]]
+Pick a strategy
+~~~~~~~~~~~~~~~
+
+We’ll develop the HTML and CSS for our feature containers in single
+layout document file at `spa/layout.html`. Only after we’ve tweaked our
+containers to our liking will we move the code to the Shell’s CSS and
+JavaScript files. This approach is usually the fastest and most
+efficient means to develop the initial layout because we can proceed
+without worrying about interaction most other code.
+
+First we’ll write the HTML, and then later we’ll add the styles.
+
+[[_1276_13927_2475]]
+Write the Shell HTML
+~~~~~~~~~~~~~~~~~~~~
+
+feature containersShell HTMLShell modulefeature containersShell HTMLOne
+great feature of HTML5 and CSS3 is that we really _can_ separate styling
+from the content. The wireframe shows the containers we want and how
+they’ll be nested. This is all we need to write the HTML for our
+containers with confidence. Let’s open our layout document
+(`spa/layout.html`), and enter the HTML shown in listing
+link:#_1276_13927_2496[example_title]:
+
+....
+<!doctype html>
+  <html>
+  <head>
+    <title>HTML Layout</title>
+    <link rel="stylesheet" href="css/spa.css" type="text/css"/>
+  </head>
+  <body>
+    <div id="spa">
+      <div class="spa-shell-head">
+        <div class="spa-shell-head-logo"></div>
+        <div class="spa-shell-head-acct"></div>
+        <div class="spa-shell-head-search"></div>
+      </div>
+      <div class="spa-shell-main">
+        <div class="spa-shell-main-nav"></div>
+        <div class="spa-shell-main-content"></div>
+      </div>
+      <div class="spa-shell-foot"></div>
+      <div class="spa-shell-chat"></div>
+      <div class="spa-shell-modal"></div>
+    </div>
+  </body>
+  </html>
+....
+
+* Nest the `logo`, the account settings (`acct`), and the `search` box
+inside of the `head` container.
+* Place the navigation (`nav`) and `content` containers inside the
+`main` container.
+* Create a `footer` container.
+* Anchor the `chat` container to the bottom right of the outer
+container.
+* Create a `modal` container that floats above other content.
+
+Tidy toolNow we should validate the HTML to ensure it’s without error.
+We like to use the venerable Tidy tool, which can find missing tags and
+other common HTML errors. You can find Tidy online at
+http://infohound.net/tidy/, or download the source at
+http://tidy.sourceforge.net/. If you’re using a Linux distribution like
+Ubuntu or Fedora, Tidy is probably readily available in the standard
+software repositories. Now let’s give these containers some style.
+
+[[_1276_13927_2501]]
+Write the Shell CSS
+~~~~~~~~~~~~~~~~~~~
+
+CSS (Cascading Style Sheets)for Shell modulefeature containersShell
+CSSliquid layoutShell modulefeature containersShell CSSWe’ll write our
+CSS to provide a _liquid layout_ where the width and height of our
+content will adjust to fill the browser window at all but the most
+extreme sizes. We’ll give our feature containers background colors so we
+can easily see them. We’ll also avoid any borders, because they can
+change the size of the CSS boxes. This introduces unwanted tedium into
+our rapid prototype process. Once we’re happy with the presentation of
+our containers, we can return to add borders as necessary.
+
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+*Note*
+
+As our layout grows more complex, we may need to use JavaScript to
+provide its __liquidity__. Often a window resize event handler is used
+to determine the browser window size and then recalculate and apply new
+CSS dimensions. We illustrate this technique in chapter 4.
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+Let’s add the CSS to the `<head>` section of our layout document
+(`spa/layout.html`). We can place it right after the `spa.css`
+stylesheet link as shown in listing
+link:#_1276_13927_2509[example_title]. All changes are shown in
+**bold**:
+
+....
+...
+  <head>
+    <title>HTML Layout</title>
+    <link rel="stylesheet" href="css/spa.css" type="text/css"/>
+    <style>
+      .spa-shell-head, .spa-shell-head-logo, .spa-shell-head-acct,
+      .spa-shell-head-search, .spa-shell-main, .spa-shell-main-nav,
+      .spa-shell-main-content, .spa-shell-foot, .spa-shell-chat,
+      .spa-shell-modal {
+        position : absolute;
+      }
+      .spa-shell-head {
+        top    : 0;
+        left   : 0;
+        right  : 0;
+        height : 40px;
+      }
+      .spa-shell-head-logo {
+        top        : 4px;
+        left       : 4px;
+        height     : 32px;
+        width      : 128px;
+        background : orange;
+      }
+      .spa-shell-head-acct {
+        top        : 4px;
+        right      : 0;
+        width      : 64px;
+        height     : 32px;
+        background : green;
+      }
+      .spa-shell-head-search {
+        top        : 4px;
+        right      : 64px;
+        width      : 248px;
+        height     : 32px;
+        background : blue;
+      }
+
+      .spa-shell-main {
+        top    : 40px;
+        left   : 0;
+        bottom : 40px;
+        right  : 0;
+      }
+      .spa-shell-main-content,
+      .spa-shell-main-nav {
+        top    : 0;
+        bottom : 0;
+      }
+      .spa-shell-main-nav {
+        width  : 250px;
+        background : #eee;
+      }
+        .spa-x-closed .spa-shell-main-nav {
+          width  : 0;
+        }
+
+      .spa-shell-main-content {
+        left  : 250px;
+        right : 0;
+        background : #ddd;
+      }
+        .spa-x-closed .spa-shell-main-content {
+          left : 0;
+        }
+
+      .spa-shell-foot {
+        bottom : 0;
+        left   : 0;
+        right  : 0;
+        height : 40px;
+      }
+      .spa-shell-chat {
+        bottom     : 0;
+        right      : 0;
+        width      : 300px;
+        height     : 15px;
+        background : red;
+        z-index    : 1;
+      }
+      .spa-shell-modal {
+        margin-top    : -200px;
+        margin-left   : -200px;
+        top           : 50%;
+        left          : 50%;
+        width         : 400px;
+        height        : 400px;
+        background    : #fff;
+        border-radius : 3px;
+        z-index       : 2;
+      }
+    </style>
+  </head>
+...
+....
+
+When we open our browser document (`spa/layout.html`) we should see a
+page looks amazingly similar to our wireframe, as shown in figure
+link:#_1276_13927_2515[figure_title]. When we resize the browser window,
+we can see the feature containers also resize as needed. Our liquid
+layout does have a limitation—if we make the width or height less than
+500 pixels, scrollbars are shown. We do this because we can’t squeeze
+our content below this size.
+
+image:figures/ch03/layout.png[HTML and CSS for
+containers—`spa/layout.html`]
+
+We can use Chrome Developer Tools to try out some of our newly defined
+styles that aren’t used in the initial display. For example, let’s add
+the class `spa-x-closed` to the `spa-shell-main` container. This will
+close the navigation bar on the left of the page. Removing the class
+will return the navigation bar, as shown in figure
+link:#_1276_13927_2515a[figure_title].
+
+image:figures/ch03/added_class.png[Double-click in the HTML to add a
+class in Chrome Developer Tools]
+
+[[_1276_13927_2523]]
+Render the feature containers
+-----------------------------
+
+The layout document (`spa/layout.html`) we created is a nice foundation.
+Now we’re going to use it in our SPA. The first step is to have the
+Shell render the containers instead of using static HTML and CSS.
+
+[[_1276_13927_2526]]
+Convert the HTML to JavaScript
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+feature containersclosuresHTML (Hypertext Markup Language)converting to
+JavaScriptJavaScriptconverting HTML toShell modulefeature
+containersconverting HTML to JavaScriptWe’ll need our JavaScript to
+manage all our document changes, therefore we need to convert the HTML
+developed earlier into a JavaScript string. We’ll keep the HTML
+indentation to ease legibility and maintainability as shown in listing
+link:#_1276_13927_2529[example_title]:
+
+....
+  var main_html = String()
+    + '<div class="spa-shell-head">'
+      + '<div class="spa-shell-head-logo"></div>'
+      + '<div class="spa-shell-head-acct"></div>'
+      + '<div class="spa-shell-head-search"></div>'
+    + '</div>'
+    + '<div class="spa-shell-main">'
+      + '<div class="spa-shell-main-nav"></div>'
+      + '<div class="spa-shell-main-content"></div>'
+    + '</div>'
+    + '<div class="spa-shell-foot"></div>'
+    + '<div class="spa-shell-chat"></div>'
+    + '<div class="spa-shell-modal"></div>';
+....
+
+We aren’t worried about any performance penalty of concatenated strings.
+Once we get to production, the JavaScript minifier will join the string
+for us.
+
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+*Tip*
+
+IDE (Integrated Development Environment)Integrated Development
+Environment (IDE)text editorsvim editorA professional developer should
+be using a professional-grade text editor or IDE. Most of these have
+regular expression and macro support. We should be able automate
+converting HTML into a JavaScript string. For example, the venerable
+`vim` editor can configured so that two keystrokes will format HTML into
+a JavaScript concatenated string. We can add the following to our
+`~/.vimrc` file:
+
+`vmap <silent> ;h :s?^\(\s*\)+
+            '\([^']\+\)',*\s*$?\1\2?g<CR> `
+
+`vmap <silent> ;q
+            :s?^\(\s*\)\(.*\)\s*$?    \1 + '\2'?<CR>`
+
+Once we restart vim, we can visually select the HTML to change. When we
+press `;q` the selection will be formatted; when we press `;h` we will
+undo the format.
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+[[_1276_13927_2539]]
+Add an HTML template to our JavaScript
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+feature containersadding HTML templateHTML (Hypertext Markup
+Language)template for feature containersShell modulefeature
+containersadding HTML templateIt’s now time to take a bold step and
+create our Shell. When we initialize the Shell, we’d like to have it
+fill the page element of our choice with the feature containers. While
+we’re at it, we’d like to cache the jQuery collection objects. We can
+use the module template from appendix A along with the JavaScript string
+we just created to accomplish this. Let’s fire up our text editor and
+create the file as shown in listing
+link:#_1276_13927_2542[example_title]. Please pay careful attention to
+the annotations, as they provide useful details:
+
+....
+/*
+ * spa.shell.js
+ * Shell module for SPA
+*/
+
+/*jslint         browser : true, continue : true,
+  devel  : true, indent  : 2,    maxerr   : 50,
+  newcap : true, nomen   : true, plusplus : true,
+  regexp : true, sloppy  : true, vars     : false,
+  white  : true
+*/
+/*global $, spa */
+
+spa.shell = (function () {
+  //---------------- BEGIN MODULE SCOPE VARIABLES --------------
+  var
+    configMap = {
+      main_html : String()
+        + '<div class="spa-shell-head">'
+          + '<div class="spa-shell-head-logo"></div>'
+          + '<div class="spa-shell-head-acct"></div>'
+          + '<div class="spa-shell-head-search"></div>'
+        + '</div>'
+        + '<div class="spa-shell-main">'
+          + '<div class="spa-shell-main-nav"></div>'
+          + '<div class="spa-shell-main-content"></div>'
+        + '</div>'
+        + '<div class="spa-shell-foot"></div>'
+        + '<div class="spa-shell-chat"></div>'
+        + '<div class="spa-shell-modal"></div>'
+    },
+    stateMap  = { $container : null },
+    jqueryMap = {},
+
+    setJqueryMap, initModule;
+  //----------------- END MODULE SCOPE VARIABLES ---------------
+
+  //-------------------- BEGIN UTILITY METHODS -----------------
+  //--------------------- END UTILITY METHODS ------------------
+
+  //--------------------- BEGIN DOM METHODS --------------------
+  // Begin DOM method /setJqueryMap/
+  setJqueryMap = function () {
+    var $container = stateMap.$container;
+    jqueryMap = { $container : $container };
+  };
+  // End DOM method /setJqueryMap/
+  //--------------------- END DOM METHODS ----------------------
+
+  //------------------- BEGIN EVENT HANDLERS -------------------
+  //-------------------- END EVENT HANDLERS --------------------
+
+  //------------------- BEGIN PUBLIC METHODS -------------------
+  // Begin Public method /initModule/
+  initModule = function ( $container ) {
+    stateMap.$container = $container;
+    $container.html( configMap.main_html );
+    setJqueryMap();
+  };
+  // End PUBLIC method /initModule/
+
+  return { initModule : initModule };
+  //------------------- END PUBLIC METHODS ---------------------
+}());
+....
+
+* Declare all variables that are available across the
+namespace—`spa.shell` in this case—in the “Module Scope” section. See
+appendix A for a complete discussion of this and other sections in the
+template.
+* Place static configuration values in configMap variable`configMap`.
+* Indent HTML strings. This aids comprehension and eases maintenance.
+* Place dynamic information shared across the module in `stateMap`.
+* Cache jQuery collections in `jqueryMap`.
+* Declare all module scope variables in this section. Many are assigned
+later.
+* Reserve the “Utility Methods” section for functions that don’t
+interact with page elements. At present we don’t have any utilities, so
+this section is a placeholder.
+* Place functions that create and manipulate page elements in the “DOM
+Methods” section.
+* Use `setJqueryMap` to cache jQuery collections. This function should
+be in almost every shell and feature module we write. The use of the
+`jqueryMap` cache can greatly reduce the number of jQuery document
+transversals and improve performance.
+* Place functions used as jQuery event handlers in the “Event Handlers”
+section. At present we don’t have any event handlers, so this section is
+a placeholder.
+* Place publicly available methods in the “Public Methods” section. If
+we want to export a DOM method, for example, we should create a wrapper
+here that provides a public interface.
+* Create the initModule function`initModule` public method, which will
+be used to initialize the module. Chapter 4 will detail configuration
+and initialization.
+* Export public methods explicitly by returning them in a map. At
+present only `initModule` is available.
+
+Now we have a module that renders the feature containers, but we still
+have to populate the CSS file and instruct the root namespace module
+(`spa/js/spa.js`) to use the Shell module (`spa/js/spa.shell.js`)
+instead of presenting the time-honored “hello world” text. Let’s get to
+it.
+
+[[_1276_13927_2551]]
+Write the Shell stylesheet
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CSS (Cascading Style Sheets)for Shell modulefeature containersShell
+CSSShell modulefeature containersShell CSSUsing our handy namespacing
+conventions presented in appendix A, we know we need to put our
+`spa-shell-*` selectors to a file named `spa/css/spa.shell.css`. We can
+copy the CSS we developed in `spa/layout.html` directly into that file,
+as shown in listing link:#_1276_13927_2554[example_title]:
+
+....
+/*
+ * spa.shell.css
+ * Shell styles
+*/
+
+.spa-shell-head, .spa-shell-head-logo, .spa-shell-head-acct,
+.spa-shell-head-search, .spa-shell-main, .spa-shell-main-nav,
+.spa-shell-main-content, .spa-shell-foot, .spa-shell-chat,
+.spa-shell-modal {
+  position : absolute;
+}
+.spa-shell-head {
+  top    : 0;
+  left   : 0;
+  right  : 0;
+  height : 40px;
+}
+.spa-shell-head-logo {
+  top        : 4px;
+  left       : 4px;
+  height     : 32px;
+  width      : 128px;
+  background : orange;
+}
+.spa-shell-head-acct {
+  top        : 4px;
+  right      : 0;
+  width      : 64px;
+  height     : 32px;
+  background : green;
+}
+.spa-shell-head-search {
+  top        : 4px;
+  right      : 64px;
+  width      : 248px;
+  height     : 32px;
+  background : blue;
+}
+
+.spa-shell-main {
+  top    : 40px;
+  left   : 0;
+  bottom : 40px;
+  right  : 0;
+}
+.spa-shell-main-content,
+.spa-shell-main-nav {
+  top    : 0;
+  bottom : 0;
+}
+.spa-shell-main-nav {
+  width  : 250px;
+  background : #eee;
+}
+  .spa-x-closed .spa-shell-main-nav {
+    width  : 0;
+  }
+
+.spa-shell-main-content {
+  left  : 250px;
+  right : 0;
+  background : #ddd;
+}
+  .spa-x-closed .spa-shell-main-content {
+    left : 0;
+  }
+
+.spa-shell-foot {
+  bottom : 0;
+  left   : 0;
+  right  : 0;
+  height : 40px;
+}
+.spa-shell-chat {
+  bottom     : 0;
+  right      : 0;
+  width      : 300px;
+  height     : 15px;
+  background : red;
+  z-index    : 1;
+}
+.spa-shell-modal {
+  margin-top    : -200px;
+  margin-left   : -200px;
+  top           : 50%;
+  left          : 50%;
+  width         : 400px;
+  height        : 400px;
+  background    : #fff;
+  border-radius : 3px;
+  z-index       : 2;
+}
+....
+
+* Define shared CSS rules.
+* Use the parent classes to affect child elements. This is perhaps one
+of most powerful capabilities of CSS, and not used nearly often enough.
+* Indent derived selectors and place immediately below the parent
+selector. _Derived selectors_ are selectors clearly dependent on a
+parent for meaning.
+
+All Selectors have the `spa-shell-` prefix. This has multiple benefits:
+
+* It shows that these classes are controlled by the Shell module
+(`spa/js/spa.shell.js`).
+* It prevents namespace collisions with third-party scripts and our
+other modules.
+* When we’re debugging and inspecting the document HTML, we can see
+immediately which JavaScript modules control which elements.
+
+All of these benefits prevent us from descending into the fiery depths
+of CSS-selector-name-goulash hell. Anyone who’s ever managed stylesheets
+on even a moderate scale should know exactly what we’re talking about.
+
+[[_1276_13927_2571]]
+Direct the application to use the Shell
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+feature containersdirecting application to use ShellShell modulefeature
+containersdirecting application to use ShellNow let’s modify our root
+namespace module (`spa/js/spa.js`) to use the Shell instead of slavishly
+copying “hello world” into the DOM. The following adjustment shown in
+*bold* should do the trick:
+
+....
+/*
+ * spa.js
+ * Root namespace module
+*/
+...
+/*global $, spa */
+
+var spa = (function () {
+  var initModule = function ( $container ) {
+    spa.shell.initModule( $container );
+  };
+
+  return { initModule: initModule };
+}());
+....
+
+We should now be able to open our browser document (`spa/spa.html`) and
+see something similar to figure link:#_1276_13927_2579[figure_title]. We
+can use Chrome Developer Tools to confirm the document generated by our
+SPA (`spa/spa.html`) matches our layout document (`spa/layout.html`).
+
+image:figures/ch03/layout.png[It’s like deja vu all over
+again—`spa/spa.html`]
+
+With this foundation in place, we’ll begin the work to have the Shell
+manage the feature containers. It might also be a good time to take a
+break, as the next section is fairly ambitious.
+
+[[_1276_13927_2584]]
+Manage the feature containers
+-----------------------------
+
+feature containersdefinedThe Shell renders and controls the __feature
+containers__. These are “top level” containers—usually `DIV`s—that hold
+feature content. The Shell initializes and coordinates all the feature
+modules in the application. And the Shell directs feature modules to
+create and manage all content inside feature containers. We’ll discuss
+feature modules further in chapter 4.
+
+In this section, we’ll first write a method to extend and retract the
+chat slider feature container. We’ll then build the click event handler
+so the slider may be opened or closed whenever the user wishes. Then
+we’ll check our work, and talk about the next big thing—managing the
+page state using the URI hash fragment.
+
+[[_1276_13927_2589]]
+Write a method to extend or retract the chat slider
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+chat slider examplemethod to extend and retract chat
+slidermethodsextending and retracting chat sliderWe’ll be moderately
+ambitious with our chat slider function. We need it production-quality,
+but it doesn’t have to be extravagant. Here are the requirements we want
+to achieve:
+
+1.  Enable developers to configure the speed and height of slider
+motions.
+2.  Create a single method to extend or retract the chat slider.
+3.  Avoid a race condition where the slider may be extending and
+retracting at the same time.
+4.  Enable developers to pass in an optional callback to be invoked on
+completion of a slider motion.
+5.  Create test code to ensure the slider functioning properly.
+
+Let’s adjust the _Shell_ to meet these requirements as shown in listing
+link:#_1276_13927_2606[example_title].footnote:[Now would be a good time
+to thank your favorite celestial bodies for jQuery, as this would be a
+lot harder without it.] All changes are shown in **bold**. Please review
+the annotations as they detail how the changes pertain to the
+requirements:
+
+....
+...
+spa.shell = (function () {
+  //---------------- BEGIN MODULE SCOPE VARIABLES --------------
+  var
+    configMap = {
+      main_html : String()
+      ...
+      chat_extend_time     : 1000,
+      chat_retract_time    : 300,
+      chat_extend_height   : 450,
+      chat_retract_height  : 15
+    },
+    stateMap  = { $container : null },
+    jqueryMap = {},
+
+    setJqueryMap, toggleChat, initModule;
+  //----------------- END MODULE SCOPE VARIABLES ---------------
+
+  //-------------------- BEGIN UTILITY METHODS -----------------
+  //--------------------- END UTILITY METHODS ------------------
+
+  //--------------------- BEGIN DOM METHODS --------------------
+  // Begin DOM method /setJqueryMap/
+  setJqueryMap = function () {
+    var $container = stateMap.$container;
+
+    jqueryMap = {
+      $container : $container,
+      $chat      : $container.find( '.spa-shell-chat' )
+    };
+  };
+  // End DOM method /setJqueryMap/
+
+  // Begin DOM method /toggleChat/
+  // Purpose   : Extends or retracts chat slider
+  // Arguments :
+  //   * do_extend - if true, extends slider; if false retracts
+  //   * callback  - optional function to execute at end of animation
+  // Settings  :
+  //   * chat_extend_time, chat_retract_time
+  //   * chat_extend_height,   chat_retract_height
+  // Returns   : boolean
+  //   * true  - slider animation activated
+  //   * false - slider animation not activated
+  //
+  toggleChat = function ( do_extend, callback ) {
+    var
+      px_chat_ht = jqueryMap.$chat.height(),
+      is_open    = px_chat_ht === configMap.chat_extend_height,
+      is_closed  = px_chat_ht === configMap.chat_retract_height,
+      is_sliding = ! is_open && ! is_closed;
+
+    // avoid race condition
+    if ( is_sliding ){ return false; }
+
+    // Begin extend chat slider
+    if ( do_extend ) {
+      jqueryMap.$chat.animate(
+        { height : configMap.chat_extend_height },
+        configMap.chat_extend_time,
+        function () {
+          if ( callback ){ callback( jqueryMap.$chat ); }
+        }
+      );
+      return true;
+    }
+    // End extend chat slider
+
+    // Begin retract chat slider
+    jqueryMap.$chat.animate(
+      { height : configMap.chat_retract_height },
+      configMap.chat_retract_time,
+      function () {
+        if ( callback ){ callback( jqueryMap.$chat ); }
+      }
+    );
+    return true;
+    // End retract chat slider
+  };
+  // End DOM method /toggleChat/
+  //--------------------- END DOM METHODS ----------------------
+
+  //------------------- BEGIN EVENT HANDLERS -------------------
+  //-------------------- END EVENT HANDLERS --------------------
+
+  //------------------- BEGIN PUBLIC METHODS -------------------
+  // Begin Public method /initModule/
+  initModule = function ( $container ){
+    // load HTML and map jQuery collections
+    stateMap.$container = $container;
+    $container.html( configMap.main_html );
+    setJqueryMap();
+
+    // test toggle
+    setTimeout( function () {toggleChat( true ); }, 3000 );
+    setTimeout( function () {toggleChat( false );}, 8000 );
+  };
+  // End PUBLIC method /initModule/
+
+  return { initModule : initModule };
+  //------------------- END PUBLIC METHODS ---------------------
+}());
+....
+
+* Store the retract and extend times and heights in the module
+configuration map per Requirement 1: “Enable developers to configure the
+speed and height of slider motions.”
+* Add the `toggleChat` method to our list of module-scope variables.
+* Cache the chat slider jQuery collection in `jqueryMap`.
+* Add the `toggleChat` method per Requirement 2: “Create a single method
+to extend or retract the chat slider.”
+* Prevent a race condition by declining to take action if the slider is
+already in motion, per Requirement 3: “Avoid a race condition where the
+slider may be extending and retracting at the same time.”
+* Invoke a callback after the animation is complete, per Requirement 4:
+“Enable developers to pass in an optional callback to be invoked on
+completion of a slider motion.”
+* Extend the slider 3 seconds after page load, and retract it after 8
+seconds, per Requirement 5: “Create test code to ensure the slider
+functioning properly.”
+
+If you _are_ playing along at home, let’s first check our code with
+JSLint by typing `jslint`` spa/js/spa.shell.js` in the command line—we
+shouldn’t see any warnings or errors. Next let’s reload the browser
+document (`spa/spa.html`) and see the chat slider extend after three
+seconds and retract after eight seconds. Now that we have the slider
+moving, we can employ a user’s mouse-click to toggle its position.
+
+[[_1276_13927_2617]]
+Add the chat slider click event handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+chat slider exampleadding chat slider click event handlerclick event
+handlersin chat slider exampleevent handlersin chat slider exampleMost
+users expect to click on a chat slider and see it extend or retract as
+this is the common convention. Here are the requirements we want to
+achieve:
+
+1.  Set tool-tip text to prompt user action, for example “Click to
+retract.”
+2.  Add a click event handler to call `toggleChat`.
+3.  Bind the click event handler to the jQuery event.
+
+Let’s adjust the Shell to meet these requirements as shown in listing
+link:#_1276_13927_2620[example_title]. All changes are again shown in
+**bold**, and the annotations detail how the changes pertain to the
+requirements.
+
+....
+...
+spa.shell = (function () {
+  //---------------- BEGIN MODULE SCOPE VARIABLES --------------
+  var
+    configMap = {
+      ...
+      chat_retract_height  : 15,
+      chat_extended_title  : 'Click to retract',
+      chat_retracted_title : 'Click to extend'
+    },
+    stateMap  = {
+      $container        : null,
+      is_chat_retracted : true
+    },
+    jqueryMap = {},
+
+    setJqueryMap, toggleChat, onClickChat, initModule;
+  //----------------- END MODULE SCOPE VARIABLES ---------------
+  ...
+  //--------------------- BEGIN DOM METHODS --------------------
+  // Begin DOM method /setJqueryMap/
+  ...
+  // End DOM method /setJqueryMap/
+
+  // Begin DOM method /toggleChat/
+  // Purpose   : Extends or retracts chat slider
+  ...
+  // State     : sets stateMap.is_chat_retracted
+  //   * true  - slider is retracted
+  //   * false - slider is extended
+  //
+  toggleChat = function ( do_extend, callback) {
+    var
+      px_chat_ht = jqueryMap.$chat.height(),
+      is_open    = px_chat_ht === configMap.chat_extend_height,
+      is_closed  = px_chat_ht === configMap.chat_retract_height,
+      is_sliding = ! is_open && ! is_closed;
+
+    // avoid race condition
+    if ( is_sliding ) { return false; }
+
+    // Begin extend chat slider
+    if ( do_extend ) {
+      jqueryMap.$chat.animate(
+        { height : configMap.chat_extend_height },
+        configMap.chat_extend_time,
+        function () {
+          jqueryMap.$chat.attr(
+            'title', configMap.chat_extended_title
+          );
+          stateMap.is_chat_retracted = false;
+          if ( callback ) { callback( jqueryMap.$chat ); }
+        }
+      );
+      return true;
+    }
+    // End extend chat slider
+
+    // Begin retract chat slider
+    jqueryMap.$chat.animate(
+      { height : configMap.chat_retract_height },
+      configMap.chat_retract_time,
+      function () {
+        jqueryMap.$chat.attr(
+         'title', configMap.chat_retracted_title
+        );
+        stateMap.is_chat_retracted = true;
+        if ( callback ) { callback( jqueryMap.$chat ); }
+      }
+    );
+    return true;
+    // End retract chat slider
+  };
+  // End DOM method /toggleChat/
+  //--------------------- END DOM METHODS ----------------------
+
+  //------------------- BEGIN EVENT HANDLERS -------------------
+  onClickChat = function ( event ) {
+    toggleChat( stateMap.is_chat_retracted );
+    return false;
+  };
+  //-------------------- END EVENT HANDLERS --------------------
+
+  //------------------- BEGIN PUBLIC METHODS -------------------
+  // Begin Public method /initModule/
+  initModule = function ( $container ) {
+    // load HTML and map jQuery collections
+    stateMap.$container = $container;
+    $container.html( configMap.main_html );
+    setJqueryMap();
+
+    // initialize chat slider and bind click handler
+    stateMap.is_chat_retracted = true;
+    jqueryMap.$chat
+      .attr( 'title', configMap.chat_retracted_title )
+      .click( onClickChat );
+  };
+  // End PUBLIC method /initModule/
+
+  return { initModule : initModule };
+  //------------------- END PUBLIC METHODS ---------------------
+}());
+....
+
+* Add retracted and extended title text to the configMap
+variable`configMap` per Requirement 1: “Set tool-tip text to prompt user
+action...”
+* Add `is_chat_retracted` to the `stateMap`. It’s good practice to list
+all keys used in the `stateMap` so they can be easily found and
+inspected. This is used by our `toggleChat` method.
+* Add `onClickChat` to our list of module-scope function names.
+* Update the `toggleChat` API docs to indicate how
+`stateMap.is_chat_retracted` is set by this method.
+* Adjust `toggleChat` to control the hover text as well as the
+`stateMap.is_chat_retracted` value per Requirement 1: “Set tool-tip text
+to prompt user action...”
+* Add the `onClickChat` event handler per Requirement 2: “Add a click
+event handler to call toggleChat.” We use the standards from appendix A
+to name our jQuery event handler `on` + <jQuery event name> +
+<descriptor>. This routine is short—it simply dispatches to a DOM
+method—and this generally a good strategy for event handlers. The value
+of `stateMap.is_chat_retracted` is passed to the `toggleChat` method,
+which results in a toggle when the user clicks. We pass the boolean
+value to preserve flexibility.
+* Initialize the event handler by setting `stateMap.is_chat_retracted`
+and the hover text. Then bind the handler to a click event per
+Requirement 3: “Bind the click event handler to the jQuery event”
+
+Those playing along at home should again check our code by typing
+`jslint``
+          spa/js/spa.shell.js` at the command line. We again shouldn’t
+see any warnings or errors.
+
+There’s an aspect of jQuery event handlers that we think is crucial to
+remember: the return value is interpreted by jQuery to specify its
+continued handling of the event. We usually return false value`false`
+from our jQuery event handlers. Here’s what that does:
+
+* It tells jQuery to prevent the default action—like following a link,
+or selecting text—from occurring. The same effect can be acquired by
+invoking preventDefault() method`event.preventDefault()` in the event
+handler.
+* It tells jQuery to stop the event from triggering the same event on
+the parent DOM element (this behavior is often called __bubbling__). The
+same effect can be acquired by invoking stopPropagation()
+method`event.stopPropagation()` in the event handler.
+* It concludes the handler execution. If the clicked element has other
+handlers bound to it after this handler, the next one in line will be
+executed. (If we don’t want subsequent handlers to execute, we can
+invoke preventImmediatePropagation()
+method`event.preventImmediatePropagation()`.)
+
+These three actions are what we need at this point. Later we’ll
+encounter situations where we’ll implement different behavior, and will
+no longer return `false`.
+
+The Shell doesn’t need to necessarily handle the click. It could instead
+provide the capability to manipulate the slider as a callback to the
+chat module—and we encourage this. But because that module is yet to be
+written, we’ll handle the event here for now.
+
+We can also add a little flair to our Shell styles. Listing
+link:#_1276_13927_2640[example_title] shows the changes:
+
+....
+...
+.spa-shell-foot {
+  ...
+}
+.spa-shell-chat {
+  bottom        : 0;
+  right         : 0;
+  width         : 300px;
+  height        : 15px;
+  cursor        : pointer;
+  background    : red;
+  border-radius : 5px 0 0 0;
+  z-index       : 1;
+}
+  .spa-shell-chat:hover {
+    background : #a00;
+  }
+
+.spa-shell-modal { ... }
+
+...
+....
+
+* Change the cursor to a pointer when hovering over the slider. This
+informs the user that something will happen if they click.
+* Round a corner to make the slider look nicer.
+* Change the slider color when the cursor hovers over the slider. This
+reinforces the message to the user that an action is available on click.
+
+When we reload the browser document (`spa/spa.html`) we can click on the
+slider and see it extend as shown in figure
+link:#_1276_13927_2650[figure_title]:
+
+image:figures/ch03/in_action.png[Extending the chat
+slider—`spa/spa.html`]
+
+The slider extends much more slowly than it retracts. We can change the
+speed of the slider by changing the configuration in the Shell
+(`spa/js/spa.shell.js`), for example:
+
+....
+...
+  configMap = {
+  main_html : String()
+  ...
+  chat_extend_time  : 250,
+  chat_retract_time : 300,
+  ...
+ }, 
+...
+....
+
+In the next section, we’ll adjust our application to better manage its
+state. When we’re finished, all browser history features like bookmarks,
+the Forward button, and the Back button will work for the chat slider as
+the user expects.
+
+[[_1276_13927_2659]]
+Manage application state
+------------------------
+
+application stateoverviewShell modulemanaging application
+stateoverviewstate, applicationoverviewIn computer science, a
+application statedefinedstate, applicationdefined__state__ is a unique
+configuration of information in an application. Desktop and web
+applications generally try to maintain some state between sessions. For
+example, when we save a word processing document and then open it again
+at a later date, the document is restored. The application may also
+restore the window size, our preferences, and the cursor and page
+location. Our SPA needs to manage state too, because people who use
+browsers have come to expect certain behaviors.
+
+[[_1276_13927_2662]]
+Understand the behavior browser users expect
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+application statebrowser behavior vs. desktop controlsbrowsersbehavior
+in vs. desktop controlsdesktop controls vs. browser behaviorShell
+modulemanaging application statebrowser behavior vs. desktop
+controlsstate, applicationbrowser behavior vs. desktop controlsDesktop
+and web applications vary widely in what aspect of state they maintain.
+A desktop application can omit a Previous button if it doesn’t provide a
+“go back” capability. But in a web application we’ve got the browser’s
+Back button—one of the most frequently used browser controls—staring our
+user in the face, begging to be clicked—and we can’t remove it.
+
+And the same goes for the Forward button, the bookmark button, and view
+history. The users expect these _history_ controls to work. If they
+don’t, our users get cranky, and our application will never win a Webby.
+Table link:#_1276_13927_2666[table_title] illustrates the approximate
+desktop application counterparts to these history controls.
+
+.Browser versus desktop controls
+[cols=",,",options="header",]
+|=======================================================================
+|Browser control |Desktop control |Comments
+|Back buttonBack button |Undo buttonUndo |Revert to prior state
+
+|Forward buttonForward button |Redo buttonRedo |Restore state from
+recent “undo” or “back” motion
+
+|bookmark componentBookmark |Save As buttonSave As |Store application
+state for future use or reference
+
+|View history |Undo History |View steps in undo/redo sequence
+|=======================================================================
+
+Because we do aspire to win a Webby, we have to ensure these history
+controls work as our users expect. Next we’ll discuss strategies to
+provide the behaviors our users expect.
+
+[[_1276_13927_2706]]
+Pick a strategy to manage history controls
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+application statemanaging history controlshistorymanaging application
+stateShell modulemanaging application statemanaging history
+controlsstate, applicationmanaging history controlsAn optimal strategy
+to provide history controls should meet these requirements:
+
+A.  The history controls should work as the user expects, per table
+link:#_1276_13927_2666[table_title].
+B.  Development to support history controls should be reasonably
+inexpensive. It shouldn’t require significantly more time or complexity
+versus development without history controls.
+C.  The application should perform well. The application shouldn’t take
+longer to respond to user actions, and the user interface shouldn’t be
+more complicated as a result.
+
+Let’s consider some strategies using the chat slider the following user
+interaction as our example:
+
+....
+(1) Susan visits our SPA and clicks on the chat slider to open it.
+(2) She bookmarks the SPA, and then browses to other sites.
+(3) Later, she decides to return to our application
+    and clicks on her bookmark.
+....
+
+Let’s consider three strategies to make Susan’s bookmark work as
+expected. Please don’t worry about memorizing them; we just want to
+illustrate their relative merits: footnote:[There are other
+strategies—like the use of a persistent cookie or an iframe—but these
+are frankly too limited and convoluted to merit consideration.]
+
+__Strategy 1__—On the click, the event handler directly calls the
+`toggleChat` routine, and ignores the URI. When Susan returns to her
+bookmark, the slider will be presented in its default position—closed.
+Susan isn’t pleased because the bookmark didn’t work as expected. James
+the developer isn’t pleased either, because his product manager finds
+the usability of the application unacceptable and is pestering him about
+it.
+
+__Strategy 2__—On the click, the event handler directly calls the
+`toggleChat` routine, and then modifies the URI to record this state.
+When Susan returns to her bookmark, the application must recognize the
+parameter in the URI and act on it. Susan is pleased. James the
+developer is _not_ pleased because he must now support two conditions
+that will open the slider: a run-time click event, and a load-time URI
+parameter. And James’s product manager isn’t too happy either because
+supporting this dual-path approach is slower and prone to bugs and
+inconsistencies.
+
+__Strategy 3__—On the click, the event handler changes the URI and then
+promptly returns. The Shell `hashchange` event handler picks up the
+change, and dispatches to the `toggleChat` routine. When Susan returns
+to her bookmark, the URI is parsed by the same routine and the open
+slider is restored. Susan is pleased because the bookmark works as
+expected. James the developer is pleased as well, because he can use
+__one code path to implement all bookmark-able states__. And James’s
+product manager is pleased too, because development is fast and
+comparatively bug-free.
+
+anchor interface patternOur preferred solution is _Strategy 3_ as it
+supports all history controls (requirement A). It addresses and
+minimizes development concerns (requirement B). And it ensures
+application performance by adjusting only the parts of the page that
+need to be changed when a history control is used (requirement C). This
+solution where the URI always drives the page state we call the __anchor
+interface pattern__, as shown in figure
+link:#_1276_13927_2734a[figure_title].
+
+image:figures/ch03/exec_paths.png[The anchor interface pattern]
+
+We’ll return to this pattern in chapter 4. Now that we have selected our
+strategy, let’s implement it.
+
+[[_1276_13927_2735]]
+Change the anchor when a history event occurs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+anchor componentmanaging application state usingoverviewapplication
+statemanaging using anchor componentoverviewbookmark componenthash
+fragmentShell modulemanaging application stateusing anchor
+componentstate, applicationmanaging using anchor componentoverviewThe
+anchor component of a URI instructs the browser what part of a page to
+show. Other common names for the anchor are the _bookmark component_ or
+the __hash fragment__. The anchor always starts with a # (hash
+symbol)hash symbol ( # )`#` symbol, and is shown in bold in the
+following code:
+
+....
+http://localhost/spa.html#!chat=open
+....
+
+Traditionally, web developers have used the anchor mechanism to enable
+users to easily “jump” between sections of a long document. For example,
+a web page that has a table of contents at the top might link all the
+section titles to their corresponding sections within the document. And
+each of the sections may have a “back to top” link at the end. Blogs and
+forums still use this mechanism extensively.
+
+anchor componentand page reloadsreloading pagesand anchor componentOne
+exceptional feature of the anchor component is that the browser does
+_not_ reload the page when it’s changed. The anchor component is a
+client-side-only control, which makes it an the ideal place to store our
+application state. This technique is used by many SPAs.
+
+We refer to an application state change that we want to keep in the
+browser history as a __history event__. Because we decided that opening
+or closing the chat is a history event (you missed the meeting), we can
+have our click event handler change the anchor to express the chat
+slider state. We can use the uriAnchor plugin`uriAnchor` jQuery plugin
+to do the heavy lifting. Let’s revise the Shell so a user click changes
+the URI as shown in listing link:#_1276_13927_2743[example_title].
+
+....
+  ...
+  //------------------- BEGIN EVENT HANDLERS -------------------
+  onClickChat = function ( event ) {
+    if ( toggleChat( stateMap.is_chat_retracted ) ) {
+      $.uriAnchor.setAnchor({
+        chat : ( stateMap.is_chat_retracted ? 'open' : 'closed' )
+      });
+    }
+    return false;
+  };
+  //-------------------- END EVENT HANDLERS --------------------
+  ...
+....
+
+Now when we click on the slider, we see the anchor in the URI change—but
+only if `toggleChat` succeeds and returns true. For example, when we
+click the chat slider open and then closed, we see the following:
+
+....
+http://localhost/spa.html#!chat=closed
+....
+
+___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+*Tip*
+
+exclamation point ( ! )Extensible Markup Language (XML)XML (Extensible
+Markup Language)The exclamation point following the hash symbol (`#!`)
+in the example URI is used to inform Google and other search engines
+that this URI may be indexed for search. We’ll cover more about search
+engine optimization in chapter 9.
+___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+We need to ensure that when the anchor changes, only the part of the
+application that needs adjustment is changed. This makes the application
+much faster and avoids the disturbing “flicker” that happens when parts
+of the page are unnecessarily cleared and re-rendered. For example,
+let’s say Susan is viewing a list of a thousand user profiles when she
+opens the chat slider. If she clicks the Back button, the application
+should simply close the slider—the profiles shouldn’t be re-rendered.
+
+We ask ourselves three questions to determine whether the change from an
+event is worthy of history support:
+
+* How strongly will the user want to bookmark the change that has
+occurred?
+* How strongly will the user want to revert to the page state before the
+change?
+* How expensive will this be?
+
+Although the incremental cost to maintain a state is usually minor using
+the anchor interface pattern, there are some situations where it can be
+expensive or impossible. For example, an online purchase would be very
+difficult to reverse when a user clicks the Back button. In such a
+situation, we need to avoid a history entry completely. Lucky for us,
+our `uriAnchor` plugin supports this.
+
+[[_1276_13927_2762]]
+Use the anchor to drive the application state
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We want the anchor component to always drive the bookmark-able
+application state. This ensures history functions always work as
+expected. The following pseudo-code outlines how we like to handle a
+history event:
+
+* When a history event occurs, change the anchor component of the URI to
+reflect the changed state:
+** The handler that received the event calls a Shell utility to change
+the anchor.
+** The event handler then exits.
+* A Shell hashchange event handler`hashchange` event handler notices the
+URI change and acts on it:
+** It compares the current state to the state proposed by the new
+anchor.
+** It tries to change the sections of the application that need
+adjustment as determined by the comparison.
+** If it can’t make the requested changes, it maintains the current
+state and restores the anchor to match it.
+
+Now that we’ve sketched out the pseudo-code, let’s get to work
+converting it into the real thing.
+
+[[_1276_13927_2782]]
+Change the Shell to user the anchor component
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+anchor componentmanaging application state usingmodifying Shell
+forapplication statemanaging using anchor componentmodifying Shell
+forstate, applicationmanaging using anchor componentmodifying Shell
+forLet’s revise the Shell to use the anchor component to drive the
+application state, as shown in listing
+link:#_1276_13927_2785[example_title]. There’s a fair bit of new code
+here, but don’t get discouraged—all will be explained in due time:
+
+....
+...
+spa.shell = (function () {
+  //---------------- BEGIN MODULE SCOPE VARIABLES --------------
+  var
+    configMap = {
+      anchor_schema_map : {
+        chat  : { open : true, closed : true }
+      },
+      main_html : String()
+      ...
+    },
+    stateMap  = {
+      $container        : null,
+      anchor_map        : {},
+      is_chat_retracted : true
+    },
+    jqueryMap = {},
+
+    copyAnchorMap,    setJqueryMap,   toggleChat,
+    changeAnchorPart, onHashchange,
+    onClickChat,      initModule;
+  //----------------- END MODULE SCOPE VARIABLES ---------------
+
+  //------------------- BEGIN UTILITY METHODS ------------------
+  // Returns copy of stored anchor map; minimizes overhead
+  copyAnchorMap = function () {
+    return $.extend( true, {}, stateMap.anchor_map );
+  };
+  //-------------------- END UTILITY METHODS -------------------
+
+  //--------------------- BEGIN DOM METHODS --------------------
+  ...
+
+  // Begin DOM method /changeAnchorPart/
+  // Purpose  : Changes part of the URI anchor component
+  // Arguments:
+  //   * arg_map - The map describing what part of the URI anchor
+  //     we want changed.
+  // Returns  : boolean
+  //   * true  - the Anchor portion of the URI was update
+  //   * false - the Anchor portion of the URI could not be updated
+  // Action   :
+  //   The current anchor rep stored in stateMap.anchor_map.
+  //   See uriAnchor for a discussion of encoding.
+  //   This method
+  //     * Creates a copy of this map using copyAnchorMap().
+  //     * Modifies the key-values using arg_map.
+  //     * Manages the distinction between independent
+  //       and dependent values in the encoding.
+  //     * Attempts to change the URI using uriAnchor.
+  //     * Returns true on success, and false on failure.
+  //
+  changeAnchorPart = function ( arg_map ) {
+    var
+      anchor_map_revise = copyAnchorMap(),
+      bool_return       = true,
+      key_name, key_name_dep;
+
+    // Begin merge changes into anchor map
+    KEYVAL:
+    for ( key_name in arg_map ) {
+      if ( arg_map.hasOwnProperty( key_name ) ) {
+
+        // skip dependent keys during iteration
+        if ( key_name.indexOf( '_' ) === 0 ) { continue KEYVAL; }
+
+        // update independent key value
+        anchor_map_revise[key_name] = arg_map[key_name];
+
+        // update matching dependent key
+        key_name_dep = '_' + key_name;
+        if ( arg_map[key_name_dep] ) {
+          anchor_map_revise[key_name_dep] = arg_map[key_name_dep];
+        }
+        else {
+          delete anchor_map_revise[key_name_dep];
+          delete anchor_map_revise['_s' + key_name_dep];
+        }
+      }
+    }
+    // End merge changes into anchor map
+
+    // Begin attempt to update URI; revert if not successful
+    try {
+      $.uriAnchor.setAnchor( anchor_map_revise );
+    }
+    catch ( error ) {
+      // replace URI with existing state
+      $.uriAnchor.setAnchor( stateMap.anchor_map,null,true );
+      bool_return = false;
+    }
+    // End attempt to update URI...
+
+    return bool_return;
+  };
+  // End DOM method /changeAnchorPart/
+  //--------------------- END DOM METHODS ----------------------
+
+  //------------------- BEGIN EVENT HANDLERS -------------------
+  // Begin Event handler /onHashchange/
+  // Purpose  : Handles the hashchange event
+  // Arguments:
+  //   * event - jQuery event object.
+  // Settings : none
+  // Returns  : false
+  // Action   :
+  //   * Parses the URI anchor component
+  //   * Compares proposed application state with current
+  //   * Adjust the application only where proposed state
+  //     differs from existing
+  //
+  onHashchange = function ( event ) {
+    var
+      anchor_map_previous = copyAnchorMap(),
+      anchor_map_proposed,
+      _s_chat_previous, _s_chat_proposed,
+      s_chat_proposed;
+
+    // attempt to parse anchor
+    try { anchor_map_proposed = $.uriAnchor.makeAnchorMap(); }
+    catch ( error ) {
+      $.uriAnchor.setAnchor( anchor_map_previous, null, true );
+      return false;
+    }
+    stateMap.anchor_map = anchor_map_proposed;
+
+    // convenience vars
+    _s_chat_previous = anchor_map_previous._s_chat;
+    _s_chat_proposed = anchor_map_proposed._s_chat;
+
+    // Begin adjust chat component if changed
+    if ( ! anchor_map_previous
+     || _s_chat_previous !== _s_chat_proposed
+    ) {
+      s_chat_proposed = anchor_map_proposed.chat;
+      switch ( s_chat_proposed ) {
+        case 'open'   :
+          toggleChat( true );
+        break;
+        case 'closed' :
+          toggleChat( false );
+        break;
+        default  :
+          toggleChat( false );
+          delete anchor_map_proposed.chat;
+          $.uriAnchor.setAnchor( anchor_map_proposed, null, true );
+      }
+    }
+    // End adjust chat component if changed
+
+    return false;
+  };
+  // End Event handler /onHashchange/
+
+  // Begin Event handler /onClickChat/
+  onClickChat = function ( event ) {
+    changeAnchorPart({
+      chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
+    });
+    return false;
+  };
+  // End Event handler /onClickChat/
+  //-------------------- END EVENT HANDLERS --------------------
+
+  //------------------- BEGIN PUBLIC METHODS -------------------
+  // Begin Public method /initModule/
+  initModule = function ( $container ) {
+    ...
+    // configure uriAnchor to use our schema
+    $.uriAnchor.configModule({
+      schema_map : configMap.anchor_schema_map
+    });
+
+    // Handle URI anchor change events.
+    // This is done /after/ all feature modules are configured
+    // and initialized, otherwise they will not be ready to handle
+    // the trigger event, which is used to ensure the anchor
+    // is considered on-load
+    //
+    $(window)
+      .bind( 'hashchange', onHashchange )
+      .trigger( 'hashchange' );
+
+  };
+  // End PUBLIC method /initModule/
+
+  return { initModule : initModule };
+  //------------------- END PUBLIC METHODS ---------------------
+}());
+....
+
+* Define the map used by `uriAnchor` for validation.
+* Store the current anchor values in a map in the module state,
+`stateMap.anchor_map`.
+* Declare three additional methods: `copyAnchorMap`, `changeAnchorPart`,
+and `onHashchange`.
+* Use the jQuery extend() method`extend` utility to copy an object. This
+is required because all JavaScript objects are passed by reference, and
+copying one correctly is non-trivial.
+* Add the `changeAnchorPart` utility to atomically update the anchor. It
+takes a map of what we want to change, for example `{ chat : 'open'
+                }`, and updates only the specified key-value in the
+anchor component.
+* Don’t set the anchor if it doesn’t pass the schema (`uriAnchor` will
+throw an exception). When this occurs, revert the anchor component to
+its previous state.
+* Add the `onHashchange` event handler to handle URI anchor changes. Use
+the `uriAnchor` plugin to convert the anchor into a map and compare to
+the previous state to determine action. If the proposed anchor change is
+invalid, resets the anchor back to its prior value.
+* Revise the `onClickChat` event handler to only modify the `chat`
+parameter of the anchor.
+* Configure the `uriAnchor` plugin to test against a schema.
+* Bind the `hashchange` event handler and immediately trigger it so the
+module considers the bookmark on initial load.
+
+Now that we’ve adjusted the code, we should see that all history
+controls—the Forward button, the Back button, bookmarks, and browser
+history—all work as expected. And the anchor component should “fix
+itself” if we manually change it to have parameters or values that we
+don’t support—for example, try replacing the anchor in the browser
+address bar with `#!chat=barney` and press Return.
+
+[[_1276_13927_2797]]
+Understand how uriAnchor encodes application state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+anchor componentmanaging application state usinguriAnchor
+pluginapplication statemanaging using anchor componenturiAnchor
+pluginstate, applicationmanaging using anchor componenturiAnchor
+pluginuriAnchor pluginEarlier, we glossed over some of the complexity of
+encoding application state in the anchor. But, before we can proceed, we
+must review this in greater detail.
+
+We use the jQuery `hashchange` event to recognize a change in the anchor
+component. Application state is encoded using the concept of independent
+key-value pairs__independent__ and dependent key-value
+pairs__dependent__ key-value pairs. Take for example, the following
+anchor shown in bold:
+
+....
+http://localhost/spa.html#!chat=open:uid,fredricka|color,green
+....
+
+The _independent_ key is chat, and it has a value of `open`. Keys that
+further define the chat state are _dependent_ keys, and they follow the
+colon (:) delimiter. This includes the key `uid` with a value of
+`fredricka`, and the key `color` with the value of `green`.
+
+The uriAnchor pluginenconding values with`uriAnchor` plugin,
+`js/jq/jquery.uriAnchor-1.1.3.js`, takes care of encoding and decoding
+dependent and independent values for us. The `setAnchor` method can be
+used to change the anchor to match the previous example:
+
+....
+var anchorMap = {
+  chat  : 'open',
+  _chat : {
+    uid   : 'fredricka',
+    color : 'green'
+  }
+};
+$.uriAnchor.setAnchor( anchorMap );
+....
+
+The `makeAnchorMap` method can be used to read and parse the anchor into
+a map:
+
+....
+var anchorMap = $.uriAnchor.makeAnchorMap();
+console.log( anchorMap );
+      
+// if the uri is:
+// http://localhost/spa.html#!chat=open:uid,fredricka|color,green
+
+// anchorMap should show the structure:
+// {
+//   chat : 'open',
+//   _chat : {
+//     uid   : 'fredricka',
+//     color : 'green'
+//   }
+// };
+....
+
+Hopefully you now better understand how `uriAnchor` can be used to
+encode the application state and change the URI anchor component. Now
+let’s take a closer look at the other end of that process—how we parse
+the URI anchor component and use it to change the application state.
+
+[[_1276_13927_2813]]
+Understand how anchor changes drive application state
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+anchor componentmanaging application state usingoverviewapplication
+statemanaging using anchor componentoverviewstate, applicationmanaging
+using anchor componentoverviewOur history control strategy can be stated
+as such: Any event that changes a bookmark-able state should do two
+things:
+
+1.  Change the anchor.
+2.  Promptly return.
+
+We added the `changeAnchorPart` method to the Shell, which allows us to
+update only part of the anchor while ensuring independent and dependent
+keys and values are properly handled. It centralizes and unifies the
+logic for anchor management and _it should be the only means by which
+the anchor is modified by our application._
+
+When we say “promptly return,” we mean after the anchor has been
+changed, the event handler’s work is done. It shouldn’t change the page
+elements. It shouldn’t update variables or flags. It shouldn’t pass Go,
+or collect 200 dollars. It should return directly back to its calling
+event. This is illustrated in our `onClickChat` event handler:
+
+....
+  onClickChat = function ( event ) {
+    changeAnchorPart({
+      chat: ( stateMap.is_chat_retracted ? 'open' : 'closed' )
+    });
+    return false;
+  };
+....
+
+We use `changeAnchorPart` to change the `chat` parameter of the anchor,
+and then promptly return. Because the anchor component is changed, this
+initiates a hashchange event handler`hashchange` browser event, which
+the Shell receives. It then dispatches to the correct routines to take
+action.
+
+You might think of the anchor—modified by `changeAnchorPart` method—as
+_the_ API for bookmark-able states. The beauty of this approach is it
+doesn’t matter _why_ the anchor was changed—it could be that our
+application modified it, or the user clicked a bookmark, or played with
+the Forward or Back buttons, or directly typed into the browser address
+bar. In any case, it always works correctly and uses only a single
+execution path.
+
+[[_1276_13927_2822]]
+Summary
+-------
+
+We’ve finished implementing two of the primary responsibilities of the
+Shell. We created and styled feature containers, and we created a
+framework to drive application state using the URI anchor. We updated
+our chat slider to help illustrate these concepts.
+
+Our work with the Shell isn’t complete, because we’ve yet to tackle its
+third primary responsibility: coordinating feature modules. Our next
+chapter shows how to build feature modules, how to configure and
+initialize them from the Shell, and how to call them. Isolating features
+into their own modules greatly improves reliability, maintainability,
+scalability, and workflow. It also encourages the use and development of
+third-party modules. So stick around—this is where the rubber hits the
+road.
+////

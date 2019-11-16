@@ -1,5 +1,5 @@
 /*
- * MobileChat/server/index.js
+ * server/index.js
  *
  * @author Michael S. Mikowski - mike.mikowski@gmail.com
  *
@@ -14,9 +14,8 @@
 // == BEGIN MODULE SCOPE VARIABLES ====================================
 'use strict';
 const
-  // Load libs (add fsObj with listing)
-  // fsObj      = require( 'fs'          ),
-  //
+  // Load libs (enable fsObj when required)
+  //    fsObj   = require( 'fs'          ),
   bodyParserObj = require( 'body-parser' ),
   dotEnvMap     = require( 'dotenv'      ).config(),
   exprObj       = require( 'express'     ),

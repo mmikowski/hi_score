@@ -1,0 +1,390 @@
+= Introducing Single Page Applications
+Doc Writer <mike.mikowski@gmail.com>
+:imagesdir: ../images
+:numbered:
+:source-highlighter: pigments
+:icons:font
+
+== Purpose
+This chapter covers
+
+* Building an SPA
+* Benefits of an SPA
+* SPA architecture
+* When to use an SPA
+
+////
+MSM: TODO
+RW: From here to the end of section 2 belongs in the Front Matter rather than
+////
+This book is an Engineer's guide on how to create large-scale Single Page
+Applications (SPAs) and manage them throughout their life cycle. We use
+JavaScript (JS)footnoteref:[JS,We use JS and JavaScript interchangeably
+throughout this book] as the preferred language for as much of the stack as
+possible -- in the Browser, on server, and in development tools. This second
+edition includes five substantial changes which we hope you will find exciting
+and useful.
+
+1. Unless otherwise noted, all software presented is designed and tested to
+work well within a full product lifecycle. We discuss life cycle stages such
+as planning a software stack, installing a development environment, managing
+vendor libraries, linting, testing, code coverage, building, release
+management, and monitoring. Almost every life cycle stage has been automated,
+and all configurations are placed in the `package.json` file.
+
+2. Code examples have been substantially future-proofed through the use of NPM
+packages and explicit software version pointers.
+
+3. Many examples have been updated to show ES2015 (ES6) implementations.
+
+4. We have expanded some examples to illustrate the use of currently popular
+tools such as Vue.JS and React. We also provide more concrete guidance for
+selecting a library or framework.
+
+5. The development environment is presented as a virtual appliance. This
+removes almost all the drudgery and error out of creating a development
+environment. In just a few minutes readers can run examples exactly as
+presented in the book without any platform-specific issues.
+
+== Audience
+This book is intended for web developers, dev-ops, architects, and product
+managers with at least a smattering of JS, HTML, and CSS experience. If you've
+never even dabbled in web development, this book is not for you. Many books
+are available that do a great job teaching beginner website development and
+design. This isn't one of them. Of course you're welcome to buy it anyway (go
+ahead, Daddy still needs a new car).
+
+About two-thirds of this book is devoted to client development. The last third
+shows how to build a server using Node.js. If you're locked in to another
+server platform, most of the logic should be easy to translate.
+
+This is a *Concept book*. We show examples using plain JS, jQuery, React,
+Vue.js but our goal is to identify the universal concepts required by a
+successful SPA so the reader may apply them as old libraries fade and new ones
+gain popularity. If you want something more targeted you may be better served
+by a *Survey* or *Toolkit* book as described in the sidebar.
+
+.SIDEBAR: What is a "Concept book?"
+****
+There are three broad categories of technology books.
+
+- A *Concept book* covers a broad range of issues and show general purpose
+  solutions. Readers buy concept books with the hope of gaining general
+  purpose, long-lived expertise. Consider this type of book an "Engineer's
+  guide."
+- A *Survey book* covers a narrower range of concepts but compares ready-made
+  solutions. A Survey SPA book reviews a number of toolkits and judges how
+  well they support a required concept used by an SPA. Consider this type of
+  book a "Buyer's guide."
+- A *Toolkit book* is designed for a specific toolkit and is usually purchased
+  after someone has made a significant investment in a toolkit and needs to
+  learn how to use it. Consider this type of book an "Owner's manual."
+
+Each type of book has its purpose and audience. This is a *Concept book*.
+****
+
+.SIDEBAR: Do you know?
+****
+1. What types of apps work best as SPAs?
+2. Why do we preferring JS tools over others?
+3. What are some stages of the SPA product lifecycle?
+****
+
+== Building an SPA
+Let's create a Single Page web Application (SPA). First we will prepare a
+development environment as presented in Appendix A and shown in Figure 1.1.
+
+.Figure 1.1 -- Development appliance
+image:ch01/appliance-02.png[VirtualBox appliance,1112,577]
+
+Then we can build and inspect an example SPA as shown in Listing 1.1.
+
+.Listing 1.1
+[source,bash]
+----
+  cd ~/Github/my_repo && bin/xhi dev_start,build \
+  && google-chrome http://localhost:8080/build/latest/dist/app-tb02.html
+----
+
+The example application is the typing tutor game Typebomb2.  This is the SPA
+we will build and improve in this book.
+
+.Figure 1.2 -- Typebomb2
+image:ch01/tb2-src-001.png[VirtualBox appliance,1336,797]
+
+Now that we've built an SPA let's define what it is.
+
+== What is an SPA?
+An SPA is an application that uses the web browser as its execution
+environment. It relies on the browser resources instead of the underlying OS
+to operate. This provides much of the same promise of "write once, run
+anywhere" as Java desktop applications.
+
+Traditional client-server web applications use the server for processing and
+the browser is little more than a glorified dumb terminal. With SPAs, data and
+logic that used to live on the web server now reside in the user's browser. A
+comparison is shown in Figure 1.2.
+
+.Figure 1.2 -- Traditional web app vs. SPA
+image:ch01/spavstrad-02.png[Tradition vs. SPA,800,470]
+
+SPAs are written in JS and deployed to billions of devices across the world.
+Numerous high-profile applications have moved from OS-specific implementations
+to SPAs in recent years. Examples include much of the Microsoft
+https://products.office.com/en-us[Office suite] and
+https://quickbooks.intuit.com/[Quickbooks Online]. Other recent applications
+have skipped OS-platform implementations altogether. Examples include
+https://gsuite.google.com/[Google docs] (AKA "GSuite") and numerous ChromeOS
+applications. And finally, some popular apps that _appear_ to be OS-specific
+implementations are just SPAs wrapped in an
+https://electron.atom.io/[Electron] or http://cordova.apache.org/[Cordova]
+container. Examples include https://slack.com/[Slack] or
+https://linkedin.com[LinkedIn] mobile and desktop applications.
+
+== Successful SPAs
+We've worked on some fairly successful SPAs and a few duds (hey, nobody's
+perfect). One might say a successful SPA is well-liked, reliable, and meets
+the sponsor's business objectives. All SPAs we considered successful had the
+ following characteristics:
+
+- Good product vision
+- Lifecycle management
+- A rationalized software stack
+- Feature module ("web component") architecture
+
+We discuss each of the characteristics briefly below and we review them in
+greater depth in subsequent chapters.
+
+=== Good product vision
+The best SPAs exceed expectations and surprise-and-delight stakeholders thanks
+to careful research and design prior to launch. The following living documents
+should be developed along with the product:
+
+- A Long Term Vision [LTV] plan which includes customer roles, team language,
+  and big picture plans for a product 3-5 years into the future.
+- A Minimal Viable Product [MVP] plan which is used to guide development of
+  the initial release.
+- Case studies and mockups for key user work-flows.
+- A plan for identifying and monitoring Key Performance Indicators [KPIs].
+
+Authoring these documents requires research. A good place to start is to
+survey all stakeholders (engineers, sales, support, end users, systems, and
+customers) to identify the key product characteristics required for success.
+A little research often yields surprising results.
+
+Desirable product traits often include fast load times, a responsive UI,
+secure and private data, support for mobile devices, stability, ease-of-use,
+and Search Engine Optimization. What is most important will vary by product
+and may not be in the list above.
+
+=== Lifecycle management
+An application that works great in a demo but can't be used as intended or
+supported by customer service is not much use to the sponsor. We need to
+design our product with an eye on the typical product lifecycle as shown in
+Table 1.1.
+
+.Table 1.1 -- Life-cycle stages
+[cols="1,1,1",options="header"]
+|====
+|Design                | Development               | Deployment
+| &#8226; vision documents +
+  &#8226; case studies +
+  &#8226; success criteria +
+  &#8226; wireframes and mockups
+// Development
+| &#8226; arch design +
+  &#8226; tech stack selection +
+  &#8226; install +
+  &#8226; setup +
+  &#8226; pull SCMS +
+  &#8226; upgrade libs +
+  &#8226; modify (add feature, fix bug) +
+  &#8226; cycle dev server +
+  &#8226; lint (static analysis) +
+  &#8226; test +
+  &#8226; verify test coverage +
+  &#8226; build
+// Deployment
+| &#8226; publish +
+  &#8226; deploy + rollback +
+  &#8226; cycle prod servers +
+  &#8226; monitor +
+  &#8226; support +
+  &#8226; EOL
+|====
+
+=== A rationalized software stack
+We've noticed an inverse relationship between the number of Domain Specific
+Languages [DLSs] and the likelihood of a product's success.  DSLs are
+introduced whenever we include a new library, framework, system tool, or
+language.
+
+All SPAs need to accomplish many of the same tasks using the same concepts.
+Those who master these concepts can better select appropriate tools for their
+product.
+
+We talk a bit rationalizing language use in the link:why_javascript[Why
+JavaScript] section and we  discuss the full software stack in Chapter 3.  The
+key point is we use a tool only if its benefit clearly outweighs its cost.
+
+=== Web components
+SPAs tend to evolve into a feature-module (or "web component") architecture as
+shown in Figure 1.3. This design pattern has been adopted by popular libraries
+such as React and Vue.js because it embraces the fractal MVC nature of an SPA.
+
+.Figure 1.3 -- Feature-module architecture
+image:ch01/architecture.png[Feature-module architecture,800,475]
+
+[[why_javascript]]
+== Why JavaScript?
+In a perfect world we would use JavaScript as our only language as shown in
+Figure 1.4.
+
+.Figure 1.4 -- JavaScript end-to-end
+image:ch01/end-to-end.png[JavaScript everywhere?,800,230]
+
+We don't love JavaScript (although perhaps we've grown a bit fond), and this
+is not a religion. But because JS is the _only_ universal browser control
+language it is the _one_ language that _must_ be mastered. As a consequence
+when everything else is equal, we prefer to use a tool written in JS over one
+written in another in a different language. This improves our process and our
+product in the following ways:
+
+- Time-to-market is reduced because the amount of study required to plan,
+  develop, test, and support an app is reduced.
+- Nimbleness and productivity is enhanced as developers can work across roles
+  such as database, middleware, TCP server, or browser environments with
+  minimal "context switching" cognitive overhead.
+- Quality is improved and time-to-market is reduced by using *isomorphic*
+  libraries across roles.
+
+Of course there are limits to this approach. Developers must still know DOM
+structure and markup languages like HTML, CSS, and SVG. And sometimes we need
+to use a process or a Bash script that isn't written in JavaScript, or use an
+SQL database to get the job done. And that's OK because real artists ship.
+
+Let's see what we can acheive if we rationalize our software stack.  Figure
+1.5 shows a potpourri of languages used to develop and manage an SPA.  This
+stack is typical of an "organic growth" organization.
+
+.Figure 1.5 -- Software stack over-diversity
+image:ch01/lang-01.png[Language potpourri,800,225]
+
+If we instead rationalize the software stack to minimize the number of Domain
+Specific Languages [DSLs] used to create and manage an SPA _throughout its
+lifecycle_ we can simplify this significantly as shown in Figure 1.6.
+
+.Figure 1.6 -- A rationalized software stack
+image:ch01/lang-02.png[Rationalized,800,225]
+
+We show examples using plain JS, jQuery, React, and Vue.js but we don't
+recommend including all these libraries into a single product. Instead we want
+to consider the requirements before selecting a tool.
+
+.What JavaScript version will be using?
+****
+Some tools we rely on don't yet work with ES2015. As of Fall 2017, somewhere
+between http://gs.statcounter.com/browser-market-share[10] to
+http://gs.statcounter.com/browser-market-share[30]% of all browsers in use
+don't support ES2015. Neither does the excellent
+http://lisperator.net/uglifyjs/[uglify-js] compressor. One popular option to
+get around these problems is to use a transplier such as
+https://babeljs.io/[Babel] or
+https://github.com/google/traceur-compiler[Traceur]. However, doing so
+provides a number of challenges:
+
+1. They don't work particularly well as we can see in this
+https://kangax.github.io/compat-table/es6/[handy chart] from the helpful folks
+at Kangax. Look under the Babel, Traceur, and Typescript columns to see how
+many of the advanced features we really want simply fail when transpiled.  So
+until all major tools and browsers are ES2015 compliant we are back to
+debugging ES5.1.
+
+2. If we transpile, ES2015 code will require compile step before we can use or
+test it. This overhead will occur with any change and can significantly
+increase iteration timefootnoteref:[iterations,Iteration time is the time it
+takes to try a solution to a problem. Shorter iteration times result in
+better solutions sooner.].
+
+3. Debugging the source code becomes more challenging both during development
+and after release. This is further complicated by bugs or omissions in the
+transpiler itself (see point 1). This again increases iteration times.
+
+Transpiling isn't just for limited ECMAScript. We can tack on a transpiler for
+static type checking using https://flow.org/[Flow] or
+https://www.typescriptlang.org/[Typescript] and this is indeed a
+http://ttendency.cs.ucl.ac.uk/projects/type_study[noble purpose]. But is it
+worth the cost? Or can we get the same benefits using a simple code standard
+and typecasting?
+
+Despite all the features we'd love to use from ES2015 and Flow, adding
+multiple steps the the development, debugging, deployment, and support for
+each transpile introduces substantial overhead and instability. We'd rather
+embrace KISSfootnoteref:[KISS,Keep It Simple Stupid] principles and use
+simple practices to provide similar benefits at a much lower cost.
+
+For all these reasons we've kept JS 5.1, at least for now. We present ES2015
+(ES6) syntax where it is relevant and hope to upgrade to this standard before
+final publication. We identify any ES2015+ code as shown in Figure 1.7. The
+preferred version title is always at the top, and alternatives names are
+shown in parenthesis.
+
+.Figure 1.7 -- ECMAScript versions
+image::ch01/esvers-02.png[ES version marker,362,190]
+
+An excellent list of ES2015 features can be found at http://es6-features.org.
+****
+
+== When SPAs make sense -- and when they don't
+SPA are an excellent solution when we need an app that responds like a
+traditional desktop or smartphone application. They are also an excellent
+choice for applications that must run across multiple operating systems.
+
+SPAs are usually are not a good solution for publishing of blogs or other
+sites where the primary action a user takes is to view content using standard
+browser controls. Twitter, for example, famously decided to change publishing
+tweets with a simple static page to a clever SPA. Within 18 months they
+https://blog.twitter.com/engineering/en_us/a/2012/improving-performance-on-twittercom.html[reverted
+to static rendering]. A little study of their customers would have shown them
+that initial render time and SEO were critical factors in success of their
+platform. And an SPA wasn't going to beat a static page on those metrics using
+the technology of the time.
+
+Sometimes it's not clear whether a traditional web application or an SPA is
+better. Instead of emulating Twitter, we suggest building mockups and testing
+with focus groups to gauge the relative costs and benefits of an SPA. The
+answer usually becomes obvious quickly.
+
+== Summary
+
+.SIDEBAR: Answers to "Do you know?"
+****
+[quanda]
+What types of apps work best as SPAs?::
+Answer: Interactive tools where responsiveness is highly valued are good
+choices for SPAs. Apps that must run across multiple operating systems are
+another good choice. Apps that mostly present content may be better served by
+a more traditional client-server web application.
+
+What is the benefit of preferring JS tools?::
+Answer: Generally the fewer domain specific languages (DSLs) a developer or
+team has to master the better the product because DSL mastery is expensive to
+attain and maintain. Additional challenges with DSLs include context
+switching, translation errors, and lack of nimbleness. For example, a
+developer may be constrained to only a few types of jobs because they have
+limited ability to learn all the DSLs in use.
+
+What are some stages of the SPA product lifecycle?::
+Answer: The top stages are Design, Development, and Deployment.  There are
+around 22 stages under these top categories.
+****
+
+- SPAs are applications that use a web browser as the execution environment
+  and usually are cross-platform.
+- It is wise to plan for every stage of an SPAs life cycle.
+- We rationalize and simplify the software stack to reduce training and
+  iteration times; encourage shared code; reduce time-to-market; and improve
+  testing, quality, and support.
+- SPAs are a great approach for many applications, but they aren't *always*
+  the best choice, especially for relatively static content where search
+  engine optimization is important.

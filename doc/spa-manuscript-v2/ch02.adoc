@@ -1,0 +1,3556 @@
+= Reintroducing JavaScript
+Doc Writer <mike.mikowski@gmail.com>
+:imagesdir: ../images
+:numbered:
+:source-highlighter: pigments
+:listing-caption: Listing
+
+== Purpose
+This chapter covers
+
+* JavaScript deficiencies
+* Unusual JavaScript features
+* Event-driven programming
+
+.SIDEBAR: Do you know?
+****
+1. How can we create private variables and methods in JS?
+2. Why would one use `setTimeout` with a time of `0`?
+3. How can we prevent the browser from freezing during long calculations?
+****
+
+== Overview
+JavaScript has features that are unlike many popular languages. These can be
+divided into three broad categories:
+
+1. Deficiencies: JS does some things less well.
+2. Unusual features: JS does some things differently.
+3. Event-driven programming: JS provides capabilities that may be unfamiliar
+to developers who use procedural languages.
+
+The code in <<source-concept-overview>> shows most of the concepts we cover in
+this chapter.  If you understand the _how_ and the _why_ of all these then you
+might skim or skip this chapter and get straight to work on Chapter 3.
+
+.Overview of concepts in this chapter
+[reftext="the following listing"]
+[[source-concept-overview]]
+[source,js]
+----
+var spa = (function ( colorStr ) { // <1> <2> <3> <4>
+  var catProto;
+
+  function sayKeyFn ( arg_key ) {
+    var key = String( arg_key );
+    console.log( key + ' === ' + this[ key ] );
+  }
+
+  function showPromFn ( arg_key ) { // <5> <6>
+    var
+      key   = String( arg_key ),
+      proto = this.__proto__
+      ;
+
+    function innerFn ( resolve_fn, reject_fn ) {
+      setTimeout(
+        function () {
+          if ( proto.hasOwnProperty( key ) ) {
+            resolve_fn( 'Prototype has ' + key );
+          }
+          else {
+            reject_fn( 'Prototype does not have ' + key );
+          }
+        },
+        1000
+      );
+    }
+    return new Promise( innerFn );
+  }
+
+  catProto = {
+    greet_str    : 'meow',
+    happy_str    : 'purr',
+    leg_count    : 4,
+    say_key_fn   : sayKeyFn,
+    show_prom_fn : showPromFn
+  };
+
+  function makeCatObj ( arg_map ) {
+    var
+      set_map   = arg_map || {},             // <7>
+      cat_obj   = Object.create( catProto ), // <8>
+      key_list  = Object.keys(   catProto ),
+      key_count = key_list.length,
+
+      idx, key, type
+      ;
+
+    // Override defaults if provided
+    for ( idx = 0; idx < key_count; idx++ ) {
+      key  = key_list[ idx ];
+      if ( ! catProto.hasOwnProperty( key ) ) { continue; }
+
+      type = typeof catProto[ key ];
+      if ( set_map.hasOwnProperty( key )
+        && ( typeof set_map[ key ] ) === type
+      ) {
+        cat_obj[ key ] = set_map[ key ];
+      }
+    }
+
+    // Set color and return
+    cat_obj.color_str = colorStr;
+    return cat_obj;
+  }
+  return { makeCatObj : makeCatObj };      // <9>
+}( 'black' ));
+
+(function () {
+  var catObj;
+
+  function onResolveFn( data ) { console.log( 'Resolved:', data ); }
+  function onRejectFn(  data ) { console.log( 'Rejected:', data ); }
+
+  catObj = spa.makeCatObj( { name : 'fred' });
+  catObj.show_prom_fn( 'happy_str' ).then( onResolveFn, onRejectFn );
+  catObj.show_prom_fn( 'name'      ).then( onResolveFn, onRejectFn );
+
+  catObj.say_key_fn( 'happy_str' );
+  catObj.say_key_fn( 'greet_str' );
+  catObj.say_key_fn( 'leg_count' );
+}());
+
+// Output is:
+// happy_str === purr
+// greet_str === meow
+// leg_count === 4
+// Resolved: Prototype has happy_str
+// Rejected: Prototype does not have name
+----
+<1> Namespacing
+<2> Execution context and closures
+<3> Immediately Invoked Function Expression [IIFE]
+<4> Anonymous functions
+<5> Event-driven programming: Call Stack, Event Queue, Event Loop, Render
+Queue
+<6> Flow-control: Callbacks, Events, Promises
+<7> Variable hoisting and scope chain
+<8> Prototype inheritance
+<9> Revealing module pattern
+
+Most of the listings in this chapter can be pasted into either the Node.js or
+modern browser JS console and run. However, there are some exceptions which
+are clearly marked.  Let's begin by looking at JS features that developers new to
+the language might find lacking.
+
+== JavaScript deficiencies
+=== Inconsistent value passing
+////
+RW: Not sure off the top of my head, but I believe that Manning styles
+stipulates either using "they" as the generic pronoun or alternating between
+"he" and "she"
+MSM: Fixed? I've adjusted the text.
+////
+JavaScript is deficient compared to some popular languages because it does not
+allow the developer to specify how data is passed to functions. More
+enlightened languages allow the choice between passing by _value_ or by
+_reference_.  If, for example, we have a five megabyte string and don't want
+to copy it, we can create a _reference_ with a few bytes and use _that_ as a
+function argument.  Conversely, if we want to use an array just like it is at
+the time of the call we could use the _value_ of the array as an argument.
+This effectively copies the array.
+
+We don't get that flexibility in JS but at least the rules are simple.
+Primitive types are passed by value and all complex types are passed by
+reference. Primitives data types include `Boolean`, `Null`, `Number`,
+`String`, `Symbol` (ES2015+), or `Undefined`. Complex data types include
+Functions, Objects, Arrays, and Regular Expressions. Let's see how we can
+copy primitive data types in <<source-pass-by-value>>.
+
+.Copying a primitive data type
+[reftext=the following listing]
+[[source-pass-by-value]]
+[source,js]
+----
+var greet01_str, greet02_str;
+
+greet01_str = 'Hello world';
+greet02_str = greet01_str; // <1>
+
+greet02_str += ' people!';     // <2>
+
+console.log( greet01_str === greet02_str   ); // <3>
+console.log( greet01_str, '|', greet02_str ); // <4>
+----
+<1> Copy the primitive data type
+<2> Modify it
+<3> Output is `false` - the two variables are no longer equivalent.
+<4> Output is `Hello world | Hello world people!`
+
+Complex types, on the other hand, are always passed by reference. If we try to
+copy a complex type in the same fashion as a primitive type it doesn't work.
+Instead we get we reference to the same data structure as shown in
+<<source-pass-by-reference>>.
+
+.Copying a complex data type
+[reftext=the following listing]
+[[source-pass-by-reference]]
+[source,js]
+----
+var greet01_obj, greet02_obj;
+
+greet01_obj = { str : 'Hello_world' };
+greet02_obj = greet01_obj;     // <1>
+
+greet02_obj.str += ' people!'; // <2>
+
+console.log( greet01_obj === greet02_obj );           // <3>
+console.log( greet01_obj.str, '|', greet02_obj.str ); // <4>
+----
+<1> Copy the object reference
+<2> Modify a property
+<3> Output is `true` - `greet01_obj` and `greet02_obj` point to the same data
+<4> Output is `Hello world people! | Hello world people!`
+
+Data that are passed by reference are vulnerable to corruption (or
+"side-effect") bugs as shown in <<source-side-effect-bug>>.
+
+////
+RW: In the examples I think you should display the results for your readers.
+They may be following along without their computers.
+MSM: Fixed? It is in the notes. Should we move them?
+////
+
+.A side-effect bug
+[reftext=the following listing]
+[[source-side-effect-bug]]
+[source,js]
+----
+var testList = [ 1, 2, 3 ];                 // <1>
+function fancyFn ( num_list ) {             // <2>
+  var num_count = num_list.length, idx;
+  for ( idx = 0; idx < num_count; idx++ ) {
+    num_list[ idx ] += '';
+  }
+}
+
+function sumFn ( accum_num, current_num ) { // <3>
+  return accum_num + current_num;
+}
+
+console.log( testList.reduce( sumFn ) ) ;   // <4>
+fancyFn( testList );                        // <5>
+console.log( testList.reduce( sumFn ) );    // <6>
+----
+<1> A simple list of numbers
+<2> A trivial function that mutates the list argument
+<3> Function for use by `ARRAY.reduce`
+<4> Output is `6` which is the desired result
+<5> Call to `fancyFn` has a "side-effect that changes the array elements to
+strings
+<6> Output is now `123` due to the "side-effect"
+
+////
+RW: I don't think you can assume that your reader knows what a "`race condition`" is.
+MSM: Fixed? I've adjusted the text.
+////
+
+Another example where pass-by-reference can be troublesome is a
+"race-condition" bug where the timing of an operation can change the results.
+When we schedule an operation using a reference the underlying data may change
+unexpectedly before the operation is performed as shown in
+<<source-race-condition-bug>>.
+
+.A race-condition bug
+[reftext=the following listing]
+[[source-race-condition-bug]]
+[source,js]
+----
+var testList = [ 1, 2, 3 ]; // <1>
+
+function addTwoFn ( num_list ) {
+  console.log( num_list[ 0 ] + num_list[ 1 ] ); // <4>
+}
+
+setTimeout( function () { addTwoFn( testList ); } ); // <2>
+testList.length = 1; // <3>
+----
+<1> A simple list of numbers
+<2> Ensure the function runs _after_ step 3 (we will discuss _why_ later)
+<3> Truncate the list
+<4> Output is  `isNaN` which is not as intended
+
+Side-effect and race-condition bugs can be difficult to track down and
+resolve. There are two certain way to avoid these issues:
+
+1. Use libraries that employ a clone-first or read-only approach to all
+complex types. Check your library APIs!
+2. Use a deep copy of the complex type instead of the "live" data.
+
+In <<source-fix-race-condition>> we use a clone to fix the race-condition bug
+from above.
+
+.Copying complex values
+[reftext=the following listing]
+[[source-fix-race-condition]]
+[source,js]
+----
+var
+  testList  = [ 1, 2, 3 ], // <1>
+  cloneList
+  ;
+
+function cloneDataFn( data ) {
+  return JSON.parse( JSON.stringify( data ) );
+}
+
+function addTwoFn ( num_list ) {
+  console.log( num_list[ 0 ] + num_list[ 1 ] ); // <6>
+}
+
+cloneList = cloneDataFn( testList ); // <2>
+setTimeout( // <3>
+  function () { addTwoFn( cloneList ); } // <5>
+);
+
+testList.length = 1;  // <4>
+----
+<1> A simple list of numbers
+<2> Clone the list
+<3> Ensure the function runs _after_ step 4
+<4> Truncate the list
+<5> Function is called with cloned list
+<6> Output is `3` which is as desired
+
+We recommend using well-tested utilities to deep copy complex data structures
+such as `jQuery.extend( true, {}, source_obj )`.  For non-recursive
+structures, see `xhi/1_util.js` and the `cloneData` method.
+
+.SIDEBAR: Object and array literals
+****
+JavaScript syntax can be confusing to the uninitiated. It's important to
+understand object and array literals before moving on. Feel free to skip this
+sidebar if you're already familiar with them.
+
+An _object literal_ is an object defined by a comma separated list of
+properties contained in curly braces. Properties are set with a colon instead
+of an equals sign. Object literals can also contain _array literals_ which are
+a comma-separated list of members surrounded by square brackets. Methods can
+be defined by setting a function as the value of one of the properties as
+shown in <<source-literals>>.
+
+.Example object and array literals
+[reftext=the following listing]
+[[source-literals]]
+[source,js]
+----
+var bookObj = {
+  title_str    : 'Single Page Web Applications',      // <1>
+  author_list  : [ 'Mike Mikowski', 'Josh Powell' ],  // <2>
+  buy_now_fn   : function () {                        // <3>
+    console.log( 'Book is purchased' );
+  }
+}
+
+console.log( bookObj );
+----
+<1> String declaration
+<2> Array literal
+<3> Function declaration
+
+Object and array literals are used extensively throughout this book.  Although
+it's not required, we usually wrap _private_ object keys with underscores.
+This allows us to identify and compress these symbols during the build
+process.
+
+image:ch01/esvers-02.png[ES2015+,80] As of ES2015+ we can now use "spread"
+operators to extend array literals in-place as shown in
+<<source-literals-es6>>.
+
+.The spread operator in ES2015+
+[reftext=the following listing]
+[[source-literals-es6]]
+[source,js]
+----
+const numList  = [ 10, 20, 30 ];
+const pushList = [ 'a','b','c', ...numList ];
+console.log( pushList.join(',') ); // <1>
+----
+<1> Output is `a,b,c,10,20,30`
+
+image:ch01/esvers-02.png[ES2015+,80] As of ES2015+ we can now compute property
+keys and values in an object literals as shown in <<source-literals-es6-2>>.
+
+.Computing keys and values in ES2015+
+[reftext=the following listing]
+[[source-literals-es6-2]]
+[source,js]
+----
+const
+  name    = 'fred',
+  age_int = 32,
+  prefix  = 'b_',
+
+  shorthand_map = { name, age_int },
+  compute_map   = {
+    [  prefix + 'name'    ] : name,
+    [  prefix + 'age_int' ] : age_int
+  },
+  template_map  = {
+    [ `${prefix}name`    ] : `${name} is my name`,
+    [ `${prefix}age_str` ] : `${age_int} is my age`
+  }
+  ;
+
+// { name: 'fred', age_int: 32 }
+console.log( shorthand_map );
+
+// { b_name: 'fred', b_age_int: 32 }
+console.log( compute_map   );
+
+// { b_name: 'fred is my name', b_age_int: '32  is my age' }
+console.log( template_map  );
+----
+
+****
+
+=== Function scope
+JavaScript prior to ES2015 is deficient to most popular languages because it
+offers only function-scoped variables. Most other languages provide block
+scope which is considered easier to read and more capable.  If we think of
+variables as "buckets", JS only allows one bucket per name within a function.
+Any other type of container, such as a `for` or `if` block, have no effect as
+shown in <<image-fn-vs-block>>.
+
+.Function versus block scope
+[reftext=the following figure]
+[[image-fn-vs-block]]
+image::ch02/block-vs-func-scope.png[Function versus block scope]
+
+Let's see how function scope works as shown in <<source-function-scope>>.
+
+.Function scope
+[reftext=the following listing]
+[[source-function-scope]]
+[source,js]
+----
+var num = 1, idx = 999;                    // <1>
+console.log( '.idx = ', idx );             // <2>
+console.log( '.num = ', num );             // <3>
+for ( idx = 0; idx < 1; idx++ ) {
+  var num;                                 // <4>
+  console.log( '.for.num = ', num );       // <5>
+  if ( num === 1 ) {
+    var num;                               // <6>
+    console.log( '.for.if.num = ', num );  // <7>
+  }
+}
+console.log( '.idx = ', idx );             // <8>
+console.log( '.num = ', num  );            // <9>
+----
+<1> Declare and assign `num` and `idx`
+<2> Output is `.idx = 999`
+<3> Output is `.num = 1`
+<4> Redeclare `num` inside of `for` block.
+<5> Output is `.for.num = 1`; `num` is the same variable.
+<6> Redeclare `num` inside of `if` block
+<7> Output is `.for.if.num = 1`; `num` is the same variable.
+<8> Output is `.idx = 1`. This is a result of the `for` loop.
+<9> Output is `.num = 1`. `num` is the same variable.
+
+A variable declared anywhere in a function using the `var` keyword creates a
+single variable of that name within the function.  It doesn't matter how many
+times it's declared, its always the same variable.
+
+image:ch01/esvers-02.png[ES2015+,80] Now let's see how block scope works as
+shown in <<source-block-scope>>.  Here we declare the `num` variable in three
+different scopes.
+
+.Block scope
+[reftext=the following listing]
+[[source-block-scope]]
+[source,js]
+----
+let num = 1, idx = 999;                    // <1>
+console.log( '.idx = ', idx );             // <2>
+console.log( '.num = ', num );             // <3>
+for ( let idx = 0; idx < 1; idx++ ) {
+  let num;                                 // <4>
+  console.log( '.for.num = ', num );       // <5>
+  if ( ! num ) {
+    let num = 8675309;                     // <6>
+    console.log( '.for.if.num = ', num );  // <7>
+  }
+  console.log( '.for.num = ', num );       // <8>
+}
+console.log( '.idx = ', idx );             // <9>
+console.log( '.num = ', num  );            // <10>
+----
+<1> Declare and assign `num` using `let`
+<2> Output is `.idx = 999`
+<3> Output is `.num = 1`
+<4> Redeclare `num` inside of `for` block.
+<5> Output is `.for.num = undefined`; this `num` is scoped to `for` block
+<6> Redeclare `num` inside of `if` block nested in `for` block
+<7> Output is `for.if.num = 8675309`; this `num` is scoped to `if` block
+<8> Output is `for.num = undefined`; this `num` is scoped to `if` block
+<9> Output is `.idx = 999`; this `idx` is scoped to the root
+<10> Output is `.num = 1`; this `num` is scoped to the root
+
+We cover ES2015+ block scope in the section below, and we will be seeing it
+almost exclusively in the future.  However, there are many tools, browsers,
+and libraries that will continue to rely on `var` and function scope into the
+foreseeable future. So let's see how it works first.
+
+[[sect-hoisting]]
+==== Hoisting
+As a result of function scope and execution peculiarities, JS is prone to
+variable "hoisting". This occurs when all `var` declarations anywhere in a
+function are "hoisted" to the top of the function at runtime by the JS engine.
+All assignments remain in-place as shown in <<image-hoisting-basic>>.
+
+.An illustration of hoisting
+[reftext=the following figure]
+[[image-hoisting-basic]]
+image::ch02/hoisted.png[Hoisting diagram]
+
+One wouldn't expect a declaration _after_ the initial use of a variable to
+work, but it does as shown in <<source-hoisting-first>>
+
+.Our first hoist
+[reftext=the following listing]
+[[source-hoisting-first]]
+[source,js]
+----
+function printMessageFn () {
+  console.log( message_str ); // <1>
+  var message_str = 'Now I am defined!';
+  console.log( message_str ); // <2>
+}
+printMessageFn();
+----
+<1> Output is `undefined`
+<2> Output is `Now I am defined!`
+
+However if we fail declare the variable _anywhere_ the error message `error:
+message_str is not defined` is displayed as shown in
+<<source-hoisting-nodeclare>>.
+
+.Compare with an undeclared variable
+[reftext=the following listing]
+[[source-hoisting-nodeclare]]
+[source,js]
+----
+function printMessageFn () {  // <1>
+  console.log( message_str ); // <2>
+}
+printMessageFn();
+----
+<1> Variable `message_str` isn't declared in any scope
+<2> Output is `error: message_str is not defined`
+
+Let's see how hoisting can provide surprising behavior when combined with
+function scope. First let's use a global variable inside a function as shown
+in <<source-hoisting-global>>. Everything works as expected.
+
+.Using a global variable inside a function
+[reftext=the following listing]
+[[source-hoisting-global]]
+[source,js]
+----
+var messageStr = 'messageStr is assigned'; // <1>
+function printMessageFn () {
+  console.log( messageStr );               // <2>
+}
+printMessageFn();
+----
+<1> The variable `messageStr` is declared and assigned in the global scope.
+<2> Output is `messageStr is assigned`.
+
+However if we declare `messageStr` anywhere within the `printMessageFn`
+function the _local scope_ `messageStr` will be used instead of the _global
+scope_ `messageStr` as shown in <<source-hoisting-redeclare>>.
+
+.Redeclaring a global variable
+[reftext=the following listing]
+[[source-hoisting-redeclare]]
+[source,js]
+----
+var messageStr = 'messageStr is assigned';
+function printMessageFn () {
+  console.log( messageStr );   // <1>
+  var messageStr = 'What up?'; // <2>
+}
+printMessageFn();
+----
+<1> Output is `undefined`.
+<2> The `var` declaration inside the `printMessageFn` function creates a
+unique `messageStr` variable within this function scope. This declaration is
+"hoisted" to the top of the function _but the assignment is not_.  Thus when
+`messageStr` is printed earlier its value is `undefined`.
+
+To avoid this sort of confusion we recommend that developers declare all
+variables within a function once at top the top using a single `var`
+statement. Let's compare ad-hoc declaration and assignment with this
+technique as shown in <<source-single-var>>.
+
+.Using a single var statement
+[reftext=the following listing]
+[[source-single-var]]
+[source,js]
+----
+// == Avoid ===
+var greet_str = 'Hello world!';
+console.log( greet_str );
+
+var is_good_book = true;
+console.log( is_good_book );
+
+var is_monday = true;
+console.log( is_monday );
+
+var is_purchase = true;
+console.log( is_purchase );
+
+var book_obj = { page_count: 25 };
+var cart_obj = {};
+console.log( book_obj, cart_obj );
+
+// == Prefer ==
+var
+  greet_str    = 'Hello world!',
+  is_good_book = true,
+  is_monday    = true,
+  is_purchased = true,
+
+  book_obj = { page_count: 25 },
+  cart_obj = {}
+  ;
+
+console.log( greet_str    );
+console.log( is_good_book );
+console.log( is_monday    );
+console.log( is_purchased );
+console.log( book_obj, cart_obj );
+----
+
+image:ch01/esvers-02.png[ES2015+,80] Our recommendations don't change much
+when using ES2015+ `const` and `let` block scoping. Here we suggest grouping
+all declaration per-block instead of per-function.
+
+==== Variable scope chain
+Variable scope chain is not a deficiency with JS, but it very much related to
+function scope.  Often times we think in terms of `global` and `local`
+variable scopes.  In most languages, however, variable scope is more accurately
+thought of as a chain as shown in <<image-scope-chain>>.
+
+.Scope chain
+[reftext=the following figure]
+[[image-scope-chain]]
+image::ch02/scope_chain.png[Scope Chain]
+
+When the JS engine encounters a variable used in an expression it looks for a
+matching variable name in the closest functional scope. If it doesn't find it
+there, it proceeds to search in the next nearest functional scope. It
+continues this process until it reaches the global scope.  The nearest-scoped
+variable name that matches is used. If no match is found in any scope then an
+error is reported as shown in <<source-scope-chain>>.
+
+.Climbing the scope chain
+[reftext=the following listing]
+[[source-scope-chain]]
+[source,js]
+----
+var messageStr = 'Global scope';
+function mainFn () {
+  var messageStr = 'mainFn scope';
+  console.log( messageStr );       // <3>
+
+  function reportFn () {
+    var messageStr = 'reportFn scope';
+    console.log( messageStr );     // <4>
+
+    function printFn () {
+      var messageStr = 'printFn scope';
+      console.log( messageStr );   // <5>
+
+      function innerFn() {
+        console.log( messageStr ); // <6>
+      }
+      innerFn();
+    }
+    printFn();
+  }
+  reportFn();
+}
+console.log( messageStr ); // <1>
+mainFn();                  // <2>
+
+console.log( errorStr );   // <7>
+----
+<1> Output is `Global scope`
+<2> Invoke `mainFn`
+<3> Output is `mainFn scope`
+<4> Output is `reportFn scope`
+<5> Output is `printFn scope`
+<6> Output is `printFn scope`; `messageStr` is inherited from the closest
+match in the scope chain -- the parent (`printFn`) function
+<7> Output is `error: errorStr is not defined`; No match found in any scope
+
+We used the same variable name in four different scopes above to illustrate
+the scope chain. In practice this would be quite confusing and we do not
+recommend it.  Instead we strive to make variable names unique across scopes
+to help avoid scope-chain-induced bugs. The code standard in Appendix 0X
+recommends using `snake_case` for local variables and `camelCase` for module
+or global scoped variables which helps. We broke this rule above (and in a few
+places below) so we could show how variable scope works.  However, for real
+work, we stick to the standard.
+
+.SIDEBAR: Global variables in Node.js and browsers
+****
+What we typically call _global_ variables are properties of the top-level
+object of the execution environment. The top-level object of the browser is
+the `window` object; in Node.js, the top-level object is the `global` object.
+When the JS engine looks for the existence of a _global_ variable, it looks at
+the `window` object in the browser and the `global` object in Node.js.
+
+The `window` object contains many properties which themselves contain objects,
+methods (`onload`, `onresize`, `alert`, `close`...), DOM elements (`document`,
+`frames`, `body`, ...) and other data like `styleSheets`. All these properties
+are accessed by using the syntax `window.<property_name>` as shown in
+<<source-global-var-browser>>.
+
+.Global variables in the browser
+[reftext=the following listing]
+[[source-global-var-browser]]
+[source,js]
+----
+// This must be run in a Browser JS console
+var messageStr = 'Global scope';
+window.onload = function () {
+  window.alert( 'window loaded' ); // <1>
+}
+console.log( window.messageStr === messageStr ); // <2>
+----
+<1> One of many, many window methods
+<2> Output is `true`
+
+The top-level object for Node.js is called `global` as shown in
+<<source-global-var-node>>. Because Node.js is a TCP server and not a browser,
+the functions and properties which are available from the `global` object are
+significantly different than the browser's `window` object.
+
+.Global variables in Node.js
+[reftext=the following listing]
+[[source-global-var-node]]
+[source,js]
+----
+// This must be run in Node.js
+global.messageStr = 'Global scope'; // <1>
+var messageStr    = global.messageStr;
+console.log( global.messageStr === messageStr ); // <2>
+----
+<1> Setting a `global` property is required to share across modules
+<2> Output is `true`
+
+We need to be careful though. Within a given module file in Node.js a
+variable might _appear_ to be global, but it likely is not. The only way to
+ensure a variable we declare is truly global is to explicitly set the `global`
+property as shown.  We don't generally recommend this but like any rule there
+are exceptions.
+****
+
+==== Block scope (ES2015+)
+image:ch01/esvers-02.png[ES2015+,80] Block scope has been added in ES2015+ to
+address the deficiency of function-only scope available in prior versions. As
+of ES2015+, we can use the `let` and `const` keywords. Both of these limit the
+variables they declare to block scope. The only difference between them is
+`const` variables are mostly immutable, whereas `let` variable are not.
+Expressions inside blocks may use any variable local to that block _or defined
+in a parent block_. The reverse is not true.  A variable created inside an
+`if` block, for example, is not "readable" by the enclosing block as shown in
+<<image-fn-vs-block-2>>.
+
+.Comparing function versus block scope
+[reftext=the following figure]
+[[image-fn-vs-block-2]]
+image::ch02/block-vs-func-scope.png[Function versus block scope]
+
+Block scoped variables are scoped within innermost block where they are
+declared. If we follow the code standard in Appendix 0X these blocks are
+always delimited by a matching set of curly braces `{...}`.  Also, unlike
+`var`, block-scoped variables cannot not be used before being declared. This
+is known as the ominous sounding "temporal dead-zone", which we previously
+thought was a Stephen King novel.
+
+Let's return to a prior example and see how block scope can fix some problems.
+First, let's try to declare a variable after we use it as shown in
+<<source-block-scope-declare>>.
+
+.Block scope safety net
+[reftext=the following listing]
+[[source-block-scope-declare]]
+[source,js]
+----
+const messageStr = 'messageStr is assigned';
+function printMessageFn () {
+  console.log( 'Local', messageStr ); // <1>
+  let messageStr = 'What up?';        // <2>
+}
+printMessageFn();
+console.log( 'Global', messageStr );
+----
+<1> Output is `error: messageStr is not defined`. When the JS engine scans the
+block it identifies variables that are used prior to being declared with `let`
+or `const`. When this occurs an exception is thrown.
+
+The above example fails to execute _and that's a good thing_. This "temporal
+dead-zone" requirement forces developers to declare all `let` and `const`
+variables before use. We can adjust this code to make it work, and in the
+process make it more understandable as shown in
+<<source-block-scope-fix>>.
+
+.Block scope as intended
+[reftext=the following listing]
+[[source-block-scope-fix]]
+[source,js]
+----
+const messageStr = 'messageStr is assigned';
+function printMessageFn () {
+  let messageStr = 'What up?';          // <1>
+  console.log( 'Local', messageStr );   // <2>
+}
+printMessageFn();
+console.log( 'Global', messageStr );    // <3>
+----
+<1> Assignment succeeds.
+<2> Output is `Local What up?`
+<3> Output is `Global messageStr is assigned`
+
+When we are writing for ES2015+ we replace almost all our `var` declarations
+with `let` or `const`.  They appears to have little performance impact although
+transpiled code might not always fair so well. The key benefit we've seen is
+the elimination of hoisting behavior and a few esoteric benefits with
+execution context (which we talk about below). Do remember that block scope
+_does not_ enclose named function declarations -- those remain function-scope
+only.
+
+The only major drawback to using ES2015+ block scope is that a significant
+percentage (up to 30%) of execution environments and some complex tools do not
+support these keywords yet. So don't do as the author did and spend hours
+converting an entire project to use `let` and `const` only to find that it
+breaks testing, coverage report, compression, and the application itself.
+Proceed with caution.
+
+=== Limited type safety tools
+JavaScript is deficient in providing type safety tools for developers.  Type
+safety is the extent a programming language discourages or prevents _type
+errors_. A type error occurs when an unintended or incompatible type value is
+provided to a function or expression, usually as an argument or context.
+Other languages typically have stricter type checking, stricter coercion rules
+and fewer polymorphic operators.
+
+Variables declared in JS may be of any type and can be reassigned at any time
+to a different data type. For these reasons, JS is considered a _loosely
+typed_ and a _dynamic_ language. This makes it very easy to create a type
+error as shown in <<source-type-error>>.
+
+.Creating a type error
+[reftext=the following listing]
+[[source-type-error]]
+[source,js]
+----
+function countUpFn ( arg_map ) {
+  var
+    start_int    = arg_map.start_int,
+    callback_fn  = arg_map.callback_fn
+    ;
+
+  while ( start_int < 0 ) { // <1>
+    callback_fn( start_int );
+    start_int += 1;
+  }
+}
+
+function printFn ( arg_data ) { console.log( arg_data ); }
+
+countUpFn({ start_int : '-3', callback_fn : printFn });
+----
+<1> The exit condition of the loop is impossible to attain with the initial
+string argument provided.
+
+The type error occurs when we set the `start_int` argument to `'-3'` when
+calling `countUpFn`. This value should be an integer, but we instead provide a
+string. The function then fails to work as expected and will will rather
+quickly consume all available resources within the execution environment. This
+results in a force-kill of a Node.js process, or a browser tab, or the entire
+browser process, or event the host OS.
+
+If we watch the value of `start_int` in the `while` loop we see the type error
+in action. The value progression is `-3, -31, -311, -3111, ...` and so on.
+This occurs because the `start_int += 1` expression always converts the number
+`1` into a string `'1'` and _appends_ it to the `start_int` variable. The test
+subsequent test, `start_int < 0`, _does_ convert the string into a number, but
+the converted value is always less than 0.
+
+Type errors can be quite troublesome because they are easy to create,
+challenging to fix, and rather severe. Let's look at each of these issues.
+
+==== JS type errors are easy to create
+JavaScript is missing almost all type controls because it was not originally
+intended to run large-scale applications. There are no type declarations,
+return types are not reliable, there is no static type-checking, and dynamic
+checking is weak.
+
+===== No type declarations
+JavaScript has no means to formally declare a variable type. A variable may
+contain any type which may be changed at any time during execution.  There are
+no _sigils_ to identify type, and a variable name is unconstrained. We
+probably all have seen a JS application or two where a single symbol like
+`watches` is used as an object, a map, a list, a boolean flag, a string, an
+integer, and a floating point number all in different contexts. Yet in
+practice most variables used in JS are not _intended_ to change type _within_
+a context because doing so is needlessly confusing.
+
+===== Return types are not reliable
+The return types of JS expressions are often not reliable. Many JS operators
+are *polymorphic* and will return values of different types depending on the
+input types. For example, the JS `+` operator will concatenate strings _or_
+add numbers _or_ convert a string to a number depending on the input types and
+their order. The return value can be surprising when variable types are mixed
+as illustrated below.
+
+[source,js]
+----
+  // Confirmed using Google V8 version 6.0.x
+  console.log(process.versions.v8);
+
+  var x, y;
+  // Expression        |     Returned value | Coercion(s)
+    x = 3;          // |                 3  | -
+    x = 3 + 1;      // |                 4  | -
+    x = 3 + '1';    // |               '31' | 3      => '3'
+    x = 3 + [];     // |                '3' | []     => '', 3 => '3'
+    x = 3 - [];     // |                 3  | []     => 0
+    x = 3 + [ 21 ]; // |              '321' | [ 21 ] => '21'
+    x = 3 + {};     // | '3[object Object]' | {}     => '[object Object]'
+    x = 3 - {};     // |               NaN  | {}     => '[object Object]'
+    x = '3' - 2;    // |                 1  | '3'    =>  3
+    x = '3' - []    // |                 3  | []     => 0, '3' => 3
+    x = '3' + 2;    // |               '32' | 2      => '2'
+    x = + '3';      // |                 3  | '3'    =>  3
+    x = 0 + '3';    // |               '03' | 0      => '0'
+    x = y + 3;      // |                NaN | -
+    x = y + '3';    // |       'undefined3' | undef  => str
+----
+
+Even if this behavior is consistent across the across the four primary JS
+engines (V8, IonMonkey, Nitro, Chakra) and the
+https://en.wikipedia.org/wiki/List_of_ECMAScript_engines[dozen of others] (and
+we have our doubts) this is at best confusing and inconsistent.  The challenge
+is that JS tries _too hard_ to coerce data types as shown in
+<<table-typecast-01>>. A value in shown the left-most column. The other
+columns show how JS coerces it using V8 6.0.x For example, a blank string is
+coerced into `false` when we use it as a boolean. Cells marked 'error' always
+result in an exception. For example, if we try `a = void 0; a.name;` an
+exception is thrown.
+
+.Value coercions in JS
+[textref=the following table]
+[[table-typecast-01]]
+[cols="<,<,<,<,<,<,<",options="header"]
+|=================================================================
+|Value |Bool   |Fn    |Num |Ary     |Obj  |Str
+|''    |false  |error |0   |[]      |{}   |''
+|'0'   |true   |error |0   |[]      |{}   |'0'
+|'1'   |true   |error |1   |[]      |{}   |'1'
+|'20'  |true   |error |20  |[]      |{}   |'20'
+|'ten' |true   |error |NaN |[]      |{}   |'ten'
+|0     |false  |error |0   |[]      |{}   |'0'
+|1     |true   |error |1   |[]      |{}   |'1'
+|NaN   |false  |error |NaN |[]      |{}   |'NaN'
+|[]    |true   |error |0   |[]      |{}   |''
+|false |false  |error |0   |[]      |{}   |'false'
+|null  |false  |error |0   |[]      |{}   |'null'
+|true  |true   |error |1   |[]      |{}   |'true'
+|[10]  |true   |error |10  |[10]    |{ 0 : 10 } |'10'
+|{}    |true   |error |NaN |[]      |{}   |'[object Object]'
+|[10,20] |true |error |NaN |[10,20] |{ 0: 10, 1:20 } |'10,20'
+|['ten'] |true |error |NaN |['ten'] |{ 0: 'ten' } |'ten'
+|['ten','t'] |true |error |NaN |['ten','t'] |{ 0: 'ten', 1: 't'} |'ten,t'
+|function () {} |true  |function () {} |NaN |[] | {} |'function() {}'
+|undefined |false |error |NaN       |error |error |'undefined'
+|-Infinity |true  |error |-Infinity |[]    |{}|'-Infinity'
+|Infinity  |true  |error |Infinity  |[]    |{}|'Infinity'
+|=================================================================
+
+Other languages often have stricter type checking, stricter coercion rules,
+fewer polymorphic operators, and fewer vendors. At least a few, for example,
+use the dot (`.`) operator to _join_ strings and the plus (`+`) operator to
+add numbers. Others use _sigils_ (prefixes) like `$`, `@`, and `%` to indicate
+types or require types to be explicitly declared.
+
+===== No static type-checking
+Many languages provide some level of compile-time type checking. This is also
+known as "static type-checking" because it can be accomplished without running
+the code. Java, for example, resolves most variable types during compilation.
+If JS had a similar mechanism we wouldn't be able to run our application until
+we resolved the static type errors. In this imaginary world, our JS
+Just-In-Time (JIT) compiler output might look something like
+<<source-static-check>>.
+
+.If JS had static type checking
+[reftext=the following listing]
+[[source-static-check]]
+[source,js]
+----
+00: ok                           | x = 3;          |
+01: ok                           | x = 3 + 1;      |
+02: compile_error: type_mismatch | x = 3 + '1';    |
+03: compile_error: type_mismatch | x = 3 + [];     |
+04: compile_error: type_mismatch | x = 3 + [ 21 ]; |
+06: compile_error: type_mismatch | x = 3 + {};     |
+07: compile_error: type_mismatch | x = '3' - 2;    |
+08: compile_error: type_mismatch | x = '3' + 2;    |
+09: compile_error: type_mismatch | x = + '3';      |
+10: compile_error: type_mismatch | x = 0 + '3';    |
+11: compile_error: type_mismatch | x = y + 3;      |
+12: compile_error: type_mismatch | x = y + '3';    |
+----
+
+Perhaps the greatest advantage of static type-checking is that it can improve
+performance: every type check that can be resolved _once_ during a compile
+removes a type check that would need to be invoked on _every_ call of a
+function or method.
+
+===== Weak dynamic checking
+Static type checking does not work in all situations, especially when dealing
+with data from unknown or untrusted sources. In those cases we resort to
+_dynamic type checking_ at run-time. Native JS tools for this purpose are
+limited. For example, the `typeof` method does not distinguish between an
+object and an array.
+
+image:ch01/esvers-02.png[ES2015+,80] As of ES2015+ there have been a few
+additions to type checking. Perhaps the most useful are the
+`Number.isSafeInteger` method, and the `Number.EPSILON` value which provides
+the allowable error in a floating point calculation as shown in
+<<source-type-es6>>.
+
+.Checking number with ES2015
+[textref=the following listing]
+[[source-type-es6]]
+[source,js]
+----
+console.log( Number.isSafeInteger(    12345 ) ); // true
+console.log( Number.isSafeInteger(   23.567 ) ); // false
+console.log( Number.isSafeInteger( '23.567' ) ); // false
+console.log( 0.1 + 0.2 === 0.3 )                 // false
+console.log(                                     // true
+  ( ( 0.1 + 0.2 ) - 0.3 ) < Number.EPSILON
+);
+----
+
+==== JS type errors are challenging to fix
+Type errors can be hard to identify and debug. When one routine fails to check
+for type an incorrect result can propagate up the Call Stack resulting in a
+cascade of errors. Tracking down which variable got mutated to the wrong
+type first can be an exercise in patience and determination.
+
+==== JS type errors can be severe
+Type errors can result in severe application failures and security holes.
+Imagine a cluster of Node.js servers that doesn't properly type-check its JSON
+API. One could implement a Denial Of Service (DOS) attack and shut down the
+cluster simply sending strings instead of numbers. Don't laugh, this stuff
+happens.
+
+=== How to improve type safety
+There are a few ways to improve type safety in JS. One approach is to use a
+transpile step for type checking. Two popular transpilers are
+https://flowtype.org/[Flow] and
+https://www.typescriptlang.org/index.html[TypeScript].  A less involved
+solution is called Typecasting and it provides most of the same benefits
+without a transpiling infrastructure.
+
+Typecasting is the use of functions to convert a value to the desired type
+using strict rules. We use the typecasting functions from the project
+utilities found in `js/xhi/1_util.js` as shown in <<source-typecast-methods>>.
+
+.Typecast methods
+[reftext=the following listing]
+[[source-typecast-methods]]
+[source]
+----
+castBool - Return a boolean
+castFn   - Return a function
+castInt  - Return an integer
+castJQ   - Return a jQuery object
+castList - Return an Array
+castMap  - Return a simple object
+castNum  - Return a number
+castObj  - Return an object
+castStr  - Return a string
+----
+
+Almost all typecast methods use the API as shown in <<source-typecast-apis>>.
+
+.Typecast APIs
+[reftext=the following listing]
+[[source-typecast-apis]]
+[source]
+[source]
+----
+result_data = cast<Type>( <data>, <default_data>, <option_map> );
+  // <data>          is optional and the default is `undefined`
+  // <default_data>  is optional and the default is `undefined`
+  // <option_map>    is optional and the default is `{}`
+----
+
+Only numbers, strings, and integers are converted between types and only when
+the conversion is unambiguous. Examples are shown in
+<<source-typecast-examples>>.
+
+.Typecast examples
+[reftext=the following listing]
+[[source-typecast-examples]]
+[source,js]
+----
+  // return_data = castInt( <value> [, <default>] [, <option_map>] );
+
+  return_data = castInt( 0      ); // 0
+  return_data = castInt( '0'    ); // 0
+  return_data = castInt( 'a'    ); // undefined
+  return_data = castInt( []     ); // undefined
+  return_data = castInt( 'a', 0 ); // 0 (default value)
+  return_data = castInt( [],  0 ); // 0 (default value)
+----
+
+The `cast` methods are predictable, explicit, and self-documenting.  The
+return for example values for each method are shown in <<table-typecast-02>>.
+Cells with `--` return the default value. No exceptions are thrown.
+
+.Typecast conversions
+[textref=the following table]
+[[table-typecast-02]]
+[cols="<,<,<,<,<,<,<",options="header"]
+|=================================================================
+|Value |castBool|castFn|castInt|castList|castMap|castStr
+|''    |--      |--    |--     |--      |--     |''
+|'0'   |--      |--    |0      |--      |--     |'0'
+|'1'   |--      |--    |1      |--      |--     |'1'
+|'20'  |--      |--    |20     |--      |--     |'20'
+|'ten' |--      |--    |--     |--      |--     |'ten'
+|0     |--      |--    |0      |--      |--     |'0'
+|1     |--      |--    |1      |--      |--     |'1'
+|NaN   |--      |--    |--     |--      |--     |--
+|[]    |--      |--    |--     |[]      |--     |--
+|false |false   |--    |--     |--      |--     |--
+|null  |--      |--    |--     |--      |--     |--
+|true  |true    |--    |--     |--      |--     |--
+|[10]  |--      |--    |--     |[10]    |--     |--
+|{}    |--      |--    |--     |--      |{}     |--
+|[10,20]|--     |--    |--     |[10,20] |--     |--
+|['ten']|--     |--    |--     |['ten'] |--     |--
+|['ten','t']|-- |--    |--     |['ten','t'] |-- |--
+|function () {} |-- |function () {} |-- |-- |-- |--
+|undefined |--  |--    |--     |--      |--     |--
+|-Infinity |--  |--    |-Infinity |--   |--     |--
+|Infinity  |--  |--    |Infinity  |--   |--     |--
+|=================================================================
+
+Let's use `castMap`, `castFn`, and `castInt` to make our code impervious to
+most type errors as shown in <<source-typecast-safety>>. About half this code
+is spend loading in the _isomorphic_ utility library. But we only have to do
+this once. After that, the utilities are available globally.
+
+.Type safety with typecasting
+[reftext=the following listing]
+[[source-typecast-safety]]
+[source,js]
+----
+// This works only in Node.js. You must adjust the libPrefix
+// to point to the 'xhi' libraries.
+/*global xhi */
+
+// Load isomorphic xhi utilities // <1>
+var
+  libPrefix = '/home/hi_score/Github/<repo>/js/xhi/',
+  uFn, aMap
+  ;
+
+global[ 'xhi' ] = require( libPrefix + '00_root.js' );
+require( libPrefix + '01_util.js'  );
+
+aMap = xhi._00_root_._makeInstanceFn_( 'ex01' );
+xhi._01_util_._makeInstanceFn_( aMap );
+uFn = aMap._01_util_;
+
+// Proceed with typecasting
+function countUpFn ( arg_map ) {
+  var
+    input_map    = uFn._castMap_( arg_map, {} ), // <2>
+
+    callback_fn  = uFn._castFn_(  input_map.callback_fn ),// <3>
+    start_int    = uFn._castInt_( input_map.start_int, 0, // <4>
+      { _min_num_ : -1000, _max_num_ : 0, _do_autobound_: true }
+    ), idx
+    ;
+
+  if ( ! callback_fn ) { return; } // <5>
+
+  for ( idx = start_int; idx < 0; idx++ ) { // <6>
+    callback_fn( idx );
+  }
+}
+
+function printFn ( arg_data ) { console.log( arg_data ); }
+
+countUpFn({ start_int : '-3', callback_fn : printFn });
+
+// Output is
+// -3
+// -2
+// -1
+----
+<1> Load xhi isomorphic libraries
+<2> Ensure `input_map` is a map
+<3> Ensure `callback_fn` is a function; if not, set to `undefined`
+<4> Ensure the starting integer is defined and constrain the value
+    between -1000 and 0; round numbers as needed
+<5> Exit the function if `callback_fn` is not defined
+<6> Use a self-limiting `for` loop instead of a `while` loop
+
+We use typecasting when processing external data and inputs to public APIs.
+Inside our own function, we rely on the name convention per Appendix 0X to
+communicate intended types instead of typecasting. Typecasting is typically
+found at the very top of a function which is handy when documenting an API.
+
+== Unusual JavaScript features
+=== Prototype-based objects
+JavaScript is unusual because it uses prototype-based objects while most
+popular computer languages today use class-based objects. The stewards of JS
+have added the `class`, `extends`, `static` and `super` keywords in ES2015+ to
+help developers familiar with class-based object more comfortable. But don't
+be fooled: they are still prototype-based objects and behave differently.
+
+The key difference is a Class-based systems use a Class function to specify
+the structure and content of an object. A prototype-based system uses a
+prototype defined what an object should look like. Hopefully we aren't
+stretching the metaphor too much, but if a sculptor used a class-based system,
+he would use blueprints to build many full-sized sculptures. If he used a
+prototype-based system, he would use a scale model for the same purpose.
+
+==== Creating prototype-based objects
+Let's create a simple object using Classes and Prototypes. We'll start
+with a single Sculptor object as shown in <<table-proto-01>>.
+
+.Simple objects creation
+[textref=the following table]
+[[table-proto-01]]
+[cols="<,<",options="header"]
+|==================================
+|Class-based |Prototype-based
+a|
+[source,java]
+----
+public class Sculptor {
+  public int experience = 4;
+  public int schooling  = 2;
+  public string id      = "1234";
+  public string name    = "Joe";
+};
+
+Sculptor sculptor_obj = new Sculptor();
+----
+
+a|
+[source,js]
+----
+var sculptorObj = {
+  experi_int : 4,
+  id         : '1234',
+  name       : 'Joe',
+  school_int : 2
+};
+----
+|==================================
+
+The prototype-based object is simpler and quicker to write when there's only
+one instance of an object. In class-based systems we have to define a class,
+define a constructor, and then instantiate an object that is a member of that
+class. A prototype-based object is simply defined in-place using an object
+literal.
+
+The prototype-based system shines for the simple object use case, but it can
+also support the more complex objects that share properties.  Let's take the
+previous example of Sculptor and provide an interface to change the `name` and
+`id` of a sculptor but keep the same value for experience and schooling as
+shown in <<table-proto-02>>.
+
+.Multiple objects: class versus prototype
+[textref=the following table]
+[[table-proto-02]]
+[cols=",",options="header"]
+|================================
+|Class-based |Prototype-based
+a|
+[source,java]
+----
+/* step 1 */
+public class Sculptor {
+  public int experience  = 4;
+  public int schooling = 2;
+  public string name;
+  public string id;
+
+  /* step 2 */
+  public Sculptor(
+    string name,
+    string id
+  ) {
+    this.name = name;
+    this.id   = id;
+  }
+};
+
+/* step 3 */
+Sculptor firstSculptor = new Sculptor( "Joe", "12A" );
+
+Sculptor secondSculptor = new Sculptor( "Sam", "2BC" );
+----
+1.  Define the class
+2.  Define the class constructor
+3.  Instantiate the objects
+
+a|
+[source,js]
+----
+var user01Obj, user02Obj, sculptorProto;     // <1>
+
+sculptorProto = {
+  experi_int : 4,
+  school_int : 2
+};
+
+function makeSculptorFn( name, id ) {        // <2>
+  var obj  = Object.create( sculptorProto );
+  obj.name = name;
+  obj.id   = id;
+  return obj;
+}
+
+user01Obj = makeSculptorFn( 'Sue', '12A' ); // <3>
+user02Obj = makeSculptorFn( 'Joe', '2BC' );
+----
+<1> Define prototype object
+<2> Create a factory function
+<3> Instantiate the objects
+|================================
+
+Class and prototype object creation follow a similar sequence, and if we're
+used to classes, adjusting to prototypes isn't much of a stretch.  But the
+devil is in the details. Let's step through the sequence and see what we can
+learn.
+
+First we create the templates for our objects. This is called the _class_ with
+class-based objects and the _prototype_ with prototype-based object. These
+templates define the content and structure of the objects that will be created.
+
+Second, we create a constructor. In class-based languages, the constructor is
+defined inside of the class so it's clear when creating an instance which
+constructor goes with which class. In JS, we use a factory function to return
+new instances.
+
+Third and finally we instantiate two objects.
+
+.SIDEBAR: Object creation techniques
+....
+There are a number of alternative methods to create objects in JS and it is
+another oft-debated topic. Let's compare the three primary methods used to
+create object in JS. First we have the standard constructor pattern as shown
+in <<source-proto-compare-01>>.
+
+.Standard constructor pattern
+[reftext=the following listing]
+[[source-proto-compare-01]]
+[source,js]
+----
+var Animal = function (name, legCount) {
+  this.name = name;
+  this.legCount = legCount;
+};
+
+Animal.prototype.speak = function() {
+  console.log(this.name + ' makes a noise.');
+};
+
+var Snake = function (name) {
+  Animal.apply(this, [name, 0]);
+};
+
+Snake.prototype = Object.create(Animal.prototype);
+Snake.prototype.constructor = Snake;
+Snake.prototype.speak = function() {
+  console.log(this.name + ' hisses.');
+};
+
+var Horse = function (name) {
+  Animal.apply(this, [name, 4]);
+};
+
+Horse.prototype = Object.create(Animal.prototype);
+Horse.prototype.constructor = Horse;
+Horse.prototype.speak = function() {
+  console.log(this.name + ' whinnies.');
+};
+----
+
+Next we have the ES2015+ Pseudo-class pattern as shown in
+<<source-proto-compare-02>>.
+
+.ES2015+ Psuedo-class pattern
+[reftext=the following listing]
+[[source-proto-compare-02]]
+[source,js]
+----
+class Animal {
+  constructor(name, legCount) {
+    this.name = name;
+    this.legCount = legCount;
+  }
+  speak() {
+    console.log(this.name + ' makes a noise.');
+  }
+}
+
+class Snake extends Animal {
+  constructor(name: string) {
+    super(name, 0);
+  }
+  speak() {
+    console.log(this.name + ' hisses.');
+  }
+}
+
+class Horse extends Animal {
+  constructor(name: string) {
+    super(name, 4);
+  }
+  speak() {
+    console.log(this.name + ' whinnies.');
+  }
+}
+----
+
+And finally we have the the factory function pattern as shown in
+<<source-proto-compare-03>>.
+
+.Factory function pattern
+[reftext=the following listing]
+[[source-proto-compare-03]]
+[source,js]
+----
+function makeAnimal ( name, leg_count ) {
+  return {
+    name      : name,
+    leg_count : leg_count,
+    speak     : function () {
+      console.log( this.name + ' makes a noise.');
+    }
+  };
+}
+
+function makeSnake ( name ) {
+  var snake_obj   = makeAnimal( name, 0 );
+  snake_obj.speak = function () {
+    console.log(this.name + ' hisses.');
+  }
+  return snake_obj;
+}
+
+function makeHorse ( name ) {
+  var horse_obj   = makeAnimal( name, 4 );
+  horse_obj.speak = function () {
+    console.log(this.name + ' whinnies.');
+  }
+  return horse_obj;
+}
+----
+
+We find the standard constructor pattern overly verbose with the `prototype`
+keyword being used frequently. The convention is to use an uppercase first
+letter for a constructor function. If one forgets to use `new` when calling a
+constructor one can pollute the global namespace. This method is also
+misleading because it falsely implies the instances are class-based.
+
+image:ch01/esvers-02.png[ES2015+,80] The ES2015+ Pseudo-class pattern uses the
+new `class`, `extends`, `static` and `super` keywords to make our
+prototype-based objects look even more like classes, which we feel is
+dangerous. At least the syntax is much cleaner, but we find the readability to
+be on-par with the factory pattern.
+
+We consider the factory function pattern as best practice. It emphasizes
+prototype inheritance, is less verbose, and avoids problems with constructor
+functions.  And it has another benefit which we will see soon: it can be
+easily adjusted to provide class-like methods.
+....
+
+There are enough similarities between class and prototype based objects that
+most of the time we can get along without difficulty. However they _do_ work
+differently. Primary differences include the lack of class methods and the use
+of the _prototype chain_ to determine inheritance.
+
+[[sect-class-methods]]
+==== Lack of class methods
+The lack of class methods and values would at first seem to be a major
+detriment in JS. However, this is actually easily fixed as shown in
+<<source-class-methods>>.
+
+.Class-like methods in JS
+[reftext=the following listing]
+[[source-class-methods]]
+[source,js]
+----
+var houseMgrObj, houseObj;
+
+houseMgrObj = (function () {
+  var
+    houseProto = { door_count : 2 },
+    houseList  = []
+    ;
+
+  function deleteFn ( obj ) {
+    var solve_idx = houseList.indexOf( obj );
+    if ( solve_idx > -1 ) {
+      houseList.splice( solve_idx, 1 );
+    }
+    return houseList.length;
+  }
+
+  function getCountFn () {
+    return houseList.length;
+  }
+
+  function makeFn ( arg_map ) {
+    var obj = Object.create( houseProto );
+    Object.assign( arg_map );
+    houseList.push( obj );
+    return obj;
+  }
+
+  function setProtoFn ( key, data ) {
+    if ( houseProto.hasOwnProperty( key ) ) {
+      houseProto[ key ] = data;
+    }
+  }
+
+  return {
+    deleteFn    : deleteFn,
+    getCountFn  : getCountFn,
+    makeFn      : makeFn,
+    setProtoFn  : setProtoFn
+  };
+}());
+
+houseObj = houseMgrObj.makeFn({ name: 'fred' }); // <1>
+
+console.log( houseMgrObj.getCountFn() );         // <2>
+console.log( houseObj.door_count );              // <3>
+
+houseMgrObj.setProtoFn( 'door_count', 5 );       // <4>
+console.log( houseObj.door_count );              // <5>
+
+console.log( houseMgrObj.deleteFn( houseObj ) ); // <6>
+----
+<1> Create an instance
+<2> Output is `1` with is the number of houses created
+<3> Output is `2` which is the door count on the first house object
+<4> Invoke method to set door count to 5 on all instance prototypes
+<5> Output is `5` which is the new default door count on all house objects
+<6> Output is `0` which is the number of houses remaining after we delete our
+house object from the list.
+
+This example incorporates both <<sect-closures>> and
+<<sect-revealing-module-pattern>> which we will be explaining in upcoming
+sections. So don't worry if it isn't obvious _how_ everything works yet. Just
+remember that we can create class-like methods with relative ease using the
+factory function pattern.
+
+image:ch01/esvers-02.png[ES2015+,80] The `static` keyword provides for
+class-like methods using ES2015 syntax.
+
+==== The prototype chain
+JavaScript uses the _prototype chain_ during run-time to resolve property
+values. This is very similar to the scope chain, where the closest defined
+property "wins" as shown in <<image-proto-chain>>.
+
+.The Prototype chain
+[reftext=the following figure]
+[[image-proto-chain]]
+image::ch02/prototype_chain.png[Prototype chain]
+
+Let's start by creating an object as shown in <<source-proto-chain-01>>.  The
+only property we describe is `name`.
+
+.Creating a simple Thing object
+[reftext=the following listing]
+[[source-proto-chain-01]]
+[source,js]
+----
+var thingObj = { name : 'fred' };
+
+console.log( 'name is ' + thingObj.name );        // <1>
+console.log( thingObj.hasOwnProperty( 'name' ) ); // <2>
+----
+<1> Output is `name is fred`.
+<2> Output is `true` because `name` is set directly on `thingObj`
+
+Now let's create an Animal object which inherits from the Thing object as
+shown in <<source-proto-chain-02>>.
+
+.Animal inherits from Thing
+[reftext=the following listing]
+[[source-proto-chain-02]]
+[source,js]
+----
+var
+  thingObj  = { name     : 'fred' },
+  animalMap = { is_alive : true   },
+  animalObj
+  ;
+
+function makeAnimalObj ( attr_map ) {
+  var animal_obj = Object.create( thingObj );
+  Object.assign( animal_obj, animalMap      );
+  Object.assign( animal_obj, attr_map || {} );
+  return animal_obj;
+}
+
+animalObj = makeAnimalObj();
+console.log( 'name is ' + animalObj.name );            // <1>
+console.log( animalObj.hasOwnProperty( 'name'     ) ); // <2>
+console.log( animalObj.hasOwnProperty( 'is_alive' ) ); // <3>
+----
+<1> Output is `name is fred`
+<2> Output is `false` because `name` is _not_ directly set on `animalObj`
+<3> Output is `true` because `is_alive` is set directly on `animalObj`
+
+When the property `name` is not found directly in `animalObj` the JS engine
+searches its prototype (`thingObj`, in this case), and when it finds `name`
+there it uses that property.
+
+Let's keep building our prototype chain to match our diagram.  We next add the
+Mammal object which inherits from Animal as shown in
+<<source-proto-chain-03>>.
+
+.Mammal inherits from Animal
+[reftext=the following listing]
+[[source-proto-chain-03]]
+[source,js]
+----
+var
+  thingObj  = { name     : 'fred' },
+  animalMap = { is_alive : true   },
+  mammalMap = { is_warm  : true   },
+  mammalObj
+  ;
+
+function makeAnimalObj ( attr_map ) {
+  var animal_obj = Object.create( thingObj );
+  Object.assign( animal_obj, animalMap      );
+  Object.assign( animal_obj, attr_map || {} );
+  return animal_obj;
+}
+
+function makeMammalObj ( attr_map ) {
+  var
+    animal_obj = makeAnimalObj(),
+    mammal_obj = Object.create( animal_obj )
+    ;
+  Object.assign( mammal_obj, mammalMap      );
+  Object.assign( mammal_obj, attr_map || {} );
+  return mammal_obj;
+}
+
+mammalObj = makeMammalObj();
+console.log( 'name is ' + mammalObj.name );            // <1>
+console.log( mammalObj.hasOwnProperty( 'name'     ) ); // <2>
+console.log( mammalObj.hasOwnProperty( 'is_alive' ) ); // <3>
+console.log( mammalObj.hasOwnProperty( 'is_warm'  ) ); // <4>
+----
+<1> Output is `name is fred`
+<2> Output is `false` because `name` is _not_ directly set on `mammalObj`
+<3> Output is `false` because `is_alive` is _not_ directly set on `mammalObj`
+<4> Output is `true` because `is_warm` is directly set on `mammalObj`
+
+Finally we can have the Cat object inherit from Mammal as shown in
+<<source-proto-chain-04>>.
+
+.Cat inherits from Mammal
+[reftext=the following listing]
+[[source-proto-chain-04]]
+[source,js]
+----
+var
+  thingObj  = { name       : 'fred' },
+  animalMap = { is_alive   : true   },
+  mammalMap = { is_warm    : true   },
+  catMap    = { happy_str  : 'purr' },
+  catObj
+  ;
+
+function makeAnimalObj ( attr_map ) {
+  var animal_obj = Object.create( thingObj );
+  Object.assign( animal_obj, animalMap      );
+  Object.assign( animal_obj, attr_map || {} );
+  return animal_obj;
+}
+
+function makeMammalObj ( attr_map ) {
+  var
+    animal_obj = makeAnimalObj(),
+    mammal_obj = Object.create( animal_obj )
+    ;
+  Object.assign( mammal_obj, mammalMap      );
+  Object.assign( mammal_obj, attr_map || {} );
+  return mammal_obj;
+}
+
+function makeCatObj ( attr_map ) {
+  var
+    mammal_obj = makeMammalObj(),
+    cat_obj    = Object.create( mammal_obj )
+    ;
+  Object.assign( cat_obj, catMap         );
+  Object.assign( cat_obj, attr_map || {} );
+  return cat_obj;
+}
+
+catObj = makeCatObj();
+console.log( 'name is ' + catObj.name );          // <1>
+console.log( catObj.hasOwnProperty( 'name'     ) ); // <2>
+console.log( catObj.hasOwnProperty( 'is_alive' ) ); // <3>
+console.log( catObj.hasOwnProperty( 'is_warm'  ) ); // <4>
+console.log( catObj.hasOwnProperty( 'happy_str') ); // <5>
+----
+<1> Output is `name is fred`.
+<2> Output is `false` because `name` is _not_ directly set on `catObj`
+<3> Output is `false` because `is_alive` is _not_ directly set on `catObj`
+<4> Output is `false` because `is_warm` is _not_ directly set on `catObj`
+<5> Output is `true`  because `happy_str` is directly set on `catObj`
+
+We can "climb the prototype chain" using the `__proto__` property as shown in
+<<source-proto-chain-climb>>.
+
+.Climbing the prototype chain
+[reftext=the following listing]
+[[source-proto-chain-climb]]
+[source,js]
+----
+// Append this to the previous listing to see results
+console.log( 'Climbing the prototype chain...' );
+console.log( catObj.happy_str );                          // purr
+console.log( catObj.__proto__.is_warm );                  // true
+console.log( catObj.__proto__.__proto__.is_alive );       // true
+console.log( catObj.__proto__.__proto__.__proto__.name ); // fred
+----
+
+==== Prototype mutations
+One powerful -- and potentially dangerous -- behavior that prototype
+inheritance provides is the ability to mutate _all_ objects based on a
+prototype at once. One may add, delete, or change any property on the `Thing`
+prototype after hundreds of animals, mammals, and cats objects have been
+created.  We illustrate this in the <<sect-class-methods>> section.  Be
+careful when modifying prototypes!
+
+=== Functions
+Understanding functions is key to mastering JS and an important foundation for
+building professional single page applications. They are unique enough to
+merit their own section with numerous subtopics. We explore functions as
+first-class objects, anonymous functions, IIFEs, execution context, the
+revealing module pattern, namespacing, and closures, Let's get started!
+
+==== Functions are first-class objects
+JavaScript functions are, unlike many other languages, first-class objects.
+This means they can be assigned to variables, given properties, and even be
+passed as arguments into function calls as shown in
+<<source-first-class-fns>>.
+
+.First-class functions
+[reftext=the following listing]
+[[source-first-class-fns]]
+[source,js]
+----
+function sculptFn () { return 'Ship!' } // <1>
+var myFn = sculptFn;                    // <2>
+myFn.ageInt = 3;                        // <3>
+
+console.log( myFn );                    // <4>
+console.log( myFn === sculptFn );       // <5>
+console.log( myFn() );                  // <6>
+console.log( myFn.name );               // <7>
+----
+<1> Define a named function
+<2> Assign it to a variable
+<3> Add an `ageInt` property
+<4> Output is `{ [Function: sculptFn] ageInt: 3 }`
+<5> Output is `true` -- both variables point to the same function
+<6> Output is `Ship!`
+<7> Output is `sculptFn`, the canonical name
+
+==== Anonymous functions
+A relatively unique aspect of JS is that functions can be declared without a
+name. We all have probably seen JS function declared like this:
+
+----
+function sculptFn () {}
+----
+
+But, we can also store functions in variables:
+
+----
+var myFn = function sculptFn () {};
+----
+
+We can decrease the redundancy (and the chance we'll mismatch the names) by
+making it an _anonymous function_, which is just the label given to a function
+declaration without a name. Here's an anonymous function being saved to a
+local variable:
+
+----
+var myFn = function () {};
+----
+
+Functions saved to a local variable are invoked like any other function:
+
+----
+var myFn = function () {
+  console.log( 'Quiet, I'm sculpting!' );
+};
+
+myFn(); // <1>
+----
+<1> Output is `Quiet, I'm sculpting!`
+
+==== Immediately invoked function expressions
+One relatively unique feature JS provides is the ability to create a function
+that immediately invokes itself after being loaded. We call these _Immediately
+Invoked Function Expressions_ (IIFEs). Another name with _almost_ the same
+meaning is _self-executing anonymous functions_. The one difference is that
+IIFEs aren't necessarily anonymous. Let's see how we could typically invoke a
+function after loading a JS file as shown in <<source-invoke-normal>>.
+
+.Using a call to invoke a function
+[reftext=the following listing]
+[[source-invoke-normal]]
+[source,js]
+----
+var private_str;
+function appFn () {
+  var private_str = 'private';
+}
+appFn();
+
+console.log( private_str ); // <1>
+----
+<1> Output is `undefined` as `private_str` has function scope inside `appFn`
+
+We can use an IIFE instead to for the same effect as shown
+<<source-iife-invoke>>.
+
+.Using an Immediately Invoked Function Expression (IIFE)
+[reftext=the following listing]
+[[source-iife-invoke]]
+[source,js]
+----
+var private_str;
+(function () {
+  var private_str = 'private';
+})();
+
+console.log( private_str ); // <1>
+----
+<1> Output is `undefined` as `private_str` has function scope inside the IIFE
+
+The general syntax of an IIFE is fairly obvious if a little "noisy." First we
+put a pair of parenthesis at the end of the function, then we wrap the whole
+expression in another set of parenthesis as shown in <<source-iife-syntax>>.
+
+.Syntax of an IIFE
+[reftext=the following listing]
+[[source-iife-syntax]]
+[source,js]
+----
+// == Regular anonymous function
+var anonFn = function () {
+  // do some stuff here
+}
+
+// == IIFE
+(function () {
+  // do some stuff here
+}());
+----
+
+IIFEs are used to contain variable scope and prevent variables from leaking
+into other places in the code. This can be used to create JS plugins that
+won't conflict with application code because it doesn't add any variables to
+the global namespace.  Let's see how variable scope works in an IIFE as shown
+in <<source-iife-scope>>.
+
+.Variable scope in an IIFE
+[reftext=the following listing]
+[[source-iife-scope]]
+[source,js]
+----
+(function () {
+  console.log( local_str ); // <1>
+
+  var local_str = 'Local Variable!';
+
+  console.log( local_str ); // <2>
+
+}());
+
+// error message "local_str is not defined"
+console.log( local_str );   // <3>
+----
+<1> Output is `undefined`. Inside of the IIFE the variable is declared (as
+discussed in the section on <<sect-hosting>>, but not yet assigned.
+<2> Output is `Local Variable`. After the variable is declared and assigned a
+value inside the anonymous function, the value of that variable is available.
+<3> Output is `error: local_str is not defined` because it is declared an
+initialized only inside the IIFE; attempting to access it outside this scope
+results in an error
+
+Compare this with <<source-global-scope>>. This must be run from a script file
+for the global variable hoisting to work. This can be accomplished by pasting
+the listing into a file and then using Node.js to execute it like `node
+test.js`. If we enter the code in line-by-line into an interactive console
+we _will_ see an error after entering the first line.
+
+.Global variable hoisting
+[reftext=the following listing]
+[[source-global-scope]]
+[source,js]
+----
+console.log( globalStr );  // <1>
+var globalStr = 'Global!'; // <2>
+console.log( globalStr );  // <3>
+----
+<1> Output is `undefined`. Variable `globalStr` is declared but not
+assigned
+<2> Assignment to `globalStr` is accomplished here
+<3> Output is `Global`
+
+_Pollution of the global namespace_ is a term you might hear often in JS
+circles, and it refers to needlessly creating global variables.  Here we
+_should_ have used an IIFE and local variable to contain the string, but
+_instead_ we added a new global variable that may conflict with others used in
+our code or third-party JS libraries.
+
+Another problem that can be solved with a IIFEs is to ensure a shorthand
+symbol such as `$` refers to the proper library within its scope.  First,
+let's see how to pass a parameter into an IIFE as shown in
+<<source-iife-pass-01>>.
+
+.IIFE parameter passing
+[reftext=the following listing]
+[[source-iife-pass-01]]
+[source,js]
+----
+(function ( food_name ) {
+  var declare_str = 'I am going to eat a ' + food_name; // <1>
+  console.log( declare_str );
+})( 'sandwich' ); // <2>
+----
+<1> Output is `I am going to eat a sandwich`
+<2> The value `sandwich` is passed into the anonymous function as the first
+parameter, `food_name`
+
+If that syntax throws you for a loop, it's just passing the value `sandwich`
+into the anonymous function as the first parameter. Let's compare that syntax
+against a normal function as shown in <<source-iife-pass-02>>.
+
+.Normal parameter passing
+[reftext=the following listing]
+[[source-iife-pass-02]]
+[source,js]
+----
+function eatFn ( food_name ) {
+  var declare_str = 'I am going to eat a ' + food_name;
+  console.log( declare_str );
+}
+eatFn( 'sandwich' );
+
+// Is the same as...
+
+(function (food_name) {
+  var declare_str = 'I am going to eat a ' + food_name;
+  console.log( declare_str );
+})( 'sandwich' );
+----
+
+The only difference is that the variable `eatFn` has been removed and the
+function definition is surrounded by parentheses.
+
+Now we can ensure our shorthand symbol, `$`, refers to the proper library.
+Numerous libraries like jQuery, Prototype, GoJS, and others all lay claim to
+the this symbol. If we include more than one in our application, then the last
+library loaded will set the pointer.  Which library will win may actually vary
+between runs!  However, we can ensure this symbol points the desired library
+within the IIFE's scope by providing the unique library name for the `$`
+argument as shown in <<source-iife-pass-03>>.
+
+.Protecting a variable inside an IIFE
+[reftext=the following listing]
+[[source-iife-pass-03]]
+[source,js]
+----
+var jQuery = { name : 'Mock jQuery' };
+(function ( $ ) {  // <1>
+  // $ === jQuery everwhere within this IIFE
+  console.log( $ ); // <2>
+}( jQuery ));
+----
+<1> `$` is the Prototype function up until this point
+<2> `$` is the Mock jQuery object everywhere within the IIFE scope
+
+image:ch01/esvers-02.png[ES2015+,80] With the advent of ES2015+, we can
+replace IIFE closures with some alternate containers. First, we can employ
+block scope to prevent variables from leaking into the global namespace as
+shown in <<source-iife-es6-01>>.
+
+.Block scope with ES2015+
+[textref=the following listing]
+[[source-iife-es6-01]]
+[source,js]
+----
+{
+  let scopeStr = 'Hello world!';
+  console.log( scopeStr ); // <1>
+}
+console.log( scopeStr );   // <2>
+----
+<1> Output is `Hello world!`
+<2> Output is `error: scopeStr is not defined`
+
+This worked as expected but this approach is quite limited. It doesn't
+contain variables declared with `var`. It doesn't contain function
+declarations. It doesn't allow passing of values or creating a closure.
+Consider the following block scope shown in <<source-iife-es06-02>>.
+
+.The limits of block scope
+[textref=the following listing]
+[[source-iife-es6-02]]
+[source,js]
+----
+{
+  var scopeStr = 'Hello world!';
+  function printScopeFn () {
+    console.log( 'scopeStr is ' + scopeStr );
+  }
+}
+printScopeFn();          // <1>
+console.log( scopeStr ); // <2>
+----
+<1> Output is `Hello world!`; `scopeStr` is _not_ contained in the block
+<2> Output is `Hello world!`; the function `printScopeFn` is _not_ contained
+in the block
+
+While block scope may be a sufficient replacement for an IIFE in a few cases,
+we need something that provides function scope. One approach is to use the
+ES2015+ `fat arrow` function syntax as shown in <<source-iife-es6-03>>.
+
+.Function scope with ES2015+ fat arrow syntax
+[textref=the following listing]
+[[source-iife-es6-03]]
+[source,js]
+----
+// Old school IIFE
+(function ( food_name ) {
+  var declare_str = 'I am going to eat a ' + food_name;
+  console.log( declare_str );
+}( 'sandwich' ));
+
+// ES2015+ fat arrow IIFE
+(( food_name ) => {
+  var declare_str = 'I am going to eat a ' + food_name;
+  console.log( declare_str );
+})( 'sandwich' );
+----
+
+And that saves us ...five characters?  The difference between `fat arrow`
+function compared to regular functions is they do not receive their own `this`
+context or `arguments` binding. They cannot be used as an object constructor.
+The new "rest" operator can help alleviate the missing `arguments` binding
+like so: `(user_name, ...arg_list) => { ... }` where `arg_list` will provide
+any and all remaining arguments after `user_name`.
+
+==== Execution context
+Almost all computer languages use a _Call Stack_ to manage function calls.
+This is a Last-In-First-Out (LIFO) queue where each entry represents a
+function call. The current running function entry, if there is one, is always
+at the top as shown in <<source-call-stack-01>>.  Some languages call
+functions "methods" or "procedures" but they are all conceptually similar.
+
+.A simplified Call Stack
+[reftext=the following figure]
+[[source-call-stack-01]]
+----
++--------- Call Stack ------------+
+| Running Function D              |
++---------------------------------+
+|   Function C which called D     |
++---------------------------------+
+|   Function B which called C     |
++---------------------------------+
+|   Function A which called B     |
++---------------------------------+
+|   Global context which called A |
++---------------------------------+
+----
+
+Each entry into a Call Stack is called a _stack frame_.  A _stack frame_
+describes the calling context and contains arguments, local variables, and
+details associated with the function call.  Whenever a function is called, a
+new frame is created and added ("pushed") to the top of the _Call Stack_.
+Whenever a function exits, its _stack frame_ is removed ("popped") from the
+_Call Stack_ and execution resumes in the calling function which is now at the
+top of the stack as shown in shown in <<source-call-stack-02>>.
+
+.The stack with popped frames
+[reftext=the following figure]
+[[source-call-stack-02]]
+----
++--------- Call Stack ------------+  +------- Popped frames ------+
+|   Running Function B            |  | Function D                 |
++---------------------------------+  +----------------------------+
+|   Function A which called B     |  | Function C                 |
++---------------------------------+  +----------------------------+
+|   Global context which called A |
++---------------------------------+
+----
+
+Popped _stack frames_ remain in memory until all references to them have been
+deleted.  This is a key concept in which we will return to in the
+<<sect-closures>> section.
+
+The JS _stack frame_ includes the _execution context object_ because apparently
+no one wanted to call it something as mundane as _the stack frame data_.  This
+object contains the scope chain, the meaning of `this`, and a record for all
+the variables used during execution, including arguments.  Let's adjust our
+previous figure to show how a JS _stack frame_ might look in 
+<<source-call-stack-03>>.
+
+.The JS Call Stack
+[reftext=the following figure]
+[[source-call-stack-03]]
+----
++--------- Call Stack ------------+  +------ Popped frames -------+
+| Running Function B              |  | Function D                 |
+| execution_context_obj = {       |  | <execution_context_object> |
+|   scopeChain : { ... }          |  +----------------------------+
+|   this : { ... }                |  | Function C                 |
+|   variableObject : { ... }      |  | <execution_context_object> |
+| }                               |  +----------------------------+
++---------------------------------+
+|   Function A which called B     |
+|   <execution_context_object>    |
++---------------------------------+
+|   Global context which called A |
+|   <execution_context_object>    |
++---------------------------------+
+----
+
+Many of us have discovered the Call Stack the hard way, typically when a
+recursive routine call itself many thousands. Unless the developer uses -- and
+the compiler recognizes -- tail recursion, this will result in just as many
+_stack frames_. If the execution environment runs out of memory for the Call
+Stack it throws an exception and stops running. Such a program is shown in
+<<source-call-stack-04>>.
+
+.Maximum stack size
+[reftext=the following listing]
+[[source-call-stack-04]]
+[source,js]
+----
+// == Avoid === // <1>
+function recurseFn ( i ) {
+  console.log( i );
+  i++;
+  return ( i > 1000000 ) ? null : recurseFn( i );
+}
+recurseFn( 0 );
+
+// == Prefer == // <2>
+for ( i = 0; i < 100000; i++ ) {
+  console.log( i );
+}
+----
+<1> Output numbers 0 through between 8-16k. After that, it aborts with a
+   `Maximum call stack size exceeded` exception
+<2> This prints all numbers from 0 through 1 million. It is also about 100x
+    faster than the recursive solution when we remove the console.log
+    call
+
+We found the recursive routine could not complete in Node 8.x even though this
+is classic tail recursion. It only gets about 100th of the way through before
+the maximum stack size is exceeded and it executes at 1/100 the speed. Stack
+frames are good and necessary but it is a good rule of thumb to avoid
+unnecessary recursion and overly deep Call Stacks.
+
+Here are the important points worth remembering about the execution context:
+
+1. Every function call has an execution context object.
+2. These are pushed and popped off the Call Stack as functions run and exit.
+3. Popped execution context objects are not necessarily deleted.
+4. Because JS is event-driven, the execution context is arguably more
+important compared to procedural languages.
+
+Now that we've explored _stack frames_ and the _execution context object_
+let's see how they are used to create objects and functions that retain state
+using Closures.
+
+[[sect-closures]]
+==== Closures
+Function calls can create closures in many languages. But because JS is
+event-driven, the reliance on closures is arguably more important.  In JS a
+closure occurs when a data structure retains a reference to an _execution
+context object_. This object exists every _stack frame_ of the Call stack as
+shown in <<source-closure-01>>.
+
+.Execution context object in the Call Stack
+[reftext=the following figure]
+[[source-closure-01]]
+----
++--------- Call Stack ------------+
+| Running Function B              |
+| execution_context_obj = {       |
+|   scopeChain : { ... }          |
+|   this : { ... }                |
+|   variableObject : { ... }      |
+| }                               |
++---------------------------------+
+|   Function A which called B     |
+|   <execution_context_object>    |
++---------------------------------+
+|   Global context which called A |
+|   <execution_context_object>    |
++---------------------------------+
+----
+
+A unique execution context object is created every time a function is called.
+After the function completes, the execution context object may be discarded
+(either immediately or through garbage collection) _unless the caller retains
+a reference to it_.  This is happens when a function returns a complex value
+which uses the execution context. Until all references are deleted the
+execution context is preserved as shown in <<source-closure-02>>.
+
+.Creating a closure by returning an object
+[reftext=the following listing]
+[[source-closure-02]]
+[source,js]
+----
+var user01Obj, user02Obj;
+
+function makeUserFn ( name ) {
+  return {
+    get_name_fn () { return name; }
+  };
+}
+
+user01Obj = makeUserFn( 'Bob' ); // <1>
+user02Obj = makeUserFn( 'Sue' ); // <2>
+
+console.log( user01Obj.get_name_fn() ); // 'Bob'
+console.log( user02Obj.get_name_fn() ); // 'Sue'
+----
+<1> Create execution context for 'Bob'
+<2> Create execution context for 'Sue'
+
+Let's visualize how the Call Stack and execution context objects are managed
+when we run this code.
+
+1. The code executes `user01Obj = makeUserFn( 'Bob' );` The JS engine creates
+an execution context object and pushes it into the Call Stack as shown in
+<<source-closure-03>>.
++
+.Step 1: The first function call
+[reftext=the following listing]
+[[source-closure-03]]
+[source,js]
+----
++--------- Call Stack ------------+
+| Running makeUserFn( 'Bob' );    |
+| execution_context_obj = {       |
+|   scopeChain : { ... }          |
+|   this : { ... }                |
+|   variableObject : { ... }      |
+| }                               |
++---------------------------------+
+----
+
+2. When the function returns, the Call Stack is empty. _But the execution
+context object is retained_ because the `user01Obj` maintains a reference to
+it as shown in <<source-closure-04>>. More precisely, the `get_name_fn` method
+requires the `name` argument from the context.
++
+.Step 2: Preserving an execution context object
+[reftext=the following listing]
+[[source-closure-04]]
+[source,js]
+----
++--------- Call Stack ------------+
+| <empty>                         |
++---------------------------------+
+
+  user01Obj => +---- 'Bob' execution context ----+
+               | execution_context_obj = {       |
+               |   scopeChain : { ... }          |
+               |   this : { ... }                |
+               |   variableObject : { ... }      |
+               | }                               |
+               +---------------------------------+
+----
+
+3. The code executes `user02Obj = makeUserFn( 'Sue' );` The JS engine creates
+an execution context object and pushes it into the Call Stack as shown in
+<<source-closure-05>>.
++
+.Step 3: The second function call
+[reftext=the following listing]
+[[source-closure-05]]
+[source,js]
+----
++--------- Call Stack ------------+
+| Running makeUserFn( 'Sue' );    |
+| execution_context_obj = {       |
+|   scopeChain : { ... }          |
+|   this : { ... }                |
+|   variableObject : { ... }      |
+| }                               |
++---------------------------------+
+
+  user01Obj => +---- 'Bob' execution context ----+
+               | execution_context_obj = {       |
+               |   scopeChain : { ... }          |
+               |   this : { ... }                |
+               |   variableObject : { ... }      |
+               | }                               |
+               +---------------------------------+
+----
+
+4. When the function returns, the Call Stack is empty again. But as before the
+_execution context object_ is retained because the `user02Obj` maintains a
+reference to it as shown in <<source-closure-06>>.  More precisely, the
+`get_name_fn` method requires the `name` argument from the context.
++
+.Step 4: Preserving another execution context object
+[reftext=the following listing]
+[[source-closure-06]]
+[source,js]
+----
++----- The Call Stack -------+
+| <empty>                    |
++----------------------------+
+
+  user01Obj => +---- 'Bob' execution context ----+
+               | execution_context_obj = {       |
+               |   scopeChain : { ... }          |
+               |   this : { ... }                |
+               |   variableObject : { ... }      |
+               | }                               |
+               +---------------------------------+
+
+  user02Obj => +---- 'Sue' execution context ----+
+               | execution_context_obj = {       |
+               |   scopeChain : { ... }          |
+               |   this : { ... }                |
+               |   variableObject : { ... }      |
+               | }                               |
+               +---------------------------------+
+----
+
+Closures can be created by returning any complex data type including arrays
+and functions. We can, for example, create very similar closures by returning
+functions as shown in <<source-closure-07>>.
+
+.Creating closures by returning functions
+[reftext=the following listing]
+[[source-closure-07]]
+[source,js]
+----
+var user01Fn, user02Fn;
+
+function makeUserCbFn ( name ) {
+  return function () { return name; }
+}
+
+user01Fn = makeUserCbFn( 'Bob' ); // <1>
+user02Fn = makeUserCbFn( 'Sue' ); // <2>
+
+console.log( user01Fn() ); // 'Bob'
+console.log( user02Fn() ); // 'Sue'
+----
+<1> Create execution context for 'Bob'
+<2> Create execution context for 'Sue'
+
+It's possible to create chains of execution context objects many layers deep.
+And this is a good thing when we want it (think _object inheritance_).  But
+there are times when we don't want closures as they could create runaway
+memory usage (think _memory leak_). In general, one should strive to return
+primitive values from functions to help avoid unintended closures.
+
+[[sect-revealing-module-pattern]]
+==== The revealing module pattern
+JavaScript often appears deficient to those unfamiliar with it because it
+isn't obvious how to create private variables and methods. There are a number
+of patterns that solve this problems, and one the most popular is the the
+revealing module pattern. This pattern uses an Immediately Invoked Function
+Expression (IIFE) to provide a well defined API to a global or package
+namespace.
+
+We first must recognize that IIFEs return the _result_ of the function, not
+the function itself. This allows use to assign the result to a variable as
+shown in <<source-iife-return-val>>.
+
+.The return value of an IIFE
+[reftext=the following listing]
+[[source-iife-return-val]]
+[source,js]
+----
+var messageStr;
+
+// Regular Function example
+function makeMessageStr() {
+  return 'I am an artist';
+}
+messageStr = makeMessageStr();
+console.log( messageStr );
+
+// IIFE example
+messageStr = (function() {
+  return 'I am an artist';
+})();
+console.log( messageStr );
+----
+
+In both the IIFE and the regular function examples the value of `messageStr`
+is `I am an artist!` The only practical difference is that the IIFE function
+is not directly saved to a variable whereas the second example uses a named
+function, `makeMessageStr`.
+
+Instead returning a string we can use an IIFE to return an object as shown in
+<<source-iife-rmp-01>>. This creates a Closure over the IIFE, but only shares
+the properties that we want to define in our API. This is the _revealing
+module pattern_.
+
+.Using the revealing module pattern
+[reftext=the following listing]
+[[source-iife-rmp-01]]
+[source,js]
+----
+var artistObj = (function () { // <1>
+  var artistList = [];
+
+  function addFn ( name_str ) {
+    var found_idx = artistList.indexOf( name_str );
+    if ( found_idx === -1 ) {
+      artistList.push( name_str );
+    }
+  }
+
+  function deleteFn ( name_str ) {
+    var found_idx = artistList.indexOf( name_str );
+    if ( found_idx > -1 ) {
+      artistList.splice( found_idx, 1 );
+    }
+  }
+
+  function getListFn () {
+    return artistList;
+  }
+
+  return { // <2>
+    addFn     : addFn,
+    deleteFn  : deleteFn,
+    getListFn : getListFn
+  }
+})();
+
+console.log( 'Artist list is empty' );
+console.log( artistObj.getListFn() );
+
+console.log( 'Add some artists...' );
+artistObj.addFn( 'Beth' );
+artistObj.addFn( 'Mary' );
+artistObj.addFn( 'Tom' );
+
+console.log( 'Beth, Mary, and Tom are artists' );
+console.log( artistObj.getListFn() );
+
+console.log( 'Delete Tom...' );
+artistObj.deleteFn( 'Tom' );
+
+console.log( 'Beth, Mary remain' );
+console.log( artistObj.getListFn() );
+
+console.log( 'artistList is *not* a property' );
+console.log( artistObj.artistList ); // <3>
+----
+<1> The return value of the IIFE is stored in the `artistObj` variable
+<2> The return value is an object with just the properties we want to share in
+    our API
+<3> Output is `undefined` because `artistObj.artistList` is _not_ a
+    property of the returned object; it is a private variable
+
+Our IIFE is run immediately after loading and provides an API from the
+`artistObj` which includes the methods `addFn`, `deleteFn`, and `getListFn`.
+All variable within the IIFE besides these are private and inaccessible
+outside the function. Even `artistList` may not be directly accessed or
+manipulated.  This is a good thing. Another good thing is we added only one
+variable to the global namespace, and we protect all of the variables we use
+from corruption by any other JS.
+
+==== Namespacing
+A team project works better when code is broken into smaller, logical, and
+manageable files. This makes source control easier and less error prone, and it
+enhances distribution of work.  Let's see how we can use the _revealing module
+pattern_ to distribute our code to multiple smaller files in a logical manner.
+
+The approach we have used for many years is to create one single global object
+and then create ordered properties for each layer of the application.  Each
+property is created using a single file containing a single _revealing module
+pattern_ IIFE. This prevents private variables and functions from cluttering
+the APIs. In addition, if any file becomes too large it may be split into
+multiple files as shown in <<source-iife-rmp-02>>.
+
+.Namespace convention
+[reftext=the following listing]
+[[source-iife-rmp-02]]
+[source,js]
+----
+spa                         The only global variable     |       ^
+spa._01_util_               Utilities                    |       |
+spa._02_data_               Data fetch / send routines   |       |
+spa._03_model_              Business logic             Custom    |
+spa._04_utilb_              Browser utilities          Events  Method
+spa._05_<support_libs>_     Supporting libraries         |      Calls
+spa._06_<feature_modules>_  Features such as a chat box  |       |
+spa._07_shell_              Coordinating page            V       |
+
+// We can subdivide namespaces too. Examples include:
+spa._03_model_._artistObj_
+spa._07_shell_._routeObj_
+----
+
+We will return to this structure throughout the book. Now let's turn our
+attention to the important mechanisms of event-driven programming.
+
+== Event-driven programming
+[[sect-event-queue]]
+=== The Event Queue
+JavaScript Event Queue, also called the "callback queue" is often a scary
+topic to people familiar with only procedural programming. Developers who work
+with Ruby or Java or Python tend to off-load asynchronous processes to the
+operating system or the web server. JS must respond to events directly to
+control the browser, so those capabilities are built into the language. With
+event-driven languages, we don't just process `IF this - then that`, we also
+process `WHEN this, then that`.
+
+Chances are you've seen or written some JS code as shown in
+<<event-queue-01>>. Why would anyone bother set a timeout on a function call
+for 0 seconds?  Wouldn't it just execute immediately? The short answer answer
+is no, it actually does something rather surprising.
+
+.What does setTimeout do?
+[reftext=the following listing]
+[[event-queue-01]]
+[source,js]
+----
+function sayHelloFn () { console.log( 'Hello' ); }
+function runCalcFn ( int ) {
+  var x = int;
+  setTimeout( sayHelloFn, 0 );
+  console.log( x );
+}
+runCalcFn( 5 ); // <1>
+----
+<1> Output is `5` followed by `Hello`
+
+The reason we see this behavior is due to the interplay between the Call
+Stack, the Event Loop, and the Event Queue.  There is also a Render Queue but
+that doesn't affect this example. Let's take a deeper look as shown in
+<<event-queue-02>>.
+
+.The Event Queue in context
+[reftext=the following listing]
+[[event-queue-02]]
+[source]
+----
++----- Call Stack ------+         Execution precedence
+|                       | <---+            |
++-----------------------+     |            |
++---- Render Queue -----+   Event          |
+|                       |   Loop           |
++-----------------------+     |            |
++----- Event Queue -----+     |            |
+|                       | ----+            v
++-----------------------+
+----
+
+The Event Queue is sometimes called the "callback queue" or the "message
+queue" is a First-In-First-Out (FIFO) queue that holds waiting function calls.
+When the JS engine runs a program it first executes the functions in the Call
+Stack until it is empty. In a browser environment it then updates the DOM if a
+refresh is required. Once the stack is empty and the DOM is refreshed it will
+remove the first function at the top of the Event Queue and push it onto the
+Call Stack where the process repeats. The mechanism moves a function from the
+Event Queue to the Call Stack is called the Event Loop.
+
+Now let's consider why the `setTimeout` function above executed _after_ the
+`console.log( x )` line. The secret is that `setTimeout` pushes the
+`sayHelloFn` into the Event Queue and that the time provided is a requested
+_minimum_ time for execution.  The JS engine stays busy with the Call Stack
+and processes all other requests. Only after the Call Stack is clear does the
+Event Loop grab `sayHelloFn` from from the Event Queue and push it onto the
+Call Stack.  By that time all other output has been processed.
+
+Don't worry if you didn't quite follow all that.  Let's deconstruct the
+process by starting with a similar example shown in <<event-queue-03>>.
+
+.Event queue precidence
+[reftext=the following listing]
+[[event-queue-03]]
+[source,js]
+----
+(function () {
+  function sayHelloFn () { console.log( 'Hello' ); }
+  function makeSquareNumFn( num ) { // <2>
+    return num * num;
+  }
+  function saySquareNumFn ( num ) {
+    var square_num = makeSquareNumFn( num );
+    console.log( 'Square: ' + square_num );
+  }
+  function runCalcFn ( int ) { // <1>
+    setTimeout( sayHelloFn );
+    console.log( 'Base: ' + int );
+    saySquareNumFn( int );
+  }
+  console.log( '== First  runCalcFn ==' );
+  runCalcFn( 3 );
+
+  console.log( '== Second runCalcFn ==' );
+  runCalcFn( 9 );
+
+  console.log( '== Leaving IIFE scope ==' ); // <3>
+}());
+
+// Output is:
+// == First  runCalcFn ==
+// Base: 3
+// Square: 9
+// == Second runCalcFn ==
+// Base: 9
+// Square: 81
+// == Leaving IIFE scope ==
+// Hello
+// Hello
+----
+<1> Breakpoint 1
+<2> Breakpoint 2
+<3> Breakpoint 3
+
+As we can see _no_ functions in the Event Queue are executed until the Call
+Stack is cleared. Let's walk through the execution and see how the Call Stack,
+Event Loop, and Event Queue are affected.
+
+First, we have an IIFE block which pushes an function onto the Call Stack.
+Then we call `runCalcFn( 3 );`.  If we pause execution at Breakpoint 1 of
+`runCalcFn`, the internal state of the engine looks like <<event-queue-04>>.
+At this point, the Event Queue is empty and we assume the Render Queue is as
+well.
+
+.Step 1: Internal state, Breakpoint 1
+[reftext=the following listing]
+[[event-queue-04]]
+[source]
+----
++----- Call Stack ------+         Execution precedence
+| runCalcFn( ... )      |                  |
+| anonymous( ... )      | <---+            |
++-----------------------+     |            |
++---- Render Queue -----+   Event          |
+| <empty>               |   Loop           |
++-----------------------+     |            |
++----- Event Queue -----+     |            |
+| <empty>               | ----+            v
++-----------------------+
+----
+
+As the engine proceeds through `runCalcFn` it executes a `setTimeout` call
+which pushes `sayHelloFn` callback into the Event Queue. Calling set
+`setTimeout(Fn)` is equivalent to calling `setTimeout(Fn, 0)`. The engine then
+proceeds to call `saySquareNumFn`. If we pause execution at Breakpoint 2 of
+the internal state of the engine looks like <<event-queue-05>>. At this point,
+we assume the Render Queue has gained a task.
+
+.Step 2: Internal state, Breakpoint 2
+[reftext=the following listing]
+[[event-queue-05]]
+[source]
+----
++----- Call Stack ------+         // Output is:   
+| makeSquareNumFn( ... )|         // Base: 3      
+| saySquareNumFn( ... ) | <---+ 
+| runCalcFn( ... )      |     |
+| anonymous( ... )      |     | 
++-----------------------+   Event
++---- Render Queue -----+   Loop
+| UI-job-01             |     | 
++-----------------------+     | 
++----- Event Queue -----+     |
+| sayHelloFn( ... )     | ----+
++-----------------------+
+----
+
+The engine completes the first run of `runCalcFn` and calls it a second time.
+This again executes the `setTimeout` call which pushes _another_ `sayHelloFn`
+callback into the Event Queue. Once it reaches the end of the IIFE at
+Breakpoint 3, the internal state looks like <<event-queue-06>>.
+
+.Step 3: Internal state, Breakpoint 3
+[reftext=the following listing]
+[[event-queue-06]]
+[source]
+----
++----- Call Stack ------+         // Output is:
+| <empty>               | <---+   // == First  runCalcFn ==
++-----------------------+     |   // Base: 3
++---- Render Queue -----+     |   // Square: 9
+| UI-job-01             |   Event // == Second runCalcFn ==   
++-----------------------+   Loop  // Base: 9                   
++----- Event Queue -----+     |   // Square: 81                
+| sayHelloFn( ... )     |     |   // == Leaving IIFE scope ==  
+| sayHelloFn( ... )     | ----+    
++-----------------------+           
+----
+
+Once the Call Stack is empty any jobs in the Render Queue are addressed. Only
+after this does the Event Loop grab the first `sayHelloFn` function from the
+Event Queue and push it onto the Call Stack as shown in <<event-queue-07>>.
+
+.Step 4: Internal state, Emptying the event Queue
+[reftext=the following listing]
+[[event-queue-07]]
+[source]
+----
++----- Call Stack ------+         // Output is:
+| sayHelloFn( ... )     | <---+   // == First  runCalcFn ==
++-----------------------+     |   // Base: 3
++---- Render Queue -----+     |   // Square: 9
+| <empty>               |   Event // == Second runCalcFn ==   
++-----------------------+   Loop  // Base: 9                   
++----- Event Queue -----+     |   // Square: 81                
+| sayHelloFn( ... )     | ----+   // == Leaving IIFE scope ==  
++-----------------------+         // Hello   
+----
+
+After the first `sayHelloFn` function exits, the Event Loop then proceeds to
+pull the next function from the Event Queue and place it on the Call Stack and
+execute it.  Thus _both_ `Hello` messages don't appear until everything else
+has been displayed.
+
+We can draw a few conclusions from this study:
+
+1. The time provided to `setTimeout` is the minimum time before the provided
+function is executed. Function in the Event Queue will not be addressed until
+after the Call Stack has cleared and the Render Queue serviced.
+2. If we are writing a browser application and want smooth screen refreshes we
+should clear the Call Stack frequently so the Render Queue can be processed at
+regular intervals. If we are targeting 60 Hz displays the Call Stack should be
+cleared at least once every 1/60th of a second.
+3. Clearing a Call Stack is not as hard as it may sound because most
+time-consuming operations in JS are non-blocking and use the Event Queue
+themselves.  Great examples include loading images or AJAX requests.
+4. Don't flood the Event Queue. For example, if a `click` on a button takes 50ms
+to process, block any other `click` from that button during this time. Look at
+_debounce_ and _throttle_ utilities for help. We also show an example later in
+this book.
+
+https://youtu.be/8aGhZQkoFbQ[Philip Roberts] provides an excellent explanation
+and a nice http://latentflip.com/loupe[loupe tool] to help explore the event
+loop further.
+
+[[sect-non-blocking]]
+=== Non-blocking
+JavaScript is event-driven and unlike most procedural languages it is mostly
+"non-blocking": any time-consuming task where language has to wait on an
+external event is relegated to the Event Queue.
+
+This decision makes JS an excellent choice to manage multiple concurrent
+requests because they only need to be addressed when they are ready. This
+works well in the browser for user actions such as a `click` or a window
+`resize` or in Node.js where a single process services thousands of concurrent
+TCP connections. That's because when a connection isn't doing anything (which
+is most of the time), neither is Node.js.
+
+What do we mean by "mostly" non-blocking? The reality is that every operation
+takes time. While JS pushes external events into the Event Queue, operations
+on the Call Stack can take substantial amounts of time. For example, let's say
+we have a spreadsheet SPA that has 10,000 rows and we need to perform complex
+calculations on each row.  If our code does this all as one big function call
+it may take 20 seconds to complete. When that happens, the browser "freezes":
+The Render Queue isn't serviced, the UI is unresponsive, and the browser will
+likely present the user with a a message like `The script on this page is
+taking too long to run. Should we stop it?`.
+
+The solution to this problem is to break the calculations up into "byte-sized"
+pieces and then push them into the Event Queue. This gives the browser a
+chance to service the Render Queue and insert user events during the
+calculations. A schematic is shown in <<source-nonblock-01>>.
+
+.Breaking up a time-consuming process
+[textref=the following listing]
+[[source-nonblock-01]]
+[source]
+----
+Avoid this condition as it "freezes" the browser:
+
++--------- Call Stack ------------+         Execution precedence
+| runBatchFn( all 10000 rows )    | <---+            |
+|   (This takes 20s)              |     |            |
++---------------------------------+     |            |
++--------- Render Queue ----------+   Event          |
+| Waiting UI servicing            |   Loop           |
++---------------------------------+     |            |
++--------- Event Queue -----------+     |            |
+| Waiting user events             | ----+            v
++---------------------------------+
+
+Prefer this approach to "chunk" the work:
+
++--------- Call Stack ------------+         Execution precedence
+| runBatchFn( 20 rows )           | <---+            |
+|   (This takes .08s AND          |     |            |
+|    pushes another runBatchFn    |     |            |
+|    into the Event Queue if more |     |            |
+|    rows need calculating)       |   Event          |
++---------------------------------+   Loop           |
++--------- Render Queue ----------+     |            |
+| UI is serviced                  |     |            |
++---------------------------------+     |            |
++--------- Event Queue -----------+     |            |
+| User events are serviced        | ----+            v
++---------------------------------+
+----
+
+Now that we have the concept down, let's look at an implementation as shown in
+<<source-nonblock-02>>.
+
+.Batch processing
+[textref=the following listing]
+[[source-nonblock-02]]
+[source]
+----
+function simulateChunksFn ( argBatchCount, argRowCount ) {
+  // Module-scope variables
+  var
+    batchCount = argBatchCount || 20,
+    rowCount   = argRowCount   || 10000,
+    rowList    = [],
+    solveList  = [],
+    startIdx   = 0
+    ;
+
+  // Initialize row list
+  function initRowList () {
+    rowList.length = rowCount;
+    for ( i = 0; i < rowCount; i++ ) {
+      rowList[ i ] = Math.floor( Math.random() * 1000 ) + 100;
+    }
+  }
+
+  // Simulate expensive row calculations
+  function computeRowFn ( row_idx ) {
+    var i, q;
+    for ( i = 0; i < 100000; i++ ) {
+      q = rowList[ i ] ** ( Math.floor( Math.random() * 10 ) + 1 );
+    }
+    return Math.floor( Math.random() * 50 );
+  }
+
+  // Begin run batch
+  function runBatch ( start_idx ) {
+    var
+      end_count   = start_idx + batchCount,
+      batch_label = 'Batch ' + start_idx + ' to ' + end_count,
+      idx;
+
+    if ( end_count > rowCount ) { end_count = rowCount; }
+
+    console.time( batch_label );
+    for ( idx = start_idx; idx < end_count; idx++ ) {
+      solveList[ idx ] = computeRowFn( idx );
+    }
+    console.timeEnd( batch_label );
+
+    // End conditions
+    if ( end_count < rowCount ) {
+      setTimeout( function () { runBatch( idx + batchCount ) } );
+    }
+    else {
+      console.timeEnd( 'Total time' );
+    }
+  }
+  // . End run batch
+
+  // Initialize and start batch processing
+  initRowList();
+  console.time( 'Total time' );
+  runBatch( startIdx );
+}
+----
+
+We can use the code to test the effects in a browser. Here's how:
+
+1. Visit any website with UI elements like buttons or hover effects
+2. Open the Developer tools and paste the listing into the console
+3. Run the defaults using `simulateChunksFn();`.
+4. While this is running we can move the cursor over UI elements and they
+respond as expected. We can even click on elements and have them work.
+5. Now run the simulation using a batch size of 10,000 using
+`simulateChunksFn( 10000 );`. The browser will become unresponsive for
+a long time. Try to scroll or resize the browser.
+
+An alternative method to handle long-running processes is to use
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API[web workers].
+They have their own benefits and challenges but are beyond the scope of this
+chapter (hey, we can't cover _everything_).
+
+[[sect-flow-control]]
+=== Flow control strategies
+People who usually write procedural code may be shocked when they first
+encounter JS. Because it is event-driven and mostly non-blocking, running
+ordered steps isn't as easy as it might seem.  Consider the following task:
+
+1. Ask the user for a file name
+2. Ask the user for string to store in the file
+3. Create the file with the string as its content
+4. Read the file and present the content to the user
+
+We can create Bash shell script to do this very simply as shown in
+<<source-flow-01>>. We skip error checking for the sake of brevity and end up
+with four lines of code.
+
+.Procedural code using Bash
+[textref=the following listing]
+[[source-flow-01]]
+[source,bash]
+----
+#!/bin/bash
+read -p 'Please enter a file name : ' _file_name;
+read -p 'Please enter content string : ' _content_str;
+echo "${_content_str}" > "${_file_name}";
+cat  "${_file_name}"
+----
+
+When this Bash script runs it pauses when waiting for the user to enter a
+filename.  Then it pauses when waiting the user to enter a content string.
+Then it asks the OS to write a file to disk and it pauses until that is
+finished. Then it asks the OS to read from disk and it pauses until the
+result is returned and printed to the terminal. Only then does it exit.
+This constant pausing isn't always bad, in fact it is often _welcome_ on a
+multi-process system since it frees up the CPU to do other things during
+the wait periods.
+
+JavaScript doesn't work like that. Instead it tries to be non-blocking, which
+means it avoids pausing for any time-consuming operations. Every step where we
+pause in Bash must be accomplished by a call that pushes a function into the
+Event Queue and executes a function only when the response is complete as
+shown in <<table-flow-02>>.
+
+.Asynchronous function psuedo-code
+[textref=the following listing]
+[[table-flow-02]]
+[cols="<,<",options="header"]
+|=================================================================
+|Request |Async function called on completion
+|read file name |onReadInNameFn( error_obj, read_str  ) { ... }
+|read content string |onReadInContentFn( error_obj, read_str  ) { ... }
+|write file content |onWriteFileFn( error_obj ) { ... }
+|read file content |onReadFileFn( error_obj, read_str  ) { ... }
+|=================================================================
+
+Our JS solution can't just forge ahead and read the content string while it is
+still reading the file name. And it can't read a file until the after it is
+written.  We need some way to manage the Event Queue and progression from one
+step to the next.  This is what we call _flow control_.  Common solutions to
+provide _flow control_ include callbacks, events, and promises.  We review
+these options below, starting with callbacks because they are the foundation
+for all the other solutions.
+
+==== Callbacks
+A callback is a function reference passed as an argument to a method. The
+method is expected to execute the function after completing its task.
+Let's look at an example in <<source-callback-01>>.
+
+.A simple callback
+[textref=the following listing]
+[[source-callback-01]]
+[source,js]
+----
+function doubleNumFn ( num, callback_fn ) {
+  num = num * 2;
+  callback_fn( null, num );      // <2>
+}
+
+function logDataFn ( error_data, data ) {
+  console.log( String( data ) ); // <3>
+}
+
+doubleNumFn( 5, logDataFn );     // <1>
+----
+<1> Invoke method with data (`5`) and callback (`logDataFn`).
+<2> After processing, the invoked method executes the callback function,
+ providing it with the calculated number. Notice that `callback_fn` here
+ points to `logDataFn`!
+<3> Output is `10`; the callback (`logDataFn`) receives the arguments (`null,
+10`) and prints `10` to the console.
+
+Callbacks happen all the time in "real life." When children are sent to
+boarding school their parents may give them cell phones phone and ask them to
+call back home when they arrive. This process for a single child could be
+summarized as follows:
+
+1. Mother sends child to school and provides a cellphone.
+2. Child completes travel to school.
+3. The child then uses the cellphone to call mother and report the number of
+miles travelled.
+
+Now lets see how this is analogous to a JS callback. We use the term "method"
+here to refer to the invoked function. This makes the process clearer.
+
+1. A program (Mother) invokes a method (sends child to school) and provides a
+callback function (and provides a cellphone).
+2. The method (Child) completes its task (completes travel to school).
+3. The method (The child) then invokes the callback function
+(then uses the cellphone) to report the results (to call mother and report the
+number of miles travelled).
+
+And finally let's remove the analogies to get the following:
+
+1. A program invokes a method and provides a callback function.
+2. The method completes its task.
+3. The method uses the callback function to report the results.
+
+The convention applied by most of Node.js and numerous libraries is to provide
+all callbacks with error data first followed by optional arguments as shown in
+<<source-callback-02>>. 
+
+.Callback argument convention
+[textref=the following listing]
+[[source-callback-02]]
+[source]
+----
+callbackFn( error_data [, <arg1>, <arg2>, ... <argN>] )
+----
+
+Now that we understand how callbacks work, let's solve the example problem
+first solved with bash but instead using JS callbacks as shown in
+<<source-callback-03>>. The _flow control_ is accomplished by having each
+callback push the next step into the Event Queue after it finishes its work.
+
+.JS solution using callbacks
+[textref=the following listing]
+[[source-callback-03]]
+[source]
+----
+var
+  fsObj       = require( 'fs' ),
+  readlineObj = require( 'readline' ),
+
+  readInObj = readlineObj.createInterface({
+    input  : process.stdin,
+    output : process.stdout
+  }),
+
+  stateMap = {
+    content_str : null,
+    file_name   : null
+  }
+  ;
+
+// Complete step 4
+function onReadFileFn ( error_obj, read_str ) { // <5>
+  console.log( 'File content is:', read_str );
+  process.exit( 0 );
+}
+
+// Complete step 3, start step 4
+function onWriteFileFn ( /* error_obj */ ) {    // <4>
+  fsObj.readFile( stateMap.file_name, 'utf8', onReadFileFn );
+}
+
+// Complete step 2, start step 3
+function onReadInContentFn( content_str ) {     // <3>
+  stateMap.content_str = content_str;
+  fsObj.writeFile(
+    stateMap.file_name, stateMap.content_str,
+    { encoding : 'utf8' },
+    onWriteFileFn
+  );
+}
+
+// Complete step 1, start step 2
+function onReadInNameFn( file_name ) {          // <2>
+  stateMap.file_name = file_name;
+  readInObj.question(
+    'Please enter a content string : ', onReadInContentFn
+  );
+}
+
+// Start Step 1
+readInObj.question(                             // <1>
+  'Please enter a filename : ', onReadInNameFn
+);
+----
+<1> Request the system read from the console and call `onReadInNameFn` when
+complete. This pushes `onReadInNameFn` into the Event Queue.
+<2> Store the filename. Then request the system read from the console and call
+`onReadInContentFn` when complete. This pushes `onReadInContentFn` onto the
+Event Queue.
+<3> Store the content string. Then request the system write the file with the
+provided content and call `onWriteFileFn` when complete. This pushes
+`onWriteFileFn` into the Event Queue.
+<4> Once file is written then request the system read the file and call
+`onReadFileFn` when complete. This pushes `onReadFileFn` into the Event Queue.
+<5> Once the file is read, this handler receives the content string, prints
+it, and then and exits.
+
+Well that was painful. This solution is 12 times longer than the Bash and
+isn't superior in any obvious way. Part of this is due to the need to import
+libraries, but most of the extra tedium is in managing the progression from
+one step to the next. In addition, this isn't very easy to follow. The Bash
+solution had four lines in order. Here the steps read from the bottom up and
+is pretty hard to follow without the comments. When we add error checking
+things get even uglier.
+
+Some developers will nest callbacks inside of callbacks inside of callbacks as
+shown in <<source-callback-04>>. Please don't do be one of those people.
+
+.JS solution with nested callbacks
+[textref=the following listing]
+[[source-callback-ex04]]
+[source]
+----
+// == DO NOT DO THIS! ===
+var
+  fsObj       = require( 'fs'       ),
+  readlineObj = require( 'readline' ),
+
+  readInObj = readlineObj.createInterface({
+    input  : process.stdin,
+    output : process.stdout
+  })
+  ;
+
+// Start Step 1
+readInObj.question(
+  'Please enter a filename : ',
+
+  // Complete step 1, start step 2
+  function ( file_name ) {
+    readInObj.question(
+      'Please enter a content string : ',
+
+      // Complete step 2, start step 3
+      function ( content_str ) {
+        fsObj.writeFile(
+          file_name, content_str,
+          { encoding : 'utf8' },
+
+          // Complete step 3, start step 4
+          function ( /* error_obj */ ) {
+            fsObj.readFile(
+              file_name, 'utf8',
+
+              // Complete step 4
+              function ( error_obj, read_str ) {
+                console.log( 'File content is:', read_str );
+                process.exit( 0 );
+              }
+            );
+          }
+        );
+      }
+    );
+  }
+);
+----
+
+In case it's not obvious, the trouble with nested anonymous callbacks is they
+can be quite difficult to comprehend and debug. The scope chain gets long. We
+have seen some callbacks nest ten levels deep! Our goal with _flow control_ is
+to make the progression of the steps obvious and easy to debug, and the best
+way to do that is to present _named_ functions in a linear manner and avoid
+nesting.
+
+Now let's see how we might use the event interface and promises to better
+organize our callbacks.
+
+==== Event interface
+Events are inputs that typically occur outside the control of the JS engine
+but can be monitored by it. JS provides an _event interface_ to respond to
+these inputs.  First the JS code must add an event listener that specifies a
+callback function known as a _handler_. When an event occurs the _handler_ is
+invoked with an Event object as its argument as shown in <<source-events-01>>.
+
+.An Event Interface
+[reftext=the following listing]
+[[source-events-01]]
+[source,js]
+----
+// Warning: This listing will not work in Node.js.
+// Open a browser and navigate to about:blank. Open
+// the developer tools (Ctrl+Shift+I), click on the
+// JS Console, paste this code there, and then press
+// return. Click anywhere on the document body to
+// see the event objects in the console.
+
+var bodyEl = document.querySelector( 'body' ); // <1>
+
+function onClickFn ( event_obj ) {             // <2>
+  console.log( 'EVENT OBJECT:', event_obj );
+}
+
+bodyEl.addEventListener( 'click', onClickFn ); // <3>
+----
+<1> Find the element to listen for event
+<2> Create handler for event
+<3> Attach listener to element
+
+One benefit to this approach is that many handlers can be attached to a single
+event. For example, if a page is scrolled and we can add a handler to ensure a
+header element stays at the top and add another handler to send the scroll
+position to a websocket server. The handlers can be managed separately and
+usually don't need to know anything about each other.
+
+Also notice we said that inputs _typically_ occur outside the control of the
+JS engine. But that doesn't mean _always_.  We can harness the Event interface
+to manage our callbacks using _custom events_ as shown in shown in
+<<source-events-02>>.
+
+.A Custom event
+[reftext=the following listing]
+[[source-events-02]]
+[source,js]
+----
+// Warning: This listing will not work in Node.js.
+// Open a browser and navigate to about:blank. Open
+// the developer tools (Ctrl+Shift+I), click on the
+// JS Console, paste this code there, and then press
+// return. A 'fred' event should fire fire immediately.
+/*global Event */
+
+var
+  bodyEl = document.querySelector( 'body' ), // <1>
+  eventObj
+  ;
+
+function onFredFn( event_obj ) {             // <2>
+  console.log( 'FRED!',
+    JSON.stringify( event_obj.data )
+  );
+}
+
+bodyEl.addEventListener( 'fred', onFredFn ); // <3>
+
+eventObj = new Event( 'fred' );              // <4>
+eventObj.data = { num_list : [ 1,2,3 ] };    // <5>
+bodyEl.dispatchEvent( eventObj );            // <6>
+
+// Output is
+// FRED! {"num_list":[1,2,3]}
+----
+<1> Find the element to listen for event
+<2> Create handler for event
+<3> Attach listener to element
+<4> Create `fred` event object
+<5> Modify to include custom data if needed
+<6> Dispatch the event object
+
+Notice how we passed data through the event object (`event_obj.data`). We can
+use this mechanism to distribute this data to every module that cares about
+the `fred` event.
+
+Now that we understand how events work, let's solve the example problem first
+seen at the top of <<sect-flow-control>> as shown in <<source-events-03>>.
+The _flow control_ is accomplished by custom events.  While this is not
+shorter than our last JS solution, at least the steps are succinctly listed at
+the bottom. It is also easier to adjust for error handling or alternate flows.
+
+.JS solution using events
+[textref=the following listing]
+[[source-events-03]]
+[source]
+----
+// Warning: This works only in Node.js
+var
+  fsObj       = require( 'fs' ),
+  readlineObj = require( 'readline' ),
+
+  eventsFn    = require( 'events' ).EventEmitter,
+  readInObj   = readlineObj.createInterface({
+    input  : process.stdin,
+    output : process.stdout
+  }),
+
+  eventObj = new eventsFn(),
+  stateMap = {
+    content_str : null,
+    file_name   : null
+  }
+  ;
+
+// Step 4: Read file and exit
+function readFileFn ( ) { // <5>
+  fsObj.readFile( stateMap.file_name, 'utf8',
+    function ( error_obj, read_str ) {
+      console.log( 'File content is:', read_str );
+      process.exit( 0 );
+    }
+  );
+}
+
+// Step 3: Write file
+function writeFileFn () { // <4>
+  fsObj.writeFile(
+    stateMap.file_name, stateMap.content_str,
+    { encoding : 'utf8' },
+    function ( /*error_obj*/ ) { eventObj.emit( '04-ReadFile' ); }
+  );
+}
+
+// Step 2: Read content line
+function readInContentFn () { // <3>
+  readInObj.question(
+    'Please enter a content string : ',
+    function ( content_str ) {
+      stateMap.content_str = content_str;
+      eventObj.emit( '03-WriteFile' );
+    }
+  );
+}
+
+// Step 1: Read name line
+function readInNameFn () { // <2>
+  readInObj.question(
+    'Please enter a filename : ',
+    function ( file_name ) {
+      stateMap.file_name = file_name;
+      eventObj.emit( '02-ReadInContent' );
+    }
+  );
+}
+
+// Layout handlers
+eventObj.on( '01-ReadInName',     readInNameFn    );
+eventObj.on( '02-ReadInContent',  readInContentFn );
+eventObj.on( '03-WriteFile',      writeFileFn     );
+eventObj.on( '04-ReadFile',       readFileFn      );
+
+// Start process
+eventObj.emit( '01-ReadInName' ); // <1>
+----
+<1> Emit the `01-ReadInName` event which invokes `readInNameFn`
+<2> Capture the filename then emit the `02-ReadInContent` event which invokes
+`readInContentFn`
+<3> Capture the content string then emit the `03-WriteFile` event which
+invokes `writeFileFn`
+<4> Write out the file and then emit the `04-ReadFile` event which invokes
+`readFileFn`
+<5> Read the file, print out its content, and then exit
+
+The event interface does not replace callbacks but instead provides a means to
+manage them. It is a great way to broadcast to all interested parties higher
+in the software stack that something important has happened without breaking
+our calling precedence (where lower levels of the stack should never call
+higher layers).  For example, we use custom events to broadcast state changes
+from the Model (Layer 3) to UI components (Layers 6 and 7) as shown in
+<<image-events-04>>. This allows us to thoroughly test the Model without any
+dependencies on any higher layer.
+
+.Call precidence, Events, and UI components
+[reftext=the following figure]
+[[image-events-04]]
+image::ch02/arch-features.png[Events]
+
+We will return to the event interface in the upcoming chapters. Now lets look
+at another type of callback manager, Promises.
+
+==== Promises
+A promise is an object that waits for the completion of an asynchronous
+event and then directs action based on the results. Promises may have one of
+three states:
+
+1. Pending   - The watched event hasn't completed yet
+2. Fulfilled - The watched event has completed successfully
+3. Rejected  - The watched event completed unsuccessfully
+
+There are numerous JS Promise implementations which are
+https://promisesaplus.com/implementations[Promise/A+ compliant] including a
+native Promise Object introduced in ES2015.  However most implementations are
+a superset of the core A+ spec because asynchronous flow-control is often
+quite complex in practice.  Two of our favorite A+ supersets include the
+https://api.jquery.com/jquery.deferred/[jQuery Deferred] object, which
+has been in use since 2011, and http://bluebirdjs.com/[Bluebird] which
+has excellent performance.
+
+image:ch01/esvers-02.png[ES2015+,80] We will use the native Promise object in
+Node.js and ES2015+ compliant browsers for this section. Before we start
+exploring the uses of promises let's create a base that includes a promise
+object constructor and a few function as shown in <<source-promises-01>>.
+
+.Promise setup
+[reftext=the following listing]
+[[source-promises-01]]
+[source,js]
+----
+// Message promise object constructor
+function makeMsgPromFn ( message ) {
+  function innerFn( resolve_fn, reject_fn ) {
+    var ratio = Math.random();
+    setTimeout( function () {
+      if ( ratio > .3 ) {
+        console.log( 'tick - resolve' );
+        resolve_fn( message );           // <1>
+      }
+      else {
+        console.log( 'tick - reject' );
+        reject_fn( 'Promise rejected' ); // <2>
+      }
+    }, 500 );
+  }
+  return new Promise( innerFn );
+}
+
+// Define success and failure handlers
+function onResolveFn ( message ) {
+  console.log( 'Message:', message );
+}
+function onRejectFn ( error_str ) {
+  console.log( 'Error:', error_str );
+}
+----
+<1> This invokes the first function provided to `Promise.then(...)`. In this
+case, it is `onResolveFn`.
+<2> This invokes the second function provided to `Promise.then(...)`. In this
+case it is `onRejectFn`.
+
+Now let's run a simple promise using this base as shown in
+<<source-promises-02>>.  This promise is designed to reject 30% of the time so
+we can run it multiple times and get different results.
+
+.Simple promise use
+[reftext=the following listing]
+[[source-promises-02]]
+[source,js]
+----
+// Include base functions from above
+//
+// Create a promise object and configure
+var promiseObj = makeMsgPromFn( 'Banal message' );
+promiseObj.then( onResolveFn, onRejectFn ); // <1>
+----
+<1> The syntax is either `.then( onResolveFn, onRejectFn )` or `.then(
+onResolveFn ).catch( onRejectFn )`.
+
+One of the advantages of promises is they are chain-able. If we have five
+functions that all return promises we can stack them into a process like
+<<source-promises-02>>. And if a promise fails anywhere along the chain a
+single error handler (see `onRejectFn`) will suffice.
+
+.Chained promises
+[reftext=the following listing]
+[[source-promises-03]]
+[source,js]
+----
+// Include base functions from above
+//
+// Chain a bunch of promises
+makeMsgPromFn( 'Here is my message' )
+  .then( makeMsgPromFn )
+  .then( makeMsgPromFn )
+  .then( makeMsgPromFn )
+  .then( makeMsgPromFn )
+  .then( onResolveFn, onRejectFn );
+----
+
+If you run the above chain enough times (statistically 6 times) it will succeed.
+Any error along the way, though, is passed on to the single `onRejectFn` handler.
+This provides a mechanism for exceptions to bubble to the top and be caught by
+a single handler.
+
+Another benefit of promises is you can schedule numerous concurrent processes
+in a single step as shown in <<source-promises-04>>.
+
+----
+// Include base functions from above
+//
+// Proceed only when all promises resolve
+(function () {
+  var
+    prom_list = [],
+    idx, prom_obj
+    ;
+
+  for ( idx = 0; idx < 5; idx++ ) {  // <1>
+    prom_obj = makeMsgPromFn( 'Index ' + idx );
+    prom_list.push( prom_obj );
+  }
+  Promise.all( prom_list )           // <2>
+    .then( onResolveFn, onRejectFn )
+    ;
+}());
+----
+<1> Create a list of 5 promise objects
+<2> If they all resolve the `onResolveFn` handler is called with an array of
+all their resolve arguments. If one rejects, the `onRejectFn` handler is
+called with the reject arguments
+
+Here 5 promises run in parallel, and if only one is rejected, the whole group
+is rejected.  Promises have more capabilities, such as the ability to report
+progress.  We will cover such features as we encounter them in later chapters.
+
+== Summary
+
+.SIDEBAR: Answers to "Do you know?"
+****
+[quanda]
+How can we create private variables and methods in JS?::
+Answer: We prefer to use the technique discussed in
+<<sect-revealing-module-pattern>> section. It is widely used and understood.
+
+Why would one use `setTimeout` with a time of `0`?::
+Answer: The setTimeout API pushes a function call into the Event Queue. It
+will not be executed until the Call Stack has been cleared and the Render
+Queue has be serviced. See <<sect-event-queue>> section for a full discussion.
+
+How can we prevent the browser from freezing during long calculations?::
+Answer: Break the calculations into batches and use `setTimeout` to push them
+into the Event Queue. This allows the browser to frequently update the display
+while still completing the work. See the <<sect-non-blocking>> section for
+an example.
+****
+
+- JavaScript has benefits and deficiencies compared to other popular
+  languages. Perhaps the greatest deficiency is the limited type-safety tools.
+- JavaScript features some relatively unique approaches to objects and
+  functions. Objects are prototype-based and functions are first-class
+  objects.
+- Developers familiar with procedural languages may by challenged when
+  switching to the event-driven paradigm required by JS. We identified the key
+  concepts and provided guidance on flow-control to help ease the transition.
+

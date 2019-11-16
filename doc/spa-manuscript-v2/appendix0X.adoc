@@ -1,0 +1,1813 @@
+= JavaScript Code Standard
+Doc Writer <mike.mikowski@gmail.com>
+:imagesdir: ../images
+:numbered:
+:source-highlighter: pigments
+
+== Purpose
+This code standard is designed to help organizations:
+
+- Facilitate team communication.
+- Encourage documentation and reuse.
+- Avoid common mistakes and dead code.
+- Recognize and use the strengths of JavaScript.
+
+== Do you know?
+[quanda]
+How does a code standard improve products?::
+  Answer:
+What are the current version of JavaScript?::
+  Answer:
+Why is indicating variable type especially useful for JavaScript?::
+  Answer:
+Should one avoid plurals in most variable names?::
+  Answer:
+What are the dangers of imprecise comparators like `==` or `!=`?::
+  Answer:
+Which is better, `setInterval` or `setTimeout`?::
+  Answer:
+
+== The code base audience
+Code is read by at least two audiences: the machines that execute the
+instructions and the humans who write, maintain, or extend it.  Code written
+for human comprehension tends to result in carefully constructed and well
+documented assets that are inexpensive to maintain, extend, or reuse. This
+is often called **Living Code**.
+
+Code that cannot be understood by humans after it is written is often called
+**Dead Code**footnoteref:[deadcode,Dead code becomes unusable because
+blueprints and/or testing systems don't exist, have become inaccurate, or no
+longer work. It's a good thing structural, automotive, and aerospace engineers
+aren't so lax about these controls.]. This code becomes prohibitively
+difficult and expensive to maintain, extend, or reuse and it is a **technical
+debt**footnoteref:[techdebt, Technical debt is the deferred cost of
+undocumented process and systems.] that stifles innovation.
+
+A good standard helps us create well documented **Living Code** that can grow
+with our product and organization. A comprehensive standard is arguably more
+valuable for JavaScript than with other stricter languages.  JavaScript’s
+flexibility can open a Pandora’s Box of syntax and practice. Stricter
+languages have a good deal of structure and consistency built-in. Developers
+must actively apply convention to attain the same results with JavaScript.
+
+This standard has continuously evolved over many years and is used in many
+open source and commercial projects. Appendix Y provides a three-page
+quick-reference guide which dispenses with any explanations. However, if you
+want to know *why* we recommend a convention, keep reading.
+
+== JavaScript versions
+Let's review how JavaScript versions are named and why this standard considers
+ES5.1 the latest usable version.
+
+=== ECMA, ECMAScript, and ES
+Development on the JavaScript language has accelerated over the past decade as
+vendors have stopped competing and started collaborating on making the
+lanugage better all centered around the ECMAScript specifications. All these
+acronymns can be confusing so let's clear things up.
+
+https://en.wikipedia.org/wiki/Ecma_International[ECMA International] is a
+standards organization that changed its name from European Computer
+Manufacturers Association in 1994 to reflect its broader ambitions. ECMA is no
+longer considered an acronymn but is apparently retained for the pleasant
+sounds that occur when one tries to pronounce it.
+
+https://en.wikipedia.org/wiki/ECMAScript[ECMAScript] is a language standard
+created by ECMA International. **ES** is contraction of **ECMAScript**. Thus
+the **ES6** and **ECMAScript 6** are the same thing. Clever, eh?
+
+=== Current ES Versions and supported platforms
+Table X.1 shows the major JavaScript versions that have been released. Later
+specifications have been mostly backward-compatible.
+
+.Table X.1 -- Preferred names of JavaScript versions
+[cols="",]
+|============================================
+| Year | Pref. Name | Alternate         | Highlights
+| 1997 | ES1        | ECMAScript 1      | You gotta start somewhere
+| 1998 | ES2        | ECMAScript 2      | Compatible with ISO 16262
+| 1999 | ES3        | ECMAScript 3      | Regular expressions
+| ---- | ES4        |         ----      | Abandoned
+| 2009 | ES5        | ECMAScript 5      | Strict mode, JSON
+| 2011 | ES5.1      | ECMASCript 5.1    | Compatible with ISO 16262:2011
+| 2015 | ES2015     | ES6, ECMAScript 6 | ES6 Harmony, for/of, promises
+| 2016 | ES2016     | ES7, ECMAScript 7 | ES7 Harmony, Exponent, Array includes
+| 2017 | ES2017     | ES8, ECMAScript 8 | SIMD types, await/sync
+| ---  | ESNext     |         ----      | Cool stuff
+|============================================
+
+As of 2015, ECMA discourages the use of a single version numbers in favor
+of the year of release. Thus while using ES5.1 is fine, they prefer we use
+ES2015, ES2016, ES2017 instead of ES6, ES7, or ES8. Thanks to 
+https://codeburst.io/javascript-wtf-is-es6-es8-es-2017-ecmascript-dca859e4821c[Codeburst.io]
+for help sorting this out!
+
+At the time of writing (fall 2017) IE 11 held around 11% market share and the
+highest level of JavaScript it supports well is ES5.1. This is the feature
+level that most public sites should and is the basis for this standard.
+Kanagax has provided a very https://kangax.github.io/compat-table/es6/[helpful
+chart] so we can keep an eye on popularity. Once IE 11 use drop below 1% we
+will will go all-in on ES2015.
+
+== Variables
+All JS variables prior to ES2015 are declared with only one keyword: `var`
+As of ES2016 we may also use `let` and `const` (these are discussed below).
+Variables may contain a primitive or a complex data type. Primitives include
+Boolean, Null, Number, String, Symbol (ES2015), or Undefined. Complex data
+types include Functions, Objects, Arrays, and Regular Expressions. In all
+cases, primitives arguments are passed by value, whereas complex arguments
+are passed by reference. 
+
+Provide variables with meaningful names as shown in Listing X.1 so we won’t
+have to insert a clumsy time-and-focus-sapping description every time a
+variable is used.
+
+.Listing X.1 -- Variables with meaning
+[source,js]
+----
+// == Avoid ===
+var x = 'Fred';
+function p () { console.log( 'Hello ' + x ); }
+p();
+
+// == Prefer ==
+var person_name = 'Fred';
+function sayHelloFn () { console.log( 'Hello ' + person_name ); }
+sayHelloFn();
+----
+
+Minimize the effort required to understand why a variable exists and what it
+contains. This frees the mind to focus more important areas such as
+application structure and logic.
+
+=== Abbreviate smartly
+- Do not abbreviate short words.
+- Remove most articles, adjectives, and prepositions from names.
+- Use standard abbreviations and acronyms where they exist.
+- Prefer truncated names to contractions.
+
+.Listing X.2 -- Abbreviations
+[source,js]
+----
+// == Avoid ===
+var dgClrStr = 'brown';
+function walkWithTheBrownDog () {...}
+for ( var q = 0; q < 9; q++ ) ...
+var denormalizationMap = {...};
+var dnmlztnMap = {...};
+
+// == Prefer ==
+var dogColorStr = 'brown';        // <1>
+function walkDogFn () {...}       // <2>
+for ( var i = 0; i < 9; i++ ) ... // <3>
+var denormMap = {...};            // <4>
+----
+<1> Do not abbreviate short words
+<2> Discard articles and prepositions
+<3> Use standard i, j, k for integers
+<4> Truncate instead of contract
+
+=== Replace comments with meaningful names
+Name variables to describe why they needed and what data type we expected them
+to contain. The first consideration is important in any language; the second
+is useful for loosely-type languages like JavaScript. Listing X.3 shows
+variables named by purpose and type.
+
+.Listing X.3 -- Names with purpose
+[source,js]
+----
+// == Avoid ===
+// 'creators' is an object constructor we get by
+// calling 'makers'. The first positional argument
+// of 'makers' must be a string, and it directs
+// the type of object constructor to be returned.
+// 'makers' uses a closure to remember the type
+// of object the returned function is to
+// meant to create.
+//
+var creators = makers( 'house' );
+
+// == Prefer ==
+var make_house_fn = curry_build_fn({ _item_type_ : 'house' });
+----
+
+Figure X.1 illustrates how we convey all the meaning of the comments in
+Listing X.3 using variable names.
+
+.Figure X.1 -- Variable name dissection
+image:ch01/syntax.png[image,width:700]
+
+Precise variable names are not only more concise but they help avoid
+inaccurate comments. Consider, for example, what can happen when a teammate
+updates a few names. It is all too easy to make a mistake when updating the
+comments as shown in Listing X.4. If we instead rely on variable names this
+problem goes away.
+
+.Listing X.4 -- Good intentions and bad comments
+[source,js]
+----
+// == Avoid ===
+// 'creators' is an object constructor we get by   // <1>
+// calling 'makers'. The first positional argument // <2> <3>
+// of 'makers' must be a string, and it directs
+// the type of object constructor to be returned.
+// 'makers' uses a closure to remember the type    // <4>
+// of object the returned function is to
+// meant to create.
+//
+var makers = builders( null, 'house' );
+
+// == Prefer ==
+var make_abode = curry_make_fn({ _item_type_ : 'abode' });
+----
+<1> Mistake: `creators` is now `makers`
+<2> Mistake: `makers`   is now `builders`
+<3> Mistake: The string is now the second positional parameter
+<4> Mistake: `makers` is now `builders`
+
+The changes to the preferred code are far shorter and guaranteed correct. Good
+editors can apply variable-name changes throughout a project in second whereas
+comment management is the developer's responsibility.
+
+=== Use common characters
+- Use the characters `a-z`, `A-Z`, `0-9`, underscore, and `$`, for variable
+  names and all other symbols such as labels or property keys.
+- Don’t begin a name with a number.
+
+.Listing X.5 -- Keyboard characters
+[source,js]
+----
+// == Avoid ===
+my_obj[ '00-x__®__' ] = 'hello';
+
+// == Prefer ==
+my_obj._greet_str_ = 'hello';
+----
+
+Limit variable names to characters available on most of the world’s keyboards.
+Apply the same character limits to object property names since all variables
+are object properties of their functional scope.
+
+=== Communicate variable scope
+- Place each module in its own file
+- Use `camelCase` when the variable is module scope.
+- Use `snake_case` when the variable is local to a function
+  nested inside the module.
+- Use two or more syllables for module-scope variables.
+
+.Listing X.6 -- Variable scope names
+[source,js]
+----
+// == Avoid ===
+var stateMap = {};  // <1>
+function initModuleFn () {
+  var 
+    localInt = 1,   // <2>
+    localStr = 'Module initialized. Our number is '
+    ;
+ console.log( localStr + localInt );
+}
+return { _initModuleFn_ : initModuleFn };
+
+// == Prefer ==
+var stateMap = {};  // <1>
+function initModuleFn () {
+  var 
+    local_int = 1,  // <3>
+    local_str = 'Module initialized. Our number is '
+    ;
+ console.log( local_str + local_int );
+}
+return { _initModuleFn_ : initModuleFn };
+----
+<1> Module scope
+<2> Avoid: Local scope variables use camelCase
+<3> Prefer: Local scope variables use snake_case
+
+=== Communicate variable type
+Add a suffix or prefix to a variable name to identify its intended data type.
+Avoid changing a variable type after declaration because it causes confusion
+and rarely provides any benefit. When in doubt use an “unknown type”
+indicator.
+
+.Listing X.7 -- Type indicators
+[source,js]
+----
+// == Avoid ===
+var
+  places = 10,
+  users = '02',
+  calc = places + users;
+console.log ( calc ); // <1>
+
+// == Prefer ===
+var
+  place_count = 10,
+  user_id     = '02',
+  calc_num    = place_count + Number( user_id );
+console.log ( calc_num ); // <2>
+----
+<1> Displays the string '1002'
+<2> Displays the number '12'
+
+==== Booleans
+Name boolean variables using `<noun>_<type>` or `<type>_<noun>`.  Recommended
+`<type>` indicators are shown in Table X.1. Boolean `<type>` indicators are
+often prefixes because they read better in English.  Most other `<type>`
+indicators are suffixes.
+
+.Table X.1 -- Boolean indicators
+[cols="",]
+|============================================
+|Indicator |Local scope |Module scope
+|_bool [generic] |return_bool |returnBool
+|do_ (requests action) |do_retract |doRetract
+|has_ (inclusion) |has_whiskers |hasWhiskers
+|is_ (state) |is_retracted |IsRetracted
+|============================================
+
+==== Functions
+Name functions and function variables using `<verb>-<noun>-<type>`.
+Recommended `type` indicators are shown in Table X.2. Recommended verbs for
+are shown in tables X.3-5.
+
+.Table X.2 -- Function indicators
+[cols="",]
+|====================================
+|Indicator |Local scope |Module scope
+|<verb><noun><type>_fn a|
+bound_fn
+curry_get_list_fn
+get_car_list_fn
+fetch_car_list_fn
+remove_car_list_fn
+store_car_list_fn
+send_car_list_fn
+ a|
+boundFn
+curryGetListFn
+getCarListFn
+fetchCarListFn
+removeCarListFn
+storeCarListFn
+sendCarListFn
+curryGetListFn
+getCarListFn
+|====================================
+
+.Table X.3 -- Function verbs for local data
+[cols="",]
+|=======================================================================
+|Verb |Example |Meaning
+|bound |boundFn |A function with a bound context
+|curry |curryMakeUserFn |Return a function as specified by argument(s)
+|delete |deleteUserObjFn |Remove data structure from memory
+|destroy, remove |destroyUserObjFn |Same as delete, but implies
+references will be cleaned up as well
+|empty |emptyUserListFn |Remove all members of a data structure without
+removing the container
+|get |getUserObjFn |Get data structure from memory
+|make |makeUserObjFn |Create a new data structure using input parameters
+|store |storeUserListFn |Store data structure in memory
+|update |updateUserListFn |Change memory data structure in-place
+|=======================================================================
+
+.Table X.4 -- Function verbs for remote data
+[cols="",]
+|=======================================================================
+|Verb |Example |Meaning
+|fetch |fetchUserListFn |Fetch data from external source like AJAX,
+local storage, or cookie
+|put |putUserChangeFn |Send data to external source for update
+|send |sendUserListFn |Send data to external source
+|=======================================================================
+
+.Table X.5 -- Function verb for event handler
+[cols="",]
+|=================================================
+|Verb |Example |Meaning
+|on a|
+onMouseoverFn
+
+onClickHeaderFn
+
+ |An event handler. Use <on><event-name><modifier>
+|=================================================
+
+==== Integers
+Name integer variables using `<noun>-<type>`. Recommended `<type>`
+indicators are shown in Table X.6.
+
+.Table X.6-- Integer indicators
+[cols="",]
+|================================================
+|Indicator |Local scope |Module scope
+|_int [generic] |size_int |sizeInt
+|_count |user_count |userCount
+|_idx |user_idx |userIdx
+|_ms (milliseconds) |click_delay_ms |clickDelayMs
+|i, j, k (convention) |i |--
+|_toid, _intid |show_popup_toid |showPopUpToid
+|================================================
+
+JavaScript requires an integer value for a number of purposes such as an index
+for an array, or as an argument for `indexOf`, or `subStr`. Consider, for
+example, what happens if we try to use a float for an array index as shown
+in Listing X.8.
+
+.Listing X.8 -- Array with a non-integer index
+[source,js]
+----
+// == Avoid ===
+const color_list = [ 'red', 'green', 'blue' ];
+color_list[1.5] = 'chartreuse';
+console.log( color_list.pop() ); // 'blue'
+console.log( color_list.pop() ); // 'green'
+console.log( color_list.pop() ); // 'red'
+console.log( color_list.pop() ); // *undefined???*
+console.log( color_list[1.5]  ); // *oh, there it is*
+console.log( color_list       ); // *["1.5":"chartreuse"]*
+----
+
+==== Lists
+Name array variables using `<noun>-<type>`. Recommended `<type>` indicators
+are shown in Table X.7. Please use only singular nouns as the suffix indicates
+plurality. We recommend using the `<table>` suffix for complex data structures
+such as a list-of-lists or a list-of-objects.
+
+.Table X.7 -- List indicators
+[cols="",]
+|====================================================================
+|Indicator |Local scope |Module scope
+|_list [generic] | timestamp_list, color_list | timestampList, colorList
+|_table [complex lists] |user_table |userTable
+|====================================================================
+
+==== Numbers
+Name floating-point number variables using `<noun>-<type>`. Recommended
+`<type>` indicators are shown in Table X.8. Please use only singular nouns as
+the suffix indicates plurality.
+
+.Table X.8 -- Number indicators
+[cols="",]
+|======================================
+|Indicator |Local scope |Module scope
+|_num [generic] |size_num |SizeNum
+|_coord |x_coord |xCoord
+|_px (fractional unit) |x_px, y_px |xPx
+|_ratio |sale_ratio |saleRatio
+|x,y,z |x |--
+|======================================
+
+==== Maps
+Name variables used as maps using `<noun>-<type>`. Recommended `<type>`
+indicators are shown in Table X.9. Please use only singular nouns as the
+suffix indicates plurality. We recommend using the `<matrix>` suffix for
+complex data structures such as a map-of-lists or a map-of-maps.
+
+.Table X.9 -- Map indicators
+[cols="",]
+|============================================
+|Indicator |Local scope |Module scope
+a|
+_map [generic]
+
+_matrix [complex maps]
+
+ a|
+employee_map
+
+receipt_map
+
+user_matrix
+
+ a|
+employeeMap
+
+receiptMap
+
+userMatrix
+
+|============================================
+
+Maps are simple objects used to store key-value pairsfootnoteref:[es5map, As
+of ES5 there also a new `Map` data type which provides somewhat more nuanced
+capabilities but with a clumsier interface and partial support in older
+browsers (notably IE 11).]. This is similar to a `map` in Java, a `dict` in
+Python, an `associative array` in PHP, or a `hash` in Perl.
+
+==== Objects
+Name full-featured object variables using `<noun>-<type>`. Recommended `<type>`
+indicators are shown in Table X.10.
+
+.Table X.10 -- Object indicators
+[cols="",]
+|=========================================
+|Indicator |Local scope |Module scope
+|_obj [generic] a|
+employee_obj
+
+receipt_obj
+
+error_obj
+
+ a|
+employeeObj
+
+receiptObj
+
+errorObj
+
+|$ (jQuery object) a|
+$header
+
+$area_tabs
+
+ a|
+$Header
+
+$areaTabs
+
+|_proto (prototype) |user_proto |userProto
+|=========================================
+
+==== Regular expression objects
+Name regular expression object variables using `<noun>-<type>`. The
+recommended `<type>` indicator is shown in Table X.11.
+
+.Table X.11 -- Regex indicator
+[cols="",]
+|====================================
+|Indicator |Local scope |Module scope
+|_rx |match_rx |matchRx
+|====================================
+
+==== Strings
+Name strings variables using '<noun-type>'. Recommended `<type>` indicators
+are shown in Table X.12.
+
+.Table X.12 -- String indicators
+[cols="",]
+|===========================================
+|Indicator |Local scope |Module scope
+|_str [generic] |direction_str |directionStr
+|_date |email_date |emailDate
+a|
+_dirname, _filename, _linkname, _socketname,
+
+_pathname
+
+ a|
+config_filename
+
+test_dirname
+
+source_pathname
+
+ a|
+configFilename
+
+testDirname
+
+sourcePathname
+
+|_html |body_html |bodyHtml
+|_id, _code (identifier) |email_id |emailId
+|_msg (message) |employee_msg |employeeMsg
+|_name |employee_name |employeeName
+|_text |email_text |emailText
+|_type |item_type |itemType
+|===========================================
+
+==== Unknown types
+Name variable of an unknown type using `<noun>-<type>`. The recommended
+`<type>` indicator is shown in Table X.13.
+
+.Table X.13 -- Unknown type indicator
+[cols="",]
+|====================================
+|Indicator |Local scope |Module scope
+|_data a|
+http_data
+
+socket_data
+
+arg_data
+
+data
+
+ a|
+httpData,
+
+socketData
+
+|====================================
+
+Variables with unknown types are encountered in polymorphic functions where an
+argument may have one of many types. One such function might concatenate
+strings, numbers, arrays, or maps. We also encounter unknown data types when
+receiving data from an external source such as an AJAX response.
+
+=== Avoid plurals
+Avoid plurals in *any* variable name. A plural noun implies an indeterminate
+group of data. Instead use a variable name that more precisely identifies the
+type of data that contains the group.
+
+.Listing X.9 -- Collections of data
+[source,js]
+----
+// == Avoid ===
+var
+  cats = [ 'callico', 'tabby' ],
+  colors = { blue : '#00f', green : '#0f0', red : '#00f' },
+  persons = [ { name : 'Fred' }, [ name : 'Wilma' } ],
+  retracts = true,
+  users = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
+ ;
+
+// == Prefer ==
+var
+  cat_list      = [ 'callico', 'tabby' ],
+  color_map     = { blue : '#00f', green : '#0f0', red : '#00f' },
+  do_retract    = true,
+  person_table  = [ { name : 'fred' }, [ name : 'wilma' } ],
+  user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma'
+  ;
+----
+
+=== Sort declarations and assignments
+Sort declarations and assignment of variables, lists, and maps in alphabetical
+order unless there is a precedence requirement or another obvious reason for a
+different order. Use an editor like Vim, Sublime, or WebStorm which support
+in-line sorting.
+
+.Listing X.10 -- Sorted declarations
+[source,js]
+----
+// == Avoid ===
+
+var
+  do_retract = true,
+  color_map = { green : '#0f0', red : '#00f', blue : '#00f' },
+  person_table = [ { name : 'Wilma' }, { name : 'Fred' } ],
+  user_csv_list = 'Pebbles,Wilma,Betty,Bamm-Bamm,Fred',
+  cat_list = [ 'tabby', 'callico' ]
+  ;
+
+// == Prefer ==
+var
+  cat_list = [ 'callico', 'tabby', ],
+  color_map = { blue : '#00f', green : '#0f0', red : '#00f' },
+  do_retract = true,
+  person_table = [ { name : 'fred' }, [ name : 'wilma' } ],
+  user_csv_list = 'Betty,Bamm-Bamm,Fred,Pebbles,Wilma';
+  ;
+----
+
+=== Object property names
+Name object properties using the same convention as other variables.
+Properties we intend to have compressed should be wrapped with underscores so
+they can be identified during the build process.
+
+.Table X.14 -- Example property names
+[cols="",]
+|===========================================================
+|Type |Local scope |Module scope
+|Array |local_map.\_person_list_ |spa.\_model_.\_personList_
+|Boolean |local_map.\_is_enabled_ |spa.\_model_.\_isReady_
+|Function |local_map.\_init_fn_ a|
+spa.\_initModuleFn_
+spa.\_model_.initModuleFn_
+spa.\_shell_._initModuleFn_
+|Integer |local_map._leg_count_ |spa.\_model_.\_callbackCount_
+|Map |local_map.\_user_map_ |spa.\_slider_.\_instanceMap_
+|Number |local_map.\_mix_ratio_ |spa.\_sound_.\_mixRatio_
+|String |local_map.\_username_ |spa.\_model_.\_userMap_
+|Regex |local_map.\_match_rx_ |spa.\_matchRx_
+|===========================================================
+
+== Functions
+Functions are a first-class data type in JavaScript. They can be used as with
+any other type. We can, for example, create a map or array with them as
+values, or use them as arguments in other functions.
+
+=== Use namespaces
+When running JavaScript in a browser we need to protect our code from
+conflict. Create a single global namespace map inside of which all our other
+variables are scopedfootnoteref:[iife,NodeJS transparently creates an IIFE for
+each module file so you don't have to].  Use an Immediately Invoked Function
+Expression (`IIFE`) to create the namespace as shown in Listing X.11. When
+declaring an `IIFE` always wrap the outer function in parenthesis so that it’s
+clear obvious the value produced is the result of the function and not the
+function itself.  Always use the `'use strict'` pragma for module-scope
+`IIFEs`.
+
+.Listing X.11 -- A namespace map created using an `IIFE`
+[source,js]
+----
+// == Avoid ==
+var greetStr = 'Hi there!';
+console.log( window.greetStr ); // prints 'Hi there!'
+
+// == Prefer ==
+var spa = (function () {
+  'use strict';
+  var greetStr = 'Hi there!';
+  function initModuleFn () { console.log( greetStr ); }
+  return { _initModuleFn_ : initModuleFn };
+}());
+spa._initModuleFn_();
+----
+
+We can break a namespace into manageable subdivisions. For example, we can add
+`spa.\_shell_` and `spa.\_slider_` to our `spa` namespace as shown in Listing
+X.12.
+
+.Listing X.12 -- A namespace subdivided
+[source,js]
+----
+// == Prefer ==
+// In the file spa.shell.js:
+spa._shell_ = (function () {
+ 'use strict';
+
+ return {       // <1>
+ _initModuleFn_   : initModuleFn,
+ _resetDisplayFn_ : resetDisplayFn
+ };
+}());
+
+// In the file spa.slider.js:
+spa._slider_ = (function () {
+ 'use strict';
+
+ return {        // <1>
+ _initModuleFn_    : initModuleFn,
+ _extendSliderFn_  : extendSliderFn,
+ _retractSliderFn_ : retractSliderFn
+ };
+}());
+// Initialize the spa from another module
+spa._initModuleFn_();
+----
+<1> Return private variables and methods
+
+Name CSS selectors in parallel with the JavaScript namespaces. For example,
+any classes used by `spa.\_shell_` should have an `spa-\_shell_` prefix.
+
+=== Minimize module-scope variables
+Do not use global variables except when namespacing as above.  It is also wise
+to minimize module-scope variables otherwise one can lose track of module
+state. We recommend grouping state and configuration data into `stateMap` and
+`configMap` respectively as shown in Listing X.13.
+
+.Listing X.13 -- Module scope variables
+[source,js]
+----
+// == Avoid ===
+var
+  doBigThings = true,
+  userMaxCount = 5,
+  isSliderActive = true,
+  isSliderOpen = false
+  ;
+
+// == Prefer ==
+var
+  configMap = {
+    _do_big_things_  : true,
+    _user_max_count_ : 5
+  },
+  stateMap = {
+   _is_slider_active_ : true,
+   _is_slider_open_   : false
+  };
+----
+
+=== Use named functions
+Named functions are easier to debug than anonymous functions.  For most
+purposes the declarations in Listing X.14 are equivalent. However, we *will*
+see a difference when debugging.  When we declare functions with an explicit
+names, legible stack traces can be computed prior to run-time.
+
+.Listing X.14 -- Explicit function names
+[source,js]
+----
+// == Avoid ===
+getMapCopy = function ( arg_map ) { ... }; // <1>
+
+// == Prefer ==
+function getMapCopy( arg_map ) { ... };    // <2>
+----
+<1> This is an anonymous function assigned to a variable.
+<2> This is a named function.
+
+=== Use named arguments for complex functions
+Positional argument, while convenient for simple function, are not self
+documenting and become unwieldy when the list grows longer than two. Use named
+arguments instead as shown in Listing X.15.
+
+.Listing X.15 -- Named arguments
+[source,js]
+----
+// == Good ====
+hypotenuse_num = sqrt( 25 ); // <1>
+
+// == Avoid ===
+coor_map = refactorCoords( 22, 28, 32, 48); <2>
+
+// == Prefer ==
+coord_map = refactorCoords({
+ x1 : 22, y1 : 28, x2 : 32, y2 : 48 <3>
+});
+----
+<1> Positional arguments are fine for simple functions.
+<2> But they can get confusing when the list grows.
+<3> The purpose of these named arguments is clearer.
+
+=== Use a single var statement per function
+Declare all variables at the top of a function using a single `var` keyword
+first as shown in Listing X.16.
+
+.Listing X.16 -- Single let statement per block
+[source,js]
+----
+// == Avoid ===
+function copyMapKeysFn( arg_map ) {
+  var solve_map = {};
+  var key_list = Object.keys( arg_map );
+  var key_count = key_list.length;
+
+  for ( var idx = 0; idx < key_count; idx++ ) {
+    var key_name = key_list[ idx ];
+    var val_data = arg_map[ key_name ];
+    if ( val_data !== undefined ) {
+      solve_map[ key_name ] = val_data;
+    }
+  }
+  return solve_map;
+}
+
+// == Prefer ==
+function copyMapKeysFn( arg_map ) {
+ var 
+   solve_map = {},
+   key_list  = Object.keys( arg_map ),
+   key_count = key_list.length,
+   idx, key_name, val_data
+   ;
+
+  for ( idx = 0; idx < key_count; idx++ ) {
+    key_name = key_list[ idx ];
+    val_data = arg_map[ key_name ];
+
+    if ( val_data !== undefined ) {
+      solve_map[ key_name ] = val_data;
+    }
+  }
+  return solve_map;
+}
+----
+
+If we declare a variable anywhere within a function using `var`, it will be
+initialized with a value of `undefined` immediately on invocation. Declaring a
+variable is not the same as assigning a value to it.  When a variable is
+declared, the JS engine know which it exists within a functional scope and
+this is processed at compile-time. A value can be assigned to a variable only
+at run-timefootnoteref:[hoist,This is the source of the infamous "JavaScript
+Hoisting" 'bugs'.]. As a convenience we may combine declaration and assignment
+with the `var` statement but internally the JavaScript engine will always
+process both stages at different times.
+
+As of ES5.1 `let` is preferred over `var` in most cases. But there is one
+glaring problem: not all tool chains support it. For example, jQuery and
+UglifyJS and a bunch of other libraries still expect `var` behavior.  We've
+discovered this the hard way. So despite all the benefits of `let`, we're
+going to allow its use catch up with its promise before we join the party.
+
+The `const` keyword is also preferred over `var`. Just like with `let` there
+are tool-chain issues. Listing X.17 shows how a `const` symbol is not as
+immutable as one might think.
+
+.Listing X.17 -- Confusing `const`
+[source,js]
+----
+'use strict';
+const foo_table = [ {}, {} ];
+foo_table[ 0 ]._brand_str_ = 'billy'; // <1>
+foo_table[ 1 ]._type_      = 'beer';  // <1>
+
+console.warn( JSON.stringify( foo_table ) );
+// [ { _brand_str_: 'billy' }, { _type_: 'beer' } ]
+----
+<1> So much for immutability.
+
+=== Distinguish function declaration and invocation
+- Declare a function with a single space between the name and
+  opening left parenthesis.
+- Invoke a function with no space between the name and
+  the opening left parenthesis.
+
+.Listing X.18 -- Function declaration and invocation
+[source,js]
+----
+function processMap( arg_map ){ ... }     // == Avoid ===
+function processMap ( arg_map ) { ... }   // == Prefer ==
+
+result_map = processMap ( example_map );  // == Avoid ===
+result_map = processMap( example_map );   // == Prefer ==
+----
+
+=== Compare with precision
+Use the precise `===` and `!==` comparators instead of `==` and `!=`.  The
+latter operators apply type coercion which is inconsistent and confusing as
+shown Listing X.19.
+
+.Listing X.19 -- Check for truthiness
+[source,js]
+----
+var count_list = [ 1 + 1 ];
+
+== Avoid ===
+if ( count_list == 2 ) { console.warn( 'Confusing match' ); } // <1>
+
+== Prefer ===
+if ( count_list === 2 ) { console.warn( 'No match' ); }   // <2>
+----
+<1> Both the array and number are coerced into the string '2'.
+<2> No type coercion occurs.
+
+=== Catch exceptions
+Exceptions should be caught using a try-catch block.  Avoid nested blocks as
+shown in Listing X.20 and use a linear search instead as shown in Listing
+X.21.
+
+.Listing X.20 -- Try-catch block -- nesting
+[source,js]
+----
+// == Avoid ===
+var fs_obj, lib_key;
+try {
+  lib_key = 'fancyFs';
+  console.log( 'attempt ' + lib_key );
+  fs_obj = require( lib_key );
+}
+catch ( error0_data ) {
+  console.warn( String( error0_data ) );
+  try {
+    lib_key = 'coolFs';
+    console.log( 'attempt ' + lib_key );
+    fs_obj = require( lib_key );
+  }
+  catch ( error1_data ) {
+    console.warn( String( error1_data ) );
+    try {
+      lib_key = 'neatFs';
+      console.log( 'attempt ' + lib_key );
+      fs_obj = require( lib_key );
+    }
+    catch( error2_data ) {
+      console.warn( String( error2_data ) );
+      try {
+        lib_key = 'fs';
+        console.log( 'attempt ' + lib_key );
+        fs_obj = require( lib_key );
+      }
+      catch ( error3_data ) {
+        console.warn( String( error3_data ) );
+      }
+    }
+  }
+}
+
+if ( fs_obj ) {
+  console.log( 'Found library ' + lib_key );
+}
+----
+
+.Listing X.21 -- Try-catch block -- linear search
+----
+// == Prefer ==
+var
+  lib_list  = [ 'fancyFs','coolFs', 'neatFs', 'fs' ],
+  lib_count = lib_list.length,
+
+  fs_idx, lib_key, fs_obj, error_data;
+
+for ( fs_idx = 0; fs_idx < lib_count; fs_idx++ ) {
+  lib_key = lib_list[ fs_idx ];
+  error_data = undefined;
+  try {
+    fs_obj = require( lib_key );
+    break;
+  }
+  catch ( catch_data ) {
+    console.warn( String( catch_data ) );
+  }
+}
+
+if ( fs_obj ) {
+  console.log( 'Found library ' + lib_key );
+}
+----
+
+=== Prefer factory objects
+Use `{}` or `[]` instead of `new Object()` or `new Array()` to create a new
+object or array. If you require object inheritance, use `Object.create(
+obj_proto )` and use the factory pattern for object constructors shown in
+Listing X.22. This emphasizes the prototype object inheritance in JavaScript.
+
+.Listing X.22 -- Factory object constructor
+[source,js]
+----
+// == Avoid ===
+var dog = new Dog();
+
+// == Prefer ==
+var dog_obj = makeDogObjFn();
+----
+
+===  Use labels for clarity
+Labels may be used with `while`, `do`, `for`, or `switch` blocks.  They
+clarify the purpose of a `continue` or `break` statement and make the logic
+more resistant to nesting errors as shown in Listing X.23.
+
+.Listing X.23 -- Labeled statements
+[source,js]
+----
+// == Prefer ==
+var
+  horse_list  = [ 'Anglo-Arabian', 'Clydsedale' ],
+  horse_count = horseList.length,
+  solve_list  = [],
+
+  breed_name, idx, idj
+  ;
+
+_HORSE_: for ( idx = 0; idx < horse_count; idx++ ) {
+  breed_name = horse_list[ idx ];
+  _LEG_ : for ( idj = 0; idj < 4; idj++ ) {
+    if ( Math.random() < 0.5 ) { continue _LEG_; } // <1>
+    if ( Math.random() < 0.1 && breed_name === 'Clydesdale' ) {
+      break _HORSE_; // <2>
+    }
+    solve_list.push( breed_name + ' ' + String( idj ) );
+  }
+}
+
+console.log( JSON.stringify( solve_list ) );
+----
+<1> Skip iteration of inner loop
+<2> Break out of outer loop
+
+=== Return the intended value
+The return value must start on the same line as the `return` keyword to avoid
+semicolon insertion as shown in Listing X.24.
+
+.Listing X.24 -- Return without errors
+[source,js]
+----
+// == Avoid ===
+return
+  ( { _make_house_fn_ : make_house_fn } );
+
+// == Prefer ==
+return { _make_house_fn_ : make_house_fn };
+----
+
+=== Copy with care
+The values in complex variables such as arrays and objects are not copied when
+they are assigned. Instead, the pointer to the data is copied as shown in
+Listing X.25. We highly recommend the use of deep copy routines to avoid data
+corruption.
+
+.Listing X.25
+----
+var age_map, copy_map;
+
+// == Avoid ===
+age_map = { 'Bob' : 36 };
+copy_map = age_map;              // <1>
+
+copy_map.Amanda = 54;
+console.log( age_map );
+
+// == Prefer ==
+function cloneData ( data ) {
+  try { return JSON.parse( JSON.stringify( data ) ); }
+  catch ( error_data ) { return; }
+}
+age_map = { 'Bob' : 36 };
+copy_map = cloneData( age_map ); // <2>
+
+copy_map.Amanda = 54;
+console.log( age_map );
+----
+<1> age_map and copy_map are pointers to the same map
+<2> copy_map is a deep copy of age map
+
+=== Break after each case block
+Every `case` block inside a `switch` closure -- with the exception of
+`default` -- should end with `break`, `return`, or `throw` as shown in Listing
+X.26.
+
+.Listing X.26 -- Avoid fall-through
+[source,js]
+----
+// == Avoid ==
+switch ( <expression> ) {
+  case <value1>:
+  case <value2>:
+    // statements
+  case <value3>:
+    // statements
+  default:
+    // statements // <1>
+}
+
+// == Prefer ==
+switch ( <expression> ) {
+  case <value1>:
+  case <value2>:
+    // statements
+    break;
+  case <value3>:
+    // statements
+    break;
+  default:
+    // statements // <2>
+}
+----
+<1> All case blocks will execute
+<2> Only one matching case block will execute
+
+One may safely nest `switch` statements by using labeled `breaks`.
+
+=== Don't use these features
+==== The comma operator
+Avoid the use of the comma operator found in some `for` loop constructs. This
+doesn’t apply to the comma separator, which is used in object literals, array
+literals, variable declarations, and parameter lists.
+
+==== Assignment expressions
+Avoid using an assignment as as test condition as it is unexpected and
+confusing.
+
+.Listing X.27 Assignment expressions
+[source,js]
+----
+// == Avoid ===
+var
+  random_int = Math.floor( Math.random() * 2 ),
+  set_int
+  ;
+
+if ( set_int = random_int ) {
+  console.warn( 'random int is not 0' );
+}
+
+// == Prefer ==
+var
+  random_int = Math.floor( Math.random() * 2 ),
+  set_int = random_int
+  ;
+
+if ( random_int !== 0 ) {
+ console.warn( 'random int is not 0' );
+}
+----
+
+==== Endless loops
+Avoid the `do`, `while` and `setInterval` statements as they are all prone
+to endless loop conditions by default. Instead, prefer the self limiting
+`for` and `setTimeout` statements, as shown in Listing X.28.
+
+.Listing X.28 Endless loop love
+[source,js]
+----
+// == Avoid ===
+totalCount = 0;
+function bumpFn () { totalCount++ };
+setInterval( bumpFn, 1000 ); // <1>
+
+// == Prefer
+totalCount = 0;
+function bumpFn () {
+  totalCount++;
+  if ( totalCount < 10 ) {   // <2>
+    setTimeout( bumpFn, 1000 );
+  }
+}
+bumpFn();
+----
+<1> This will continue as long as the application is loaded
+<2> This is limited to 10 repetitions
+
+=== The with statement
+Avoid the `with` statement. Instead use the `object.call()` family of methods
+adjust the value of `this` during function invocation.
+
+=== Confusing plus and minus operators
+Be careful to not follow a `+` with a `+` or a `++`. This pattern can be
+confusing.  Insert parentheses between them to make your intention clear as
+shown in Listing X.29.
+
+.Listing X.29 -- Confusing signs
+[source,js]
+----
+// == Avoid ===
+total = total_count + +arg_map._cost_int_;
+
+// == Prefer ==
+total = total_count + ( +arg_map._cost_int_);
+----
+
+This prevents the `+ +` from being misread as `++`. The same
+guideline applies for the minus sign.
+
+=== eval
+JavaScript will attempt to `eval` (evaluate and execute) a string variable in
+numerous situations. Avoid them all to enhance security and performance.
+
+- Don’t use the `Function` constructor with a string.
+- Don’t pass strings to `setTimeout` or `setInterval`.
+- Don’t use `eval` to parse `JSON` data. Use `JSON.parse( <string> )` or
+  `JSON.stringify( <data> )`.
+
+== Format and documentation
+=== Format for 80 column displays
+- Use a document width of 80 characters.
+- Indent two spaces per code level.
+- Don’t use tab characters.
+- Place white space between operators and variables.
+- Place white space after every comma.
+- Use only one statement or variable assignment per line.
+- Place a semicolon at the end of every statement.
+
+Listing X.30 shows these rules in practice.
+
+.Listing X.30 -- Formatting for 80 columns
+[source,js]
+----
+// == Avoid ===
+function makePctStr(arg_ratio,arg_count,arg_sigil_str){
+        var ratio=castNum(arg_ratio,0),
+                count=castNum(arg_count,0),
+                sigil_str=castStr(arg_sigil_str,'%'),
+                count=count<0?0:Math.floor(count);
+
+        return // <1>
+        { pct_str:(ratio*100).toFixed(count)+sigil_str };
+}
+
+// == Prefer ==
+function makePctStr ( arg_ratio, arg_count, arg_sigil_str ) {
+  var
+    count     = castNum( arg_count,       0 ),
+    ratio     = castNum( arg_ratio,       0 ),
+    sigil_str = castStr( arg_sigil_str, '%' ),
+    count     = count < 0 ? 0 : Math.floor( count )
+    ;
+
+  return {
+    pct_str : ( ratio * __100 ).toFixed( count ) + sigil_str
+  };
+}
+----
+<1> This results in a semicolon insertion bug where the return value is
+undefined.
+
+Keep the document width below 80 characters so that it fits within a standard
+terminal window and reads well on constrained displays such as those found on
+mobile devices and is easy to comprehendfootnoteref:[typog, Line widths of 66
+characters are considered optimal for comprehension.  See Binghust, R. (2004)
+The Elements of Typographic Style (3rd edition), New York.]. Indent two spaces
+per level to avoid exceeding the document width when code is nested. Use
+spaces for indentation not tabs as they display consistently on all devices.
+
+Place white space around operators, variables, and commas to assist with
+legibility. This has no effect on application performance as it will be
+concatenated, minified, and compressed before it reaches end users.
+
+Place only one statement or assignment per line. One may, however, declare
+multiple variables on a single line to save space. Explicitly terminate every
+statement with a semicolon to avoid semicolon insertion bugs.
+
+=== Use Stroustrup-style bracketing
+- Place the opening parenthesis, brace, or bracket at the end of the line.
+- Indent the code inside the delimiters (parenthesis, brace, or bracket) one
+  level.
+- Place the closing parenthesis, brace or bracket on its own line with
+- same indentation as the opening line.
+- Do not omit braces on *any* single-line statement.
+
+Listing X.31 shows these rules in practice.
+
+.Listing X.31 -- Stroustrup-style bracketing
+[source,js]
+----
+// == Avoid ===
+function getSign(arg_data)
+{
+  var 
+    arg_num   = arg_data + 0,
+    solve_int = 0;
+
+  if (arg_num < 0) solve_int = -1
+  else if (arg_num === 0)
+  {
+    solve_int = 0;
+  } else {
+    solve_int = 1;
+  }
+  return solve_int;
+}
+
+// == Prefer ==
+function getSign( arg_data ) {
+  var
+    arg_num   = arg_data + 0,
+    solve_int = 0;
+
+  if ( arg_num < 0 ) {
+    solve_int = -1;
+  }
+  else if ( arg_num === 0 ) {
+    solve_int = 0;
+  }
+  else {
+    solve_int = 1;
+  }
+  return solve_int;
+}
+----
+
+https://en.wikipedia.org/wiki/Indent_style#Variant:_Stroustrup[Stroustrup
+style] is a _one-true-brace_ variant of K&R-style that does not cuddle else
+clauses. Many feel it nicely balances brevity, clarity, and safety.
+
+=== Organize and comment by paragraphs
+- Group code in logical paragraphs and place blank lines between each.
+- Vertically align operators within paragraphs.
+- Indent comments the same amount as the code they explain.
+- Comment once per paragraph.
+
+Listing X.32 shows how cluttered and noisy comments can get. Listing X.33
+shows comments applied by paragraph.
+
+.Listing X.32 -- Avoid comments per line
+[source,js]
+----
+// == Avoid ===
+function shuffle( items ) {
+  // Items should be an array.
+  // Return false if argument is not an array
+  if ( ! Array.isArray( items ) ) { return false; }
+  // Get the length of the items array. Size is an integer.
+  var size = items.length;
+  // Decrement i from the size of the list to 1
+  for ( var i = size; i > 0; i-- ) {
+    // x is the int element index at the end of the section.
+    var x = i - 1;
+    // y is a random integer index within the section.
+    var y = Math.floor( Math.random() * i );
+    // Get random element value. Swap could be any data type.
+    var swap = items[ y ];
+    // Set random element value to same as end of section
+    items[ y ] = items[ x ];
+    // Set end of section value to random element value
+    items[ x ] = swap;
+  }
+  return true;
+}
+----
+
+.Listing X.33 -- Prefer comments per paragraph
+[source,js]
+----
+// == Prefer ==
+// BEGIN public method /shuffleListFn/
+// Purpose   : Shuffle elements in a list
+// Example   : shuffleListFn( [1,2,3,4] ) returns [ 3,1,4,2 ]
+// Arguments : ( positional )
+//   0. arg_list - The list to shuffle
+// Returns   : boolean true on success
+// Throws    : none
+// Technique :
+//   1. Count down from end of array with last_idx
+//   2. Randomly pick element from between 0 and last_idx
+//   3. Swap pick element with last_idx element
+//
+function shuffleListFn ( arg_list ) {
+  var 
+    list  = castList( arg_list ),
+    count = list ? list.length : 0,
+    idx, last_idx, pick_idx
+    ;
+
+  if ( ! list ) { return false; }
+
+  for ( idx = count; idx > 0; idx-- ) {
+    last_idx  = idx - 1;
+    pick_idx  = Math.floor( Math.random() * idx );
+    swap_data = list[ last_idx ];
+
+    list[ last_idx ] = list[ pick_idx ];
+    list[ pick_idx ] = swap_data;
+  }
+  return true;
+}
+----
+
+Rely on the name convention to explain variable content and purpose.  Use a
+capable editor like Vim, Sublime, or WebStorm which support vertical selection
+and alignment. WebStorm can be configured align map values and assignments
+within paragraphs.
+
+=== Document APIs in-line
+Document any nontrivial function API inline. A template is provided in Listing
+X.34. Place architecture plans in documents separate from the code.
+
+.Listing X.34 -- Inline API documentation
+[source,js]
+----
+// == Avoid ===
+function shuffle( items ) { ... }
+
+// == Prefer ==
+// BEGIN public method /<method_name>/
+// Purpose   : <what does this do in a short sentence>
+// Example   : <example call and results>
+// Arguments : ( positional )
+//  <arg_name or number> : <value description>
+// Returns   : <return value on success and failure>
+// Throws    : <any exceptions, or 'none'>
+// Technique : <overview of algorithm>
+//
+function shuffleListFn( arg_list ) { ... }
+// . END public method /shuffleListFn/
+----
+
+=== Mark future tasks with TODOs
+Create `TODO` comments for tasks that can not be complete immediately as shown
+in Listing X.35. These have become standard enough that WebStorm, ESLint, Vim,
+and many other tools recognize them.
+
+.Listing X.35 -- A TODO comment
+[source,js]
+----
+// TODO <date> <username> <urgency>: <notes>
+// TODO 2019-05-01 bubba alert : Disabled while testing alternate
+
+----
+
+The `<date>` field conveys the freshness of the comment and should be
+expressed in ISO YYYY-MM-DD format, for example, 2019-05-01.  The `<username>`
+field should be the identification of the author.  The `<urgency>` field
+explains how critical the task is. We recommend using syslog levels as these
+are well known footnoteref:[syslog,Syslog levels in decending order of urgency
+include `emerg`, `alert`, `crit`, `err`, `warn`, `notice`, `info`, or
+`debug`]. We can check a list of all TODOs in a project as shown in Listing
+X.36.
+
+.Listing X.36 -- Listing TODOs
+[source,js]
+----
+grep TODO $(find ./ -type f -name '*.js' \
+  | grep -v node_modules |grep -v /vendor/) |sort -u
+----
+
+=== Annotate disabled code
+It is wise to disable a code block and only delete it when we are certain it
+will no longer be useful. This prevents team members from solving the same
+problem multiple times. Disabled code should be identified by a `TODO` comment
+as shown in Listing X.37.
+
+.Listing X.37 -- Disabled code with an explanation
+[source,js]
+----
+// == Avoid ===
+// while ( k > 0 ) { … }
+
+// == Prefer ==
+// BEGIN TODO 2019-05-01 bubba warn: Disabled for testing
+// while ( k > 0 ) { … }
+// ...
+// . END TODO 2019-05-01 bubba warn
+----
+
+Search and resolve `TODOs` regularly -- once a week is good -- by recording
+them in the organization’s issue tracking database. Convert each comment as
+each issue is entered as shown in Listing X.38
+
+.Listing X.38 -- An issue comment
+[source,js]
+----
+// == Prefer == (issue ID used to explain disabled code)
+// Issue #96785: Disabled while testing alternative
+// while ( k > 0 ) { ... }
+----
+
+=== Break lines on operators
+- Prefer single lines when possible.
+- Break lines before operators or after comma separators.
+- Indent subsequent lines of the statement one level.
+- Optionally place the terminating semicolon on its own line to
+  end multi-line statements.
+
+.Listing x.39 -- Break lines on operators
+[source,js]
+----
+// == Avoid ===
+var full_address_str = first_name + ' ' + last_name +
+  '\n' + street1_str + '\n' + street2_str + '\n' +
+  city_str + ',' + state_code + ' ' + zip_code;
+
+// == Prefer ==
+var full_address_str
+  = first_name + ' ' + last_name + '\n'
+  + street1_str + '\n'
+  + street2_str + '\n'
+  + city_str + ','
+  + state_code + ' ' + zip_code
+  ;
+----
+
+Place all statements and declarations within our document width on a single
+line. Break any statement or declaration that exceeds our document width into
+multiple lines. Break before operators so they are aligned on the left column.
+This highlights the action taking place on the data.  Indent all continuation
+lines one level.
+
+=== Delimit literals with single quotes
+Prefer single quotes (`'`) over double quotes (`"`) when delimiting string
+literals. This communicates that JavaScript does not expand embedded variables
+name just with single-quoted strings in many other popular languages. Quoting
+HTML is also much easier as shown in Listing X.40.
+
+.Listing X.40 -- Single quotes and literal strings
+[source,js]
+----
+// == Avoid ===
+link_str = "<a href=\"/wiki/fish\" title=\"fish\">fish</a>";
+
+// == Prefer ==
+link_str = '<a href="/wiki/fish" title="fish">fish</a>';
+----
+
+ECMA2015 introduced template literals where grave accent delimiters (```) work
+much like double quotes (`"`) in many other languages. As of fall 2017, only
+Firefox supports template literals fully.
+
+=== Prefer C-style ‘for’ syntax
+Use the C-style form of the `for` statement. Avoid the `for-in` form as this
+iterates over inherited object properties which are unreliable. Instead use
+`Object.keys()` to get a list of property names and iterate over that as shown
+in Listing X.41.
+
+.Listing X.41 -- C-style ‘for’ syntax
+[source,js]
+----
+// == Avoid ===
+for ( key in cat_obj ) {
+  if ( cat_obj.hasOwnProperty( key ) ) {
+    // process key
+  }
+}
+
+// == Prefer ==
+key_list  = Object.keys( cat_obj );
+key_count = key_list.length;
+for ( idx = 0; idx < key_count; idx++ ) {
+  key = obj_list[ idx ];
+  // process key
+}
+----
+
+=== Before and after
+Listings X.42 and X.43 compare the readability of an object prototype before
+and after applying the recommended formatting.
+
+.Listing X.42 -- Avoid random style
+[source,js]
+----
+// == Avoid ===
+doggy = {
+  temperature : 36.5,
+  name : 'Guido',
+  greeting : 'Grrrr',
+  speech : 'I am a dog',
+  height : 1.0,
+  legs : 4,
+  ok : check,
+  remove : release,
+  greet_people : greet_people,
+  say_something : say_something,
+  speak_to_us : speak,
+  colorify : flash,
+  show : render
+};
+----
+
+.Listing X.43 -- Prefer applied standard
+[source,js]
+----
+// == Prefer ==
+dogProto = {
+  _greet_str     : 'Grrrr',
+  _height_m_num_ : 1.0,
+  _leg_count_    : 4,
+  _name          : 'Guido',
+  _speak_str_    : 'I am a dog',
+  _temp_c_num_   : 36.5,
+
+  _check_exist_fn_   : checkExistFn,
+  _print_greet_fn_   : printGreetFn,
+  _print_name_fn_    : printNameFn,
+  _print_speak_fn_   : printSpeakFn,
+  _redraw_dog_fn_    : redrawDogFn,
+  _remove_dog_fn_    : removeDogFn,
+  _show_flash_fn_    : showFlashFn
+};
+----
+
+== Layout JS and CSS files by namespace
+- Place JavaScript files used by the web application under a directory called
+  `js.`
+- Name JavaScript files according to the namespace they provide, one namespace
+  per file. All files should have the `.js` suffix as shown in Listing X.44.
+- Use the template to start any JavaScript module file. This is found in the
+  `hi_score` project at `js/xhi/xhi-module-template.js`.
+- Place all CSS files used by the web application in a directory called `css`.
+- Maintain a parallel structure between JavaScript and CSS files and class
+  names. Create a CSS file for each JavaScript file that generates HTML. All
+  files should have the `.css` suffix as shown below.
+- Prefix CSS selectors according to the name of the module they support. This
+  practice helps greatly to avoid unintended interaction with classes from
+  third-party modules as shown in Listing X.44.
+- Use `<namespace>\_x_<descriptor>_` for state-indicator selectors and other
+  shared class names. Examples include `spa-\_x_select_` and
+  `spa-\_x_disabled_`. Place these in the root namespace stylesheet, for
+  example `spa.css`.
+- When using PowerCSS, keep the same parallel structure, replacing CSS files
+  with JS files as shown in Listing X.44.
+- Include third-party JavaScript files first in HTML so their functions may be
+  evaluated and made ready for our application.
+- Include custom JavaScript files next, in order of namespace. We can’t load
+  namespace `spa.shell`, for example, if the root namespace, `spa`, has not
+  yet been loaded.
+
+.Listing X.44 -- Namespaced files
+[source,js]
+----
+// == Prefer == JS files
+js/spa.js             // <1>
+js/spa.shell.js       // <2>
+js/spa.slider.js      // <3>
+
+// == Prefer == CSS files
+css/spa.css           // <1> <4>
+css/spa.shell.css     // <2> <5>
+css/spa.slider.css    // <3> <6>
+
+// == Alternate CSS generator files
+js/spa.css.js         // <1> <4>
+js/spa.css_shell.js   // <2> <5>
+js/spa.css_slider.js  // <3> <6>
+----
+<1> Claims spa JavaScript namespace
+<2> Claims spa.\_shell_ JavaScript namespace
+<3> Claims spa.\_slider_ JavaScript namespace
+<4> Defines #spa, .spa-\_x_clearall_.
+<5> Defines spa-\_shell_, spa-\_shell_header_, .spa-\_shell_footer_,
+ and .spa-\_shell_main_
+<6> Defines .spa-\_slider_open_, .spa-\_slider_closed_
+
+These conventions make the interplay between CSS and JavaScript easier to
+manage and debug.
+
+== Code Validation
+ESLint is a popular JavaScript validation tool that is more configurable than
+the venerable JSLint. Use it to identify errors and ensure best practice.
+
+=== Install ESLint
+We may install ESLint globally as shown in Listing X.45.
+
+.Listing X.45 -- Install ESLint
+[source,js]
+----
+sudo npm install -g eslint
+----
+
+=== Configure ESLint
+Our settings for are shown in Listing X.46. These are added to the
+`package.json` file at the root of the project.
+
+.Listing X.46 -- ESLint settings
+[source,js]
+----
+{ 
+  ...,
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended"
+    ],
+    "globals": {
+      "__dirname": true,
+      "__filename": true,
+      "$": true,
+      "clearTimeout": true,
+      "console": true,
+      "document": true,
+      "global": true,
+      "Image": true,
+      "localStorage": true,
+      "jQuery": true,
+      "module": true,
+      "process": true,
+      "Promise": true,
+      "require": true,
+      "setTimeout": true,
+      "window": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "plugins": [
+      "json"
+    ],
+    "rules": {
+      "continue": "off",
+      "indent": "off",
+      "no-console": "off",
+      "one-var": [
+        "error",
+        {
+          "var": "always",
+          "let": "always",
+          "const": "always"
+        }
+      ],
+      "no-plusplus": "off"
+    }
+  },
+  ...
+}
+----
+
+=== Verify JavaScript
+Check JavaScript validity as shown in Listing x.47.
+
+.Listing x.47 -- Lint changed files
+[source,js]
+----
+node_modules/.bin/eslint $( \
+  find -type f -name '*.js' \
+    | grep -v vendor |grep -v node_modules |grep -v build \
+  )
+----
+
+=== Share IDE configuration
+WebStorm has excellent code inspection tools (see `Tools` > `Inspect code`).
+The `hi_score` project has code inspection settings available at
+`config/webstorm_settings.jar` which may be imported using `File` > `Import
+settings`.
+
+== Choose libraries wisely
+See "The Fog of SPA" on how too many libraries can result in greater
+complexity when developing a JavaScript application.
+
+== Exercises
+[quanda]
+How does a code standard improve products?::
+  A standard provides team members a common dialect and practices so they may
+  better understand and collaborate with each other. A good standard will
+  encourage documentation, code reuse, and empahsize the benefits of the
+  language. It also helps developers avoid common mistakes, and techical
+  debtfootnoteref:[techdebt].
+Why is indicating variable type especially useful for JavaScript?::
+  Because JavaScript variables can contain any type without any indication
+  whatsoever. Directly naming variables by expected type can remove the
+  constant need for expensive manual or automated introspection.
+Should one avoid plurals in variable names?::
+  Yes, plurals imply a collection of items. At worst this is simply wrong,
+  when, for example, a developer users `runs` as a boolean. At best there
+  are far more exact ways to indicate a collection of items.
+  For example, instead of `users`, consider `user_list`, `user_map`, or
+  `people_obj`.
+What are the dangers of imprecise comparators like `==` or `!=`?::
+  Imprecise comparators will convert values in complex and unpredictable ways.
+  Using a a precise comparison forces the developer to fully understand the
+  comparison and avoid subtle bugs.
+Which is better: `setTimeout` instead of `setInterval`?::
+  The `setInterval` method will invoke a function indefinitely unless actively
+  stopped. This is easy to get wrong.  Alternately we can use the `setTimeout`
+  method to invoke a function once and then have it call itself if it needs to
+  run again. This approach is self-limiting and hard to get wrong.
+Why are labels useful with `break` or `continue`?::
+  A `break <label>` or `continue <label>` statement explicitly declares which
+  loop is affected which helps prevent logic errors.
+
+== End
+Original author: Michael Mikowski for SPAr2
+
+

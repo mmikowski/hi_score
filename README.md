@@ -6,45 +6,40 @@
 By the author of [Single Page Web Applications, JavaScript end-to-end][_00], a Dr. Dobb's [Best Book of 2014][_0f].
 
 ## Why hi\_score?
-Like other Single Page Web App (SPA) frameworks, `hi_score` provides an enormous head-start in creating professional, release-ready applications. Yet it is profoundly different from most of them in almost every other way.
+Like other Single Page Web App (SPA) frameworks, `hi_score` provides an
+enormous head-start in creating professional, release-ready applications. Yet
+it is profoundly different from most of them in almost every other way.
 
-The `hi_score` framework helps developers create, understand, and constantly improve the **core technologies** used by their SPAs instead of locking them into a large and non-portable ecosystem. It uses a **zero-transpile** development environment while still providing a **rich set of capabilities** such as life-cycle management, type safety, run-time CSS, and state management. It consumes **far fewer resources** and is productive with just a text editor, a terminal, and a browser. Easy problems are easy to solve, and **hard problems are possible**.
+The `hi_score` framework helps developers create, understand, and constantly
+improve the **core technologies** used by their SPAs instead of locking them
+into a large and non-portable ecosystem. It uses a **zero-transpile**
+development environment while still providing a **rich set of capabilities**
+such as life-cycle management, type safety, run-time CSS, and state
+management. It consumes **far fewer resources** and is productive with just a
+text editor, a terminal, and a browser. Easy problems are easy to solve, and
+**hard problems are possible**.
 
-**A framework should serve you**, not the other way around. You should be free to move your web app to other environments without complex migration away from non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite / refactor / debug all your apps every time your framework releases a new version.
+**A framework should serve you**, not the other way around. You should be free
+to move your web app to other environments without complex migration away from
+non-portable dead-end pseudo-languages. You shouldn't be forced to rewrite /
+refactor / debug all your apps every time your framework releases a new
+version.
 
-If your framework is making your life more complex, if your teams can't communicate because they are using competing [Towers of Babel](#towers-of-babel), perhaps its time to use `hi_score` so they can all speak the same languages your apps actually use.
+If your framework is making your life more complex, if your teams can't
+communicate because they are using competing [Towers of
+Babel](#towers-of-babel), perhaps its time to use `hi_score` so they can all
+speak the same languages your apps actually use.
 
 ## Latest News
-Version 1.7.0 enhancements:
-- (x) Enhance utility capabilities
-  - (x) Replace makeDeepKeyList  with more-useful makeDeepData
-  - (x) Make getStructData more reliable for named objects
-- (x) Update test to match new capabilities
-- (x) Improve default symbol contents
-- (x) Fix ex01 and ex02 example apps to show again
-- (x) Update docs to current practices
-
-Version 1.7.1 enhancements:
-- (x) Update js code standard to recent developments
-- (x) Fix js code standard to render correctly
-- (x) Update dependent library (`bin/xhi dev_upgrade`)
-
-Version 1.7.2 enhancements:
-- (x) `server/index.js` Replace http-server with express server
-       Supports .env, directory listing
-- (x) `package.json` Add cloud storage libs, update libs to lastest
-- (x) `bin/make_doc` Improve techniques used in bash utility 
-- (x) `doc/js-code-standard.adoc` Add section on value passing to 
-- (x) `xhi/02_data.js`        Remove no-auth hack from 
-- (x) `xhi/03_model.js`       Extend event publish capability
-- (x) `xhi/05_02_css_base.js` Remove unused code from CSS module
-- (x) `lib/xhi_06`, `lib/xhi_13` Adjust to start and stop `server/index.js`
-
 Version 1.7.3 enhancements:
 - (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by 
       appending audio elments to body.
 - (x) `js/xhi/01_util` and tests: replace `makePadNumStr` to `makePadStr`
 - (x) Eslint fixes in ~20 files for redundant global symbols
+
+Version 1.7.4 enhancements:
+- (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
+      Applications** *JavaScript End-to-end - Second Edition.*
 
 ---
 ## Quick start
@@ -63,9 +58,18 @@ On Mac, Ubuntu Linux, or WSL please follow these steps.
   google-chrome http://localhost:8080/build/latest/dist/app-tb02.html
 ```
 
-These steps create a release-ready distribution in around 5 seconds on modern hardware. In that time, `hi_score` resolves all build [dependencies](#lifecycle-dependencies), coordinates with NPM to download and install hundreds of packages, patches and deploys libraries, and runs thousands of quality checks. Subsequent builds take less than half the time thanks to cached [environment dependencies](#environment-dependencies).
+These steps create a release-ready distribution in around 5 seconds on modern
+hardware. In that time, `hi_score` resolves all build
+[dependencies](#lifecycle-dependencies), coordinates with NPM to download and
+install hundreds of packages, patches and deploys libraries, and runs
+thousands of quality checks. Subsequent builds take less than half the time
+thanks to cached [environment dependencies](#environment-dependencies).
 
-We should now see the **Typebomb 2** web app in a browser and may use the developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how everything is production-ready including compressed CSS class names (yes, we **were** doing this five years before Facebook). Please compare it with the [online version][_0BA] to ensure it is working correctly.
+We should now see the **Typebomb 2** web app in a browser and may use the
+developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how
+everything is production-ready including compressed CSS class names (yes, we
+**were** doing this five years before Facebook). Please compare it with the
+[online version][_0BA] to ensure it is working correctly.
 
 ![Typebomb 2][_0B]
 
@@ -786,6 +790,16 @@ Version 1.7.2 enhancements:
 - (x) `xhi/03_model.js`       Extend event publish capability
 - (x) `xhi/05_02_css_base.js` Remove unused code from CSS module
 - (x) `lib/xhi_06`, `lib/xhi_13` Adjust to start and stop `server/index.js`
+
+Version 1.7.3 enhancements:
+- (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by 
+      appending audio elments to body.
+- (x) `js/xhi/01_util` and tests: replace `makePadNumStr` to `makePadStr`
+- (x) Eslint fixes in ~20 files for redundant global symbols
+
+Version 1.7.4 enhancements:
+- (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
+      Applications** *JavaScript End-to-end - Second Edition.*
 
 ### Backlog
 - (i) Improve CLI presentation of `bin/xhi design` reference by searching and using platform viewers

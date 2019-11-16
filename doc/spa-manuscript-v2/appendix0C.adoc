@@ -1,0 +1,30 @@
+= Appendix C -- Distribution checklist
+Doc Writer <mike.mikowski@gmail.com>
+:imagesdir: ../images
+:numbered:
+:source-highlighter: pigments
+
+When we prepare our SPA for distribution we want to ensure it
+passes numerous quality checks, does not disclose any proprietary
+information, is easily deployed and rolled-back as needed.
+Here is the checklist we follow:
+
+- Is the source fully reproducible including patched vendor libraries?
+- Does the app pass ESLint checks?
+- Have TODO notes been reviewed?
+- Does the app pass regression tests?
+- Does test coverage exceed minimum thresholds?
+- Has the app been committed to the repository?
+- Are only the assets required to serve the application present?
+- Have all personally recognizable data been removed from the site?
+- Have all SCMS metadata been removed from the build?
+- Is the content full compressed and obfuscated?
+- Has a commit been associated with the build number?
+- Has a build number been assigned to this distribution?
+- Can we rollback to an earlier build if there is a problem?
+- Have planned for a rollback so that we do not polute or corrupt
+  the data the application is using?
+- Do we monitor the application to ensure availability?
+- Is the deployment resiliant to individual system failures?
+
+
