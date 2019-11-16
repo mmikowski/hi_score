@@ -1,5 +1,5 @@
 # Single Page Web Applications
-*JavaScript End-to-end - Second Edition.*
+*JavaScript End-to-end, Second Edition*
 
 ## Purpose
 This is the working manuscript.

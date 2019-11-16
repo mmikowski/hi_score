@@ -37,9 +37,10 @@ Version 1.7.3 enhancements:
 - (x) `js/xhi/01_util` and tests: replace `makePadNumStr` to `makePadStr`
 - (x) Eslint fixes in ~20 files for redundant global symbols
 
-Version 1.7.4 enhancements:
+Version 1.7.4, 1.7.5 enhancements:
 - (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
-      Applications** *JavaScript End-to-end - Second Edition.*
+      Applications** *JavaScript End-to-end, Second Edition*.
+- (x) `doc/images` Add images for above 
 
 ---
 ## Quick start
