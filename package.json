@@ -123,7 +123,7 @@
     "stop": "bin/xhi dev_stop",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.7.5",
+  "version": "1.7.6",
   "xhi_commandTable": [
     [
       "alias_list",

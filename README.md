@@ -32,15 +32,16 @@ speak the same languages your apps actually use.
 
 ## Latest News
 Version 1.7.3 enhancements:
-- (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by 
+- (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by
       appending audio elments to body.
 - (x) `js/xhi/01_util` and tests: replace `makePadNumStr` to `makePadStr`
 - (x) Eslint fixes in ~20 files for redundant global symbols
 
-Version 1.7.4, 1.7.5 enhancements:
+Version 1.7.4, 1.7.5, 1.7.6 enhancements:
 - (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
       Applications** *JavaScript End-to-end, Second Edition*.
-- (x) `doc/images` Add images for above 
+- (x) `doc/images` Add images for above
+- (x) Add
 
 ---
 ## Quick start
@@ -767,7 +768,7 @@ MIT
 ### Version 1.7.x
 2019-07-25 ongoing
 
-Version 1.7.0 enhancements:
+#### 1.7.0
 - (x) Enhance utility capabilities
   - (x) Replace makeDeepKeyList  with more-useful makeDeepData
   - (x) Make getStructData more reliable for named objects
@@ -776,31 +777,34 @@ Version 1.7.0 enhancements:
 - (x) Fix ex01 and ex02 example apps to show again
 - (x) Update docs to current practices
 
-Version 1.7.1 enhancements:
+#### 1.7.1
 - (x) Update js code standard to recent developments
 - (x) Fix js code standard to render correctly
 - (x) Update dependent library (`bin/xhi dev_upgrade`)
 
-Version 1.7.2 enhancements:
+#### 1.7.2
 - (x) `server/index.js` Replace http-server with express server
        Supports .env, directory listing
 - (x) `package.json` Add cloud storage libs, update libs to lastest
-- (x) `bin/make_doc` Improve techniques used in bash utility 
-- (x) `doc/js-code-standard.adoc` Add section on value passing to 
-- (x) `xhi/02_data.js`        Remove no-auth hack from 
+- (x) `bin/make_doc` Improve techniques used in bash utility
+- (x) `doc/js-code-standard.adoc` Add section on value passing to
+- (x) `xhi/02_data.js`        Remove no-auth hack from
 - (x) `xhi/03_model.js`       Extend event publish capability
 - (x) `xhi/05_02_css_base.js` Remove unused code from CSS module
 - (x) `lib/xhi_06`, `lib/xhi_13` Adjust to start and stop `server/index.js`
 
-Version 1.7.3 enhancements:
-- (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by 
+#### 1.7.3
+- (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by
       appending audio elments to body.
 - (x) `js/xhi/01_util` and tests: replace `makePadNumStr` to `makePadStr`
 - (x) Eslint fixes in ~20 files for redundant global symbols
 
-Version 1.7.4 enhancements:
+#### 1.7.4, 1.7.5, 1.7.6
+- (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
 - (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
       Applications** *JavaScript End-to-end - Second Edition.*
+- (x) Improve diagnostics when superpack install is missing libs
+
 
 ### Backlog
 - (i) Improve CLI presentation of `bin/xhi design` reference by searching and using platform viewers

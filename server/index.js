@@ -102,6 +102,11 @@ function noCacheFn (req, res, next_fn) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next_fn();
 }
+
+function processTestLinkFn ( req, res, next_fn ) {
+  console.warn( req, res, next_fn );
+  process.exit(0);
+}
 // . END middleware /noCacheFn/
 // == . END MIDDLEWARE ================================================
 
@@ -110,6 +115,7 @@ function startServerFn () {
   // Configure
   exprAppObj.use( bodyParserObj.json() );
   exprAppObj.use( noCacheFn            );
+  exprAppObj.get( processTestLinkFn );
   exprAppObj.use( '/', exprObj.static( fqTopPath ),
     serveIdxObj( fqTopPath, { 'icons': true } )
   );
