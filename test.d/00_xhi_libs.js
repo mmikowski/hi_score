@@ -999,6 +999,26 @@ function makeClockStr ( test_obj ) {
   test_obj.done();
 }
 
+// BEGIN Public method /makeCommaNumStr/
+// Summary   : makeCommaNumStr( <arg_map> );
+// Purpose   : Convert a number into a string optimized for readability
+// Example   : makeCommaNumStr({ _input_num_ : 1999 })
+//             Returns '2.0k'
+// Arguments : <arg_map> with the following keys
+//   + _input_num_       - The number to format, e.g. 123598
+//   + _round_limit_exp_ - The size (10^exp) of number after which
+//                         a rounded value is returned. Default is __3.
+//   + _round_limit_str  - The limit name. Default is 'k'.
+//   + _round_unit_exp_  - The size (10^exp) of number to group as
+//                         a unit. Default is __3, e.g. 1,000's.
+//   + _round_dec_count_ - Number of decimal places to keep
+//                         in the mantisa when rounding to units
+//   + _nornd_dec_count_ - Number of decimal places to keep when
+//                         NOT rounded to units
+// Returns   :
+//   + Success - Returns formated string
+//   + Failure - Blank string
+// Throws    : None
 function makeCommaNumStr ( test_obj ) {
   var
     assert_table  = [
@@ -1020,7 +1040,27 @@ function makeCommaNumStr ( test_obj ) {
         _input_num_ : 10 }, '10' ],
       [ { _round_limit_exp_: 6, _round_unit_exp_ : 6,
         _round_unit_str_ : 'm', _round_dec_count_ : 3,
-        _input_num_ : 1234000 }, '1.234m' ]
+        _input_num_ : 1234000 }, '1.234m' ],
+      [ { _input_num_ : 1234.986, _round_limit_exp_: 9,
+        _round_unit_str: 'b', _nornd_dec_count_ : 2 },
+        '1,234.99'
+      ],
+      [ { _input_num_ : 1234.986, _round_limit_exp_: 9,
+        _round_unit_str : 'b', _nornd_dec_count_ : 1 },
+        '1,235.0'
+      ],
+      [ { _input_num_ : 1234.986, _round_limit_exp_: 9,
+        _round_unit_str : 'b', _nornd_dec_count_ : 0 },
+        '1,235'
+      ],
+      [ { _input_num_ : -12340000.986, _round_limit_exp_: 9,
+        _round_unit_str : 'b', _nornd_dec_count_ : 0 },
+        '-12,340,001'
+      ],
+      [ { _input_num_ : -12340000.986, _round_limit_exp_: 9,
+        _round_unit_str : 'b', _nornd_dec_count_ : 2 },
+        '-12,340,000.99'
+      ]
     ],
 
     assert_count = assert_table.length,
