@@ -98,7 +98,7 @@ function writeStateFileFn ( onwrite_fn ) {
 // . END utilities /writePkgFileFn/ and /writeStateFileFn/
 
 function makeWritePromFn ( filename, content_str ) {
-  return new PromiseObj ( function ( resolve_fn, catch_fn ) {
+  return new PromiseObj( function ( resolve_fn, catch_fn ) {
     fsObj.writeFile(
       filename, content_str, { encoding : 'utf8' },
       function ( error_obj ) {
@@ -452,7 +452,7 @@ function makeParamMap ( param_list, arg_skip_idx ) {
 // a list of lines in a file that match a regex pattern
 //
 function grepFileFn ( filename, pattern_str ) {
-  return new PromiseObj ( function ( resolve_fn, catch_fn ) {
+  return new PromiseObj( function ( resolve_fn, catch_fn ) {
     var
       line_read_obj = new LineReader( filename, {skipEmptyLines:true }),
       pattern_rx    = new RegExp( pattern_str ),

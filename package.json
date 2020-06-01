@@ -10,40 +10,40 @@
   "description": "A full-life-cycle un-framework for SPA development using native JS, CSS, and HTML.",
   "devDependencies": {
     "apply-patch": "0.1.2",
-    "aws-sdk": "2.532.0",
+    "aws-sdk": "2.686.0",
     "azure-storage": "2.10.3",
-    "coveralls": "3.0.6",
-    "dotenv": "8.1.0",
-    "diff": "4.0.1",
-    "eslint": "6.4.0",
-    "eslint-plugin-json": "1.4.0",
+    "coveralls": "3.1.0",
+    "dotenv": "8.2.0",
+    "diff": "4.0.2",
+    "eslint": "7.1.0",
+    "eslint-plugin-json": "2.1.1",
     "express": "4.17.1",
     "flow": "0.2.3",
     "font-awesome": "4.7.0",
     "font-roboto": "0.0.2",
     "istanbul": "0.4.5",
-    "jquery": "3.5.0",
+    "jquery": "3.5.1",
     "jquery.event.dragscroll": "1.0.0",
     "jquery.event.gevent": "1.1.6",
     "jquery.event.ue": "1.3.2",
     "jquery.scrolli": "1.0.1",
     "jquery.urianchor": "1.3.5",
-    "jsdom": "15.1.1",
+    "jsdom": "16.2.2",
     "line-by-line": "0.1.6",
-    "mongodb": "3.3.2",
-    "mysql2": "1.7.0",
+    "mongodb": "3.5.8",
+    "mysql2": "2.1.0",
     "nodeunit": "0.11.3",
-    "npm": "6.13.4",
+    "npm": "6.14.5",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.6",
     "ps-node": "0.1.6",
     "rmdir": "1.2.0",
     "serve-index": "1.9.1",
-    "shelljs": "0.8.3",
+    "shelljs": "0.8.4",
     "taffydb": "2.7.3",
-    "uglify-js": "3.6.0",
+    "uglify-js": "3.9.4",
     "uglifycss": "0.0.29",
-    "websocket": "1.0.30"
+    "websocket": "1.0.31"
   },
   "eslintConfig": {
     "extends": [
@@ -643,21 +643,15 @@
       "patch_map_list": [
         {
           "check_filename": "node_modules/uglify-js/lib/scope.js",
-          "patch_filename": "uglify-js-3.5.11.patch",
+          "patch_filename": "uglify-js-3.9.4.patch",
           "pattern_str": "^\\s*// hi_score patch applied",
-          "relative_name": "patch/uglify-js-3.5.11.patch"
+          "relative_name": "patch/uglify-js-3.9.4.patch"
         },
         {
           "check_filename": "node_modules/font-awesome/css/font-awesome.css",
           "patch_filename": "font-awesome-4.7.0.patch",
           "pattern_str": "Patch removed redundant and incorrect font paths",
           "relative_name": "patch/font-awesome-4.7.0.patch"
-        },
-        {
-          "check_filename": "node_modules/jquery/dist/jquery.js",
-          "patch_filename": "jquery-3.4.1.patch",
-          "pattern_str": "^\\s*window.jQuery = jQuery;$",
-          "relative_name": "patch/jquery-3.4.1.patch"
         }
       ]
     }

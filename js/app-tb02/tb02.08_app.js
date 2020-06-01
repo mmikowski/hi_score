@@ -16,7 +16,7 @@
     libList = [
       'js/vendor/pcss-1.4.6.js',
       'js/vendor/pcss.cfg-1.4.6.js',
-      'js/vendor/jquery-3.4.1.js',
+      'js/vendor/jquery-3.5.1.js',
       'js/plugin/jquery.deferred.whenAll-1.0.0.js',
       'js/vendor/jquery.event.gevent-1.1.6.js',
       'js/vendor/jquery.event.ue-1.3.2.js',
