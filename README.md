@@ -67,7 +67,7 @@ install hundreds of packages, patches and deploys libraries, and runs
 thousands of quality checks. Subsequent builds take less than half the time
 thanks to cached [environment dependencies](#environment-dependencies).
 
-We should now see the **Typebomb 2** web app in a browser and may use the
+You should now see the **Typebomb 2** web app in a browser and may use the
 developer tools to inspect the CSS, the DOM, and the JavaScript. Notice how
 everything is production-ready including compressed CSS class names (yes, we
 **were** doing this five years before Facebook). Please compare it with the
@@ -117,7 +117,7 @@ everything is production-ready including compressed CSS class names (yes, we
 The `bin/xhi` tool automates good practice for almost every conceivable stage of the SPA life cycle. Configuration for **every** stage is found in the NPM `package.json` file. **This tool provides all [NPM lifecycle scripts][_38] such as `npm test`.**
 
 ### Find help
-The lifecycle stages supported by `bin/xhi` are shown below. Those marked `placeholder` are those we plan to address in future releases. We use the command `bin/xhi help all` to see the entire list as shown below.
+The lifecycle stages supported by `bin/xhi` are shown below. Those marked `placeholder` are those we plan to address in future releases. Use the command `bin/xhi help all` to see the entire list as shown below.
 
 ```
   $ bin/xhi help all
@@ -146,7 +146,7 @@ The lifecycle stages supported by `bin/xhi` are shown below. Those marked `place
     xhi>  END Stage 00 help
 ```
 
-We use `bin/xhi design` to see the Architecture Guide, Style Guide, or Visual Design Guide (VDG). Detailed help on a stage or range of stages is shown with the `-v` flag shown below.
+Use `bin/xhi design` to see the Architecture Guide, Style Guide, or Visual Design Guide (VDG). Detailed help on a stage or range of stages is shown with the `-v` flag shown below.
 
 ```
   $ bin/xhi help dev_lint -v
@@ -170,7 +170,7 @@ We use `bin/xhi design` to see the Architecture Guide, Style Guide, or Visual De
 ```
 
 ### Run lifecycle stages
-We run a range of lifecycle steps as shown below.
+Run a range of lifecycle steps as shown below.
 
 ```
   # Get list of stages
@@ -219,14 +219,14 @@ The `bin/xhi <stage-range>` command will always run the smallest safe number of 
 After this initial run, many of these steps will not be repeated. The install and setup stages, for example, will not be needed again unless the installation changes. The code quality checks like linting will only be needed if code files change. These dependencies are resolved by `bin/xhi` as discussed below.
 
 #### Goal dependencies
-Goal dependencies are stages that are *always* run before before a target stage. For example, if we run `bin/xhi dev_commit` the `dev_lint`, and `dev_test` stages will *always* be run first to ensure the code quality is acceptable.  If either requirement fails, `bin/xhi` exits immediately (with an exit code of 1) and the target stage is not attempted. Goal dependencies are defined in `package.json.xhi_commandTable`. We don't suggest changing them without careful consideration, but you can.
+Goal dependencies are stages that are *always* run before before a target stage. For example, if we run `bin/xhi dev_commit` the `dev_lint`, and `dev_test` stages will *always* be run first to ensure the code quality is acceptable.  If either requirement fails, `bin/xhi` exits immediately (with an exit code of 1) and the target stage is not attempted. Goal dependencies are defined in `package.json.xhi_commandTable`. Don't change these without careful consideration and testing.
 
 #### Environment dependencies
-Environment dependencies must be successfully completed in the development environment before the target stage. For example, if we run `bin/xhi dev_commit` but have not run `bin/xhi install`, the `install` stage will be run before the `dev_commit` stage. The success or failure of each stage is saved in the state file (`run/xhi_state.json`) and the next stage is run. If the `install` stage succeeds it will not be included in future steps for `dev_commit` as it will have been completed in the prior run. Environment dependencies are defined in `package.json.xhi_commandTable`. Again, we don't suggest changing them without careful consideration.
+Environment dependencies must be successfully completed in the development environment before the target stage. For example, if we run `bin/xhi dev_commit` but have not run `bin/xhi install`, the `install` stage will be run before the `dev_commit` stage. The success or failure of each stage is saved in the state file (`run/xhi_state.json`) and the next stage is run. If the `install` stage succeeds it will not be included in future steps for `dev_commit` as it will have been completed in the prior run. Environment dependencies are defined in `package.json.xhi_commandTable`. Don't change these without careful consideration and testing.
 
 Previously completed environment dependencies may be invalidated. For example, if `bin/xhi install` or `bin/xhi upgrade` fail, the tool will mark the `install` stage as failed and the stage will be attempted again in the next invocation that requires this stage as a dependencies.
 
-Explicitly requested stages will always run regardless of their last success status. For example, `bin/xhi dev_lint` may or may not run the `install` stage, but `bin/xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `bin/xhi help-dev_lint` will also run `install` since it is explicitly within the range provided (`help-dev_lint`). We reset the status by removing the `stage_status_map` from the `run/xhi_state.json` file.
+Explicitly requested stages will always run regardless of their last success status. For example, `bin/xhi dev_lint` may or may not run the `install` stage, but `bin/xhi install,dev_lint` will *always* run the `install` stage because it is explicitly listed. `bin/xhi help-dev_lint` will also run `install` since it is explicitly within the range provided (`help-dev_lint`). Reset the status by removing the `stage_status_map` from the `run/xhi_state.json` file.
 
 ### Exit status
 If all the stages of a range are successfully run an exit status of `0` is returned. If any stage fails processing stops and an exit status of `1` is provided. In Bash, the return status is available in the `$?` environment variable. If we apply minor adjustments to disable terminal interaction, `bin/xhi` should be capable of integration to other tool chains.
@@ -333,8 +333,6 @@ More specific notes about `Typebomb 2` app are provide in `README.app-tb02.md`. 
 There is a lot less duplicate code here than it may appear. For example, any `01_util` layer is just a singleton instance of the `js/xhi/01_util` utilities. And any model almost certainly inherits and reuses state values and methods from an instance of the `js/xhi/03_model`.
 
 We change all references from `tb02` in these new files to our new name-space, `${_ns}`. We also create a new build manifest in `package.json` using the `xhi_11_BuildMatrix` configuration for `tb02` as a guide. Once we confirm our new app builds as expected using `bin/xhi build` (check the output in `build/latest/dist/app-${_ns}.html`) we proceed to customize it as desired.
-
-Stay tuned for a more detailed example of this in mid-2019.
 
 ---
 ## Vendor assets
@@ -522,22 +520,21 @@ We recommend running `bin/xhi install,setup` after any such merge.
 ## Towers of Babel
 If we want to create a single page web application these days there is no shortage of help. Developers are lured into using a starter project which we will call a **Tower of Babel**. Typically these projects include a not-yet-abandoned SPA framework (maybe React, Vue, Angular, Aurelia or Ext.js) along with a static CSS compiler (like SASS or LESS or Stylus or SCSS), a run-time CSS manager (like BootStrap), a JavaScript compiler (typically Babel with JSX and Typescript and ES5.2), a build system (like Brunch or Webpack or Parcel) so on and ad-nauseum. This requires a sophisticated management server orchestrate the numerous cross-dependencies and transpiles. There are a few guarantees beside the system will be *Magic*.
 
-Sorry Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails. But once one moves away from the demo even a little bit, things tend to go south fast. The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a Mötley Crüe of transpiled languages that are often larger, more numerous, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share an existing app's resources - can become impossible.
+Sorry Gandalf but we don't mean *Magic* in a good way. Sure, we'll be able to create that sample-TODO-application-designed-to-impress-the-CTO in record time because of the built-in-demo-on-rails. But once one moves away from the demo even a little bit, things tend to go south fast. The build path from source code to the rendered HTML + CSS + JavaScript (**HCJ**) is so complex that it's impossible for a human to trace. When it breaks - and it will - all that *Magic* becomes *Evil Curses*. That's because these **Tower of Babel** solutions have traded HTML + CSS + Javascript for a Mötley Crüe of transpiled languages that are often larger, more numerous, harder to learn, poorly documented, poorly integrated, and much easier to break.  Problems that should be easy to solve - like adding an app to share resources - can be effectively impossible.
 
 `hi_score` is designed to avoid the [Tower of Babel](#towers-of-babel), automate processes **around** the **HCJ**, and help the developers continuously improve their skills and understanding on the **core technologies** of web apps. We hope you like it.
 
 ---
 ## Prerequisites
 ### Linux, Ubuntu or Debian Based
-When using Ubuntu Linux 16.04+ or a derivative -- such a Linux Mint, Kubuntu, Xubuntu, Lubuntu, or similar -- simply ensure the following libraries are installed. One can simply run the attached commands one at a time to ensure all prerequisites are met.
+When using Ubuntu Linux 16.04+ or a derivative -- such a Linux Mint, Kubuntu, Xubuntu, Lubuntu, or similar -- ensure the following libraries are installed. Run the attached commands one at a time to ensure all prerequisites are met.
 
 ```
   # Install required libraries
   sudo apt install build-essential git \
     libfile-slurp-perl liblist-moreutils-perl \
-    net-tools \
-    openssh-server pandoc pandoc-citeproc \
-    unzip zip
+    net-tools openssh-server pandoc pandoc-citeproc \
+    unzip zip;
 
   # Install recommended libraries
   sudo apt install apt-file htop kdiff3 \
@@ -565,7 +562,7 @@ See [this guide][_06] for NodeJS package installation on other Linux distros. He
 Return to the [Quick Start](#quick-start)
 
 ### Macintosh Prerequisites
-We found Mac High Sierra worked after the following.
+Mac High Sierra worked with the following commands:
 
 ```bash
   brew install pandoc
@@ -575,7 +572,7 @@ We found Mac High Sierra worked after the following.
 Another path is to use Parallels or VMFusion to import the [Virtual Appliance vmx.zip][_42] file (unzip this file before use). VirtualBox also will work but does not integrate as well to OSX as it should.
 
 ### Windows 10 Prerequisites
-In theory, the Windows Subsystem for Linux running an Ubuntu distro should work as with the prerequisites [listed above](#linux-ubuntu-or-debian-based). However, we haven't tested it. On may also use the virutal appliance detailed above.
+In theory, the Windows Subsystem for Linux running an Ubuntu distro should work as with the prerequisites [listed above](#linux-ubuntu-or-debian-based). However, we haven't tested it. One may also use the virutal appliance detailed above.
 
 Return to the [Quick Start](#quick-start)
 
@@ -610,7 +607,7 @@ work well.
 We use the code style presented in [Single Page Web Applications - JavaScript end-to-end][_00] (see reviews on [Amazon][_02]) in the upcoming 2nd edition. The [full code standard][_04] is found in the `docs` directory.
 
 ### IDE Configuration
-We provide configs for JetBrain's IDE IntelliJ or Webstorm in the repository.  Other IDEs will work fine, but we will need to manually adjust them to support the code style. The good news is we should only need to do this once per IDE and then it can be added to the repository. Contributions for VSCode, VIM, and other environments are welcome.
+We provide configs for JetBrain's IDE IntelliJ or Webstorm in the repository.  Other IDEs will work fine, but you will need to manually adjust them to support the code style. One should only need to do this once per IDE and then it can be added to the repository. Contributions for VSCode, VIM, and other environments are welcome.
 
 
 ## Contribute
