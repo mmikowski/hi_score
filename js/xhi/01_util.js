@@ -1672,6 +1672,7 @@ xhi._01_util_ = (function () {
       date_obj = getTzDateObj(),
       date_str = date_obj[ __toString ](),
       match_list = date_str[ __match ]( configMap._tzcode_rx_ );
+
     return ( match_list && match_list[ __1 ] )
       ? match_list[ __1 ] : __blank;
   }
@@ -1922,7 +1923,6 @@ xhi._01_util_ = (function () {
   }
   // . END Public method /makeDateStr/
 
-
   // BEGIN Public method /makeDebounceFn/
   // Summary   : makeDebounceFn( <arg_map> );
   // Purpose   : Create a function which will call a provided method a
@@ -1934,7 +1934,7 @@ xhi._01_util_ = (function () {
   //
   // Arguments : <arg_map> with the following keys
   //   + _fn_       - The method to execute           Required.
-  //   + _delay_ms_ - The time of inactivity          Default is 0.
+  //   + _delay_ms_ - The time of inactivity          Default is __0.
   //   + _ctx_data_ - Method context                  Default is __undef.
   //   + _do_asap_  - Fire method on first call       Default is __false.
   //
