@@ -1230,15 +1230,17 @@ function makeDebounce01Fn ( test_obj ) {
   test_obj.ok( curry_fn === __undef );
 
   curry_fn = utilObj._makeDebounceFn_({
-    _fn_ : run_fn,
+    _fn_       : run_fn,
     _do_asap_  : __true,
     _delay_ms_ : 10
   });
   curry_fn();
   curry_fn();
   curry_fn();
-  test_obj.ok( test_idx === 1, '0. test_idx === 1' );
-  setTimeout( test_obj.done, 15 );
+  setTimeout( function () {
+    test_obj.ok( test_idx === 1, '0. test_idx === 1' );
+    test_obj.done();
+  }, 15 );
 }
 
 function makeDebounce02Fn ( test_obj ) {
@@ -1282,8 +1284,10 @@ function makeDebounce03Fn ( test_obj ) {
   curry_fn();
   curry_fn();
   curry_fn();
-  test_obj.deepEqual( ctx_map, { foo : 'bar', str : 'hi there' } );
-  setTimeout( test_obj.done, 15 );
+  setTimeout( function () {
+    test_obj.deepEqual( ctx_map, { str : 'hi there', foo : 'bar' } );
+    test_obj.done();
+  }, 15 );
 }
 
 function __run04Fn () {
@@ -2497,9 +2501,9 @@ function makeThrottle01Fn ( test_obj ) {
   });
   curry_fn(); curry_fn(); curry_fn();
   curry_fn(); curry_fn(); curry_fn();
-  test_obj.ok( idx === __1, 'idx === 1 not ' + idx );
+  test_obj.ok( idx === __0, 'idx === 0' );
   setTimeout( function () {
-    test_obj.ok( idx === __2, 'idx === 2 not ' + idx );
+    test_obj.ok( idx === __1, 'idx === 1' );
     test_obj.done();
   }, 15 );
 }
