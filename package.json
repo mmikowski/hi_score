@@ -13,8 +13,8 @@
     "aws-sdk": "2.779.0",
     "azure-storage": "2.10.3",
     "coveralls": "3.1.0",
-    "dotenv": "8.2.0",
     "diff": "4.0.2",
+    "dotenv": "8.2.0",
     "eslint": "7.12.1",
     "eslint-plugin-json": "2.1.2",
     "express": "4.17.1",
@@ -33,7 +33,7 @@
     "mongodb": "3.6.2",
     "mysql2": "2.2.5",
     "nodeunit": "0.11.3",
-    "npm": "6.14.8",
+    "npm": "^7.0.7",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.6",
     "ps-node": "0.1.6",
@@ -123,7 +123,7 @@
     "stop": "bin/xhi dev_stop",
     "test": "bin/xhi dev_test"
   },
-  "version": "1.7.9",
+  "version": "1.7.10",
   "xhi_commandTable": [
     [
       "alias_list",
@@ -643,9 +643,9 @@
       "patch_map_list": [
         {
           "check_filename": "node_modules/uglify-js/lib/scope.js",
-          "patch_filename": "uglify-js-3.9.4.patch",
+          "patch_filename": "uglify-js-3.11.4.patch",
           "pattern_str": "^\\s*// hi_score patch applied",
-          "relative_name": "patch/uglify-js-3.9.4.patch"
+          "relative_name": "patch/uglify-js-3.11.4.patch"
         },
         {
           "check_filename": "node_modules/font-awesome/css/font-awesome.css",
