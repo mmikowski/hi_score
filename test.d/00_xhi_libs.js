@@ -814,7 +814,7 @@ function getTzCode ( test_obj ) {
   test_obj.expect( __1 );
 
   // eslint-disable-next-line no-useless-escape
-  test_obj.ok( tz_code.match( /^[A-Za-z0-9+\- ]+$/ ),
+  test_obj.ok( tz_code.match( /^[A-Za-z0-9:+\- ]+$/ ),
     'Code fails to match regex: ' + tz_code
   );
   test_obj.done();
