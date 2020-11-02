@@ -3011,10 +3011,10 @@ xhi._01_util_ = (function () {
       stack_map = stack_list[ __pop ]();
       if ( ! stack_map ) { break _OUTER_; }
 
-      walk_obj = stack_map._walk_obj_;
+      walk_obj  = stack_map._walk_obj_;
       key_count = stack_map._key_count_;
-      key_list = stack_map._key_list_;
-      idx = stack_map._idx_ + __1;
+      key_list  = stack_map._key_list_;
+      idx       = stack_map._idx_ + __1;
     }
     return solve_data;
   }

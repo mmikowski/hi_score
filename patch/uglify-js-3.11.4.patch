@@ -1,0 +1,13 @@
+--- node_modules/uglify-js/lib/scope.js 2020-11-01 15:53:30.154075552 -0800
++++ node_modules/uglify-js/lib/scope.js 2020-11-01 15:54:33.126383982 -0800
+@@ -439,7 +439,9 @@
+         holes.push(scope.cname);
+     }
+     in_use[name] = true;
+-    return name;
++
++    // hi_score patch applied: surround symbol with underscores
++    return '_' + name + '_';
+ }
+
+ AST_Symbol.DEFMETHOD("unmangleable", function(options) {

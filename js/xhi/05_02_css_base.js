@@ -34,6 +34,7 @@ xhi._05_02_css_base_ = (function () {
       // Set config map
       configMap = {
         _global_mixin_map_ : {
+          _100vh_      : '100vh',
           _spc_rem_00_ : '.375rem',  // 06px intra-group
           _spc_rem_01_ : '.75rem',   // 12px icon-to-label
           _spc_rem_02_ : '1.125rem', // 18px item indent, word space
@@ -105,7 +106,7 @@ xhi._05_02_css_base_ = (function () {
             _area_xlt_hex_      : '#f0f3f5', //   lighter
             _area_accent_hex_   : '#e6e5e4', //   alternate
             _area_focus_hex_    : '#ffffdd', //   focus
-            _area_hover_hex_    : '#ffffff', //  bright_hex   full hover bright
+            _area_hover_hex_    : '#ffffff', // bright_hex
             _area_lt_hex_       : '#ccd5dc',
             _area_mid_hex_      : '#cccccc',
             _area_dk_hex_       : '#aab3bb',
@@ -363,7 +364,7 @@ xhi._05_02_css_base_ = (function () {
           },
           { _selector_str_ : 'html',
             _rule_map_     : {
-              _height_      : '_100p_',
+              _height_      : '_100vh_',
               _font_family_ : '_font_family_sans_',
               _font_size_   : '_font_size_',
               _color_       : '_txt_hex_',
@@ -410,18 +411,18 @@ xhi._05_02_css_base_ = (function () {
               _display_       : '_block_',
               _position_      : '_relative_',
               _margin_        :
-                [['_spc_rem_01_', '_spc_rem_03_', '_spc_rem_01_', '_spc_rem_03_']],
+                [['_spc_rem_03_', '_spc_rem_03_', '_spc_rem_01_', '_0_']],
               _box_shadow_    : '_shdw_01_',
               _border_        : [[ '_d125rem_', '_solid_', '_link_hex_' ]],
               _outline_       : '_none_',
               _border_radius_ : '_radius_05_',
-              _height_        : '_spc_rem_04_',
+              _height_        : '_2d5rem_',
               _line_height_   : '_1d5rem_',
               _padding_       : [['_0_', '_spc_rem_02_']],
               _font_size_     : '_spc_rem_02_',
               _color_         : '_btn_txt_hex_',
               _background_    : '_link_hex_',
-              _text_shadow_   : '_txt_shdw_01_inv_',
+              // _text_shadow_   : '_txt_shdw_01_inv_',
               _cursor_        : '_pointer_'
             }
           },
