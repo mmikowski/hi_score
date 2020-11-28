@@ -562,14 +562,22 @@ See [this guide][_06] for NodeJS package installation on other Linux distros. He
 Return to the [Quick Start](#quick-start)
 
 ### Macintosh Prerequisites
-Mac High Sierra worked with the following commands:
+MacOS Catalina is reported to work with the following commands:
+
+1. Install [NodeJS][_07A]
 
 ```bash
+  # Install Pandoc
   brew install pandoc
-  # See https://nodejs.org/en/download/package-manager/#macos for nodejs
+  
+  # Install cpanm
+  cpan App::cpanminus
+  
+  # Install CPAN modules
+  cpanm Getopt::Simple File::Slurp
 ```
 
-Another path is to use Parallels or VMFusion to import the [Virtual Appliance vmx.zip][_42] file (unzip this file before use). VirtualBox also will work but does not integrate as well to OSX as it should.
+Another path is to use Parallels or VMFusion to import the [Virtual Appliance vmx.zip][_42] file (unzip this file before use). VirtualBox also will work but does not integrate as well to MacOS.
 
 ### Windows 10 Prerequisites
 In theory, the Windows Subsystem for Linux running an Ubuntu distro should work as with the prerequisites [listed above](#linux-ubuntu-or-debian-based). However, we haven't tested it. One may also use the virutal appliance detailed above.
@@ -831,6 +839,7 @@ MIT
 [_05]:http://mmikowski.github.io/type-casts/
 [_06]:https://nodejs.org/en/download/package-manager/
 [_07]:https://docs.google.com/spreadsheets/d/1kLIYKYRsan_nvqGSZF-xJNxMkivH7uNdd6F-xY0hAUM/edit#gid=598969125
+[_07A]:https://nodejs.org/en/download/package-manager/#macos
 [_08]:https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
 [_09]:https://coveralls.io/github/mmikowski/hi_score
 [_10]:http://jquery.org
