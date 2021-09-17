@@ -31,17 +31,11 @@ Babel](#towers-of-babel), perhaps its time to use `hi_score` so they can all
 speak the same languages your apps actually use.
 
 ## Latest News
-Version 1.7.3 enhancements:
-- (x) `js/app-tb02/tb02.07_shell.js` Fix audio on chrome over http by
-      appending audio elments to body.
-- (x) `js/xhi/01_util` and tests: replace `makePadNumStr` to `makePadStr`
-- (x) Eslint fixes in ~20 files for redundant global symbols
-
-Version 1.7.4 - 1.7.7 enhancements:
-- (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
-      Applications** *JavaScript End-to-end, Second Edition*.
-- (x) `doc/images` Add images for above
-- (x) Improve diagnostics when superpack install is missing libs
+Version 1.7.12 enhancements:
+- (x) `js/xhi/01_util` Add return map option to method `_makeTmpltStr_`.
+  This reports the keys actually used in a given operation through the map
+  reference that is passed. If no map reference is passed, this function
+  operates exactly as before.
 
 ---
 ## Quick start
@@ -806,10 +800,17 @@ MIT
 
 #### 1.7.4 - 1.7.7
 - (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
-- (x) `doc/spa-manuscript-v2` Add wip for maniscript for **Single Page Web
       Applications** *JavaScript End-to-end - Second Edition.*
 - (x) Improve diagnostics when superpack install is missing libs
 
+#### 1.7.8 - 1.7.9
+- (x) Improve correctness of makeThrottleFn and makeDebounceFn
+
+#### 1.7.10 - 1.7.12
+- (x) `js/xhi/01_util` Add return map option to method `_makeTmpltStr_`.
+  This reports the keys actually used in a given operation through the map
+  reference that is passed. If no map reference is passed, this function
+  operates exactly as before.
 
 ### Backlog
 - (i) Improve CLI presentation of `bin/xhi design` reference by searching and using platform viewers

@@ -2746,8 +2746,13 @@ xhi._01_util_ = (function () {
   //      Default is __blank.
   //   _lookup_map_ : A map of values to replace, like so:
   //      { _p1_ : 'fred', _p2_ : 'barney' }. Default is {}.
+  //      Keys in a lookup map can be split be to look up nested values.
+  //      For example, the key '_p1_._p2_' will look up the value
+  //        found at { _p1_: { _p2_ : value } } in the lookup_map.
   //   _tmplt_rx_   : A regular expression object to define replace patterns.
-  //     Default is configMap._tmplt_rx_
+  //      Default is configMap._tmplt_rx_
+  //   _return_map_ : The routine will append found keys to this map if provided.
+  //      Default is __undef
   // Throws    : None
   // Returns
   //   The filled-out template string
@@ -2759,6 +2764,7 @@ xhi._01_util_ = (function () {
       do_encode_html = castBool( map._do_encode_html_,        __false ),
       input_str      = castStr(  map._input_str_,             __blank ),
       lookup_map     = castMap(  map._lookup_map_,                 {} ),
+      return_map     = castMap(  map._return_map_,            __undef ),
       tmplt_rx       = castRx(   map._tmplt_rx_, configMap._tmplt_rx_ ),
 
       bound_fn;
@@ -2775,7 +2781,11 @@ xhi._01_util_ = (function () {
         key_name   = path_list[ idx ];
         solve_data = ( solve_data && solve_data[ key_name ] );
       }
+
       solve_str = castStr( solve_data, __blank );
+      if ( return_map && solve_str ) {
+        return_map[ lookup_name ] = __true;
+      }
       return do_encode_html ? encodeHtml( solve_str ) : solve_str;
     }
 
