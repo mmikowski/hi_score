@@ -39,7 +39,7 @@
     "ps-node": "0.1.6",
     "rmdir": "1.2.0",
     "serve-index": "1.9.1",
-    "shelljs": "0.8.4",
+    "shelljs": "0.8.5",
     "taffydb": "2.7.3",
     "uglify-js": "3.11.4",
     "uglifycss": "0.0.29",
