@@ -33,7 +33,7 @@
     "mongodb": "3.6.2",
     "mysql2": "2.2.5",
     "nodeunit": "0.11.3",
-    "npm": "^7.0.7",
+    "npm": "^8.11.0",
     "open-sans-fontface": "1.4.0",
     "powercss": "1.4.6",
     "ps-node": "0.1.6",
