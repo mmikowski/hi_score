@@ -28,11 +28,11 @@ Which is better, `setInterval` or `setTimeout`?::
   Answer:
 
 == The code base audience
-Code is read by at least two audiences: the machines that execute the
-instructions and the humans who write, maintain, or extend it.  Code written
-for human comprehension tends to result in carefully constructed and well
-documented assets that are inexpensive to maintain, extend, or reuse. This
-is often called **Living Code**.
+Code is read by at least two audiences: the machines that execute
+the instructions and the humans who write, maintain, or extend it.
+Code written for human comprehension tends to result in carefully
+constructed and well documented assets that are inexpensive to
+maintain, extend, or reuse. This is often called **Living Code**.
 
 Code that cannot be understood by humans after it is written is often called
 **Dead Code**footnoteref:[deadcode,Dead code becomes unusable because
@@ -43,30 +43,31 @@ difficult and expensive to maintain, extend, or reuse and it is a **technical
 debt**footnoteref:[techdebt, Technical debt is the deferred cost of
 undocumented process and systems.] that stifles innovation.
 
-A good standard helps us create well documented **Living Code** that can grow
-with our product and organization. A comprehensive standard is arguably more
-valuable for JavaScript than with other stricter languages.  JavaScript’s
-flexibility can open a Pandora’s Box of syntax and practice. Stricter
-languages have a good deal of structure and consistency built-in. Developers
-must actively apply convention to attain the same results with JavaScript.
+A good standard helps us create well documented **Living Code** that can
+grow with our product and organization. A comprehensive standard is
+arguably more valuable for JavaScript than with other stricter languages.
+JavaScript’s flexibility can open a Pandora’s
+Box of syntax and practice. Stricter languages have a good deal of
+structure and consistency built-in. Developers must actively apply
+convention to attain the same results with JavaScript.
 
-This standard has continuously evolved over many years and is used in many
-open source and commercial projects. Appendix Y provides a three-page
-quick-reference guide which dispenses with any explanations. However, if you
-want to know *why* we recommend a convention, keep reading.
+This standard has continuously evolved over many years and is used in
+many open source and commercial projects. Appendix Y provides a three-page
+quick-reference guide which dispenses with any explanations. However,
+if you want to know *why* we recommend a convention, keep reading.
 
 == JavaScript versions
-Let's review how JavaScript versions are named and why this standard considers
-ES5.1 the latest usable version.
+Let's review how JavaScript versions are named and why this
+standard considers ES5.1 the latest usable version.
 
 === ECMA, ECMAScript, and ES
 Development on the JavaScript language has accelerated over the past decade as
 vendors have stopped competing and started collaborating on making the
-lanugage better all centered around the ECMAScript specifications. All these
+language better all centered around the ECMAScript specifications. All these
 acronymns can be confusing so let's clear things up.
 
-https://en.wikipedia.org/wiki/Ecma_International[ECMA International] is a
-standards organization that changed its name from European Computer
+https://en.wikipedia.org/wiki/Ecma_International[ECMA International]
+is a standards organization that changed its name from European Computer 
 Manufacturers Association in 1994 to reflect its broader ambitions. ECMA is no
 longer considered an acronymn but is apparently retained for the pleasant
 sounds that occur when one tries to pronounce it.
@@ -102,21 +103,52 @@ https://codeburst.io/javascript-wtf-is-es6-es8-es-2017-ecmascript-dca859e4821c[C
 for help sorting this out!
 
 At the time of writing (fall 2017) IE 11 held around 11% market share and the
-highest level of JavaScript it supports well is ES5.1. This is the feature
-level that most public sites should and is the basis for this standard.
-Kanagax has provided a very https://kangax.github.io/compat-table/es6/[helpful
-chart] so we can keep an eye on popularity. Once IE 11 use drop below 1% we
-will will go all-in on ES2015.
+highest level of JavaScript it supports well is ES5.1. This is the feature 
+level that most public use (either directly or through transpiling) and is
+the base-line for this standard. Kanagax has provided a very 
+https://kangax.github.io/compat-table/es6/[helpful chart] so we can keep an
+eye on popularity. While we like to use the latest features in NodeJS scripts,
+we recommend avoiding ES6+ features for if the code is intended to be used on
+both client and server footnoteref:[isomorphic,This is called *isomorphic* code].
 
 == Variables
-All JS variables prior to ES2015 are declared with only one keyword: `var`
-As of ES2016 we may also use `let` and `const` (these are discussed below).
+Prior to ES2015 all JS variables are declared with the `var` keyword.
+As of ES2016 we may also use `let` and `const` and `var` is deprecated.
 Variables may contain a primitive or a complex data type. Primitives include
-Boolean, Null, Number, String, Symbol (ES2015), or Undefined. Complex data
+Boolean, Null, Number, String, Symbol (ES2015+), or Undefined. Complex data
 types include Functions, Objects, Arrays, and Regular Expressions. In all
 cases, primitives arguments are passed by value, whereas complex arguments
 are passed by reference. 
 
+=== Remember how values are passed to called functions
+- Primitive arguments are passed by *value*. In other words, *copies* of 
+  their values are passed to a called function. Any changes to these copies
+  *inside the function* do not affect the variables used in the call.
+- Complex arguments are passed by *reference*. In others, the structures 
+  are passed to a called function *without copying*. Any changes to these
+  structures *inside the function* are reflected in the variables used
+  in the call.
+
+Listing X.0 illustrates this concept.  After `mutateFn` is run the `outerStr`
+variable is unchanged, whereas the `outerList` *has*.
+
+.Listing X.0 -- Pass by value or reference
+[source,js]
+----
+var outerStr = 'Hello', outerList = [];
+
+function mutateFn ( str, list ) {
+  str += ' how are you?';
+  list.push( 'Item 1' );
+  return [ str, list ];
+}
+
+console.log( 'Before', [ outerStr, outerList ] );
+console.log( 'Mutate', mutateFn( outerStr, outerList ) );
+console.log( 'After' , [ outerStr, outerList ] );
+----
+
+=== Use meaningful names
 Provide variables with meaningful names as shown in Listing X.1 so we won’t
 have to insert a clumsy time-and-focus-sapping description every time a
 variable is used.
@@ -150,16 +182,16 @@ application structure and logic.
 ----
 // == Avoid ===
 var dgClrStr = 'brown';
-function walkWithTheBrownDog () {...}
-for ( var q = 0; q < 9; q++ ) ...
-var denormalizationMap = {...};
-var dnmlztnMap = {...};
+function walkWithTheBrownDog () {}
+for ( var q = 0; q < 9; q++ ) {}
+var denormalizationMap = {};
+var dnmlztnMap = {};
 
 // == Prefer ==
 var dogColorStr = 'brown';        // <1>
-function walkDogFn () {...}       // <2>
-for ( var i = 0; i < 9; i++ ) ... // <3>
-var denormMap = {...};            // <4>
+function walkDogFn () {}          // <2>
+for ( var i = 0; i < 9; i++ ) {}  // <3>
+var denormMap = {};               // <4>
 ----
 <1> Do not abbreviate short words
 <2> Discard articles and prepositions
@@ -167,10 +199,10 @@ var denormMap = {...};            // <4>
 <4> Truncate instead of contract
 
 === Replace comments with meaningful names
-Name variables to describe why they needed and what data type we expected them
-to contain. The first consideration is important in any language; the second
-is useful for loosely-type languages like JavaScript. Listing X.3 shows
-variables named by purpose and type.
+Name variables to describe why they are needed and what data type we expect
+them to contain. We think both suggestion are useful, however, the second is
+especially useful for JavaScript since it lacks static type checking. Listing
+X.3 shows variables named by purpose and type.
 
 .Listing X.3 -- Names with purpose
 [source,js]
@@ -194,13 +226,13 @@ Figure X.1 illustrates how we convey all the meaning of the comments in
 Listing X.3 using variable names.
 
 .Figure X.1 -- Variable name dissection
-image:ch01/syntax.png[image,width:700]
+image:syntax.png[image,width:700]
 
 Precise variable names are not only more concise but they help avoid
 inaccurate comments. Consider, for example, what can happen when a teammate
 updates a few names. It is all too easy to make a mistake when updating the
-comments as shown in Listing X.4. If we instead rely on variable names this
-problem goes away.
+comments as shown in Listing X.4. This problem is removed when we instead 
+rely on variable names to convey code purpose.
 
 .Listing X.4 -- Good intentions and bad comments
 [source,js]
@@ -224,9 +256,9 @@ var make_abode = curry_make_fn({ _item_type_ : 'abode' });
 <3> Mistake: The string is now the second positional parameter
 <4> Mistake: `makers` is now `builders`
 
-The changes to the preferred code are far shorter and guaranteed correct. Good
-editors can apply variable-name changes throughout a project in second whereas
-comment management is the developer's responsibility.
+The changes to the preferred code are far shorter and guaranteed correct. 
+Good editors and IDEs can apply variable-name changes throughout a project in 
+seconds but there are few tools to help ensure comments stay accurate.
 
 === Use common characters
 - Use the characters `a-z`, `A-Z`, `0-9`, underscore, and `$`, for variable
@@ -672,17 +704,16 @@ they can be identified during the build process.
 [cols="",]
 |===========================================================
 |Type |Local scope |Module scope
-|Array |local_map.\_person_list_ |spa.\_model_.\_personList_
-|Boolean |local_map.\_is_enabled_ |spa.\_model_.\_isReady_
+|Array |local_map.\_person_list_ |spa.\_03_model_.\_personList_
+|Boolean |local_map.\_is_enabled_ |spa.\_03_model_.\_isReady_
 |Function |local_map.\_init_fn_ a|
-spa.\_initModuleFn_
-spa.\_model_.initModuleFn_
-spa.\_shell_._initModuleFn_
-|Integer |local_map._leg_count_ |spa.\_model_.\_callbackCount_
-|Map |local_map.\_user_map_ |spa.\_slider_.\_instanceMap_
-|Number |local_map.\_mix_ratio_ |spa.\_sound_.\_mixRatio_
-|String |local_map.\_username_ |spa.\_model_.\_userMap_
-|Regex |local_map.\_match_rx_ |spa.\_matchRx_
+spa.\_03_model_.initModuleFn_
+spa.\_07_shell_._initModuleFn_
+|Integer |local_map._leg_count_ |spa.\_03_model_.\_callbackCount_
+|Map |local_map.\_user_map_ |spa.\_06_slider_.\_instanceMap_
+|Number |local_map.\_mix_ratio_ |spa.\_06_sound_.\_mixRatio_
+|String |local_map.\_username_ |spa.\_03_model_.\_userMap_
+|Regex |local_map.\_match_rx_ |spa.\01_util_._matchRx_
 |===========================================================
 
 == Functions
@@ -718,26 +749,16 @@ var spa = (function () {
 spa._initModuleFn_();
 ----
 
-We can break a namespace into manageable subdivisions. For example, we can add
-`spa.\_shell_` and `spa.\_slider_` to our `spa` namespace as shown in Listing
-X.12.
+We can break a namespace into manageable subdivisions. For example, we
+can add `spa.\_06_slider_` and `spa.\_07_shell_` to our `spa`
+namespace as shown in Listing X.12.
 
 .Listing X.12 -- A namespace subdivided
 [source,js]
 ----
 // == Prefer ==
-// In the file spa.shell.js:
-spa._shell_ = (function () {
- 'use strict';
-
- return {       // <1>
- _initModuleFn_   : initModuleFn,
- _resetDisplayFn_ : resetDisplayFn
- };
-}());
-
-// In the file spa.slider.js:
-spa._slider_ = (function () {
+// In the file spa.06_slider.js:
+spa._06_slider_ = (function () {
  'use strict';
 
  return {        // <1>
@@ -746,19 +767,57 @@ spa._slider_ = (function () {
  _retractSliderFn_ : retractSliderFn
  };
 }());
-// Initialize the spa from another module
-spa._initModuleFn_();
+
+// In the file spa.07_shell.js:
+spa._07_shell_ = (function () {
+ 'use strict';
+
+ return {        // <1>
+ _initModuleFn_   : initModuleFn,
+ _resetDisplayFn_ : resetDisplayFn
+ };
+}());
+
+// In the file spa._08_app.js:
+spa._07_shell_._initModuleFn();
 ----
 <1> Return private variables and methods
 
-Name CSS selectors in parallel with the JavaScript namespaces. For example,
-any classes used by `spa.\_shell_` should have an `spa-\_shell_` prefix.
+The numbers in the modules show inclusion precedence
+as shown in Diagram X.1 and Figure X.2.
+
+.Diagram X.1 -- Module precedence
+
+[source]
+----
+ _00_root_           # Root
+ _01_util_           # Core utility
+ _02_01_data_mock_   # Data prereq - mock module
+ _02_data_           # Data controller, fetch and push (AJAX, Websockets)
+ _03_model_          # Core logic
+ _05_01_css_icons_   # Styling prereq - icons
+ _05_02_css_base_    # Styling prereq - basic css
+ _05_03_css_litebox_ # Styling prerep - litebox css
+ _05_css_            # Dynamic styling controller
+ _06_litebox_        # Feature module, litebox
+ _07_shell_          # Browser interface
+ _08_01_shared_      # App prereq, shared config
+ _08_app_            # App main
+----
+
+.Figure X.2 -- SPA architecture
+
+image:architecture.png[image,width:700]
+
+Name CSS selectors in parallel with the JavaScript namespaces. For
+example, any classes used by `spa.\_07_shell_` should have an
+`spa-\_07_shell_` prefix.
 
 === Minimize module-scope variables
-Do not use global variables except when namespacing as above.  It is also wise
-to minimize module-scope variables otherwise one can lose track of module
-state. We recommend grouping state and configuration data into `stateMap` and
-`configMap` respectively as shown in Listing X.13.
+Do not use global variables except when namespacing as above.
+It is also wise to minimize module-scope variables otherwise one can lose
+track of module state. We recommend grouping state and configuration data
+into `stateMap` and `configMap` respectively as shown in Listing X.13.
 
 .Listing X.13 -- Module scope variables
 [source,js]
@@ -787,7 +846,8 @@ var
 Named functions are easier to debug than anonymous functions.  For most
 purposes the declarations in Listing X.14 are equivalent. However, we *will*
 see a difference when debugging.  When we declare functions with an explicit
-names, legible stack traces can be computed prior to run-time.
+names, legible stack traces can be computed shown in IDE or browser
+debuggers at run-time.
 
 .Listing X.14 -- Explicit function names
 [source,js]
@@ -813,7 +873,7 @@ arguments instead as shown in Listing X.15.
 hypotenuse_num = sqrt( 25 ); // <1>
 
 // == Avoid ===
-coor_map = refactorCoords( 22, 28, 32, 48); <2>
+coord_map = refactorCoords( 22, 28, 32, 48); <2>
 
 // == Prefer ==
 coord_map = refactorCoords({
@@ -880,13 +940,12 @@ process both stages at different times.
 
 As of ES5.1 `let` is preferred over `var` in most cases. But there is one
 glaring problem: not all tool chains support it. For example, jQuery and
-UglifyJS and a bunch of other libraries still expect `var` behavior.  We've
-discovered this the hard way. So despite all the benefits of `let`, we're
-going to allow its use catch up with its promise before we join the party.
+UglifyJS and a bunch of other libraries still use ES5.1. Since we'd rather
+not transpile, that means when we write for client code, we still use `var`.
 
-The `const` keyword is also preferred over `var`. Just like with `let` there
-are tool-chain issues. Listing X.17 shows how a `const` symbol is not as
-immutable as one might think.
+When we write for NodeJS, though, we prefer `const` over `let` and avoid 
+`var` altogether. Do be careful though: Listing X.17 shows how a `const` 
+symbol is not as immutable as one might think.
 
 .Listing X.17 -- Confusing `const`
 [source,js]
@@ -1660,27 +1719,27 @@ dogProto = {
 [source,js]
 ----
 // == Prefer == JS files
-js/spa.js             // <1>
-js/spa.shell.js       // <2>
-js/spa.slider.js      // <3>
+js/spa.00_root.js        // <1>
+js/spa.06_slider.js      // <2>
+js/spa.07_shell.js       // <3>
 
 // == Prefer == CSS files
-css/spa.css           // <1> <4>
-css/spa.shell.css     // <2> <5>
-css/spa.slider.css    // <3> <6>
+css/spa.00_root.css      // <1> <4>
+css/spa.06_slider.css    // <2> <5>
+css/spa.07_shell.css     // <3> <6>
 
 // == Alternate CSS generator files
-js/spa.css.js         // <1> <4>
-js/spa.css_shell.js   // <2> <5>
-js/spa.css_slider.js  // <3> <6>
+js/spa.05_02_css_base.js    // <1> <4>
+js/spa.06_01_slider_css.js  // <2> <5>
+js/spa.07_01_shell_css.js   // <3> <6>
 ----
-<1> Claims spa JavaScript namespace
-<2> Claims spa.\_shell_ JavaScript namespace
-<3> Claims spa.\_slider_ JavaScript namespace
-<4> Defines #spa, .spa-\_x_clearall_.
-<5> Defines spa-\_shell_, spa-\_shell_header_, .spa-\_shell_footer_,
- and .spa-\_shell_main_
-<6> Defines .spa-\_slider_open_, .spa-\_slider_closed_
+<1> Claim spa JavaScript namespace
+<2> Claim spa.06\_slider_ JavaScript namespace
+<3> Claim spa.07\_shell_ JavaScript namespace
+<4> Define #spa, .spa-\_05_x_clearboth_.
+<5> Define .spa-\_06_slider_open_, .spa-\_06_slider_closed_
+<6> Define spa-\_07_shell_, spa-\_07_shell_header_, .spa-\_07_shell_footer_,
+ and .spa-\_07_shell_main_
 
 These conventions make the interplay between CSS and JavaScript easier to
 manage and debug.
