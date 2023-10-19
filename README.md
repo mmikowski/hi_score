@@ -571,13 +571,18 @@ MacOS Catalina is reported to work with the following commands:
   cpanm Getopt::Simple File::Slurp
 ```
 
-Another path is to use Parallels or VMFusion to import the [Virtual Appliance vmx.zip][_42] file (unzip this file before use). VirtualBox also will work but does not integrate as well to MacOS.
+Another option is to use Parallels, VMFusion, or a Docker container to host Kubuntu 22.04 LTS or similar. VirtualBox also will work but does not integrate as well to MacOS. This ensures everything works as intended.
+
+<!--
+Another option is to use Parallels or VMFusion to import the [Virtual Appliance vmx.zip][_42] file (unzip this file before use). VirtualBox also will work but does not integrate as well to MacOS.
+-->
 
 ### Windows 10 Prerequisites
 In theory, the Windows Subsystem for Linux running an Ubuntu distro should work as with the prerequisites [listed above](#linux-ubuntu-or-debian-based). However, we haven't tested it. One may also use the virutal appliance detailed above.
 
 Return to the [Quick Start](#quick-start)
 
+<!--
 ### Virtual Appliance Prerequisites
 Download the latest [latest virtual appliance][_42] to try `hi_score` by running a host in a virtual machine.  Pick the latest `ova2` image for virtual box, and the latest `vmx.zip` image for VMware or Parallels.  The login and password are `hi_score`.
 
@@ -593,6 +598,7 @@ After signing in, change the password for safety, and upgrade the software to th
 ```
 
 Return to the [Quick Start](#quick-start)
+-->
 
 ---
 ## Reference notes
@@ -602,7 +608,7 @@ Our baseline compatibility is IE9+. Those supporting IE 8 have our sympathy.
 ### Deployment platform
 The server component of **hi\_score** is designed to run on industry-standard
 hardware, cloud instances like Amazon EC2, and containers. Our server platform
-is Ubuntu 16.04 LTS. Later version of Ubuntu and other distributions should
+is Ubuntu 24.04 LTS. Later version of Ubuntu and other distributions should
 work well.
 
 ### Code Style
@@ -610,7 +616,6 @@ We use the code style presented in [Single Page Web Applications - JavaScript en
 
 ### IDE Configuration
 We provide configs for JetBrain's IDE IntelliJ or Webstorm in the repository.  Other IDEs will work fine, but you will need to manually adjust them to support the code style. One should only need to do this once per IDE and then it can be added to the repository. Contributions for VSCode, VIM, and other environments are welcome.
-
 
 ## Contribute
 While `hi_score` is opinionated, it is also modular and designed for change. For example, the `bin/xhi` tool is easily extended by dropping a short module into the the `lib/` directory. The architecture and code style docs used by `bin/xhi` are easily edited in the `docs/` directory. Developers are encouraged to add vendor libraries and patches [as needed][_01]. Any improvements or suggestions are welcome through the [issues tracker][_29].  Pull requests are appreciated!
@@ -723,8 +728,8 @@ MIT
 - (x) Implement build numbers and link last build to `latest`
 - (x) Move coverage reports into build directories
 - (x) Store build and env state in `lib/xhi_state.json`
-- (x) Create and update virtualBox [OVA for development][_42]
-- (x) Create and update Parallels [VMX][_42] image
+- (x) Create and update virtualBox OVA for development (offline, was link _42)
+- (x) Create and update Parallels VMX image (offline, was link _42)
 - (x) Replace JSLint setting from per-file to config/jslint.conf
 - (x) Expect browser env for js/xhi libraries
 - (x) Fix `js/xhi/01_util.js::makeSeriesMap` across timezones
@@ -769,7 +774,7 @@ MIT
 
 #### 1.7.0
 - (x) Enhance utility capabilities
-  - (x) Replace makeDeepKeyList  with more-useful makeDeepData
+  - (x) Replace makeDeepKeyList with more-useful makeDeepData
   - (x) Make getStructData more reliable for named objects
 - (x) Update test to match new capabilities
 - (x) Improve default symbol contents
